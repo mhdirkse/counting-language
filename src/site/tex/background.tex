@@ -1,0 +1,89 @@
+\documentclass{article}
+
+\begin{document}
+
+\section{Introduction}
+
+Many mathematical problems have to do with counting. A domain specific language, Counting Language, is developed that is dedicated to such problems. First, the domain is explored using two specific examples of counting problems. Then, the key ideas of the new language are presented. These ideas can be used to judge the validity of possible language elements. Finally, the key elements of the language are established.
+
+\section{Two example counting problems}
+
+As a first example, consider the board game Risk. When two players are fighting for a country, the attacker throws three red dice and the defender throws two blue dice. For the argument's sake, we omit the defender's choice to either throw one blue die or two blue dice; this additional complexity can be analyzed with similar mathematical methods. The red dice are sorted in descending order and the blue dice are also sorted that way. Then the largest red die is compared to the largest blue die, and the second largest red die is compared to the other blue die. For each comparison where the attacker has the largest value, the defender looses an army. For each comparison where the defender has the same or a larger value, the attacker looses an army.
+
+There are three possible outcomes: (2, 0), (1, 1), (0, 2) where the first value is the number of armies lost by the defender, and the second number is the number of armies lost by the attacker.
+
+The probability of each outcome is obtained by considering all possible dice rolls as illustrated in Table \ref{tab:risk}.
+
+\begin{table}[h]
+\begin{tabular}{ccccc|cccc|cc}
+\hline
+\multicolumn{5}{c}{dice} & \multicolumn{4}{c}{comparisons} & \multicolumn{2}{c}{result} \\
+\multicolumn{3}{c}{attacker} & \multicolumn{2}{c}{defender} & \multicolumn{2}{c}{comp 1} & \multicolumn{2}{c}{comp 2} & \multicolumn{2}{c}{won comparisons} \\
+1 & 2 & 3 & 1 & 2 & a & d & a & d & a & d \\
+\hline
+1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 2 \\
+1 & 1 & 1 & 1 & 2 & 1 & 2 & 1 & 1 & 0 & 2 \\
+$\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ \\
+3 & 3 & 3 & 2 & 2 & 3 & 2 & 3 & 2 & 2 & 0 \\
+3 & 3 & 3 & 2 & 3 & 3 & 3 & 3 & 2 & 1 & 1 \\
+3 & 3 & 3 & 2 & 4 & 3 & 4 & 3 & 2 & 1 & 1 \\
+$\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ \\
+3 & 3 & 3 & 4 & 2 & 3 & 4 & 3 & 2 & 1 & 1 \\
+3 & 3 & 3 & 4 & 3 & 3 & 4 & 3 & 3 & 0 & 2 \\
+$\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ & $\cdots$ \\
+6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 0 & 2 \\
+\hline
+\end{tabular}
+\caption{Illustration of how to analyze a Risk fight}
+\label{tab:risk}
+\end{table}
+
+The algorithm can be summarized as follows:
+\begin{enumerate}
+\item Consider each die to have a sequence number. The combinations are counted properly only if an arbitrary order is imposed.
+\item Initialize count variables $c_{(2, 0)}$, $c_{(1,1)}$ and $c_{(0, 2)}$ to zero.
+\item For each of the $6 \times 6 \times 6 \times 6 \times 6$ combinations, do the following:
+\begin{enumerate}
+\item Sort the attacker's values decending.
+\item Sort the defender's values descending.
+\item Compare the higest attacker value with the highest defender value.
+\item Compare the second attacker value with the second defender value.
+\item Let $w$ be the number of comparisons won by the attacker.
+\item If $w = 0$ then increment $c_{(0, 2)}$.
+\item If $w = 1$ then increment $c_{(1, 1)}$.
+\item If $w = 2$ then increment $c_{(2, 0)}$.
+\end{enumerate}
+\end{enumerate}
+The probability of each possibility is obtained by taking the corresponding $c$ value and dividing by the total number of possibilities, which is $6 \times 6 \times 6 \times 6 \times 6$.
+
+The second example is multiplying polynomials. Let
+\begin{equation}
+A(x) = a_0 + a_1 x + a_2 x^2 + \cdots + a_M x^M
+\end{equation}
+and
+\begin{equation}
+B(x) = b_0 + b_1 x + b_2 x^2 + \cdots + b_N x^N
+\end{equation}
+Then the sum function $C$ defined by $C(x) = A(x) + B(x)$ has coefficients $c_0 \cdots c_{M+N}$ that are combinations of the $a$ and $b$ coefficients. We have:
+\begin{equation}
+c_n = \sum_{k=0}^{n} a_{k} b_{n-k}
+\end{equation}
+where missing coefficients are assumed to be zero.
+
+In other words: we have to consider all possible combinations to draw an $a_k$ and a $b_j$. For each combination, we add $a_k b_j$ to the coefficient $c_{k+j}$.
+
+\section{Key ideas of Counting Language}
+
+This document introduces Counting Language, a new programming language that is designed to handle mathematical problems like the ones explained above. The language is based on three key ideas:
+\begin{enumerate}
+\item There is native support for an unordered collection in which each item has a count. This data type takes care of managing the counts, letting the programmer focus on transforming elements.
+\item Calculations on an unordered collection reference the items in some order. The result of such a calculation should be independent of the chosen order. The language only provides programming constructs for which it can guarentee this independence.
+\item The expressiveness of the language is improved by allowing fractional or real-valued element counts. For example, it is possible to use fractional or real-valued element counts as probabilities or coefficients of polynomials.
+\end{enumerate}
+
+The remainder of this document explores these key ideas with the aim to develop programming constructs for Counting Language.
+
+\section{Exploration of possible language elements}
+
+\section{Conclusion: key requirements for Counting Language}
+\end{document}
