@@ -13,4 +13,8 @@ public final class Program {
     public void addStatement(final Statement statement) {
         statements.add(statement);
     }
+
+    public int getSize() {
+        return statements.size();
+    }
 }

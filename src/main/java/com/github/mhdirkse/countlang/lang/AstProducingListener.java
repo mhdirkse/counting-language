@@ -59,46 +59,64 @@ public final class AstProducingListener extends CountlangBaseListener {
     // TODO: Correct spelling in the grammar.
     @Override
     public void enterMultDifExpression(final CountlangParser.MultDifExpressionContext ctx) {
-        inStatement.enterMultDifExpression(ctx);
+        if (inStatement != null) {
+            inStatement.enterMultDifExpression(ctx);
+        }
     }
 
     @Override
     public void exitMultDifExpression(final CountlangParser.MultDifExpressionContext ctx) {
-        inStatement.exitMultDifExpression(ctx);
+        if (inStatement != null) {
+            inStatement.exitMultDifExpression(ctx);
+        }
     }
 
     @Override
     public void enterPlusMinusExpression(final CountlangParser.PlusMinusExpressionContext ctx) {
-        inStatement.enterPlusMinusExpression(ctx);
+        if (inStatement != null) {
+            inStatement.enterPlusMinusExpression(ctx);
+        }
     }
 
     @Override
     public void exitPlusMinusExpression(final CountlangParser.PlusMinusExpressionContext ctx) {
-        inStatement.exitPlusMinusExpression(ctx);
+        if (inStatement != null) {
+            inStatement.exitPlusMinusExpression(ctx);
+        }
     }
 
     @Override
     public void enterSymbolReferenceExpression(final CountlangParser.SymbolReferenceExpressionContext ctx) {
-        inStatement.enterSymbolReferenceExpression(ctx);
+        if (inStatement != null) {
+            inStatement.enterSymbolReferenceExpression(ctx);
+        }
     }
 
     @Override
     public void exitSymbolReferenceExpression(final CountlangParser.SymbolReferenceExpressionContext ctx) {
-        inStatement.exitSymbolReferenceExpression(ctx);
+        if (inStatement != null) {
+             inStatement.exitSymbolReferenceExpression(ctx);
+        }
     }
 
     @Override
     public void enterValueExpression(final CountlangParser.ValueExpressionContext ctx) {
-        inStatement.enterValueExpression(ctx);
+        if (inStatement != null) {
+            inStatement.enterValueExpression(ctx);
+        }
     }
 
     @Override
     public void exitValueExpression(final CountlangParser.ValueExpressionContext ctx) {
-        inStatement.exitValueExpression(ctx);
+        if (inStatement != null) {
+            inStatement.exitValueExpression(ctx);
+        }
     }
 
     @Override
     public void visitTerminal(final TerminalNode terminalNode) {
-        inStatement.visitTerminal(terminalNode);
+        if (inStatement != null) {
+            inStatement.visitTerminal(terminalNode);
+        }
     }
 }

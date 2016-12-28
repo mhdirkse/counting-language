@@ -15,6 +15,10 @@ public final class CompositeExpression extends Expression {
         this.operator = operator;
     }
 
+    public int getNumArguments() {
+        return arguments.size();
+    }
+
     public Expression getArgument(final int index) {
         return arguments.get(index);
     }
