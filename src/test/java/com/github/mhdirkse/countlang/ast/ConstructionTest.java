@@ -46,18 +46,18 @@ public class ConstructionTest extends ConstructionTestBase {
         CompositeExpression rhs = checkExpressionType(
                 statement.getRhs(), CompositeExpression.class);
         Assert.assertEquals("+", rhs.getOperator().getName());
-        Assert.assertEquals(2, rhs.getNumArguments());
+        Assert.assertEquals(2, rhs.getNumSubExpressions());
         ValueExpression arg1 = checkExpressionType(
-                rhs.getArgument(0), ValueExpression.class);
+                rhs.getSubExpression(0), ValueExpression.class);
         CompositeExpression arg2 = checkExpressionType(
-                rhs.getArgument(1), CompositeExpression.class);
+                rhs.getSubExpression(1), CompositeExpression.class);
         Assert.assertEquals(first, arg1.getValue().getValue());
         Assert.assertEquals("*", arg2.getOperator().getName());
-        Assert.assertEquals(2, arg2.getNumArguments());
+        Assert.assertEquals(2, arg2.getNumSubExpressions());
         ValueExpression arg21 = checkExpressionType(
-                arg2.getArgument(0), ValueExpression.class);
+                arg2.getSubExpression(0), ValueExpression.class);
         ValueExpression arg22 = checkExpressionType(
-                arg2.getArgument(1), ValueExpression.class);
+                arg2.getSubExpression(1), ValueExpression.class);
         Assert.assertEquals(second, arg21.getValue().getValue());
         Assert.assertEquals(third, arg22.getValue().getValue());
     }
@@ -77,17 +77,17 @@ public class ConstructionTest extends ConstructionTestBase {
         CompositeExpression rhs = checkExpressionType(
                 statement.getRhs(), CompositeExpression.class);
         Assert.assertEquals("+", rhs.getOperator().getName());
-        Assert.assertEquals(2, rhs.getNumArguments());
+        Assert.assertEquals(2, rhs.getNumSubExpressions());
         CompositeExpression arg1 = checkExpressionType(
-                rhs.getArgument(0), CompositeExpression.class);
+                rhs.getSubExpression(0), CompositeExpression.class);
         ValueExpression arg2 = checkExpressionType(
-                rhs.getArgument(1), ValueExpression.class);
+                rhs.getSubExpression(1), ValueExpression.class);
         Assert.assertEquals("*", arg1.getOperator().getName());
-        Assert.assertEquals(2, arg1.getNumArguments());
+        Assert.assertEquals(2, arg1.getNumSubExpressions());
         ValueExpression arg11 = checkExpressionType(
-                arg1.getArgument(0), ValueExpression.class);
+                arg1.getSubExpression(0), ValueExpression.class);
         ValueExpression arg12 = checkExpressionType(
-                arg1.getArgument(1), ValueExpression.class);
+                arg1.getSubExpression(1), ValueExpression.class);
         Assert.assertEquals(first, arg11.getValue().getValue());
         Assert.assertEquals(second, arg12.getValue().getValue());
         Assert.assertEquals(third, arg2.getValue().getValue());
@@ -108,17 +108,17 @@ public class ConstructionTest extends ConstructionTestBase {
         CompositeExpression rhs = checkExpressionType(
                 statement.getRhs(), CompositeExpression.class);
         Assert.assertEquals("+", rhs.getOperator().getName());
-        Assert.assertEquals(2, rhs.getNumArguments());
+        Assert.assertEquals(2, rhs.getNumSubExpressions());
         CompositeExpression arg1 = checkExpressionType(
-                rhs.getArgument(0), CompositeExpression.class);
+                rhs.getSubExpression(0), CompositeExpression.class);
         ValueExpression arg2 = checkExpressionType(
-                rhs.getArgument(1), ValueExpression.class);
+                rhs.getSubExpression(1), ValueExpression.class);
         Assert.assertEquals("-", arg1.getOperator().getName());
-        Assert.assertEquals(2, arg1.getNumArguments());
+        Assert.assertEquals(2, arg1.getNumSubExpressions());
         ValueExpression arg11 = checkExpressionType(
-                arg1.getArgument(0), ValueExpression.class);
+                arg1.getSubExpression(0), ValueExpression.class);
         ValueExpression arg12 = checkExpressionType(
-                arg1.getArgument(1), ValueExpression.class);
+                arg1.getSubExpression(1), ValueExpression.class);
         Assert.assertEquals(first, arg11.getValue().getValue());
         Assert.assertEquals(second, arg12.getValue().getValue());
         Assert.assertEquals(third, arg2.getValue().getValue());

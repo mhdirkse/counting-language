@@ -5,7 +5,7 @@ import java.util.List;
 
 public final class CompositeExpression extends Expression {
     private Operator operator = null;
-    private List<Expression> arguments = new ArrayList<Expression>();
+    private List<Expression> subExpressions = new ArrayList<Expression>();
 
     public Operator getOperator() {
         return operator;
@@ -15,15 +15,24 @@ public final class CompositeExpression extends Expression {
         this.operator = operator;
     }
 
-    public int getNumArguments() {
-        return arguments.size();
+    public int getNumSubExpressions() {
+        return subExpressions.size();
     }
 
-    public Expression getArgument(final int index) {
-        return arguments.get(index);
+    public Expression getSubExpression(final int index) {
+        return subExpressions.get(index);
     }
 
-    public void addArgument(final Expression expression) {
-        arguments.add(expression);
+    public void addSubExpression(final Expression expression) {
+        subExpressions.add(expression);
+    }
+
+    @Override
+    public Value calculate(final ExecutionContext ctx) {
+        List<Value> arguments = new ArrayList<Value>();
+        for (Expression subExpression : subExpressions) {
+            arguments.add(subExpression.calculate(ctx));
+        }
+        return operator.execute(arguments);
     }
 }

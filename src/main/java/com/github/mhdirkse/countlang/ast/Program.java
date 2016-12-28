@@ -17,4 +17,10 @@ public final class Program {
     public int getSize() {
         return statements.size();
     }
+
+    public void execute(final ExecutionContext ctx) {
+        for(Statement statement : statements) {
+            statement.execute(ctx);
+        }
+    }
 }

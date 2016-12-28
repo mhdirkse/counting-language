@@ -45,11 +45,11 @@ public class ConstructionOperatorsTest extends ConstructionTestBase {
         CompositeExpression expression = checkExpressionType(
                 statement.getExpression(), CompositeExpression.class);
         Assert.assertEquals(expectedOperator, expression.getOperator().getName());
-        Assert.assertEquals(2, expression.getNumArguments());
+        Assert.assertEquals(2, expression.getNumSubExpressions());
         ValueExpression expression1 = checkExpressionType(
-                expression.getArgument(0), ValueExpression.class);
+                expression.getSubExpression(0), ValueExpression.class);
         ValueExpression expression2 = checkExpressionType(
-                expression.getArgument(1), ValueExpression.class);
+                expression.getSubExpression(1), ValueExpression.class);
         Assert.assertEquals(first, expression1.getValue().getValue());
         Assert.assertEquals(second, expression2.getValue().getValue());
     }

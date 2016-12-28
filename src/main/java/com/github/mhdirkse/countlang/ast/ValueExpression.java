@@ -10,4 +10,9 @@ public final class ValueExpression extends Expression {
     public void setValue(final Value value) {
         this.value = value;
     }
+
+    @Override
+    public Value calculate(final ExecutionContext ctx) {
+        return value;
+    }
 }

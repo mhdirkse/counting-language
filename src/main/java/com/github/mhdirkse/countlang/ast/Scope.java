@@ -4,23 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Scope {
-    private Map<String, Symbol> symbols;
+    private Map<String, Value> symbols;
 
     public Scope() {
-        symbols = new HashMap<String, Symbol>();
+        symbols = new HashMap<String, Value>();
     }
 
     public boolean hasSymbol(String name) {
         return symbols.containsKey(name);
     }
 
-    public Symbol getSymbol(String name) {
+    public Value getValue(String name) {
         return symbols.get(name);
     }
 
-    public Symbol addSymbol(String name) {
-        Symbol symbol = new Symbol(name);
-        symbols.put(name, symbol);
-        return symbol;
+    public void putSymbol(String name, Value value) {
+        symbols.put(name, value);
     }
 }

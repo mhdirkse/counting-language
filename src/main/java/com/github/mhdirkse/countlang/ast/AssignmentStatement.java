@@ -19,4 +19,10 @@ public final class AssignmentStatement extends Statement {
     public void setRhs(final Expression rhs) {
         this.rhs = rhs;
     }
+
+    @Override
+    public void execute(final ExecutionContext ctx) {
+        Scope scope = ctx.getScope();
+        scope.putSymbol(lhs.getName(), rhs.calculate(ctx));
+    }
 }

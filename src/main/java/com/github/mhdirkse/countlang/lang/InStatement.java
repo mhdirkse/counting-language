@@ -46,7 +46,7 @@ abstract class InStatement extends CountlangBaseListener {
     private void addArgument(final Expression addTo, final Expression argument) {
         if (addTo instanceof CompositeExpression) {
             CompositeExpression cast = (CompositeExpression) addTo;
-            cast.addArgument(argument);
+            cast.addSubExpression(argument);
         } else {
             throw new IllegalStateException("Expected a composite expression to add to");
         }

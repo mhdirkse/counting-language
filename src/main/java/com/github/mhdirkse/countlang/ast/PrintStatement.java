@@ -10,4 +10,10 @@ public final class PrintStatement extends Statement {
     public void setExpression(final Expression expression) {
         this.expression = expression;
     }
+
+    @Override
+    public void execute(final ExecutionContext ctx) {
+        String result = Integer.toString(expression.calculate(ctx).getValue());
+        ctx.getOutputStrategy().output(result);
+    }
 }
