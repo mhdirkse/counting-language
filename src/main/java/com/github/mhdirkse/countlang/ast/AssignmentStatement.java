@@ -25,4 +25,9 @@ public final class AssignmentStatement extends Statement {
         Scope scope = ctx.getScope();
         scope.putSymbol(lhs.getName(), rhs.calculate(ctx));
     }
+
+    @Override
+    public void accept(final AstNode.Visitor v) {
+        v.visitAssignmentStatement(this);
+    }
 }

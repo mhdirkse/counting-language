@@ -35,4 +35,9 @@ public final class CompositeExpression extends Expression {
         }
         return operator.execute(arguments);
     }
+
+    @Override
+    public void accept(final AstNode.Visitor v) {
+        v.visitCompositeExpression(this);
+    }
 }

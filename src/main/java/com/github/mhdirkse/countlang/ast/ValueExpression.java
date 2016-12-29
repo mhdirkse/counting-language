@@ -15,4 +15,9 @@ public final class ValueExpression extends Expression {
     public Value calculate(final ExecutionContext ctx) {
         return value;
     }
+
+    @Override
+    public void accept(final AstNode.Visitor v) {
+        v.visitValueExpression(this);
+    }
 }

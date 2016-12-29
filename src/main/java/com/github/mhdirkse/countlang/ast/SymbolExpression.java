@@ -20,4 +20,9 @@ public final class SymbolExpression extends Expression {
             throw new IllegalStateException("Undefined symbol " + symbol.getName());
         }
     }
+
+    @Override
+    public void accept(final AstNode.Visitor v) {
+        v.visitSymbolExpression(this);
+    }
 }

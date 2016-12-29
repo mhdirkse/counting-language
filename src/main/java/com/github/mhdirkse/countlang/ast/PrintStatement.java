@@ -16,4 +16,9 @@ public final class PrintStatement extends Statement {
         String result = Integer.toString(expression.calculate(ctx).getValue());
         ctx.getOutputStrategy().output(result);
     }
+
+    @Override
+    public void accept(final AstNode.Visitor v) {
+        v.visitPrintStatement(this);
+    }
 }
