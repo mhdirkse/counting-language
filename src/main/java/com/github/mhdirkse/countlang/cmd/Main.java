@@ -1,8 +1,14 @@
 package com.github.mhdirkse.countlang.cmd;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
-public final class Main {
+import com.github.mhdirkse.countlang.tasks.ExecuteProgramTask;
+import com.github.mhdirkse.countlang.tasks.OutputContext;
+
+public final class Main implements OutputContext {
     public static void main(String[] args)
     {
         new Main(args).run();
@@ -53,11 +59,30 @@ public final class Main {
     }
 
     private void executeFile(final String inputFileName) {
-        // Temporary implementation
-        System.out.println("OK");
+        try {
+            executeReader(new FileReader(inputFileName));
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void error(String msg) {
+    void executeReader(final Reader reader) throws IOException {
+        try {
+            new ExecuteProgramTask(reader).run(this);
+        }
+        finally {
+            reader.close();
+        }
+    }
+
+    @Override
+    public void output(String msg) {
+        System.out.println(msg);
+    }
+
+    @Override
+    public void error(String msg) {
         System.out.println(msg);
     }
 }
