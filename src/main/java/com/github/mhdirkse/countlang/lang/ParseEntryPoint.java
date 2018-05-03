@@ -24,7 +24,7 @@ public class ParseEntryPoint {
         }
     }
 
-    private void parseProgramImpl(Reader reader) throws IOException {
+    private void parseProgramImpl(final Reader reader) throws IOException {
         CountlangLexer lexer = new CountlangLexer(new ANTLRInputStream(reader));
         lexer.removeErrorListeners();
         lexer.addErrorListener(ThrowingErrorListener.INSTANCE);
