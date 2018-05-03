@@ -2,6 +2,8 @@ package com.github.mhdirkse.countlang.tasks;
 
 import java.io.IOException;
 
+import com.github.mhdirkse.countlang.ast.OutputStrategy;
+
 public interface AbstractTask {
-    void run(OutputContext outputContext) throws IOException;
+    void run(OutputStrategy outputStrategy) throws IOException;
 }

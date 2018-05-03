@@ -5,10 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
+import com.github.mhdirkse.countlang.ast.OutputStrategy;
 import com.github.mhdirkse.countlang.tasks.ExecuteProgramTask;
-import com.github.mhdirkse.countlang.tasks.OutputContext;
 
-public final class Main implements OutputContext {
+public final class Main implements OutputStrategy {
     public static void main(String[] args)
     {
         new Main(args).run();
@@ -83,6 +83,6 @@ public final class Main implements OutputContext {
 
     @Override
     public void error(String msg) {
-        System.out.println(msg);
+        System.out.println("ERROR: " + msg);
     }
 }

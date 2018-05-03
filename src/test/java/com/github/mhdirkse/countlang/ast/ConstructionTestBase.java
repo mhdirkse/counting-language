@@ -25,7 +25,9 @@ public class ConstructionTestBase {
     final void parseUnchecked(final String program) throws IOException {
     	Reader reader = new StringReader(program);
     	try {
-    		ast = ParseEntryPoint.getProgram(reader);
+    	    ParseEntryPoint parser = new ParseEntryPoint();
+    		parser.parseProgram(reader);
+    	    ast = parser.getParsedNodeAsProgram();
     	}
     	finally {
     		reader.close();

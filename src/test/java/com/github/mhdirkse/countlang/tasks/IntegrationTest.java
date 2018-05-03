@@ -9,10 +9,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.tasks.ExecuteProgramTask;
-import com.github.mhdirkse.countlang.tasks.OutputContext;
+import com.github.mhdirkse.countlang.ast.OutputStrategy;
 
-public class IntegrationTest implements OutputContext
+public class IntegrationTest implements OutputStrategy
 {
     private List<String> outputs;
 

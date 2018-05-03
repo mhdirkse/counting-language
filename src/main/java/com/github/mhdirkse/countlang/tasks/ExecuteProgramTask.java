@@ -16,20 +16,24 @@ public class ExecuteProgramTask implements AbstractTask {
     }
 
     @Override
-    public void run(final OutputContext outputContext) throws IOException {
-        ParseEntryPoint.getProgram(reader).execute(getExecutionContext(outputContext));
+    public void run(final OutputStrategy outputStrategy) throws IOException {
+    	ParseEntryPoint parser = new ParseEntryPoint();
+    	parser.parseProgram(reader);
+    	executeProgram(parser, outputStrategy);
     }
 
-    private ExecutionContext getExecutionContext(final OutputContext outputContext) {
-        return new ExecutionContext(new Scope(), getOutputStrategy(outputContext));
+    private void executeProgram(
+            final ParseEntryPoint parser,
+            final OutputStrategy outputStrategy) {
+        if (parser.hasError()) {
+    	    outputStrategy.error(parser.getError());
+    	}
+    	else {
+    	    parser.getParsedNodeAsProgram().execute(getExecutionContext(outputStrategy));
+    	}
     }
 
-    private OutputStrategy getOutputStrategy(final OutputContext outputContext) {
-        return new OutputStrategy() {
-            @Override
-            public void output(String s) {
-                outputContext.output(s);
-            }
-        };
+    private ExecutionContext getExecutionContext(final OutputStrategy outputStrategy) {
+        return new ExecutionContext(new Scope(), outputStrategy);
     }
 }
