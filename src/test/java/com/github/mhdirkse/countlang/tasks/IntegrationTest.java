@@ -1,5 +1,7 @@
-package com.github.mhdirkse.countlang.compiler;
+package com.github.mhdirkse.countlang.tasks;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,12 +9,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.ast.AstProducer;
-import com.github.mhdirkse.countlang.ast.Program;
-import com.github.mhdirkse.countlang.engine.Engine;
-import com.github.mhdirkse.countlang.engine.OutputReceiver;
+import com.github.mhdirkse.countlang.tasks.ExecuteProgramTask;
+import com.github.mhdirkse.countlang.tasks.OutputContext;
 
-public class IntegrationTest implements OutputReceiver {
+public class IntegrationTest implements OutputContext
+{
     private List<String> outputs;
 
     @Before
@@ -21,15 +22,31 @@ public class IntegrationTest implements OutputReceiver {
     }
 
     @Override
-    public void onOutputLine(final String output) {
+    public void output(final String output) {
         outputs.add(output);
     }
 
+    @Override
+    public void error(final String error) {
+    	throw new IllegalArgumentException("Did not expect an error: " + error);
+    }
+
     private void compileAndRun(final String programText) {
-        Program ast = new AstProducer().fromString(programText);
-        Compiler compiler = new Compiler(this);
-        Engine engine = compiler.compile(ast);
-        engine.run();
+    	try {
+    		compileAndRunUnchecked(programText);
+    	} catch(IOException e) {
+    		throw new IllegalStateException(e);
+    	}
+    }
+
+    private void compileAndRunUnchecked(final String programText) throws IOException {
+    	StringReader reader = new StringReader(programText);
+    	try {
+	    	new ExecuteProgramTask(reader).run(this);
+    	}
+    	finally {
+    		reader.close();
+    	}
     }
 
     private void checkOneLine(String expected) {

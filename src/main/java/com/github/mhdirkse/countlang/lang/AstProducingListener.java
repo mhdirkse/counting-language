@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.countlang.ast.Program;
 
-public final class AstProducingListener extends CountlangBaseListener {
+final class AstProducingListener extends CountlangBaseListener {
     private Program program = null;
     private boolean isFinished = false;
     private InStatement inStatement = null;
