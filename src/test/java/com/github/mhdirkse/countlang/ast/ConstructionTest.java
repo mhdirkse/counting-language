@@ -9,6 +9,7 @@ public class ConstructionTest extends ConstructionTestBase {
         int printedValue = 3;
         String simplePrint = "print " + Integer.toString(printedValue);
         parse(simplePrint);
+        Assert.assertFalse(hasParseErrors);
         Assert.assertEquals(1, ast.getSize());
         PrintStatement statement = checkStatementType(
                 ast.getStatement(0), PrintStatement.class);
@@ -22,6 +23,7 @@ public class ConstructionTest extends ConstructionTestBase {
         int assignedValue = 5;
         String simpleAssignment = "x = " + Integer.toString(assignedValue);
         parse(simpleAssignment);
+        Assert.assertFalse(hasParseErrors);
         Assert.assertEquals(1, ast.getSize());
         AssignmentStatement statement = checkStatementType(
                 ast.getStatement(0), AssignmentStatement.class);
@@ -39,6 +41,7 @@ public class ConstructionTest extends ConstructionTestBase {
         String programText = String.format(
                 "y = %d + %d * %d", first, second, third);
         parse(programText);
+        Assert.assertFalse(hasParseErrors);
         Assert.assertEquals(1, ast.getSize());
         AssignmentStatement statement = checkStatementType(
                 ast.getStatement(0), AssignmentStatement.class);
@@ -70,6 +73,7 @@ public class ConstructionTest extends ConstructionTestBase {
         String programText = String.format(
                 "y = %d * %d + %d", first, second, third);
         parse(programText);
+        Assert.assertFalse(hasParseErrors);
         Assert.assertEquals(1, ast.getSize());
         AssignmentStatement statement = checkStatementType(
                 ast.getStatement(0), AssignmentStatement.class);
@@ -101,6 +105,7 @@ public class ConstructionTest extends ConstructionTestBase {
         String programText = String.format(
                 "y = %d - %d + %d", first, second, third);
         parse(programText);
+        Assert.assertFalse(hasParseErrors);
         Assert.assertEquals(1, ast.getSize());
         AssignmentStatement statement = checkStatementType(
                 ast.getStatement(0), AssignmentStatement.class);
@@ -129,6 +134,7 @@ public class ConstructionTest extends ConstructionTestBase {
         int assignedValue = 7;
         String programText = String.format("z = %d; print z", assignedValue);
         parse(programText);
+        Assert.assertFalse(hasParseErrors);
         Assert.assertEquals(2, ast.getSize());
         AssignmentStatement statement1 = checkStatementType(
                 ast.getStatement(0), AssignmentStatement.class);

@@ -12,6 +12,7 @@ import com.github.mhdirkse.countlang.lang.ParseEntryPoint;
 
 public class ConstructionTestBase {
     Program ast = null;
+    boolean hasParseErrors = false;
 
     final void parse(final String program) {
     	try {
@@ -27,6 +28,7 @@ public class ConstructionTestBase {
     	try {
     	    ParseEntryPoint parser = new ParseEntryPoint();
     		parser.parseProgram(reader);
+    		hasParseErrors = parser.hasError();
     	    ast = parser.getParsedNodeAsProgram();
     	}
     	finally {

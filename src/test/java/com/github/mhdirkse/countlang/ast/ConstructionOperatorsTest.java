@@ -39,6 +39,7 @@ public class ConstructionOperatorsTest extends ConstructionTestBase {
     @Test
     public void test() {
         parse(programText);
+        Assert.assertFalse(hasParseErrors);
         Assert.assertEquals(1, ast.getSize());
         PrintStatement statement = checkStatementType(
                 ast.getStatement(0), PrintStatement.class);
