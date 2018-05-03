@@ -34,6 +34,16 @@ public class ExpressionTest extends AstConstructionTestBase {
     @Test
     public void testMultTakesPrecedenceOverPlus1() {
         init(String.format("%d + %d * %d", first, second, third));
+        commonChecksPlusThenMult();
+    }
+
+    @Test
+    public void testSuperfluousBracketsDoNotChangeAst() {
+        init(String.format("%d + (%d * %d)", first, second, third));
+        commonChecksPlusThenMult();
+    }
+
+    private void commonChecksPlusThenMult() {
         checkValue(first + second * third);
         Assert.assertEquals("+", expression.getOperator().getName());
         Assert.assertEquals(2, expression.getNumSubExpressions());
@@ -71,6 +81,22 @@ public class ExpressionTest extends AstConstructionTestBase {
         Assert.assertEquals(first, arg11.getValue().getValue());
         Assert.assertEquals(second, arg12.getValue().getValue());
         Assert.assertEquals(third, arg2.getValue().getValue());
+    }
+
+    @Test
+    public void testBracketedExpressionTakesPrecedenceOverMult2() {
+        init(String.format("%d * (%d + %d)", first, second, third));
+        checkValue(first * (second + third));
+        Assert.assertEquals("*", expression.getOperator().getName());
+        Assert.assertEquals(2, expression.getNumSubExpressions());
+        ValueExpression arg1 = checkExpressionType(expression.getSubExpression(0), ValueExpression.class);
+        CompositeExpression arg2 = checkExpressionType(expression.getSubExpression(1), CompositeExpression.class);
+        Assert.assertEquals(2, arg2.getNumSubExpressions());
+        ValueExpression arg21 = checkExpressionType(arg2.getSubExpression(0), ValueExpression.class);
+        ValueExpression arg22 = checkExpressionType(arg2.getSubExpression(1), ValueExpression.class);
+        Assert.assertEquals(first, arg1.getValue().getValue());
+        Assert.assertEquals(second, arg21.getValue().getValue());
+        Assert.assertEquals(third, arg22.getValue().getValue());
     }
 
     @Test

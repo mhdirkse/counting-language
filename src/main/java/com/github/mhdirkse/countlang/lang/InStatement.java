@@ -16,9 +16,20 @@ import com.github.mhdirkse.countlang.ast.Symbol;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.Value;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.lang.CountlangParser.BracketExpressionContext;
 
 abstract class InStatement extends CountlangBaseListener {
     private Deque<Expression> expressions = new ArrayDeque<Expression>();
+
+    @Override
+    public void enterBracketExpression(BracketExpressionContext ctx) {
+        // Nothing to do.
+    }
+
+    @Override
+    public void exitBracketExpression(BracketExpressionContext ctx) {
+        // Nothing to do.
+    }
 
     @Override
     public void enterMultDifExpression(final CountlangParser.MultDifExpressionContext ctx) {

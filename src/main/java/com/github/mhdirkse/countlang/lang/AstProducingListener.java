@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.lang.CountlangParser.BracketExpressionContext;
 
 final class AstProducingListener extends CountlangBaseListener {
     private Program program = null;
@@ -58,11 +59,27 @@ final class AstProducingListener extends CountlangBaseListener {
 
     @Override
     public void visitErrorNode(final ErrorNode errorNode) {
-        // TODO: Improve error handling.
         throw new IllegalArgumentException("Parse error encountered");
     }
 
-    // TODO: Correct spelling in the grammar.
+    @Override
+    public void enterBracketExpression(BracketExpressionContext ctx) {
+        if (inStatement != null) {
+            inStatement.enterBracketExpression(ctx);
+        } else {
+            throw new IllegalArgumentException("Unexpected entry of bracket expression");
+        }
+    }
+
+    @Override
+    public void exitBracketExpression(BracketExpressionContext ctx) {
+        if (inStatement != null) {
+            inStatement.exitBracketExpression(ctx);
+        } else {
+            throw new IllegalArgumentException("Unexpected leave of bracket expression");
+        }
+    }
+
     @Override
     public void enterMultDifExpression(final CountlangParser.MultDifExpressionContext ctx) {
         if (inStatement != null) {

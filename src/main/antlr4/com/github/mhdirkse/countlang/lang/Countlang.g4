@@ -8,7 +8,8 @@ statement
   ;
 
 expr
-  : expr ( '*' | '/' ) expr # multDifExpression
+  : '(' expr ')' # bracketExpression
+  | expr ( '*' | '/' ) expr # multDifExpression
   | expr ( '+' | '-' ) expr # plusMinusExpression
   | ID # symbolReferenceExpression
   | INT # valueExpression
