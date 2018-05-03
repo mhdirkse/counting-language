@@ -2,32 +2,61 @@ package com.github.mhdirkse.countlang.tasks;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.github.mhdirkse.countlang.ast.OutputStrategy;
+import com.github.mhdirkse.countlang.ast.TestOutputStrategy;
 
+@RunWith(Parameterized.class)
 public class IntegrationTest implements OutputStrategy
 {
-    private List<String> outputs;
+    @Parameters(name = "{0}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+            {"print 5 + 3", false, "8"},
+            {"print 5 - 3", false, "2"},
+            {"print 5 * 3", false, "15"},
+            {"print 15 / 3", false, "5"},
+            {"print 5 +", true, null}, // Syntax error
+            {"xyz", true, null}, // Syntax error
+            {"print 5 ** 3", true, null}, // Unknown token
+            {"print x", true, null} // Undefined reference
+        });
+    }
+
+    @Parameter(0)
+    public String input;
+
+    @Parameter(1)
+    public boolean expectedHasErrors;
+
+    @Parameter(2)
+    public String expectedResult;
+
+    TestOutputStrategy outputStrategy;
 
     @Before
     public void setUp() {
-        outputs = new ArrayList<String>();
+        outputStrategy = new TestOutputStrategy();
     }
 
     @Override
     public void output(final String output) {
-        outputs.add(output);
+        outputStrategy.output(output);
     }
 
     @Override
     public void error(final String error) {
-    	throw new IllegalArgumentException("Did not expect an error: " + error);
+    	outputStrategy.error(error);
     }
 
     private void compileAndRun(final String programText) {
@@ -48,38 +77,12 @@ public class IntegrationTest implements OutputStrategy
     	}
     }
 
-    private void checkOneLine(String expected) {
-        Assert.assertEquals(1, outputs.size());
-        Assert.assertEquals(expected, outputs.get(0));
-    }
-
     @Test
-    public void testPrintPlus() {
-        compileAndRun("print 5 + 3");
-        checkOneLine("8");
-    }
-
-    @Test
-    public void testPrintMinus() {
-        compileAndRun("print 5 - 3");
-        checkOneLine("2");
-    }
-
-    @Test
-    public void testPrintMultiply() {
-        compileAndRun("print 5 * 3");
-        checkOneLine("15");
-    }
-
-    @Test
-    public void testPrintDivide() {
-        compileAndRun("print 15 / 3");
-        checkOneLine("5");
-    }
-
-    @Test
-    public void testAssign() {
-        compileAndRun("x = 5 * 3; print x");
-        checkOneLine("15");
+    public void test() {
+        compileAndRun(input);
+        Assert.assertEquals(expectedHasErrors, outputStrategy.getNumErrors() >= 1);
+        if (!expectedHasErrors) {
+            Assert.assertEquals(expectedResult, outputStrategy.getLine(0));
+        }
     }
 }

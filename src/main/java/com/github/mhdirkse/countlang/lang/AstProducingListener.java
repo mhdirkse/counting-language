@@ -20,7 +20,9 @@ final class AstProducingListener extends CountlangBaseListener {
 
     @Override
     public void enterProg(final CountlangParser.ProgContext ctx) {
-        program = new Program();
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        program = new Program(line, column);
     }
 
     @Override
@@ -30,7 +32,9 @@ final class AstProducingListener extends CountlangBaseListener {
 
     @Override
     public void enterAssignmentStatement(final CountlangParser.AssignmentStatementContext ctx) {
-        inStatement = new InAssignmentStatement();
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        inStatement = new InAssignmentStatement(line, column);
     }
 
     @Override
@@ -41,7 +45,9 @@ final class AstProducingListener extends CountlangBaseListener {
 
     @Override
     public void enterPrintStatement(final CountlangParser.PrintStatementContext ctx) {
-        inStatement = new InPrintStatement();
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        inStatement = new InPrintStatement(line, column);
     }
 
     @Override

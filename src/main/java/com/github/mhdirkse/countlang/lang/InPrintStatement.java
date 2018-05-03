@@ -7,8 +7,8 @@ import com.github.mhdirkse.countlang.ast.Statement;
 final class InPrintStatement extends InStatement {
     private final PrintStatement printStatement;
 
-    InPrintStatement() {
-        printStatement = new PrintStatement();
+    InPrintStatement(final int line, final int column) {
+        printStatement = new PrintStatement(line, column);
     }
 
     @Override

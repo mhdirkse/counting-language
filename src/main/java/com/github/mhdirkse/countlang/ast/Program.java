@@ -6,6 +6,10 @@ import java.util.List;
 public final class Program extends AstNode {
     private List<Statement> statements = new ArrayList<Statement>();
 
+    public Program(final int line, final int column) {
+        super(line, column);
+    }
+
     public Statement getStatement(final int index) {
         return statements.get(index);
     }

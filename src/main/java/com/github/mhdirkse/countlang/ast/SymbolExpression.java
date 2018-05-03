@@ -3,6 +3,10 @@ package com.github.mhdirkse.countlang.ast;
 public final class SymbolExpression extends Expression {
     private Symbol symbol = null;
 
+    public SymbolExpression(final int line, final int column) {
+        super(line, column);
+    }
+
     public Symbol getSymbol() {
         return symbol;
     }
@@ -17,7 +21,7 @@ public final class SymbolExpression extends Expression {
         if (scope.hasSymbol(symbol.getName())) {
             return scope.getValue(symbol.getName());
         } else {
-            throw new IllegalStateException("Undefined symbol " + symbol.getName());
+            throw new ProgramRuntimeException(getLine(), getColumn(), "Undefined symbol " + symbol.getName());
         }
     }
 

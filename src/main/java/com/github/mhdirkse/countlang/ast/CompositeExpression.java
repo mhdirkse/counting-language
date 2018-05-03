@@ -7,6 +7,10 @@ public final class CompositeExpression extends Expression {
     private Operator operator = null;
     private List<Expression> subExpressions = new ArrayList<Expression>();
 
+    public CompositeExpression(final int line, final int column) {
+        super(line, column);
+    }
+
     public Operator getOperator() {
         return operator;
     }

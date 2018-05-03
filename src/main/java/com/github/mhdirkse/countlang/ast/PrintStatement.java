@@ -3,6 +3,10 @@ package com.github.mhdirkse.countlang.ast;
 public final class PrintStatement extends Statement {
     private Expression expression = null;
 
+    public PrintStatement(final int line, final int column) {
+        super(line, column);
+    }
+
     public Expression getExpression() {
         return expression;
     }

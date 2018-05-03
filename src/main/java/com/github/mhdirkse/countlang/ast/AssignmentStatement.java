@@ -4,6 +4,10 @@ public final class AssignmentStatement extends Statement {
     private Symbol lhs = null;
     private Expression rhs = null;
 
+    public AssignmentStatement(final int line, final int column) {
+        super(line, column);
+    }
+
     public Symbol getLhs() {
         return lhs;
     }

@@ -3,6 +3,10 @@ package com.github.mhdirkse.countlang.ast;
 public final class ValueExpression extends Expression {
     private Value value = null;
 
+    public ValueExpression(final int line, final int column) {
+        super(line, column);
+    }
+
     public Value getValue() {
         return value;
     }

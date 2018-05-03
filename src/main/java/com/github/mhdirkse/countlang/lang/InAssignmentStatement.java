@@ -11,8 +11,8 @@ import com.github.mhdirkse.countlang.ast.Symbol;
 final class InAssignmentStatement extends InStatement {
     final private AssignmentStatement assignmentStatement;
 
-    InAssignmentStatement() {
-        assignmentStatement = new AssignmentStatement();
+    InAssignmentStatement(final int line, final int column) {
+        assignmentStatement = new AssignmentStatement(line, column);
     }
 
     @Override

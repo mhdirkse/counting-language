@@ -22,7 +22,9 @@ abstract class InStatement extends CountlangBaseListener {
 
     @Override
     public void enterMultDifExpression(final CountlangParser.MultDifExpressionContext ctx) {
-        expressions.addLast(new CompositeExpression());
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        expressions.addLast(new CompositeExpression(line, column));
     }
 
     @Override
@@ -54,7 +56,9 @@ abstract class InStatement extends CountlangBaseListener {
 
     @Override
     public void enterPlusMinusExpression(final CountlangParser.PlusMinusExpressionContext ctx) {
-        expressions.addLast(new CompositeExpression());
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        expressions.addLast(new CompositeExpression(line, column));
     }
 
     @Override
@@ -64,7 +68,9 @@ abstract class InStatement extends CountlangBaseListener {
  
     @Override
     public void enterSymbolReferenceExpression(final CountlangParser.SymbolReferenceExpressionContext ctx) {
-        expressions.addLast(new SymbolExpression());
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        expressions.addLast(new SymbolExpression(line, column));
     }
 
     @Override
@@ -74,7 +80,9 @@ abstract class InStatement extends CountlangBaseListener {
 
     @Override
     public void enterValueExpression(final CountlangParser.ValueExpressionContext ctx) {
-        expressions.addLast(new ValueExpression());
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        expressions.addLast(new ValueExpression(line, column));
     }
 
     @Override
