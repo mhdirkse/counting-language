@@ -10,7 +10,7 @@ import org.junit.Assert;
 
 import com.github.mhdirkse.countlang.lang.ParseEntryPoint;
 
-public class ConstructionTestBase {
+public class AstConstructionTestBase {
     Program ast = null;
     boolean hasParseErrors = false;
 

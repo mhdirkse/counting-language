@@ -12,7 +12,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.junit.Assert;
 
 @RunWith(Parameterized.class)
-public class ConstructionOperatorsTest extends ConstructionTestBase {
+public class OperatorsTest extends AstConstructionTestBase {
     private static int first = 5;
     private static int second = 3;
 

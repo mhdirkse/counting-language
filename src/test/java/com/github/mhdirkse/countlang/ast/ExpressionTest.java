@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ExpressionTest extends ConstructionTestBase {
+public class ExpressionTest extends AstConstructionTestBase {
     private static int first = 2;
     private static int second = 4;
     private static int third = 6;

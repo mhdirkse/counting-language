@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.ast;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ConstructionTest extends ConstructionTestBase {
+public class AstConstructionTest extends AstConstructionTestBase {
     @Test
     public void testSimplePrint() {
         int printedValue = 3;
