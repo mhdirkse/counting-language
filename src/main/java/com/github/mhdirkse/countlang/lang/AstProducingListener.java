@@ -61,6 +61,8 @@ final class AstProducingListener extends CountlangBaseListener {
     public void enterMultDifExpression(final CountlangParser.MultDifExpressionContext ctx) {
         if (inStatement != null) {
             inStatement.enterMultDifExpression(ctx);
+        } else {
+        	throw new IllegalArgumentException("Unexpected entry of multiply or divide expression");
         }
     }
 
@@ -68,6 +70,8 @@ final class AstProducingListener extends CountlangBaseListener {
     public void exitMultDifExpression(final CountlangParser.MultDifExpressionContext ctx) {
         if (inStatement != null) {
             inStatement.exitMultDifExpression(ctx);
+        } else {
+        	throw new IllegalArgumentException("Unexpected leave of multiply or divide expression");
         }
     }
 
@@ -75,6 +79,8 @@ final class AstProducingListener extends CountlangBaseListener {
     public void enterPlusMinusExpression(final CountlangParser.PlusMinusExpressionContext ctx) {
         if (inStatement != null) {
             inStatement.enterPlusMinusExpression(ctx);
+        } else {
+        	throw new IllegalArgumentException("Unexpected entry of plus or minus expression");
         }
     }
 
@@ -82,6 +88,8 @@ final class AstProducingListener extends CountlangBaseListener {
     public void exitPlusMinusExpression(final CountlangParser.PlusMinusExpressionContext ctx) {
         if (inStatement != null) {
             inStatement.exitPlusMinusExpression(ctx);
+        } else {
+        	throw new IllegalArgumentException("Unexpected leave of plus or minus expression");
         }
     }
 
