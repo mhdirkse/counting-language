@@ -28,7 +28,7 @@ public class ExpressionTest extends AstConstructionTestBase {
 
     private void checkValue(final int expected) {
         Assert.assertEquals(expected, expression.calculate(new ExecutionContext(
-                new Scope(), new TestOutputStrategy())).getValue(), expected);
+                new TestOutputStrategy())).getValue(), expected);
     }
 
     @Test

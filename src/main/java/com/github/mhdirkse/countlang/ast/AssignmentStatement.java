@@ -26,8 +26,7 @@ public final class AssignmentStatement extends Statement {
 
     @Override
     public void execute(final ExecutionContext ctx) {
-        Scope scope = ctx.getScope();
-        scope.putSymbol(lhs.getName(), rhs.calculate(ctx));
+        ctx.putSymbol(lhs.getName(), rhs.calculate(ctx));
     }
 
     @Override

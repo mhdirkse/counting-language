@@ -6,7 +6,6 @@ import java.io.Reader;
 import com.github.mhdirkse.countlang.ast.ExecutionContext;
 import com.github.mhdirkse.countlang.ast.OutputStrategy;
 import com.github.mhdirkse.countlang.ast.ProgramRuntimeException;
-import com.github.mhdirkse.countlang.ast.Scope;
 import com.github.mhdirkse.countlang.lang.ParseEntryPoint;
 
 public class ExecuteProgramTask implements AbstractTask {
@@ -30,7 +29,7 @@ public class ExecuteProgramTask implements AbstractTask {
 
     private void runProgram(ParseEntryPoint parser, final OutputStrategy outputStrategy) {
         try {
-            ExecutionContext executionContext = new ExecutionContext(new Scope(), outputStrategy);
+            ExecutionContext executionContext = new ExecutionContext(outputStrategy);
             parser.getParsedNodeAsProgram().execute(executionContext);
         }
         catch (ProgramRuntimeException e) {

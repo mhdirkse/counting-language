@@ -17,9 +17,8 @@ public final class SymbolExpression extends Expression {
 
     @Override
     public Value calculate(final ExecutionContext ctx) {
-        Scope scope = ctx.getScope();
-        if (scope.hasSymbol(symbol.getName())) {
-            return scope.getValue(symbol.getName());
+        if (ctx.hasSymbol(symbol.getName())) {
+            return ctx.getValue(symbol.getName());
         } else {
             throw new ProgramRuntimeException(getLine(), getColumn(), "Undefined symbol " + symbol.getName());
         }

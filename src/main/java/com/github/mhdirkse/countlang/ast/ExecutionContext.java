@@ -1,20 +1,23 @@
 package com.github.mhdirkse.countlang.ast;
 
 public final class ExecutionContext {
-    private Scope scope = null;
+    private final Scope scope = new Scope();
     private OutputStrategy outputStrategy = null;
 
-    public ExecutionContext(final Scope scope, final OutputStrategy outputStrategy) {
-        this.scope = scope;
+    public ExecutionContext(final OutputStrategy outputStrategy) {
         this.outputStrategy = outputStrategy;
     }
 
-    public Scope getScope() {
-        return scope;
+    public boolean hasSymbol(String name) {
+        return scope.hasSymbol(name);
     }
 
-    public void setScope(final Scope scope) {
-        this.scope = scope;
+    public Value getValue(String name) {
+        return scope.getValue(name);
+    }
+
+    public void putSymbol(String name, Value value) {
+        scope.putSymbol(name, value);
     }
 
     public OutputStrategy getOutputStrategy() {
