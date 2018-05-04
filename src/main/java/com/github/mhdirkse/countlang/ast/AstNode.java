@@ -5,7 +5,10 @@ public abstract class AstNode {
         public void visitProgram(final Program program);
         public void visitAssignmentStatement(final AssignmentStatement statement);
         public void visitPrintStatement(final PrintStatement statement);
+        public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement);
+        public void visitReturnStatement(final ReturnStatement statement);
         public void visitCompositeExpression(final CompositeExpression expression);
+        public void visitFunctionCallExpression(final FunctionCallExpression expression);
         public void visitSymbolExpression(final SymbolExpression expression);
         public void visitValueExpression(final ValueExpression expression);
     }

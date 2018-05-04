@@ -1,26 +1,34 @@
 package com.github.mhdirkse.countlang.execution;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import com.github.mhdirkse.countlang.ast.Value;
 
-public final class Scope {
-    private Map<String, Value> symbols;
+final class Scope {
+    private final Deque<StackFrame> frames = new ArrayDeque<>();
 
-    public Scope() {
-        symbols = new HashMap<String, Value>();
+    Scope() {
+        frames.addLast(new StackFrame());
     }
 
     public boolean hasSymbol(String name) {
-        return symbols.containsKey(name);
+        return frames.getLast().hasSymbol(name);
     }
 
     public Value getValue(String name) {
-        return symbols.get(name);
+        return frames.getLast().getValue(name);
     }
 
     public void putSymbol(String name, Value value) {
-        symbols.put(name, value);
+        frames.getLast().putSymbol(name, value);
+    }
+
+    public void pushFrame(StackFrame frame) {
+        frames.addLast(frame);
+    }
+
+    public void popFrame() {
+        frames.removeLast();
     }
 }

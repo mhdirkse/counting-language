@@ -7,8 +7,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 
@@ -245,5 +248,17 @@ class AbstractListener extends CountlangBaseListener implements AstNode.Visitor 
 
     @Override
     public void visitValueExpression(final ValueExpression expression) {
+    }
+
+    @Override
+    public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement) {
+    }
+
+    @Override
+    public void visitReturnStatement(final ReturnStatement statement) {
+    }
+
+    @Override
+    public void visitFunctionCallExpression(final FunctionCallExpression expression) {
     }
 }

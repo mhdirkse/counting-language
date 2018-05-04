@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.execution;
 
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Value;
 
 public final class ExecutionContext {
@@ -20,6 +21,18 @@ public final class ExecutionContext {
 
     public void putSymbol(String name, Value value) {
         scope.putSymbol(name, value);
+    }
+
+    public void pushFrame(StackFrame frame) {
+        scope.pushFrame(frame);
+    }
+
+    public void popFrame() {
+        scope.popFrame();
+    }
+
+    public void addFunction(final FunctionDefinitionStatement definition) {
+        // Todo: Implement.
     }
 
     public OutputStrategy getOutputStrategy() {
