@@ -176,7 +176,7 @@ class AbstractListener extends CountlangBaseListener implements AstNode.Visitor 
         if (delegate != null) {
             delegate.exitMultDifExpression(ctx);
         } else {
-            exitMultDifExpression(ctx);
+            exitMultDifExpressionImpl(ctx);
         }
     }
 

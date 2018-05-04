@@ -33,13 +33,9 @@ public class ParseEntryPoint {
         parser.removeErrorListeners();
         parser.addErrorListener(ThrowingErrorListener.INSTANCE);
         ParseTreeWalker walker = new ParseTreeWalker();
-        AstProducingListener listener = new AstProducingListener();
+        RootListener listener = new RootListener();
         walker.walk(listener, parser.prog());
-        if (listener.isFinished()) {
-            node = listener.getProgram();
-        } else {
-            throw new IllegalArgumentException("Unexpected end of input");
-        }
+        node = listener.getProgram();
     }
 
     public AstNode getParsedNode() {

@@ -15,7 +15,7 @@ class RootListener extends AbstractListener {
     public void enterProgImpl(@NotNull CountlangParser.ProgContext ctx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegate = new ProgListener(line, column);
+        delegate = new ProgListener(line, column, this);
     }
 
     @Override
