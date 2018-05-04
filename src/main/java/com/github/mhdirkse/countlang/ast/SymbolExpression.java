@@ -1,5 +1,8 @@
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+
 public final class SymbolExpression extends Expression {
     private Symbol symbol = null;
 

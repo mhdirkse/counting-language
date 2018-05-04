@@ -1,5 +1,7 @@
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.execution.ExecutionContext;
+
 public final class AssignmentStatement extends Statement {
     private Symbol lhs = null;
     private Expression rhs = null;

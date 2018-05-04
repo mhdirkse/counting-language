@@ -1,7 +1,9 @@
-package com.github.mhdirkse.countlang.ast;
+package com.github.mhdirkse.countlang.execution;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.github.mhdirkse.countlang.ast.Value;
 
 public final class Scope {
     private Map<String, Value> symbols;

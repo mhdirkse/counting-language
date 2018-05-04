@@ -4,6 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
+
 public class ExpressionTest extends AstConstructionTestBase {
     private static int first = 2;
     private static int second = 4;

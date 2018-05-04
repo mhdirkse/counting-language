@@ -3,9 +3,9 @@ package com.github.mhdirkse.countlang.tasks;
 import java.io.IOException;
 import java.io.Reader;
 
-import com.github.mhdirkse.countlang.ast.ExecutionContext;
-import com.github.mhdirkse.countlang.ast.OutputStrategy;
-import com.github.mhdirkse.countlang.ast.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.OutputStrategy;
+import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.lang.ParseEntryPoint;
 
 public class ExecuteProgramTask implements AbstractTask {

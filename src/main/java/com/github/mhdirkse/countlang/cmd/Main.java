@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import com.github.mhdirkse.countlang.ast.OutputStrategy;
+import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.tasks.ExecuteProgramTask;
 
 public final class Main implements OutputStrategy {

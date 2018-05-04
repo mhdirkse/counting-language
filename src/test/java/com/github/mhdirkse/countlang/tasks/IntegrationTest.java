@@ -13,8 +13,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.mhdirkse.countlang.ast.OutputStrategy;
-import com.github.mhdirkse.countlang.ast.TestOutputStrategy;
+import com.github.mhdirkse.countlang.execution.OutputStrategy;
+import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
 
 @RunWith(Parameterized.class)
 public class IntegrationTest implements OutputStrategy
