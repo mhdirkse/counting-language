@@ -1,8 +1,6 @@
 package com.github.mhdirkse.countlang.lang;
 
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -14,129 +12,211 @@ import com.github.mhdirkse.countlang.ast.Program;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 
-public class AbstractListener extends CountlangBaseListener implements AstNode.Visitor {
+class AbstractListener extends CountlangBaseListener implements AstNode.Visitor {
     CountlangBaseListener delegate;
 
-    AbstractListener() {
-    }
-
     @Override
-    public void enterPrintStatement(@NotNull CountlangParser.PrintStatementContext ctx) {
+    public final void enterPrintStatement(@NotNull CountlangParser.PrintStatementContext ctx) {
         if (delegate != null) {
             delegate.enterPrintStatement(ctx);
+        } else {
+            enterPrintStatementImpl(ctx);
         }
     }
 
+    void enterPrintStatementImpl(@NotNull CountlangParser.PrintStatementContext ctx) {
+    }
+
     @Override
-    public void exitPrintStatement(@NotNull CountlangParser.PrintStatementContext ctx) {
+    public final void exitPrintStatement(@NotNull CountlangParser.PrintStatementContext ctx) {
         if (delegate != null) {
             delegate.exitPrintStatement(ctx);
+        } else {
+            exitPrintStatementImpl(ctx);
         }
     }
 
+    void exitPrintStatementImpl(@NotNull CountlangParser.PrintStatementContext ctx) {
+    }
+
     @Override
-    public void enterValueExpression(@NotNull CountlangParser.ValueExpressionContext ctx) {
+    public final void enterValueExpression(@NotNull CountlangParser.ValueExpressionContext ctx) {
         if (delegate != null) {
             delegate.enterValueExpression(ctx);
+        } else {
+            enterValueExpressionImpl(ctx);
         }
     }
 
+    void enterValueExpressionImpl(@NotNull CountlangParser.ValueExpressionContext ctx) {
+    }
+
     @Override
-    public void exitValueExpression(@NotNull CountlangParser.ValueExpressionContext ctx) {
+    public final void exitValueExpression(@NotNull CountlangParser.ValueExpressionContext ctx) {
         if (delegate != null) {
             delegate.exitValueExpression(ctx);
+        } else {
+            exitValueExpressionImpl(ctx);
         }
     }
 
+    void exitValueExpressionImpl(@NotNull CountlangParser.ValueExpressionContext ctx) {
+    }
+
     @Override
-    public void enterPlusMinusExpression(@NotNull CountlangParser.PlusMinusExpressionContext ctx) {
+    public final void enterPlusMinusExpression(@NotNull CountlangParser.PlusMinusExpressionContext ctx) {
         if (delegate != null) {
             delegate.enterPlusMinusExpression(ctx);
+        } else {
+            enterPlusMinusExpressionImpl(ctx);
         }
     }
 
+    void enterPlusMinusExpressionImpl(@NotNull CountlangParser.PlusMinusExpressionContext ctx) {
+    }
+
     @Override
-    public void exitPlusMinusExpression(@NotNull CountlangParser.PlusMinusExpressionContext ctx) {
+    public final void exitPlusMinusExpression(@NotNull CountlangParser.PlusMinusExpressionContext ctx) {
         if (delegate != null) {
             delegate.exitPlusMinusExpression(ctx);
+        } else {
+            exitPlusMinusExpressionImpl(ctx);
         }
     }
 
+    void exitPlusMinusExpressionImpl(@NotNull CountlangParser.PlusMinusExpressionContext ctx) {
+    }
+
     @Override
-    public void enterAssignmentStatement(@NotNull CountlangParser.AssignmentStatementContext ctx) {
+    public final void enterAssignmentStatement(@NotNull CountlangParser.AssignmentStatementContext ctx) {
         if (delegate != null) {
             delegate.enterAssignmentStatement(ctx);
+        } else {
+            enterAssignmentStatementImpl(ctx);
         }
     }
 
+    void enterAssignmentStatementImpl(@NotNull CountlangParser.AssignmentStatementContext ctx) {
+    }
+
     @Override
-    public void exitAssignmentStatement(@NotNull CountlangParser.AssignmentStatementContext ctx) {
+    public final void exitAssignmentStatement(@NotNull CountlangParser.AssignmentStatementContext ctx) {
         if (delegate != null) {
             delegate.exitAssignmentStatement(ctx);
+        } else {
+            exitAssignmentStatementImpl(ctx);
         }
     }
 
+    void exitAssignmentStatementImpl(@NotNull CountlangParser.AssignmentStatementContext ctx) {
+    }
+
     @Override
-    public void enterSymbolReferenceExpression(@NotNull CountlangParser.SymbolReferenceExpressionContext ctx) {
+    public final void enterSymbolReferenceExpression(@NotNull CountlangParser.SymbolReferenceExpressionContext ctx) {
         if (delegate != null) {
             delegate.enterSymbolReferenceExpression(ctx);
+        } else {
+            enterSymbolReferenceExpressionImpl(ctx);
         }
     }
 
+    void enterSymbolReferenceExpressionImpl(@NotNull CountlangParser.SymbolReferenceExpressionContext ctx) {
+    }
+
     @Override
-    public void exitSymbolReferenceExpression(@NotNull CountlangParser.SymbolReferenceExpressionContext ctx) {
+    public final void exitSymbolReferenceExpression(@NotNull CountlangParser.SymbolReferenceExpressionContext ctx) {
         if (delegate != null) {
             delegate.exitSymbolReferenceExpression(ctx);
+        } else {
+            exitSymbolReferenceExpressionImpl(ctx);
         }
     }
 
+    void exitSymbolReferenceExpressionImpl(@NotNull CountlangParser.SymbolReferenceExpressionContext ctx) {
+    }
+
     @Override
-    public void enterBracketExpression(@NotNull CountlangParser.BracketExpressionContext ctx) {
+    public final void enterBracketExpression(@NotNull CountlangParser.BracketExpressionContext ctx) {
         if (delegate != null) {
             delegate.enterBracketExpression(ctx);
+        } else {
+            enterBracketExpressionImpl(ctx);
         }
     }
 
+    void enterBracketExpressionImpl(@NotNull CountlangParser.BracketExpressionContext ctx) {
+    }
+
     @Override
-    public void exitBracketExpression(@NotNull CountlangParser.BracketExpressionContext ctx) {
+    public final void exitBracketExpression(@NotNull CountlangParser.BracketExpressionContext ctx) {
         if (delegate != null) {
             delegate.exitBracketExpression(ctx);
+        } else {
+            exitBracketExpressionImpl(ctx);
         }
     }
 
+    void exitBracketExpressionImpl(@NotNull CountlangParser.BracketExpressionContext ctx) {
+    }
+
     @Override
-    public void enterMultDifExpression(@NotNull CountlangParser.MultDifExpressionContext ctx) {
+    public final void enterMultDifExpression(@NotNull CountlangParser.MultDifExpressionContext ctx) {
         if (delegate != null) {
             delegate.enterMultDifExpression(ctx);
+        } else {
+            enterMultDifExpressionImpl(ctx);
         }
     }
 
+    void enterMultDifExpressionImpl(@NotNull CountlangParser.MultDifExpressionContext ctx) {
+    }
+
     @Override
-    public void exitMultDifExpression(@NotNull CountlangParser.MultDifExpressionContext ctx) {
+    public final void exitMultDifExpression(@NotNull CountlangParser.MultDifExpressionContext ctx) {
         if (delegate != null) {
             delegate.exitMultDifExpression(ctx);
+        } else {
+            exitMultDifExpression(ctx);
         }
     }
 
+    void exitMultDifExpressionImpl(@NotNull CountlangParser.MultDifExpressionContext ctx) {
+    }
+
     @Override
-    public void enterProg(@NotNull CountlangParser.ProgContext ctx) {
+    public final void enterProg(@NotNull CountlangParser.ProgContext ctx) {
         if (delegate != null) {
             delegate.enterProg(ctx);
+        } else {
+            enterProgImpl(ctx);
         }
     }
 
+    void enterProgImpl(@NotNull CountlangParser.ProgContext ctx) {
+    }
+
     @Override
-    public void exitProg(@NotNull CountlangParser.ProgContext ctx) {
+    public final void exitProg(@NotNull CountlangParser.ProgContext ctx) {
         if (delegate != null) {
             delegate.exitProg(ctx);
+        } else {
+            exitProgImpl(ctx);
         }
     }
 
+    void exitProgImpl(@NotNull CountlangParser.ProgContext ctx) {
+    }
+
     @Override
-    public void visitTerminal(@NotNull TerminalNode node) {
+    public final void visitTerminal(@NotNull TerminalNode node) {
         if (delegate != null) {
             delegate.visitTerminal(node);
+        } else {
+            visitTerminalImpl(node);
         }
+    }
+
+    void visitTerminalImpl(@NotNull TerminalNode node) {
     }
 
     @Override public void visitErrorNode(@NotNull ErrorNode node) {
