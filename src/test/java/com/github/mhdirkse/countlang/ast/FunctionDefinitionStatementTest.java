@@ -1,19 +1,46 @@
 package com.github.mhdirkse.countlang.ast;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.strictMock;
+import static org.easymock.EasyMock.verify;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
+import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 
-import org.junit.Assert;
-
-import static org.easymock.EasyMock.*;
-
-import java.util.Arrays;
-
-public class FunctionDefinitionStatementTest {
+public class FunctionDefinitionStatementTest implements OutputStrategy {
     private static final int ADDED_VALUE = 5;
     private static final int VALUE_OF_X = 3;
+
+    private List<String> outputs;
+    private List<String> errors;
+
+    @Override
+    public void output(String s) {
+        outputs.add(s);
+    }
+
+    @Override
+    public void error(String s) {
+        errors.add(s);
+    }
+
+    @Before
+    public void setUp() {
+        outputs = new ArrayList<>();
+        errors = new ArrayList<>();
+    }
 
     @Test
     public void testFunctionIsExecutedWithItsOwnStackFrame() {
@@ -27,6 +54,16 @@ public class FunctionDefinitionStatementTest {
         Value result = instance.runFunction(Arrays.asList(getActualParameter()), ctx);
         Assert.assertEquals(ADDED_VALUE + VALUE_OF_X, result.getValue());
         verify(ctx);
+    }
+
+    @Test
+    public void testFunctionGivesCorrectResult() {
+        FunctionDefinitionStatement instance = createInstance();
+        ExecutionContext ctx = new ExecutionContextImpl(this);
+        Value result = instance.runFunction(Arrays.asList(getActualParameter()), ctx);
+        Assert.assertEquals(ADDED_VALUE + VALUE_OF_X, result.getValue());
+        Assert.assertEquals(0, outputs.size());
+        Assert.assertEquals(0, errors.size());
     }
 
     private FunctionDefinitionStatement createInstance() {
