@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
 
 public class ExpressionTest extends AstConstructionTestBase {
@@ -30,7 +30,7 @@ public class ExpressionTest extends AstConstructionTestBase {
     }
 
     private void checkValue(final int expected) {
-        Assert.assertEquals(expected, expression.calculate(new ExecutionContext(
+        Assert.assertEquals(expected, expression.calculate(new ExecutionContextImpl(
                 new TestOutputStrategy())).getValue(), expected);
     }
 

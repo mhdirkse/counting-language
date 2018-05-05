@@ -3,43 +3,21 @@ package com.github.mhdirkse.countlang.execution;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Value;
 
-public final class ExecutionContext {
-    private final Scope scope = new Scope();
-    private OutputStrategy outputStrategy = null;
+public interface ExecutionContext {
 
-    public ExecutionContext(final OutputStrategy outputStrategy) {
-        this.outputStrategy = outputStrategy;
-    }
+    boolean hasSymbol(String name);
 
-    public boolean hasSymbol(String name) {
-        return scope.hasSymbol(name);
-    }
+    Value getValue(String name);
 
-    public Value getValue(String name) {
-        return scope.getValue(name);
-    }
+    void putSymbol(String name, Value value);
 
-    public void putSymbol(String name, Value value) {
-        scope.putSymbol(name, value);
-    }
+    void pushFrame(StackFrame frame);
 
-    public void pushFrame(StackFrame frame) {
-        scope.pushFrame(frame);
-    }
+    void popFrame();
 
-    public void popFrame() {
-        scope.popFrame();
-    }
+    void addFunction(FunctionDefinitionStatement definition);
 
-    public void addFunction(final FunctionDefinitionStatement definition) {
-        // Todo: Implement.
-    }
+    OutputStrategy getOutputStrategy();
 
-    public OutputStrategy getOutputStrategy() {
-        return outputStrategy;
-    }
-
-    public void setOutputStrategy(final OutputStrategy outputStrategy) {
-        this.outputStrategy = outputStrategy;
-    }
+    void setOutputStrategy(OutputStrategy outputStrategy);
 }
