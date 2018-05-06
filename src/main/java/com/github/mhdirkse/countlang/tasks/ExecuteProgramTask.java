@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
+import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
@@ -31,6 +32,7 @@ public class ExecuteProgramTask implements AbstractTask {
     private void runProgram(ParseEntryPoint parser, final OutputStrategy outputStrategy) {
         try {
             ExecutionContext executionContext = new ExecutionContextImpl(outputStrategy);
+            executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
             parser.getParsedNodeAsProgram().execute(executionContext);
         }
         catch (ProgramRuntimeException e) {
