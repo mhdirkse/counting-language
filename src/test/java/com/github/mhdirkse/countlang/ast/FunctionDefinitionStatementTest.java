@@ -20,9 +20,6 @@ import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 
 public class FunctionDefinitionStatementTest implements OutputStrategy {
-    private static final int ADDED_VALUE = 5;
-    private static final int VALUE_OF_X = 3;
-
     private List<String> outputs;
     private List<String> errors;
 
@@ -44,53 +41,68 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
 
     @Test
     public void testFunctionIsExecutedWithItsOwnStackFrame() {
-        FunctionDefinitionStatement instance = createInstance();
+        FunctionCreator functionCreator = new FunctionCreator();
+        FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = strictMock(ExecutionContext.class);
         ctx.pushFrame(anyObject(StackFrame.class));
         expect(ctx.hasSymbol("x")).andReturn(true);
-        expect(ctx.getValue("x")).andReturn(new Value(VALUE_OF_X));
+        expect(ctx.getValue("x")).andReturn(new Value(functionCreator.getParameterValue()));
         ctx.popFrame();
         replay(ctx);
-        Value result = instance.runFunction(Arrays.asList(getActualParameter()), ctx);
-        Assert.assertEquals(ADDED_VALUE + VALUE_OF_X, result.getValue());
+        Value result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
+        Assert.assertEquals(functionCreator.getExpectedResult(), result.getValue());
         verify(ctx);
     }
 
     @Test
     public void testFunctionGivesCorrectResult() {
-        FunctionDefinitionStatement instance = createInstance();
+        FunctionCreator functionCreator = new FunctionCreator();
+        FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = new ExecutionContextImpl(this);
-        Value result = instance.runFunction(Arrays.asList(getActualParameter()), ctx);
-        Assert.assertEquals(ADDED_VALUE + VALUE_OF_X, result.getValue());
+        Value result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
+        Assert.assertEquals(functionCreator.getExpectedResult(), result.getValue());
         Assert.assertEquals(0, outputs.size());
         Assert.assertEquals(0, errors.size());
     }
 
-    private FunctionDefinitionStatement createInstance() {
-        FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
-        instance.setName("dummy");
-        instance.addFormalParameter("x");
-        instance.addStatement(getStatement());
-        return instance;
-    }
+    private static class FunctionCreator {
+        private static final int ADDED_VALUE = 5;
+        private static final int VALUE_OF_X = 3;
 
-    private Statement getStatement() {
-        ValueExpression ex11 = new ValueExpression(1, 1);
-        ex11.setValue(new Value(ADDED_VALUE));
-        SymbolExpression ex12 = new SymbolExpression(1, 1);
-        ex12.setSymbol(new Symbol("x"));
-        CompositeExpression ex1 = new CompositeExpression(1, 1);
-        ex1.setOperator(new OperatorAdd());
-        ex1.addSubExpression(ex11);
-        ex1.addSubExpression(ex12);
-        ReturnStatement result = new ReturnStatement(1, 1);
-        result.setExpression(ex1);
-        return result;
-    }
+        FunctionDefinitionStatement createFunction() {
+            FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
+            instance.setName("dummy");
+            instance.addFormalParameter("x");
+            instance.addStatements(getStatements());
+            return instance;
+        }
 
-    private Expression getActualParameter() {
-        ValueExpression result = new ValueExpression(1, 1);
-        result.setValue(new Value(VALUE_OF_X));
-        return result;
+        private List<Statement> getStatements() {
+            ValueExpression ex11 = new ValueExpression(1, 1);
+            ex11.setValue(new Value(ADDED_VALUE));
+            SymbolExpression ex12 = new SymbolExpression(1, 1);
+            ex12.setSymbol(new Symbol("x"));
+            CompositeExpression ex1 = new CompositeExpression(1, 1);
+            ex1.setOperator(new OperatorAdd());
+            ex1.addSubExpression(ex11);
+            ex1.addSubExpression(ex12);
+            ReturnStatement result = new ReturnStatement(1, 1);
+            result.setExpression(ex1);
+            return Arrays.asList((Statement) result);
+        }
+
+        Expression getActualParameter() {
+            ValueExpression result = new ValueExpression(1, 1);
+            result.setValue(new Value(VALUE_OF_X));
+            return result;
+        }
+
+        int getParameterValue() {
+            return VALUE_OF_X;
+        }
+
+        int getExpectedResult() {
+            return ADDED_VALUE + VALUE_OF_X;            
+        }
     }
 }

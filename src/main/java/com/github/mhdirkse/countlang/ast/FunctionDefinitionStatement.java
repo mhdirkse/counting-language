@@ -32,6 +32,10 @@ public class FunctionDefinitionStatement extends Statement {
         statements.add(statement);
     }
 
+    public void addStatements(final List<Statement> statements) {
+        this.statements.addAll(statements);
+    }
+
     @Override
     public void accept(final AstNode.Visitor v) {
         v.visitFunctionDefinitionStatement(this);
