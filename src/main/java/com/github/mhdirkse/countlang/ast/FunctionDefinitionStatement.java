@@ -7,7 +7,7 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 
-public class FunctionDefinitionStatement extends Statement {
+public class FunctionDefinitionStatement extends Statement implements RunnableFunction {
     private String name = null;
     private List<String> formalParameters = new ArrayList<String>();
     private List<Statement> statements = new ArrayList<Statement>();
@@ -16,6 +16,7 @@ public class FunctionDefinitionStatement extends Statement {
         super(line, column);
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -42,9 +43,10 @@ public class FunctionDefinitionStatement extends Statement {
     }
 
     public void execute(final ExecutionContext ctx) {
-        ctx.addFunction(this);
+        ctx.putFunction(this);
     }
 
+    @Override
     public Value runFunction(
             final List<Expression> actualParameters,
             final ExecutionContext ctx) {
