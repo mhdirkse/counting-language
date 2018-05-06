@@ -43,6 +43,78 @@ class AbstractListener extends CountlangBaseListener implements AstNode.Visitor 
     }
 
     @Override
+    public final void enterReturnStatement(@NotNull CountlangParser.ReturnStatementContext ctx) {
+        if (delegate != null) {
+            delegate.enterReturnStatement(ctx);
+        } else {
+            enterReturnStatementImpl(ctx);
+        }
+    }
+
+    void enterReturnStatementImpl(@NotNull CountlangParser.ReturnStatementContext ctx) {
+    }
+
+    @Override
+    public final void exitReturnStatement(@NotNull CountlangParser.ReturnStatementContext ctx) {
+        if (delegate != null) {
+            delegate.exitReturnStatement(ctx);
+        } else {
+            exitReturnStatementImpl(ctx);
+        }
+    }
+
+    void exitReturnStatementImpl(@NotNull CountlangParser.ReturnStatementContext ctx) {
+    }
+
+    @Override
+    public void enterFunctionDefinitionStatement(@NotNull CountlangParser.FunctionDefinitionStatementContext ctx) {
+        if (delegate != null) {
+            delegate.enterFunctionDefinitionStatement(ctx);
+        } else {
+            enterFunctionDefinitionStatementImpl(ctx);
+        }
+    }
+
+    void enterFunctionDefinitionStatementImpl(@NotNull CountlangParser.FunctionDefinitionStatementContext ctx) {
+    }
+
+    @Override
+    public void exitFunctionDefinitionStatement(@NotNull CountlangParser.FunctionDefinitionStatementContext ctx) {
+        if (delegate != null) {
+            delegate.exitFunctionDefinitionStatement(ctx);
+        } else {
+            exitFunctionDefinitionStatementImpl(ctx);
+        }
+    }
+
+    void exitFunctionDefinitionStatementImpl(@NotNull CountlangParser.FunctionDefinitionStatementContext ctx) {
+    }
+
+    @Override
+    public void enterVarDecls(@NotNull CountlangParser.VarDeclsContext ctx) {
+        if (delegate != null) {
+            delegate.enterVarDecls(ctx);
+        } else {
+            enterVarDeclsImpl(ctx);
+        }
+    }
+
+    void enterVarDeclsImpl(@NotNull CountlangParser.VarDeclsContext ctx) {
+    }
+
+    @Override
+    public void exitVarDecls(@NotNull CountlangParser.VarDeclsContext ctx) {
+        if (delegate != null) {
+            delegate.exitVarDecls(ctx);
+        } else {
+            exitVarDeclsImpl(ctx);
+        }
+    }
+
+    void exitVarDeclsImpl(@NotNull CountlangParser.VarDeclsContext ctx) {
+    }
+
+    @Override
     public final void enterValueExpression(@NotNull CountlangParser.ValueExpressionContext ctx) {
         if (delegate != null) {
             delegate.enterValueExpression(ctx);

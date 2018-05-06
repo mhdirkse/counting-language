@@ -1,11 +1,17 @@
 grammar Countlang;
 
-prog : statement (';' statement)* EOF ;
+prog : statements EOF ;
+
+statements : statement (';' statement)* ;
 
 statement
   : ID '=' expr # assignmentStatement
+  | 'function' ID '(' varDecls ')' '{' statements '}' # functionDefinitionStatement
   | 'print' expr # printStatement
+  | 'return' expr # returnStatement
   ;
+
+varDecls : ID (',' ID)* ;
 
 expr
   : '(' expr ')' # bracketExpression
