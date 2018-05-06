@@ -45,8 +45,8 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = strictMock(ExecutionContext.class);
         ctx.pushFrame(anyObject(StackFrame.class));
-        expect(ctx.hasSymbol("x")).andReturn(true);
-        expect(ctx.getValue("x")).andReturn(new Value(functionCreator.getParameterValue()));
+        expect(ctx.hasSymbol(functionCreator.getFormalParameter())).andReturn(true);
+        expect(ctx.getValue(functionCreator.getFormalParameter())).andReturn(new Value(functionCreator.getParameterValue()));
         ctx.popFrame();
         replay(ctx);
         Value result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
@@ -68,11 +68,12 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
     private static class FunctionCreator {
         private static final int ADDED_VALUE = 5;
         private static final int VALUE_OF_X = 3;
+        private static final String FORMAL_PARAMETER = "x";
 
         FunctionDefinitionStatement createFunction() {
             FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
             instance.setName("dummy");
-            instance.addFormalParameter("x");
+            instance.addFormalParameter(FORMAL_PARAMETER);
             instance.addStatements(getStatements());
             return instance;
         }
@@ -81,7 +82,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
             ValueExpression ex11 = new ValueExpression(1, 1);
             ex11.setValue(new Value(ADDED_VALUE));
             SymbolExpression ex12 = new SymbolExpression(1, 1);
-            ex12.setSymbol(new Symbol("x"));
+            ex12.setSymbol(new Symbol(FORMAL_PARAMETER));
             CompositeExpression ex1 = new CompositeExpression(1, 1);
             ex1.setOperator(new OperatorAdd());
             ex1.addSubExpression(ex11);
@@ -95,6 +96,10 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
             ValueExpression result = new ValueExpression(1, 1);
             result.setValue(new Value(VALUE_OF_X));
             return result;
+        }
+
+        String getFormalParameter() {
+            return FORMAL_PARAMETER;
         }
 
         int getParameterValue() {
