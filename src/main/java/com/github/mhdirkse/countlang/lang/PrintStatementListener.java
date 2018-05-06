@@ -7,7 +7,7 @@ class PrintStatementListener extends AbstractChildExpressionListener {
     private final PrintStatement statement;
     private final AbstractListener parent;
 
-    PrintStatementListener(final int line, final int column, AbstractListener parent) {
+    PrintStatementListener(final int line, final int column, final AbstractListener parent) {
         this.statement = new PrintStatement(line, column); 
         this.parent = parent;
     }

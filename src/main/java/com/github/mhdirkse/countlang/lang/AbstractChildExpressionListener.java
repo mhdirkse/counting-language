@@ -2,13 +2,22 @@ package com.github.mhdirkse.countlang.lang;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.Expression;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.lang.CountlangParser.FunctionCallExpressionContext;
 
 abstract class AbstractChildExpressionListener extends AbstractListener {
     @Override
     void enterBracketExpressionImpl(CountlangParser.BracketExpressionContext ctx) {
         // Nothing to do.
+    }
+
+    @Override
+    void enterFunctionCallExpressionImpl(FunctionCallExpressionContext ctx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegate = new FunctionCallExpressionListener(line, column, this);
     }
 
     @Override
@@ -39,6 +48,12 @@ abstract class AbstractChildExpressionListener extends AbstractListener {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
         delegate = new ValueExpressionListener(line, column, this);
+    }
+
+    @Override
+    public void visitFunctionCallExpression(final FunctionCallExpression expression) {
+        handleChildExpression(expression);
+        delegate = null;
     }
 
     @Override

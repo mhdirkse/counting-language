@@ -187,6 +187,30 @@ class AbstractListener extends CountlangBaseListener implements AstNode.Visitor 
     }
 
     @Override
+    public final void enterFunctionCallExpression(@NotNull CountlangParser.FunctionCallExpressionContext ctx) {
+        if (delegate != null) {
+            delegate.enterFunctionCallExpression(ctx);
+        } else {
+            enterFunctionCallExpressionImpl(ctx);
+        }
+    }
+
+    void enterFunctionCallExpressionImpl(@NotNull CountlangParser.FunctionCallExpressionContext ctx) {
+    }
+
+    @Override
+    public final void exitFunctionCallExpression(@NotNull CountlangParser.FunctionCallExpressionContext ctx) {
+        if (delegate != null) {
+            delegate.exitFunctionCallExpression(ctx);
+        } else {
+            exitFunctionCallExpressionImpl(ctx);
+        }
+    }
+
+    void exitFunctionCallExpressionImpl(@NotNull CountlangParser.FunctionCallExpressionContext ctx) {
+    }
+
+    @Override
     public final void enterProg(@NotNull CountlangParser.ProgContext ctx) {
         if (delegate != null) {
             delegate.enterProg(ctx);

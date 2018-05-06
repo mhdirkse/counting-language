@@ -9,6 +9,7 @@ statement
 
 expr
   : '(' expr ')' # bracketExpression
+  | ID '(' expr (',' expr)* ')' # functionCallExpression
   | expr ( '*' | '/' ) expr # multDifExpression
   | expr ( '+' | '-' ) expr # plusMinusExpression
   | ID # symbolReferenceExpression
