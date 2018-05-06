@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
+import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 
 public class FunctionDefinitionStatementTest implements OutputStrategy {
@@ -41,7 +42,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
 
     @Test
     public void testFunctionIsExecutedWithItsOwnStackFrame() {
-        FunctionCreator functionCreator = new FunctionCreator();
+        FunctionCreatorValidFunction functionCreator = new FunctionCreatorValidFunction();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = strictMock(ExecutionContext.class);
         ctx.pushFrame(anyObject(StackFrame.class));
@@ -56,7 +57,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
 
     @Test
     public void testFunctionGivesCorrectResult() {
-        FunctionCreator functionCreator = new FunctionCreator();
+        FunctionCreatorValidFunction functionCreator = new FunctionCreatorValidFunction();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = new ExecutionContextImpl(this);
         Value result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
@@ -65,20 +66,30 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         Assert.assertEquals(0, errors.size());
     }
 
-    private static class FunctionCreator {
-        private static final int ADDED_VALUE = 5;
+    @Test(expected = ProgramRuntimeException.class)
+    public void testWhenStatementWithoutEffectRaiseError() {
+        FunctionCreatorStatementWithoutEffect functionCreator = new FunctionCreatorStatementWithoutEffect();
+        FunctionDefinitionStatement instance = functionCreator.createFunction();
+        ExecutionContext ctx = new ExecutionContextImpl(this);
+        instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
+    }
+
+    private static abstract class FunctionCreatorBase {
+        static final int ADDED_VALUE = 5;
         private static final int VALUE_OF_X = 3;
         private static final String FORMAL_PARAMETER = "x";
 
+        FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
+
         FunctionDefinitionStatement createFunction() {
-            FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
             instance.setName("dummy");
             instance.addFormalParameter(FORMAL_PARAMETER);
-            instance.addStatements(getStatements());
+            instance.addStatement(getStatement());
+            handleExtraStatement();
             return instance;
         }
 
-        private List<Statement> getStatements() {
+        private Statement getStatement() {
             ValueExpression ex11 = new ValueExpression(1, 1);
             ex11.setValue(new Value(ADDED_VALUE));
             SymbolExpression ex12 = new SymbolExpression(1, 1);
@@ -89,7 +100,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
             ex1.addSubExpression(ex12);
             ReturnStatement result = new ReturnStatement(1, 1);
             result.setExpression(ex1);
-            return Arrays.asList((Statement) result);
+            return result;
         }
 
         Expression getActualParameter() {
@@ -108,6 +119,25 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
 
         int getExpectedResult() {
             return ADDED_VALUE + VALUE_OF_X;            
+        }
+
+        abstract void handleExtraStatement();
+    }
+
+    private static class FunctionCreatorValidFunction extends FunctionCreatorBase {
+        @Override
+        void handleExtraStatement() {
+        }
+    }
+
+    private static class FunctionCreatorStatementWithoutEffect extends FunctionCreatorBase {
+        @Override
+        void handleExtraStatement() {
+            ValueExpression ex = new ValueExpression(1, 1);
+            ex.setValue(new Value(ADDED_VALUE));
+            PrintStatement statement = new PrintStatement(1, 1);
+            statement.setExpression(ex);
+            instance.addStatement(statement);
         }
     }
 }
