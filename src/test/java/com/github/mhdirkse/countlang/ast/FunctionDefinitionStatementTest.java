@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
@@ -23,6 +26,9 @@ import com.github.mhdirkse.countlang.execution.StackFrame;
 public class FunctionDefinitionStatementTest implements OutputStrategy {
     private List<String> outputs;
     private List<String> errors;
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Override
     public void output(String s) {
@@ -66,11 +72,33 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         Assert.assertEquals(0, errors.size());
     }
 
-    @Test(expected = ProgramRuntimeException.class)
+    @Test
     public void testWhenStatementWithoutEffectRaiseError() {
         FunctionCreatorStatementWithoutEffect functionCreator = new FunctionCreatorStatementWithoutEffect();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = new ExecutionContextImpl(this);
+        thrown.expect(ProgramRuntimeException.class);
+        thrown.expectMessage("Statement has no effect");
+        instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
+    }
+
+    @Test
+    public void testWhenNoReturnStatementRaiseError() {
+        FunctionCreatorNoReturn functionCreator = new FunctionCreatorNoReturn();
+        FunctionDefinitionStatement instance = functionCreator.createFunction();
+        ExecutionContext ctx = new ExecutionContextImpl(this);
+        thrown.expect(ProgramRuntimeException.class);
+        thrown.expectMessage("No return statement in function");
+        instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
+    }
+
+    @Test
+    public void testWhenParameterCountMismatchRaiseError() {
+        FunctionCreatorFormalParameterOmitted functionCreator = new FunctionCreatorFormalParameterOmitted();
+        FunctionDefinitionStatement instance = functionCreator.createFunction();
+        ExecutionContext ctx = new ExecutionContextImpl(this);
+        thrown.expect(ProgramRuntimeException.class);
+        thrown.expectMessage("In function call expected 0 arguments, got 1");
         instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
     }
 
@@ -83,13 +111,35 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
 
         FunctionDefinitionStatement createFunction() {
             instance.setName("dummy");
-            instance.addFormalParameter(FORMAL_PARAMETER);
+            handleParameter();
             instance.addStatement(getStatement());
             handleExtraStatement();
             return instance;
         }
 
-        private Statement getStatement() {
+        abstract void handleParameter();
+
+        void addTheParameter() {
+            instance.addFormalParameter(FORMAL_PARAMETER);
+        }
+
+        abstract Statement getStatement();
+
+        Statement getReturnStatement() {
+            CompositeExpression ex1 = getStatementExpression();
+            ReturnStatement result = new ReturnStatement(1, 1);
+            result.setExpression(ex1);
+            return result;
+        }
+
+        Statement getPrintStatement() {
+            CompositeExpression ex1 = getStatementExpression();
+            PrintStatement result = new PrintStatement(1, 1);
+            result.setExpression(ex1);
+            return result;
+        }
+
+        CompositeExpression getStatementExpression() {
             ValueExpression ex11 = new ValueExpression(1, 1);
             ex11.setValue(new Value(ADDED_VALUE));
             SymbolExpression ex12 = new SymbolExpression(1, 1);
@@ -98,9 +148,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
             ex1.setOperator(new OperatorAdd());
             ex1.addSubExpression(ex11);
             ex1.addSubExpression(ex12);
-            ReturnStatement result = new ReturnStatement(1, 1);
-            result.setExpression(ex1);
-            return result;
+            return ex1;
         }
 
         Expression getActualParameter() {
@@ -126,11 +174,31 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
 
     private static class FunctionCreatorValidFunction extends FunctionCreatorBase {
         @Override
+        void handleParameter() {
+            addTheParameter();
+        }
+
+        @Override
+        Statement getStatement() {
+            return getReturnStatement();
+        }
+
+        @Override
         void handleExtraStatement() {
         }
     }
 
     private static class FunctionCreatorStatementWithoutEffect extends FunctionCreatorBase {
+        @Override
+        void handleParameter() {
+            addTheParameter();
+        }
+
+        @Override
+        Statement getStatement() {
+            return getReturnStatement();
+        }
+
         @Override
         void handleExtraStatement() {
             ValueExpression ex = new ValueExpression(1, 1);
@@ -138,6 +206,37 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
             PrintStatement statement = new PrintStatement(1, 1);
             statement.setExpression(ex);
             instance.addStatement(statement);
+        }
+    }
+
+    private static class FunctionCreatorNoReturn extends FunctionCreatorBase {
+        @Override
+        void handleParameter() {
+            addTheParameter();
+        }
+
+        @Override
+        Statement getStatement() {
+            return getPrintStatement();
+        }
+
+        @Override
+        void handleExtraStatement() {
+        }
+    }
+
+    private static class FunctionCreatorFormalParameterOmitted extends FunctionCreatorBase {
+        @Override
+        void handleParameter() {
+        }
+
+        @Override
+        Statement getStatement() {
+            return getReturnStatement();
+        }
+
+        @Override
+        void handleExtraStatement() {
         }
     }
 }
