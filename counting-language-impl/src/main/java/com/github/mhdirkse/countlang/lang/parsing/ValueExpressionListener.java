@@ -1,10 +1,11 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.Value;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 public class ValueExpressionListener extends AbstractListener {
     private final ValueExpression expression;

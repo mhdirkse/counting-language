@@ -1,9 +1,10 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class VarDeclsListener extends AbstractListener {
     final FunctionDefinitionStatement target;

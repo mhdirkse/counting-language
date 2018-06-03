@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.Expression;
 import com.github.mhdirkse.countlang.ast.Symbol;
+import com.github.mhdirkse.countlang.lang.CountlangLexer;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class AssignmentStatementListener extends AbstractChildExpressionListener {
     private final AssignmentStatement statement;

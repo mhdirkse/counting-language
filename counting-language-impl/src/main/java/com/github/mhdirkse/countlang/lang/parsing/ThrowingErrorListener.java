@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;

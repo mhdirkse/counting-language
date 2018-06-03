@@ -1,7 +1,8 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.countlang.ast.Expression;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class ReturnStatementListener extends AbstractChildExpressionListener {
     private final ReturnStatement statement;

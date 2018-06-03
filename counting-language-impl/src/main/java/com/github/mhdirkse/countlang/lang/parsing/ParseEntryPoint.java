@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.lang.CountlangLexer;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 public class ParseEntryPoint {
 	private AstNode node = null;

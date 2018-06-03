@@ -8,7 +8,7 @@ import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
-import com.github.mhdirkse.countlang.lang.ParseEntryPoint;
+import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 
 public class ExecuteProgramTask implements AbstractTask {
     private final Reader reader;

@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -14,6 +14,8 @@ import com.github.mhdirkse.countlang.ast.Program;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.lang.CountlangBaseListener;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class AbstractListener extends CountlangBaseListener implements AstNode.Visitor {
     CountlangBaseListener delegate;

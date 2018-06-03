@@ -8,7 +8,7 @@ import java.io.StringReader;
 
 import org.junit.Assert;
 
-import com.github.mhdirkse.countlang.lang.ParseEntryPoint;
+import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 
 public class AstConstructionTestBase {
     Program ast = null;

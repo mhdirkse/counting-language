@@ -1,10 +1,11 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.Symbol;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class SymbolReferenceExpressionListener extends AbstractListener {
     private final SymbolExpression expression;

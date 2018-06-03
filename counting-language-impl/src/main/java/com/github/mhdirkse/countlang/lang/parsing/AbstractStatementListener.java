@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
@@ -7,6 +7,7 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 import com.github.mhdirkse.countlang.lang.CountlangParser.FunctionDefinitionStatementContext;
 
 abstract class AbstractStatementListener extends AbstractListener {

@@ -1,9 +1,10 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.countlang.ast.Expression;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class FunctionCallExpressionListener extends AbstractChildExpressionListener {
     private final FunctionCallExpression expression;

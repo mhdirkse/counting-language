@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -9,6 +9,7 @@ import com.github.mhdirkse.countlang.ast.OperatorAdd;
 import com.github.mhdirkse.countlang.ast.OperatorDivide;
 import com.github.mhdirkse.countlang.ast.OperatorMultiply;
 import com.github.mhdirkse.countlang.ast.OperatorSubtract;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class OperatorExpressionListener extends AbstractChildExpressionListener {
     final CompositeExpression result;

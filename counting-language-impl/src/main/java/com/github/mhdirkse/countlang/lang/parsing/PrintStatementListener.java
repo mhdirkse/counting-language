@@ -1,7 +1,8 @@
-package com.github.mhdirkse.countlang.lang;
+package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.countlang.ast.Expression;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class PrintStatementListener extends AbstractChildExpressionListener {
     private final PrintStatement statement;
