@@ -8,6 +8,7 @@
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <antlrVersion>4.3</antlrVersion>
   </properties>
   <modules>
     <module>counting-language-impl</module>
