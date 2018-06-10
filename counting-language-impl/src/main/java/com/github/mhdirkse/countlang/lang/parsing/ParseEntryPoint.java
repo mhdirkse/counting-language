@@ -35,9 +35,11 @@ public class ParseEntryPoint {
         parser.removeErrorListeners();
         parser.addErrorListener(ThrowingErrorListener.INSTANCE);
         ParseTreeWalker walker = new ParseTreeWalker();
-        RootListener listener = new RootListener();
-        walker.walk(listener, parser.prog());
-        node = listener.getProgram();
+        IgnoredMethodsHandler ignoredMethodsHandler = new IgnoredMethodsHandler();
+        RootHandler rootHandler = new RootHandler();
+        CountlangListenerDelegator delegator = new CountlangListenerDelegator(ignoredMethodsHandler, rootHandler);
+        walker.walk(delegator, parser.prog());
+        node = rootHandler.getProgram();
     }
 
     public AstNode getParsedNode() {
