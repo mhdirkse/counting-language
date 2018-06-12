@@ -30,6 +30,7 @@ public class IntegrationTest implements OutputStrategy
             {"print 2 + testFunction(4)", false, "11"},
             {"print testFunction(testFunction(4))", false, "14"},
             {"function myFun(x, y) {z = x - y; return z}; print myFun(5, 3)", false, "2"},
+            {"function myFun(x) {return x}; print myFun(2 + 3)", false, "5"},
             {"print 5 +", true, null}, // Syntax error
             {"xyz", true, null}, // Syntax error
             {"print 5 ** 3", true, null}, // Unknown token
