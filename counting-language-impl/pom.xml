@@ -92,6 +92,29 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/scripts</outputDirectory>
+              <resources>          
+                <resource>
+                  <directory>scripts</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>              
+            </configuration>            
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>com.github.mhdirkse</groupId>
         <artifactId>codegenPlugin</artifactId>
         <version>${codegenVersion}</version>
