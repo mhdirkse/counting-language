@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class IgnoredMethodsHandler extends AbstractCountlangListenerHandler {
     private final Set<Integer> RELEVANT_TOKENS = new HashSet<>(
-            CountlangParser.ID, CountlangParser.INT);
+            Arrays.asList(CountlangParser.ID, CountlangParser.INT));
 
     IgnoredMethodsHandler() {
         super(false);

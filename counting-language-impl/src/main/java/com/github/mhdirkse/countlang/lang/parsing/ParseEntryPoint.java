@@ -14,7 +14,7 @@ import com.github.mhdirkse.countlang.lang.CountlangLexer;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 public class ParseEntryPoint {
-	private AstNode node = null;
+	AstNode node = null;
 	private String error = null;
 
     public void parseProgram(Reader reader) throws IOException {
@@ -40,10 +40,6 @@ public class ParseEntryPoint {
         CountlangListenerDelegator delegator = new CountlangListenerDelegator(ignoredMethodsHandler, rootHandler);
         walker.walk(delegator, parser.prog());
         node = rootHandler.getProgram();
-    }
-
-    public AstNode getParsedNode() {
-    	return node;
     }
 
     public Program getParsedNodeAsProgram() {

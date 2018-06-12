@@ -29,6 +29,11 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
     private List<String> outputs;
     private List<String> errors;
 
+    /**
+     * This rule does not cooperate well with EclEmma. When this rule handles
+     * a thrown exception, then EclEmma can not correctly show the coverage. See
+     * {@linktourl https://www.eclemma.org/faq.html#trouble02}.
+     */
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
