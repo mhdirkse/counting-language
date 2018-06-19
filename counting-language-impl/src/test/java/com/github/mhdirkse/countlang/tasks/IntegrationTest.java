@@ -22,6 +22,13 @@ public class IntegrationTest implements OutputStrategy
 {
     @Parameters(name = "{0}, expect errors {1}")
     public static Collection<Object[]> data() {
+        String INCREMENT_OF_MAX_INT_MINUS_ONE = String.format("print %d + %d", Integer.MAX_VALUE - 1, 1);
+        String MAX_INT = String.format("%d", Integer.MAX_VALUE);
+        String INCREMENT_OF_MAX_INT = String.format("print %d + %d", Integer.MAX_VALUE, 1);
+        String DECREMENT_OF_MIN_INT_PLUS_ONE = String.format("print %d - %d", Integer.MIN_VALUE + 1, 1);
+        String MIN_INT = String.format("%d", Integer.MIN_VALUE);
+        String DECREMENT_OF_MIN_INT = String.format("print %d - %d", Integer.MIN_VALUE, 1);
+
         return Arrays.asList(new Object[][] {
             {"print 5 + 3", false, "8", null},
             {"print 5 - 3", false, "2", null},
@@ -36,15 +43,10 @@ public class IntegrationTest implements OutputStrategy
             {"print -5--3", false, "-2", null},
             {"print 2 / 0", true, null, "Division by zero"},
             {"print 12345678901234567890", true, null, "Integer value is too big to store"},
-            {String.format("print %d + %d", Integer.MAX_VALUE - 1, 1), // No overflow.
-                false, String.format("%d", Integer.MAX_VALUE), null
-            },
-            {String.format("print %d + %d", Integer.MAX_VALUE, 1), true, null, "Overflow or underflow"},
-            {String.format("print %d - %d", Integer.MIN_VALUE + 1, 1), // No underflow.
-                false, String.format("%d", Integer.MIN_VALUE), null
-            },
-            {String.format("print %d - %d", Integer.MIN_VALUE, 1),
-                true, null, "Overflow or underflow"},
+            {INCREMENT_OF_MAX_INT_MINUS_ONE, false, MAX_INT, null}, // No overflow.
+            {INCREMENT_OF_MAX_INT, true, null, "Overflow or underflow"},
+            {DECREMENT_OF_MIN_INT_PLUS_ONE, false, MIN_INT, null}, // No underflow.
+            {DECREMENT_OF_MIN_INT, true, null, "Overflow or underflow"},
             {"print 1000000 * 1000000", true, null, "Overflow or underflow"},
             {"print testFunction(4)", false, "9", null},
             {"print 2 + testFunction(4)", false, "11", null},
