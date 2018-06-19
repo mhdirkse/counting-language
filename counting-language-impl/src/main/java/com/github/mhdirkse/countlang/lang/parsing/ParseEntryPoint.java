@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
@@ -22,6 +23,9 @@ public class ParseEntryPoint {
             parseProgramImpl(reader);
         }
         catch(ParseCancellationException e) {
+            error = e.getMessage();
+        }
+        catch(ProgramRuntimeException e) {
             error = e.getMessage();
         }
     }

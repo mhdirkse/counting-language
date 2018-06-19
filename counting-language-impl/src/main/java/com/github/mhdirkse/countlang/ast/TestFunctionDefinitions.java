@@ -52,7 +52,7 @@ public final class TestFunctionDefinitions {
             SymbolExpression ex12 = new SymbolExpression(1, 1);
             ex12.setSymbol(new Symbol(FORMAL_PARAMETER));
             CompositeExpression ex1 = new CompositeExpression(1, 1);
-            ex1.setOperator(new OperatorAdd());
+            ex1.setOperator(new OperatorAdd(1, 1));
             ex1.addSubExpression(ex11);
             ex1.addSubExpression(ex12);
             return ex1;

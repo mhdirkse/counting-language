@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import com.github.mhdirkse.countlang.ast.Expression;
 import com.github.mhdirkse.countlang.ast.Value;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class ValueExpressionHandler2 extends AbstractTerminalHandler2 implements ExpressionSource {
@@ -24,6 +25,11 @@ class ValueExpressionHandler2 extends AbstractTerminalHandler2 implements Expres
 
     @Override
     public void setText(final String text) {
-        expression.setValue(new Value(Integer.valueOf(text)));
+        try {
+            expression.setValue(new Value(Integer.valueOf(text)));
+        } catch(final NumberFormatException e) {
+            throw new ProgramRuntimeException(expression.getLine(), expression.getColumn(),
+                    "Integer value is too big to store: " + text);
+        }
     }
 }
