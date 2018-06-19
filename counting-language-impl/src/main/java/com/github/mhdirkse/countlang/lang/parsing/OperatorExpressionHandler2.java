@@ -45,13 +45,13 @@ implements ExpressionSource, TerminalStrategyCallback2 {
     @Override
     public void setText(final String text) {
         if (text.equals("*")) {
-            expression.setOperator(new OperatorMultiply());
+            expression.setOperator(new OperatorMultiply(expression.getLine(), expression.getColumn()));
         } else if (text.equals("/")) {
-            expression.setOperator(new OperatorDivide());
+            expression.setOperator(new OperatorDivide(expression.getLine(), expression.getColumn()));
         } else if (text.equals("+")) {
-            expression.setOperator(new OperatorAdd());
+            expression.setOperator(new OperatorAdd(expression.getLine(), expression.getColumn()));
         } else if (text.equals("-")) {
-            expression.setOperator(new OperatorSubtract());
+            expression.setOperator(new OperatorSubtract(expression.getLine(), expression.getColumn()));
         }
     }
 }
