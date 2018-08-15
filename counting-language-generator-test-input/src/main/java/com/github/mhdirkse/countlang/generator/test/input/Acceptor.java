@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.generator.test;
+package com.github.mhdirkse.countlang.generator.test.input;
 
 import lombok.Getter;
 import lombok.Setter;

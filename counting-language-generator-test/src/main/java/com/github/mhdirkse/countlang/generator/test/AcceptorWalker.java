@@ -1,5 +1,7 @@
 package com.github.mhdirkse.countlang.generator.test;
 
+import com.github.mhdirkse.countlang.generator.test.input.Acceptor;
+
 public class AcceptorWalker {
     private Acceptor a;
 

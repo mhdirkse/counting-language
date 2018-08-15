@@ -1,5 +1,10 @@
 package com.github.mhdirkse.countlang.generator.test;
 
+import com.github.mhdirkse.countlang.generator.test.input.Acceptor;
+import com.github.mhdirkse.countlang.generator.test.input.AtomicAcceptor;
+import com.github.mhdirkse.countlang.generator.test.input.CompositeAcceptor;
+import com.github.mhdirkse.countlang.generator.test.input.Visitor;
+
 class VisitorToListener implements Visitor {
     private VisitorListener l;
 

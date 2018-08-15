@@ -1,11 +1,14 @@
 package com.github.mhdirkse.countlang.generator.test;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.util.Arrays;
 
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.github.mhdirkse.countlang.generator.test.input.Acceptor;
+import com.github.mhdirkse.countlang.generator.test.input.AtomicAcceptor;
+import com.github.mhdirkse.countlang.generator.test.input.CompositeAcceptor;
 
 public class AcceptorWalkerTest {
     private VisitorListenerImpl listener;

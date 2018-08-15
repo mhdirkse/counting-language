@@ -3,6 +3,9 @@ package com.github.mhdirkse.countlang.generator.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.generator.test.input.AtomicAcceptor;
+import com.github.mhdirkse.countlang.generator.test.input.CompositeAcceptor;
+
 import lombok.Getter;
 
 class VisitorListenerImpl implements VisitorListener {
