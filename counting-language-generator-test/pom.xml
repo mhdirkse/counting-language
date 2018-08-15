@@ -23,4 +23,30 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.mhdirkse</groupId>
+        <artifactId>codegenPlugin</artifactId>
+        <version>${codegenVersion}</version>
+        <configuration>
+          <program>com.github.mhdirkse.countlang.generator.CodegenProgramTest</program>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>codegen</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.github.mhdirkse</groupId>
+            <artifactId>counting-language-generator</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
 </project>

@@ -1,0 +1,28 @@
+package $target.package;
+
+class $target.simpleName implements $source.fullName {
+    private $listener.fullName l;
+
+    ${target.simpleName}(final $listener.fullName l) {
+        this.l = l;
+    }
+
+    #foreach ($method in $target.methods)
+
+    #if($methodExtra[$method.name].atomic)
+    @Override
+    public void ${method.name}($method.formalParametersClass) {
+        l.${methodExtra["${method.name}"].visitMethod.name}($method.actualParameters);
+    }
+    #else
+    @Override
+    public void ${method.name}($method.formalParametersClass) {
+        l.${methodExtra["${method.name}"].enterMethod.name}($method.actualParameters);
+        for ($acceptor child : p1.getChildren()) {
+            child.accept(this);
+        }
+        l.${methodExtra["${method.name}"].exitMethod.name}($method.actualParameters);
+    }
+    #end
+    #end
+}
