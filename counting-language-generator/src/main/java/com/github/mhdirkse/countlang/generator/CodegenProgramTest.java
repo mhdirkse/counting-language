@@ -2,9 +2,7 @@ package com.github.mhdirkse.countlang.generator;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,19 +32,16 @@ public class CodegenProgramTest implements Runnable {
     @Output("visitorToListenerTemplate")
     public VelocityContext visitorToListener;
 
-    Map<String, MethodExtraModel> methodExtras;
-
     @Override
     public void run() {
         ClassModel visitorToListenerModel = new ClassModel(source);
         visitorToListenerModel.setFullName(VISITOR_TO_LISTENER);
-        methodExtras = new HashMap<>();
-        visitorToListenerModel.getMethods().forEach(
-                m-> {methodExtras.put(m.getName(), getMethodExtra(m));});
+        visitorToListenerModel.getMethods().replaceAll(
+                m-> getMethodExtra(m));
         ClassModel listenerModel = new ClassModel();
         listenerModel.setFullName(LISTENER);
-        listenerModel.setMethods(methodExtras.values().stream()
-                .map(m -> (MethodExtraModel) m)
+        listenerModel.setMethods(visitorToListenerModel.getMethods().stream()
+                .map(m -> (VisitorMethodModel) m)
                 .map(m -> Arrays.asList(
                         m.getVisitMethod(),
                         m.getEnterMethod(),
@@ -59,11 +54,10 @@ public class CodegenProgramTest implements Runnable {
         visitorToListener.put("source", source);
         visitorToListener.put("target", visitorToListenerModel);
         visitorToListener.put("listener", listenerModel);
-        visitorToListener.put("methodExtra", methodExtras);
         listener.put("target", listenerModel);
     }
 
-    private MethodExtraModel getMethodExtra(final MethodModel orig) {
+    private VisitorMethodModel getMethodExtra(final MethodModel orig) {
         if(ATOMIC_METHODS.contains(orig.getName())) {
             return getMethodExtraAtomic(orig);
         } else {
@@ -71,15 +65,15 @@ public class CodegenProgramTest implements Runnable {
         }
     }
 
-    private MethodExtraModel getMethodExtraAtomic(final MethodModel orig) {
-        MethodExtraModel result = new MethodExtraModel();
+    private VisitorMethodModel getMethodExtraAtomic(final MethodModel orig) {
+        VisitorMethodModel result = new VisitorMethodModel(orig);
         result.setAtomic(true);
         result.setVisitMethod(new MethodModel(orig));
         return result;
     }
 
-    private MethodExtraModel getMethodExtraComposite(final MethodModel orig) {
-        MethodExtraModel result = new MethodExtraModel();
+    private VisitorMethodModel getMethodExtraComposite(final MethodModel orig) {
+        VisitorMethodModel result = new VisitorMethodModel(orig);
         result.setAtomic(false);
         result.setEnterMethod(getListenerMethod(orig, ENTER));
         result.setExitMethod(getListenerMethod(orig, EXIT));
