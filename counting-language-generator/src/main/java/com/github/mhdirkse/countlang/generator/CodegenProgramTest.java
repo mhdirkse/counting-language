@@ -81,15 +81,15 @@ public class CodegenProgramTest implements Runnable {
     private MethodExtraModel getMethodExtraComposite(final MethodModel orig) {
         MethodExtraModel result = new MethodExtraModel();
         result.setAtomic(false);
-        result.setEnterMethod(prepend(orig, ENTER));
-        result.setExitMethod(prepend(orig, EXIT));
+        result.setEnterMethod(getListenerMethod(orig, ENTER));
+        result.setExitMethod(getListenerMethod(orig, EXIT));
         return result;
     }
 
-    private MethodModel prepend(final MethodModel m, final String p) {
+    static MethodModel getListenerMethod(final MethodModel m, final String prefix) {
         MethodModel result = new MethodModel(m);
-        String withoutVisit = m.getName().replaceFirst("visit", "");
-        result.setName(p + StringUtils.capitalize(withoutVisit));
+        String withoutVisit = m.getName().replaceFirst("^visit", "");
+        result.setName(prefix + StringUtils.capitalize(withoutVisit));
         return result;
     }
 }
