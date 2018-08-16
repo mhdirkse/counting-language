@@ -7,7 +7,7 @@ import com.github.mhdirkse.codegen.compiletime.MethodModel;
 
 import org.junit.Assert;
 
-public class CodegenProgramTestTest {
+public class VisitorClassModelTest {
     private MethodModel methodModel;
     private MethodModel methodModelWithoutVisit;
     private MethodModel methodModelVisitNotAtStart;
@@ -23,18 +23,18 @@ public class CodegenProgramTestTest {
 
     @Test
     public void whenNameStartsWithVisitThenGetListenerMethodReplacesWithPrefix() {
-        Assert.assertEquals("enterX", CodegenProgramTest.getListenerMethod(methodModel, "enter").getName());
+        Assert.assertEquals("enterX", VisitorClassModel.getListenerMethod(methodModel, "enter").getName());
     }
 
     @Test
     public void whenNameDoesNotStartWithVisitThenGetListenerMethodPrependsPrefix() {
         Assert.assertEquals("enterX",
-                CodegenProgramTest.getListenerMethod(methodModelWithoutVisit, "enter").getName());
+                VisitorClassModel.getListenerMethod(methodModelWithoutVisit, "enter").getName());
     }
 
     @Test
     public void whenNameHasVisitInMiddleThenGetListenerMethodPrependsPrefix() {
         Assert.assertEquals("enterDovisit",
-                CodegenProgramTest.getListenerMethod(methodModelVisitNotAtStart, "enter").getName());
+                VisitorClassModel.getListenerMethod(methodModelVisitNotAtStart, "enter").getName());
     }
 }
