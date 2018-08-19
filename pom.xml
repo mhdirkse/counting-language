@@ -5,12 +5,12 @@
   <groupId>com.github.mhdirkse</groupId>
   <artifactId>counting-language</artifactId>
   <packaging>pom</packaging>
-  <version>2.2-SNAPSHOT</version>
+  <version>2.2</version>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <codegenVersion>2.2-SNAPSHOT</codegenVersion>
+    <codegenVersion>2.2</codegenVersion>
     <antlrVersion>4.3</antlrVersion>
   </properties>
   <modules>
