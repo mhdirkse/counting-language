@@ -33,7 +33,7 @@ public class VisitorClassModel extends ClassModel {
 
     private VisitorMethodModel getMethodExtra(
             final MethodModel orig) {
-        if(atomicMethods.contains(orig.getName())) {
+        if(atomicMethods.contains(orig.getParameterTypes().get(0))) {
             return getMethodExtraAtomic(orig);
         } else {
             return getMethodExtraComposite(orig);
