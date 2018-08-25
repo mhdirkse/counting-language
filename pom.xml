@@ -10,7 +10,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <codegenVersion>2.2</codegenVersion>
+    <codegenVersion>2.3</codegenVersion>
     <antlrVersion>4.3</antlrVersion>
   </properties>
   <modules>
