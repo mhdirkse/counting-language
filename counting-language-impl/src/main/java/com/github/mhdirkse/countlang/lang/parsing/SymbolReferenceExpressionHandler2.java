@@ -1,7 +1,7 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
-import com.github.mhdirkse.countlang.ast.Expression;
-import com.github.mhdirkse.countlang.ast.Symbol;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
+import com.github.mhdirkse.countlang.execution.Symbol;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
@@ -9,7 +9,7 @@ class SymbolReferenceExpressionHandler2 extends AbstractTerminalHandler2 impleme
     SymbolExpression expression;
 
     @Override
-    public Expression getExpression() {
+    public ExpressionNode getExpression() {
         return expression;
     }
 

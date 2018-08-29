@@ -16,14 +16,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions.*;
+
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.execution.StackFrame;
-
-import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions.FunctionCreatorBase;
-import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions.FunctionCreatorValidFunction;
+import com.github.mhdirkse.countlang.execution.Value;
 
 public class FunctionDefinitionStatementTest implements OutputStrategy {
     private List<String> outputs;

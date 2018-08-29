@@ -1,5 +1,9 @@
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.execution.OperatorAdd;
+import com.github.mhdirkse.countlang.execution.Symbol;
+import com.github.mhdirkse.countlang.execution.Value;
+
 public final class TestFunctionDefinitions {
 
     private TestFunctionDefinitions() {        
@@ -58,7 +62,7 @@ public final class TestFunctionDefinitions {
             return ex1;
         }
 
-        Expression getActualParameter() {
+        ExpressionNode getActualParameter() {
             ValueExpression result = new ValueExpression(1, 1);
             result.setValue(new Value(VALUE_OF_X));
             return result;

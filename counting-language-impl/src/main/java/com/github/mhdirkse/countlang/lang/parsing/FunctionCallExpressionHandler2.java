@@ -4,7 +4,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.Expression;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
@@ -14,7 +14,7 @@ implements ExpressionSource, TerminalStrategyCallback2 {
     private FunctionCallExpression expression;
 
     @Override
-    public Expression getExpression() {
+    public ExpressionNode getExpression() {
         return expression;
     }
 
@@ -24,7 +24,7 @@ implements ExpressionSource, TerminalStrategyCallback2 {
     }
 
     @Override
-    public void addExpression(final Expression childExpression) {
+    public void addExpression(final ExpressionNode childExpression) {
         expression.addArgument(childExpression);
     }
 

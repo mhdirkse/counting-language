@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.Expression;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandler {
@@ -71,7 +71,7 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
         if(delegationCtx.isFirst()) {
             return false;
         } else {
-            Expression expression = ((ExpressionSource) delegationCtx.getPreviousHandler()).getExpression();
+            ExpressionNode expression = ((ExpressionSource) delegationCtx.getPreviousHandler()).getExpression();
             addExpression(expression);
             delegationCtx.removeAllPreceeding();
             return true;
@@ -105,5 +105,5 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
         return handleExpressionExit(delegationCtx);
     }
 
-    abstract void addExpression(final Expression expression);
+    abstract void addExpression(final ExpressionNode expression);
 }

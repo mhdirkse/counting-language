@@ -2,8 +2,10 @@ package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.Symbol;
+import com.github.mhdirkse.countlang.execution.Value;
 
-public final class SymbolExpression extends Expression {
+public final class SymbolExpression extends ExpressionNode {
     private Symbol symbol = null;
 
     public SymbolExpression(final int line, final int column) {

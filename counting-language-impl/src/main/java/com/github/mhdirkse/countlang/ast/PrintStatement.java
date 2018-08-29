@@ -3,17 +3,17 @@ package com.github.mhdirkse.countlang.ast;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 
 public final class PrintStatement extends Statement {
-    private Expression expression = null;
+    private ExpressionNode expression = null;
 
     public PrintStatement(final int line, final int column) {
         super(line, column);
     }
 
-    public Expression getExpression() {
+    public ExpressionNode getExpression() {
         return expression;
     }
 
-    public void setExpression(final Expression expression) {
+    public void setExpression(final ExpressionNode expression) {
         this.expression = expression;
     }
 

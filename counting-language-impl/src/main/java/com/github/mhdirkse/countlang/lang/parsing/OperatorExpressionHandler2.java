@@ -4,11 +4,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
-import com.github.mhdirkse.countlang.ast.Expression;
-import com.github.mhdirkse.countlang.ast.OperatorAdd;
-import com.github.mhdirkse.countlang.ast.OperatorDivide;
-import com.github.mhdirkse.countlang.ast.OperatorMultiply;
-import com.github.mhdirkse.countlang.ast.OperatorSubtract;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
+import com.github.mhdirkse.countlang.execution.OperatorAdd;
+import com.github.mhdirkse.countlang.execution.OperatorDivide;
+import com.github.mhdirkse.countlang.execution.OperatorMultiply;
+import com.github.mhdirkse.countlang.execution.OperatorSubtract;
 
 class OperatorExpressionHandler2 extends AbstractExpressionHandler2
 implements ExpressionSource, TerminalStrategyCallback2 {
@@ -16,7 +16,7 @@ implements ExpressionSource, TerminalStrategyCallback2 {
     private CompositeExpression expression;
 
     @Override
-    public Expression getExpression() {
+    public ExpressionNode getExpression() {
         return expression;
     }
 
@@ -26,7 +26,7 @@ implements ExpressionSource, TerminalStrategyCallback2 {
     }
 
     @Override
-    void addExpression(final Expression childExpression) {
+    void addExpression(final ExpressionNode childExpression) {
         expression.addSubExpression(childExpression);
     }
 

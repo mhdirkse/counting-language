@@ -1,8 +1,5 @@
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.ast.RunnableFunction;
-import com.github.mhdirkse.countlang.ast.Value;
-
 public final class ExecutionContextImpl implements ExecutionContext {
     private final Scope scope = new Scope();
     private final FunctionDefinitions functions = new FunctionDefinitions();

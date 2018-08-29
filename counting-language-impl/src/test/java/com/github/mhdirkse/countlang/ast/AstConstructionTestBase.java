@@ -42,8 +42,8 @@ public class AstConstructionTestBase {
         return type.cast(statement);        
     }
 
-    final <T extends Expression> T checkExpressionType(
-            final Expression expression, final Class<T> type) {
+    final <T extends ExpressionNode> T checkExpressionType(
+            final ExpressionNode expression, final Class<T> type) {
         Assert.assertThat(expression, instanceOf(type));
         return type.cast(expression);
     }

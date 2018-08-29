@@ -1,7 +1,7 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
-import com.github.mhdirkse.countlang.ast.Expression;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 
 interface ExpressionSource {
-    Expression getExpression();
+    ExpressionNode getExpression();
 }

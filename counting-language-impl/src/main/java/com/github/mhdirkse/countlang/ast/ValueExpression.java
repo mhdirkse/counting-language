@@ -1,8 +1,9 @@
 package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.Value;
 
-public final class ValueExpression extends Expression {
+public final class ValueExpression extends ExpressionNode {
     private Value value = null;
 
     public ValueExpression(final int line, final int column) {

@@ -5,10 +5,11 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.Value;
 
-public class FunctionCallExpression extends Expression {
+public class FunctionCallExpression extends ExpressionNode {
     private String functionName = null;
-    private List<Expression> arguments = new ArrayList<>();
+    private List<ExpressionNode> arguments = new ArrayList<>();
 
     public FunctionCallExpression(final int line, final int column) {
         super(line, column);
@@ -18,7 +19,7 @@ public class FunctionCallExpression extends Expression {
         this.functionName = functionName;
     }
 
-    public void addArgument(final Expression expression) {
+    public void addArgument(final ExpressionNode expression) {
         arguments.add(expression);
     }
 

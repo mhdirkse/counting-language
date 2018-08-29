@@ -1,8 +1,6 @@
-package com.github.mhdirkse.countlang.ast;
+package com.github.mhdirkse.countlang.execution;
 
 import java.util.List;
-
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 
 public abstract class Operator {
     private final int line;

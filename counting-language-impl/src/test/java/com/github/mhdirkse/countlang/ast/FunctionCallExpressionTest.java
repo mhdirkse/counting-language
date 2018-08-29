@@ -14,6 +14,8 @@ import org.junit.rules.ExpectedException;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.RunnableFunction;
+import com.github.mhdirkse.countlang.execution.Value;
 
 public class FunctionCallExpressionTest extends EasyMockSupport {
     private static final int FUNCTION_RESULT = 5;

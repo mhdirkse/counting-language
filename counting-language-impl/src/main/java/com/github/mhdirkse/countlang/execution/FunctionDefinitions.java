@@ -3,8 +3,6 @@ package com.github.mhdirkse.countlang.execution;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.mhdirkse.countlang.ast.RunnableFunction;
-
 class FunctionDefinitions {
     private Map<String, RunnableFunction> functions = new HashMap<>();
 

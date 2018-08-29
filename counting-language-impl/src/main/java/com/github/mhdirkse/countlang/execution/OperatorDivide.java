@@ -1,6 +1,4 @@
-package com.github.mhdirkse.countlang.ast;
-
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+package com.github.mhdirkse.countlang.execution;
 
 public final class OperatorDivide extends Operator {
     public OperatorDivide(final int line, final int column) {

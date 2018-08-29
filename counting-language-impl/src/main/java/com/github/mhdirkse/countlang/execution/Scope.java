@@ -3,8 +3,6 @@ package com.github.mhdirkse.countlang.execution;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import com.github.mhdirkse.countlang.ast.Value;
-
 final class Scope {
     private final Deque<StackFrame> frames = new ArrayDeque<>();
 

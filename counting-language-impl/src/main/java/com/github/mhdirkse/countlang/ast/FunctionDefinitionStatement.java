@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.Expression;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.RunnableFunction;
 import com.github.mhdirkse.countlang.execution.StackFrame;
+import com.github.mhdirkse.countlang.execution.Value;
 
 public class FunctionDefinitionStatement extends Statement implements RunnableFunction {
     private String name = null;
@@ -48,7 +51,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
 
     @Override
     public Value runFunction(
-            final List<Expression> actualParameters,
+            final List<? extends Expression> actualParameters,
             final ExecutionContext ctx) {
         return new FunctionRun(actualParameters, ctx).run();
     }
@@ -68,12 +71,12 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
 
     private class FunctionRun implements Callback {
         private ExecutionContext ctx;
-        private List<Expression> actualParameters;
+        private List<? extends Expression> actualParameters;
 
         private StackFrame frame = new StackFrame();
         private Value result = null;
  
-        FunctionRun(final List<Expression> actualParameters, final ExecutionContext ctx) {
+        FunctionRun(final List<? extends Expression> actualParameters, final ExecutionContext ctx) {
             this.actualParameters = actualParameters;
             this.ctx = ctx;
         }
@@ -123,9 +126,9 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
 
     private static class ParameterWalker {
         private final List<String> formalParameters;
-        private final List<Expression> actualParameters;
+        private final List<? extends Expression> actualParameters;
 
-        ParameterWalker(final List<String> formalParameters, final List<Expression> actualParameters) {
+        ParameterWalker(final List<String> formalParameters, final List<? extends Expression> actualParameters) {
             this.formalParameters = formalParameters;
             this.actualParameters = actualParameters;
         }

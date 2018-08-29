@@ -4,9 +4,9 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
-import com.github.mhdirkse.countlang.ast.Expression;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.Statement;
-import com.github.mhdirkse.countlang.ast.Symbol;
+import com.github.mhdirkse.countlang.execution.Symbol;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 
 class AssignmentStatementHandler2 extends AbstractExpressionHandler2
@@ -41,7 +41,7 @@ implements StatementSource, TerminalStrategyCallback2 {
     }
 
     @Override
-    public void addExpression(final Expression expression) {
+    public void addExpression(final ExpressionNode expression) {
         statement.setRhs(expression);
     }
 }
