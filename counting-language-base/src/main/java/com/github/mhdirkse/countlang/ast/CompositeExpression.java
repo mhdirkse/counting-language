@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.Operator;
 import com.github.mhdirkse.countlang.execution.Value;
 
 public final class CompositeExpression extends ExpressionNode {

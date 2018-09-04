@@ -1,6 +1,6 @@
 package com.github.mhdirkse.countlang.ast;
 
-import com.github.mhdirkse.countlang.execution.OperatorAdd;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
 import com.github.mhdirkse.countlang.execution.Symbol;
 import com.github.mhdirkse.countlang.execution.Value;
 

@@ -5,10 +5,10 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
-import com.github.mhdirkse.countlang.execution.OperatorAdd;
-import com.github.mhdirkse.countlang.execution.OperatorDivide;
-import com.github.mhdirkse.countlang.execution.OperatorMultiply;
-import com.github.mhdirkse.countlang.execution.OperatorSubtract;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorDivide;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorMultiply;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorSubtract;
 
 class OperatorExpressionHandler2 extends AbstractExpressionHandler2
 implements ExpressionSource, TerminalStrategyCallback2 {
