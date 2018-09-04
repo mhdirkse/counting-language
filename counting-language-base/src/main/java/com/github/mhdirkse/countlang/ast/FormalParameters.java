@@ -10,7 +10,7 @@ import com.github.mhdirkse.countlang.execution.Expression;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 
-public class FormalParameters extends AstNode {
+public class FormalParameters extends AstNode implements CompositeNode {
     private List<FormalParameter> formalParameters = new ArrayList<>();
 
     public FormalParameters(final int line, final int column) {
@@ -24,6 +24,13 @@ public class FormalParameters extends AstNode {
     @Override
     public void accept(AstNode.Visitor v) {
         v.visitFormalParameters(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        List<AstNode> result = new ArrayList<>();
+        result.addAll(formalParameters);
+        return result;
     }
 
     public StackFrame checkedGetStackFrame(

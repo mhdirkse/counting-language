@@ -13,7 +13,7 @@ import com.github.mhdirkse.countlang.execution.Value;
 import lombok.Getter;
 import lombok.Setter;
 
-public class FunctionDefinitionStatement extends Statement implements RunnableFunction {
+public class FunctionDefinitionStatement extends Statement implements RunnableFunction, CompositeNode {
     @Getter
     @Setter
     private String name = null;
@@ -42,6 +42,14 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     @Override
     public void accept(final AstNode.Visitor v) {
         v.visitFunctionDefinitionStatement(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        List<AstNode> result = new ArrayList<>();
+        result.add(formalParameters);
+        result.addAll(statements);
+        return result;
     }
 
     public void execute(final ExecutionContext ctx) {

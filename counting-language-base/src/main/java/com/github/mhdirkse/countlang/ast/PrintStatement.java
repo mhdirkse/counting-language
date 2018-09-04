@@ -1,8 +1,11 @@
 package com.github.mhdirkse.countlang.ast;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 
-public final class PrintStatement extends Statement {
+public final class PrintStatement extends Statement implements CompositeNode {
     private ExpressionNode expression = null;
 
     public PrintStatement(final int line, final int column) {
@@ -26,5 +29,10 @@ public final class PrintStatement extends Statement {
     @Override
     public void accept(final AstNode.Visitor v) {
         v.visitPrintStatement(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        return Arrays.asList(expression);
     }
 }

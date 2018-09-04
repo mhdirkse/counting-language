@@ -1,9 +1,12 @@
 package com.github.mhdirkse.countlang.ast;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Symbol;
 
-public final class AssignmentStatement extends Statement {
+public final class AssignmentStatement extends Statement implements CompositeNode {
     private Symbol lhs = null;
     private ExpressionNode rhs = null;
 
@@ -35,5 +38,10 @@ public final class AssignmentStatement extends Statement {
     @Override
     public void accept(final AstNode.Visitor v) {
         v.visitAssignmentStatement(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        return Arrays.asList(rhs);
     }
 }

@@ -1,22 +1,21 @@
 package com.github.mhdirkse.countlang.ast;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.Expression;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 
-public class ReturnStatement extends Statement {
-    private Expression expression = null;
+import lombok.Getter;
+import lombok.Setter;
+
+public class ReturnStatement extends Statement implements CompositeNode {
+    @Getter
+    @Setter
+    private ExpressionNode expression = null;
 
     public ReturnStatement(final int line, final int column) {
         super(line, column);
-    }
-
-    public Expression getExpression() {
-        return expression;
-    }
-
-    public void setExpression(final Expression expression) {
-        this.expression = expression;
     }
 
     @Override
@@ -27,5 +26,10 @@ public class ReturnStatement extends Statement {
     @Override
     public void accept(final AstNode.Visitor v) {
         v.visitReturnStatement(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        return Arrays.asList(expression);
     }
 }

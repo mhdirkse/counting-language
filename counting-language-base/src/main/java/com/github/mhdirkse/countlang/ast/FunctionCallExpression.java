@@ -7,7 +7,7 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
 import com.github.mhdirkse.countlang.execution.Value;
 
-public class FunctionCallExpression extends ExpressionNode {
+public class FunctionCallExpression extends ExpressionNode implements CompositeNode {
     private String functionName = null;
     private List<ExpressionNode> arguments = new ArrayList<>();
 
@@ -36,5 +36,12 @@ public class FunctionCallExpression extends ExpressionNode {
     @Override
     public void accept(final Visitor v) {
         v.visitFunctionCallExpression(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        List<AstNode> result = new ArrayList<>();
+        result.addAll(arguments);
+        return result;
     }
 }

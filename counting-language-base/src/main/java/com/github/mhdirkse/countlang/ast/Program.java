@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 
-public final class Program extends AstNode {
+public final class Program extends AstNode implements CompositeNode {
     private List<Statement> statements = new ArrayList<Statement>();
 
     public Program(final int line, final int column) {
@@ -33,5 +33,12 @@ public final class Program extends AstNode {
     @Override
     public void accept(final AstNode.Visitor v) {
         v.visitProgram(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        List<AstNode> result = new ArrayList<>();
+        result.addAll(statements);
+        return result;
     }
 }

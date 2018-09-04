@@ -6,7 +6,7 @@ import java.util.List;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Value;
 
-public final class CompositeExpression extends ExpressionNode {
+public final class CompositeExpression extends ExpressionNode implements CompositeNode {
     private Operator operator = null;
     private List<ExpressionNode> subExpressions = new ArrayList<>();
 
@@ -46,5 +46,13 @@ public final class CompositeExpression extends ExpressionNode {
     @Override
     public void accept(final AstNode.Visitor v) {
         v.visitCompositeExpression(this);
+    }
+
+    @Override
+    public List<AstNode> getChildren() {
+        List<AstNode> result = new ArrayList<>();
+        result.add(operator);
+        result.addAll(subExpressions);
+        return result;
     }
 }
