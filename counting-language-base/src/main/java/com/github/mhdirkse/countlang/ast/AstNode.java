@@ -12,6 +12,8 @@ public abstract class AstNode {
         public void visitSymbolExpression(final SymbolExpression expression);
         public void visitValueExpression(final ValueExpression expression);
         public void visitOperator(final Operator operator);
+        public void visitFormalParameters(final FormalParameters formalParameters);
+        public void visitFormalParameter(final FormalParameter formalParameter);
     }
 
     private final int line;

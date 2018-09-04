@@ -10,26 +10,25 @@ import com.github.mhdirkse.countlang.execution.RunnableFunction;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 import com.github.mhdirkse.countlang.execution.Value;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class FunctionDefinitionStatement extends Statement implements RunnableFunction {
+    @Getter
+    @Setter
     private String name = null;
-    private List<String> formalParameters = new ArrayList<String>();
+
+    private final FormalParameters formalParameters;
     private List<Statement> statements = new ArrayList<Statement>();
 
     public FunctionDefinitionStatement(final int line, final int column) {
         super(line, column);
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+        formalParameters = new FormalParameters(line, column);
     }
 
     public void addFormalParameter(final String parameterName) {
-        formalParameters.add(parameterName);
+        formalParameters.addFormalParameter(
+                new FormalParameter(getLine(), getColumn(), parameterName));
     }
 
     public void addStatement(final Statement statement) {
@@ -61,8 +60,6 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     }
 
     private interface Callback {
-        void onParameter(final String parameterName, final Expression actualParameter);
-        void onInvalidParameterCount(final int numFormal, final int numActual);
         void onNormalStatement(final Statement statement);
         void onReturnStatement(final ReturnStatement statement);
         void onStatementWithoutEffect(final Statement statement);
@@ -73,7 +70,6 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         private ExecutionContext ctx;
         private List<? extends Expression> actualParameters;
 
-        private StackFrame frame = new StackFrame();
         private Value result = null;
  
         FunctionRun(final List<? extends Expression> actualParameters, final ExecutionContext ctx) {
@@ -82,24 +78,12 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         }
 
         public Value run() {
-            ParameterWalker parameterWalker = new ParameterWalker(formalParameters, actualParameters);
-            parameterWalker.checkParameterCount(this);
-            parameterWalker.walk(this);
+            StackFrame stackFrame = formalParameters.checkedGetStackFrame(actualParameters, ctx);
             StatementWalker statementWalker = new StatementWalker(statements);
-            ctx.pushFrame(frame);
+            ctx.pushFrame(stackFrame);
             statementWalker.run(this);
             ctx.popFrame();
             return result;
-        }
-
-        @Override
-        public void onParameter(String parameterName, Expression actualParameter) {
-            frame.putSymbol(parameterName, actualParameter.calculate(ctx));
-        }
-
-        @Override
-        public void onInvalidParameterCount(int numFormal, int numActual) {
-            throwError(String.format("In function call expected %d arguments, got %d", numFormal, numActual));
         }
 
         @Override
@@ -124,28 +108,6 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         }
     }
 
-    private static class ParameterWalker {
-        private final List<String> formalParameters;
-        private final List<? extends Expression> actualParameters;
-
-        ParameterWalker(final List<String> formalParameters, final List<? extends Expression> actualParameters) {
-            this.formalParameters = formalParameters;
-            this.actualParameters = actualParameters;
-        }
-
-        void checkParameterCount(final Callback callback) {
-            if (formalParameters.size() != actualParameters.size()) {
-                callback.onInvalidParameterCount(formalParameters.size(), actualParameters.size());
-            }
-        }
-
-        void walk(final Callback callback) {
-            for (int i = 0; i < formalParameters.size(); ++i) {
-                callback.onParameter(formalParameters.get(i), actualParameters.get(i));
-            }
-        }
-    }
-
     private static class StatementWalker {
         private final List<Statement> statements;
         private Callback callback = null;
@@ -164,22 +126,17 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         }
 
         private void iterateStatements() {
-            for(int i = 0; i < statements.size(); ++i) {
-                if (handleStatement(i, statements.get(i))) {
-                    break;
-                }
+            for(int i = 0; (i < statements.size()) && (!didReturn); ++i) {
+                handleStatement(i, statements.get(i));
             }
         }
 
-        private boolean handleStatement(final int index, final Statement statement) {
-            boolean stop = false;
+        private void handleStatement(final int index, final Statement statement) {
             if (!(statements.get(index) instanceof ReturnStatement)) {
                 callback.onNormalStatement(statements.get(index));
             } else {
                 handleReturnStatement(index, (ReturnStatement) statements.get(index));
-                stop = true;
             }
-            return stop;
         }
 
         private void handleReturnStatement(final int index, final ReturnStatement statement) {
