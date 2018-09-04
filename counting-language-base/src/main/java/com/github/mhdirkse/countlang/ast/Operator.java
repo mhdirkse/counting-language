@@ -27,7 +27,7 @@ public abstract class Operator extends AstNode {
     abstract long executeUnchecked(long firstArg, long secondArg);
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitOperator(this);
     }
 

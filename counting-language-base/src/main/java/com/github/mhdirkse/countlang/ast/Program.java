@@ -31,7 +31,7 @@ public final class Program extends AstNode implements CompositeNode {
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitProgram(this);
     }
 

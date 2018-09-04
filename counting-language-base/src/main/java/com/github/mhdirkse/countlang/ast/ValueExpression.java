@@ -24,7 +24,7 @@ public final class ValueExpression extends ExpressionNode {
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitValueExpression(this);
     }
 }

@@ -44,7 +44,7 @@ public final class CompositeExpression extends ExpressionNode implements Composi
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitCompositeExpression(this);
     }
 

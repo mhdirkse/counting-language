@@ -36,7 +36,7 @@ public final class AssignmentStatement extends Statement implements CompositeNod
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitAssignmentStatement(this);
     }
 

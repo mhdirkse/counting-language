@@ -24,7 +24,7 @@ public class ReturnStatement extends Statement implements CompositeNode {
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitReturnStatement(this);
     }
 

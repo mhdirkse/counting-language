@@ -22,7 +22,7 @@ public class FormalParameters extends AstNode implements CompositeNode {
     }
 
     @Override
-    public void accept(AstNode.Visitor v) {
+    public void accept(Visitor v) {
         v.visitFormalParameters(this);
     }
 

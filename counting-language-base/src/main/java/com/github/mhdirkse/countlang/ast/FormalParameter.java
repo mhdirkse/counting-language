@@ -12,7 +12,7 @@ public class FormalParameter extends AstNode {
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitFormalParameter(this);
     }
 }

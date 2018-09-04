@@ -1,0 +1,10 @@
+package $target.package;
+
+public class $target.simpleName implements $source.fullName {
+
+#foreach ($method in $target.methods)
+@Override
+public void $method.name ($method.formalParametersClass) {
+}
+#end
+}

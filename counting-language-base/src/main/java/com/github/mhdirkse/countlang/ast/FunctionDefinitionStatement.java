@@ -40,7 +40,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitFunctionDefinitionStatement(this);
     }
 

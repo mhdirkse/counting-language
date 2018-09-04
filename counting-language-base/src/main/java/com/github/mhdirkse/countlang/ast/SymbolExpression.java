@@ -30,7 +30,7 @@ public final class SymbolExpression extends ExpressionNode {
     }
 
     @Override
-    public void accept(final AstNode.Visitor v) {
+    public void accept(final Visitor v) {
         v.visitSymbolExpression(this);
     }
 }
