@@ -23,7 +23,7 @@ public final class PrintStatement extends Statement implements CompositeNode {
     @Override
     public void execute(final ExecutionContext ctx) {
         String result = Integer.toString(expression.calculate(ctx).getValue());
-        ctx.getOutputStrategy().output(result);
+        ctx.output(result);
     }
 
     @Override

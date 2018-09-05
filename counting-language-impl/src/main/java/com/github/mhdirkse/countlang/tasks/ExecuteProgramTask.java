@@ -7,7 +7,7 @@ import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 
 public class ExecuteProgramTask implements AbstractTask {
@@ -35,7 +35,7 @@ public class ExecuteProgramTask implements AbstractTask {
             executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
             parser.getParsedNodeAsProgram().execute(executionContext);
         }
-        catch (ProgramRuntimeException e) {
+        catch (ProgramException e) {
             outputStrategy.error(e.getMessage());
         }
     }

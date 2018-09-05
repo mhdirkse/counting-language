@@ -6,14 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 
 @RunWith(EasyMockRunner.class)
 public class ReturnStatementTest {
     @Mock
     private ExecutionContext executionContext;
 
-    @Test(expected = ProgramRuntimeException.class)
+    @Test(expected = ProgramException.class)
     public void whenReturnStatementExecutedThenProgramRuntimeExceptionThrown() {
         new ReturnStatement(1, 1).execute(executionContext);
     }

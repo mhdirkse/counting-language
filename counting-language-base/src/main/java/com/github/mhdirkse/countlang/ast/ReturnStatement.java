@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,7 @@ public class ReturnStatement extends Statement implements CompositeNode {
 
     @Override
     public void execute(final ExecutionContext ctx) {
-        throw new ProgramRuntimeException(getLine(), getColumn(), "Return statemnt outside function");
+        throw new ProgramException(getLine(), getColumn(), "Return statemnt outside function");
     }
 
     @Override

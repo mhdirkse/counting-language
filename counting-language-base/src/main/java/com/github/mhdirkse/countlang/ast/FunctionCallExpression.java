@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.Value;
 
 public class FunctionCallExpression extends ExpressionNode implements CompositeNode {
@@ -28,7 +28,7 @@ public class FunctionCallExpression extends ExpressionNode implements CompositeN
         if (ctx.hasFunction(functionName)) {
             return ctx.getFunction(functionName).runFunction(arguments, ctx);
         } else {
-            throw new ProgramRuntimeException(getLine(), getColumn(),
+            throw new ProgramException(getLine(), getColumn(),
                     String.format("Function not found: %s", functionName));
         }
     }

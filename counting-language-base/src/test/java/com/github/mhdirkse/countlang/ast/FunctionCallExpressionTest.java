@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.RunnableFunction;
 import com.github.mhdirkse.countlang.execution.Value;
 
@@ -53,7 +53,7 @@ public class FunctionCallExpressionTest extends EasyMockSupport {
         FunctionCallExpression instance = new FunctionCallExpression(1, 1);
         instance.setFunctionName("myFunction");
         instance.addArgument(new ValueExpression(1, 1));
-        thrown.expect(ProgramRuntimeException.class);
+        thrown.expect(ProgramException.class);
         thrown.expectMessage("Function not found: myFunction");
         instance.calculate(ctx);
     }

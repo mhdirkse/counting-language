@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Expression;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.RunnableFunction;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 import com.github.mhdirkse.countlang.execution.Value;
@@ -64,7 +64,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     }
 
     void throwError(final String message) {
-        throw new ProgramRuntimeException(getLine(), getColumn(), message);
+        throw new ProgramException(getLine(), getColumn(), message);
     }
 
     private interface Callback {
@@ -106,7 +106,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
 
         @Override
         public void onStatementWithoutEffect(final Statement statement) {
-            throw new ProgramRuntimeException(
+            throw new ProgramException(
                     statement.getLine(), statement.getColumn(), "Statement has no effect");
         }
 

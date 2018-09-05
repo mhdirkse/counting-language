@@ -2,7 +2,7 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.Value;
 
 public abstract class Operator extends AstNode {
@@ -17,7 +17,7 @@ public abstract class Operator extends AstNode {
         long secondArg = (long) arguments.get(1).getValue();
         long longResult = executeUnchecked(firstArg, secondArg);
         if((longResult < Integer.MIN_VALUE) || (longResult > Integer.MAX_VALUE)) {
-            throw new ProgramRuntimeException(getLine(), getColumn(), "Overflow or underflow");
+            throw new ProgramException(getLine(), getColumn(), "Overflow or underflow");
         }
         else {
             return new Value((int) longResult);
@@ -92,7 +92,7 @@ public abstract class Operator extends AstNode {
         @Override
         long executeUnchecked(final long first, final long second) {
             if (second == 0) {
-                throw new ProgramRuntimeException(getLine(), getColumn(), "Division by zero");
+                throw new ProgramException(getLine(), getColumn(), "Division by zero");
             }
             long result = first / second;
             if ((first % second) != 0) {

@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class FunctionDefinitionStatementHandler2 extends AbstractStatementGroupHandler2
@@ -34,7 +34,7 @@ implements StatementSource, TerminalStrategyCallback2 {
     @Override
     public boolean enterFunctionDefinitionStatement(
             CountlangParser.FunctionDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        throw new ProgramRuntimeException(statement.getLine(), statement.getColumn(), "Nested function definitions not allowed");
+        throw new ProgramException(statement.getLine(), statement.getColumn(), "Nested function definitions not allowed");
     }
 
     @Override

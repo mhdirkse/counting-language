@@ -18,7 +18,5 @@ public interface ExecutionContext {
 
     void popFrame();
 
-    OutputStrategy getOutputStrategy();
-
-    void setOutputStrategy(OutputStrategy outputStrategy);
+    void output(String result);
 }

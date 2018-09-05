@@ -1,7 +1,7 @@
 package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.Symbol;
 import com.github.mhdirkse.countlang.execution.Value;
 
@@ -25,7 +25,7 @@ public final class SymbolExpression extends ExpressionNode {
         if (ctx.hasSymbol(symbol.getName())) {
             return ctx.getValue(symbol.getName());
         } else {
-            throw new ProgramRuntimeException(getLine(), getColumn(), "Undefined symbol " + symbol.getName());
+            throw new ProgramException(getLine(), getColumn(), "Undefined symbol " + symbol.getName());
         }
     }
 

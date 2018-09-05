@@ -50,12 +50,7 @@ public final class ExecutionContextImpl implements ExecutionContext {
     }
 
     @Override
-    public OutputStrategy getOutputStrategy() {
-        return outputStrategy;
-    }
-
-    @Override
-    public void setOutputStrategy(final OutputStrategy outputStrategy) {
-        this.outputStrategy = outputStrategy;
+    public void output(final String result) {
+        outputStrategy.output(result);
     }
 }

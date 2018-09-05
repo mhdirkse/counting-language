@@ -21,7 +21,7 @@ import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions.*;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 import com.github.mhdirkse.countlang.execution.Value;
 
@@ -84,7 +84,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         FunctionCreatorStatementWithoutEffect functionCreator = new FunctionCreatorStatementWithoutEffect();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = new ExecutionContextImpl(this);
-        thrown.expect(ProgramRuntimeException.class);
+        thrown.expect(ProgramException.class);
         thrown.expectMessage("Statement has no effect");
         instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
     }
@@ -94,7 +94,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         FunctionCreatorNoReturn functionCreator = new FunctionCreatorNoReturn();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = new ExecutionContextImpl(this);
-        thrown.expect(ProgramRuntimeException.class);
+        thrown.expect(ProgramException.class);
         thrown.expectMessage("No return statement in function");
         instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
     }
@@ -104,7 +104,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         FunctionCreatorFormalParameterOmitted functionCreator = new FunctionCreatorFormalParameterOmitted();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = new ExecutionContextImpl(this);
-        thrown.expect(ProgramRuntimeException.class);
+        thrown.expect(ProgramException.class);
         thrown.expectMessage("In function call expected 0 arguments, got 1");
         instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
     }

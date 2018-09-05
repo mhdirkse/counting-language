@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Expression;
-import com.github.mhdirkse.countlang.execution.ProgramRuntimeException;
+import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.StackFrame;
 
 public class FormalParameters extends AstNode implements CompositeNode {
@@ -62,7 +62,7 @@ public class FormalParameters extends AstNode implements CompositeNode {
             if (formalParameters.size() != actualParameters.size()) {
                 String msg = String.format("In function call expected %d arguments, got %d",
                         formalParameters.size(), actualParameters.size());
-                throw new ProgramRuntimeException(getLine(), getColumn(), msg);
+                throw new ProgramException(getLine(), getColumn(), msg);
             }
         }
 
