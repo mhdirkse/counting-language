@@ -31,8 +31,6 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {INCREMENT_OF_MAX_INT, "Overflow or underflow"},
             {DECREMENT_OF_MIN_INT, "Overflow or underflow"},
             {"print 1000000 * 1000000", "Overflow or underflow"},
-            {"function myFun(x) {function innerFun(y) {return 3}; return 5}; print 6",
-                "Nested function definitions not allowed"},
             {"print 5 +", ""}, // Syntax error.
             {"xyz", ""}, // Syntax error.
             {"print 5 ** 3", ""}, // Unknown token.

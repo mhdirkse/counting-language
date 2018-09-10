@@ -1,0 +1,14 @@
+function funWithExtraStatements(x) {
+  return x;
+  y = x;
+  return y
+};
+
+function outer(x) {
+  function inner(y) {
+    return y
+  };
+  return x
+};
+
+return 5

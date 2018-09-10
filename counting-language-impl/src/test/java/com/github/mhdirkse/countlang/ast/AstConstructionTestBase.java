@@ -11,10 +11,10 @@ import org.junit.Assert;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 
 public class AstConstructionTestBase {
-    Program ast = null;
-    boolean hasParseErrors = false;
+    public Program ast = null;
+    public boolean hasParseErrors = false;
 
-    final void parse(final String program) {
+    public final void parse(final String program) {
     	try {
     		parseUnchecked(program);
     	}
