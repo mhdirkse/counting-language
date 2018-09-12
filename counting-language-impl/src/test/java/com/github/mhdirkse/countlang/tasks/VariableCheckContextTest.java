@@ -38,7 +38,7 @@ public class VariableCheckContextTest {
         functionFrameNice = nice.createMock(VariableCheckFrame.class);
         reporter = createNiceMock(StatusReporter.class);
         mockFrameIndex = 0;
-        instance = new VariableCheckContext(this::nextFrame);
+        instance = new VariableCheckContextImpl(this::nextFrame);
     }
 
     VariableCheckFrame nextFrame() {
