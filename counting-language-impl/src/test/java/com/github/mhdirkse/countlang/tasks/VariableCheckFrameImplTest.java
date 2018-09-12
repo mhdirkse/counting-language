@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import static org.easymock.EasyMock.*;
 
 @RunWith(EasyMockRunner.class)
-public class VariableCheckFrameTest {
+public class VariableCheckFrameImplTest {
     private static final int LINE = 2;
     private static final int COLUMN = 3;
     private static final int LINE2 = 4;
@@ -21,11 +21,11 @@ public class VariableCheckFrameTest {
     @Mock(type = MockType.STRICT)
     public StatusReporter reporter;
 
-    private VariableCheckFrame instance;
+    private VariableCheckFrameImpl instance;
 
     @Before
     public void setUp() {
-        instance = new VariableCheckFrame();
+        instance = new VariableCheckFrameImpl();
     }
 
     @Test
