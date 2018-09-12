@@ -54,4 +54,24 @@ public class VariableCheckFrameTest {
         instance.report(reporter);
         verify(reporter);
     }
+
+    @Test
+    public void whenSameVariableDefinedTwiceButNotUsedThenOnlyFirstReported() {
+        reporter.report(StatusCode.VAR_NOT_USED, LINE, COLUMN, NAME);
+        replay(reporter);
+        instance.define(NAME, LINE, COLUMN);
+        instance.define(NAME, LINE2, COLUMN2);
+        instance.report(reporter);
+        verify(reporter);
+    }
+
+    @Test
+    public void whenSameUndefinedVariableReferencedTwiceThenOnlyFirstReported() {
+        reporter.report(StatusCode.VAR_UNDEFINED, LINE, COLUMN, NAME);
+        replay(reporter);
+        instance.use(NAME, LINE, COLUMN);
+        instance.use(NAME, LINE2, COLUMN2);
+        instance.report(reporter);
+        verify(reporter);
+    }
 }

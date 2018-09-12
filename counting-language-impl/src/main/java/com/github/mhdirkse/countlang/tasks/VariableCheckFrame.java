@@ -26,7 +26,7 @@ class VariableCheckFrame {
     Map<String, ReportedVariable> notUsed = new HashMap<>();
 
     void define(final String name, final int line, final int column) {
-        notUsed.put(name, new ReportedVariable(name, line, column));
+        notUsed.putIfAbsent(name, new ReportedVariable(name, line, column));
     }
 
     void use(final String name, final int line, final int column) {
@@ -34,7 +34,7 @@ class VariableCheckFrame {
             notUsed.remove(name);
         }
         else {
-            undefined.put(name, new ReportedVariable(name, line, column));
+            undefined.putIfAbsent(name, new ReportedVariable(name, line, column));
         }
     }
 
