@@ -1,9 +1,9 @@
 package $target.package;
 
-class $target.simpleName implements $source.fullName {
+public class $target.simpleName implements $source.fullName {
     private $listener.fullName l;
 
-    ${target.simpleName}(final $listener.fullName l) {
+    public ${target.simpleName}(final $listener.fullName l) {
         this.l = l;
     }
 
