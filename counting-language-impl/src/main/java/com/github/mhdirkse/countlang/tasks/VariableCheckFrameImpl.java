@@ -29,7 +29,7 @@ class VariableCheckFrameImpl implements VariableCheckFrame {
     }
 
     private enum VariableStateCode {
-        UNDEFINED,
+        NEW,
         DEFINED,
         USED
     }
@@ -53,54 +53,37 @@ class VariableCheckFrameImpl implements VariableCheckFrame {
 
     @Override
     public void define(final String name, final int line, final int column) {
-        if(variableStates.containsKey(name)) {
-            onRedefined(name, line, column);
-        } else {
-            variableStates.put(name, new VariableState(name, line, column, VariableStateCode.DEFINED));
-        }
+        variableStates.putIfAbsent(name, new VariableState(name, line, column, VariableStateCode.NEW));
+        VariableState currentState = variableStates.get(name);
+        doDefine(name, line, column, currentState);
     }
 
-    private void onRedefined(final String name, final int line, final int column) {
-        VariableState oldState = variableStates.get(name);
-        switch(oldState.variableState) {
-        case DEFINED:
-            notUsed.putIfAbsent(name, new ReportedVariable(oldState));
-            break;
-        case USED:
-        case UNDEFINED:
-            variableStates.put(name, new VariableState(name, line, column, VariableStateCode.DEFINED));
-            break;
+    private void doDefine(final String name, final int line, final int column, VariableState currentState) {
+        if(currentState.variableState == VariableStateCode.DEFINED) {
+            notUsed.putIfAbsent(name, new ReportedVariable(currentState));
         }
+        variableStates.put(name, new VariableState(name, line, column, VariableStateCode.DEFINED));
     }
 
     @Override
     public void use(final String name, final int line, final int column) {
         if(variableStates.containsKey(name)) {
-            onReused(name, line, column);
-        } else {
-            variableStates.put(name, new VariableState(name, line, column, VariableStateCode.UNDEFINED));
-            undefined.putIfAbsent(name, new ReportedVariable(name, line, column));
-        }
-    }
-
-    private void onReused(final String name, final int line, final int column) {
-        VariableState oldState = variableStates.get(name);
-        switch(oldState.variableState) {
-        case DEFINED:
             variableStates.get(name).variableState = VariableStateCode.USED;
-            break;
-        case USED:
-        case UNDEFINED:
-            break;
+        } else {
+            undefined.putIfAbsent(name, new ReportedVariable(name, line, column));
         }
     }
 
     @Override
     public void report(final StatusReporter reporter) {
+        finishNotUsed();
+        undefined.forEach((name, reported) -> reported.reportWith(StatusCode.VAR_UNDEFINED, reporter));
+        notUsed.forEach((name, reported) -> reported.reportWith(StatusCode.VAR_NOT_USED, reporter));
+    }
+
+    private void finishNotUsed() {
         variableStates.values().stream()
             .filter(vs -> (vs.variableState == VariableStateCode.DEFINED))
             .forEach(vs -> notUsed.putIfAbsent(vs.name, new ReportedVariable(vs)));
-        undefined.forEach((name, reported) -> reported.reportWith(StatusCode.VAR_UNDEFINED, reporter));
-        notUsed.forEach((name, reported) -> reported.reportWith(StatusCode.VAR_NOT_USED, reporter));
     }
 }
