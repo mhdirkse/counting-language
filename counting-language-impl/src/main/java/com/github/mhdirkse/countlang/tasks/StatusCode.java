@@ -13,7 +13,7 @@ enum StatusCode implements AbstractStatusCode {
     FUNCTION_NESTED_NOT_ALLOWED("({1}, {2}): Nested functions not allowed."),
 
     VAR_NOT_USED("({1}, {2}): Variable {3} is not used."),
-    VAR_UNDEFINED("{1}, {2}): Undefined variable {3}.");
+    VAR_UNDEFINED("({1}, {2}): Undefined variable {3}.");
 
     StatusCode(final String formatString) {
         this.formatString = formatString;
