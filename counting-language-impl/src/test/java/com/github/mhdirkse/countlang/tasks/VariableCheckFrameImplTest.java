@@ -15,6 +15,8 @@ public class VariableCheckFrameImplTest {
     private static final int COLUMN = 3;
     private static final int LINE2 = 4;
     private static final int COLUMN2 = 5;
+    private static final int LINE3 = 6;
+    private static final int COLUMN3 = 7;
 
     private static final String NAME = "xyz";
 
@@ -71,6 +73,27 @@ public class VariableCheckFrameImplTest {
         replay(reporter);
         instance.use(NAME, LINE, COLUMN);
         instance.use(NAME, LINE2, COLUMN2);
+        instance.report(reporter);
+        verify(reporter);
+    }
+
+    @Test
+    public void whenVariableChangedAndChangeNotUsedThenReported() {
+        reporter.report(StatusCode.VAR_NOT_USED, LINE3, COLUMN3, NAME);
+        replay(reporter);
+        instance.define(NAME, LINE, COLUMN);
+        instance.use(NAME, LINE2, COLUMN2);
+        instance.define(NAME, LINE3, COLUMN3);
+        instance.report(reporter);
+        verify(reporter);
+    }
+
+    @Test
+    public void whenVariableReusedThenNotReported() {
+        replay(reporter);
+        instance.define(NAME, LINE, COLUMN);
+        instance.use(NAME, LINE2, COLUMN2);
+        instance.use(NAME, LINE3, COLUMN3);
         instance.report(reporter);
         verify(reporter);
     }
