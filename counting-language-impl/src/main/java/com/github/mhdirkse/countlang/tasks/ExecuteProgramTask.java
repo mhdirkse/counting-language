@@ -25,7 +25,9 @@ public class ExecuteProgramTask implements AbstractTask {
         if (parser.hasError()) {
             outputStrategy.error(parser.getError());
         }
-        else if(checkFunctionsAndReturns(parser.getParsedNodeAsProgram(), outputStrategy)) {
+        else if(
+                checkFunctionsAndReturns(parser.getParsedNodeAsProgram(), outputStrategy)
+                && checkVariables(parser.getParsedNodeAsProgram(), outputStrategy)) {
             runProgram(parser, outputStrategy);
         }
     }
@@ -33,6 +35,12 @@ public class ExecuteProgramTask implements AbstractTask {
     private boolean checkFunctionsAndReturns(final Program program, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
         new FunctionAndReturnCheck(program, reporter).run();
+        return !reporter.hasErrors();
+    }
+
+    private boolean checkVariables(final Program program, final OutputStrategy outputStrategy) {
+        StatusReporter reporter = new StatusReporterImpl(outputStrategy);
+        new VariableCheck(reporter).run(program);
         return !reporter.hasErrors();
     }
 
