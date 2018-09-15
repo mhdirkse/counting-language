@@ -26,6 +26,10 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         formalParameters = new FormalParameters(line, column);
     }
 
+    public int getNumParameters() {
+        return formalParameters.size();
+    }
+
     public void addFormalParameter(final String parameterName) {
         formalParameters.addFormalParameter(
                 new FormalParameter(getLine(), getColumn(), parameterName));

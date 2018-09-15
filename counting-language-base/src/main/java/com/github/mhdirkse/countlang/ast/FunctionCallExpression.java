@@ -7,16 +7,22 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.Value;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class FunctionCallExpression extends ExpressionNode implements CompositeNode {
+    @Getter
+    @Setter
     private String functionName = null;
+
     private List<ExpressionNode> arguments = new ArrayList<>();
 
     public FunctionCallExpression(final int line, final int column) {
         super(line, column);
     }
 
-    public void setFunctionName(final String functionName) {
-        this.functionName = functionName;
+    public int getNumArguments() {
+        return arguments.size();
     }
 
     public void addArgument(final ExpressionNode expression) {

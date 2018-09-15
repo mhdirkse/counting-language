@@ -17,6 +17,10 @@ public class FormalParameters extends AstNode implements CompositeNode {
         super(line, column);
     }
 
+    int size() {
+        return formalParameters.size();
+    }
+
     public void addFormalParameter(final FormalParameter formalParameter) {
         formalParameters.add(formalParameter);
     }

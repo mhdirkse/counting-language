@@ -46,6 +46,7 @@ public class ExecuteProgramTask implements AbstractTask {
         List<Supplier<Boolean>> checks = new ArrayList<>();
         checks.add(() -> checkFunctionsAndReturns(program, outputStrategy));
         checks.add(() -> checkVariables(program, outputStrategy));
+        checks.add(() -> checkFunctionCalls(program, outputStrategy));
         Runnable runProgram = () -> runProgram(program, outputStrategy);
         Imperative.runWhileTrue(checks, runProgram);
     }
@@ -59,6 +60,12 @@ public class ExecuteProgramTask implements AbstractTask {
     private boolean checkVariables(final Program program, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
         new VariableCheck(reporter).run(program);
+        return !reporter.hasErrors();
+    }
+
+    private boolean checkFunctionCalls(final Program program, final OutputStrategy outputStrategy) {
+        StatusReporter reporter = new StatusReporterImpl(outputStrategy);
+        new FunctionCallCheck(reporter).run(program);
         return !reporter.hasErrors();
     }
 

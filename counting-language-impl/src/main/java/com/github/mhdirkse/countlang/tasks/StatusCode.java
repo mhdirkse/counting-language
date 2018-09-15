@@ -11,6 +11,9 @@ enum StatusCode implements AbstractStatusCode {
     FUNCTION_HAS_EXTRA_RETURN("({1}, {2}): Function {3} has extra return statement."),
     FUNCTION_STATEMENT_WITHOUT_EFFECT("({1}, {2}): Statement in function {3} has no effect."),
     FUNCTION_NESTED_NOT_ALLOWED("({1}, {2}): Nested functions not allowed."),
+    FUNCTION_DOES_NOT_EXIST("({1}, {2}): Function {3} does not exist."),
+    FUNCTION_ALREADY_DEFINED("({1}, {2}): Function {3} was already defined."),
+    FUNCTION_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch calling {3}. Expected {4}, got {5}."),
 
     VAR_NOT_USED("({1}, {2}): Variable {3} is not used."),
     VAR_UNDEFINED("({1}, {2}): Undefined variable {3}.");
