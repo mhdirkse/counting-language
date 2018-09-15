@@ -44,7 +44,8 @@ public class IntegrationHappyTest implements OutputStrategy
             {"print 2 + testFunction(4)", "11"},
             {"print testFunction(testFunction(4))", "14"},
             {"function myFun(x, y) {z = x - y; return z}; print myFun(5, 3)", "2"},
-            {"function myFun(x) {return x}; print myFun(2 + 3)", "5"}
+            {"function myFun(x) {return x}; print myFun(2 + 3)", "5"},
+            {"function myFun() {return 10}; print myFun()", "10"}
         });
     }
 
