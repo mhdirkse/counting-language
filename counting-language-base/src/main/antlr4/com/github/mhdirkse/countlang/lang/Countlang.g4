@@ -2,7 +2,7 @@ grammar Countlang;
 
 prog : statements EOF ;
 
-statements : statement (';' statement)* ;
+statements : statement (';' statement)* ';'? ;
 
 statement
   : ID '=' expr # assignmentStatement
