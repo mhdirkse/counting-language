@@ -2,6 +2,8 @@ package com.github.mhdirkse.countlang.tasks;
 
 import com.github.mhdirkse.utils.AbstractStatusCode;
 
+import lombok.Setter;
+
 enum StatusCode implements AbstractStatusCode {
     TEST_LINE_STATUS_NO_EXTRA_ARGS("Test line {1} column {2}."),
     TEST_LINE_STATUS_ONE_EXTRA_ARG("Test line {1} column {2} with {3}."),
@@ -26,5 +28,12 @@ enum StatusCode implements AbstractStatusCode {
     @Override
     public String getFormatString() {
         return formatString;
+    }
+
+    @Setter
+    private static boolean isTestMode = false;
+    @Override
+    public boolean isTestMode() {
+        return isTestMode;
     }
 }

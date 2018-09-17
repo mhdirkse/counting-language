@@ -1,9 +1,21 @@
 package com.github.mhdirkse.countlang.tasks;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class StatusTest {
+    @Before
+    public void setUp() {
+        StatusCode.setTestMode(true);
+    }
+
+    @After
+    public void tearDown() {
+        StatusCode.setTestMode(false);
+    }
+
     @Test
     public void whenStatusFormatsOnlyLineAndColumnThenCorrectlyFormatted() {
         Assert.assertEquals("Test line 2 column 4.",

@@ -10,6 +10,7 @@ import java.util.Collection;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +49,13 @@ public class IntegrationUnhappyTest implements OutputStrategy
 
     @Before
     public void setUp() {
+        StatusCode.setTestMode(true);
         outputStrategy = new TestOutputStrategy();
+    }
+
+    @After
+    public void tearDown() {
+        StatusCode.setTestMode(false);        
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +62,13 @@ public class IntegrationHappyTest implements OutputStrategy
 
     @Before
     public void setUp() {
+        StatusCode.setTestMode(true);
         outputStrategy = new TestOutputStrategy();
+    }
+
+    @After
+    public void tearDown() {
+        StatusCode.setTestMode(false);
     }
 
     @Override

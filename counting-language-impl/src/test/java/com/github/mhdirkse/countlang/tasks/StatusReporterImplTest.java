@@ -6,6 +6,7 @@ import static org.easymock.EasyMock.verify;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.easymock.MockType;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,13 @@ public class StatusReporterImplTest {
 
     @Before
     public void setUp() {
+        StatusCode.setTestMode(true);
         instance = new StatusReporterImpl(output);
+    }
+
+    @After
+    public void tearDown() {
+        StatusCode.setTestMode(false);        
     }
 
     @Test

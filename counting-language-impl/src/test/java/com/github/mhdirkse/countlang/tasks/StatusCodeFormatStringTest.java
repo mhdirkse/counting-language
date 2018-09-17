@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -24,6 +26,16 @@ public class StatusCodeFormatStringTest {
 
     @Parameter
     public StatusCode statusCode;
+
+    @Before
+    public void setUp() {
+        StatusCode.setTestMode(true);
+    }
+
+    @After
+    public void tearDown() {
+        StatusCode.setTestMode(false);
+    }
 
     @Test
     public void allFormattersAreBracketDigitsBracket() {
