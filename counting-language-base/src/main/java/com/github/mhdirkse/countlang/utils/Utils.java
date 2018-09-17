@@ -4,7 +4,8 @@ public class Utils {
     private Utils() {
     }
 
-    public static String formatLineColumnMessage(int line, int charPositionInLine, String msg) {
-        return "line " + line + ":" + charPositionInLine + " " + msg;
+    public static String formatLineColumnMessage(
+            final int line, final int charPositionInLine, String msg) {
+        return String.format("(%d, %d): ", line, charPositionInLine) + msg;
     }
 }
