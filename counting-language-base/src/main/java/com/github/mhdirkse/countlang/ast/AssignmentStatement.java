@@ -4,21 +4,20 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.Symbol;
 
 public final class AssignmentStatement extends Statement implements CompositeNode {
-    private Symbol lhs = null;
+    private String lhs = null;
     private ExpressionNode rhs = null;
 
     public AssignmentStatement(final int line, final int column) {
         super(line, column);
     }
 
-    public Symbol getLhs() {
+    public String getLhs() {
         return lhs;
     }
 
-    public void setLhs(final Symbol lhs) {
+    public void setLhs(final String lhs) {
         this.lhs = lhs;
     }
 
@@ -32,7 +31,7 @@ public final class AssignmentStatement extends Statement implements CompositeNod
 
     @Override
     public void execute(final ExecutionContext ctx) {
-        ctx.putSymbol(lhs.getName(), rhs.calculate(ctx));
+        ctx.putSymbol(lhs, rhs.calculate(ctx));
     }
 
     @Override

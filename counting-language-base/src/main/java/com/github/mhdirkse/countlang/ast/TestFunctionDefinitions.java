@@ -1,7 +1,6 @@
 package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
-import com.github.mhdirkse.countlang.execution.Symbol;
 import com.github.mhdirkse.countlang.execution.Value;
 
 public final class TestFunctionDefinitions {
@@ -56,7 +55,7 @@ public final class TestFunctionDefinitions {
             ValueExpression ex11 = new ValueExpression(1, 1);
             ex11.setValue(new Value(ADDED_VALUE));
             SymbolExpression ex12 = new SymbolExpression(1, 1);
-            ex12.setSymbol(new Symbol(FORMAL_PARAMETER));
+            ex12.setSymbol(FORMAL_PARAMETER);
             CompositeExpression ex1 = new CompositeExpression(1, 1);
             ex1.setOperator(new OperatorAdd(1, 1));
             ex1.addSubExpression(ex11);

@@ -47,7 +47,7 @@ class VariableCheck implements AstListener {
 
     @Override
     public void exitAssignmentStatement(final AssignmentStatement statement) {
-        ctx.define(statement.getLhs().getName(), statement.getLine(), statement.getColumn());
+        ctx.define(statement.getLhs(), statement.getLine(), statement.getColumn());
     }
 
     @Override
@@ -98,7 +98,7 @@ class VariableCheck implements AstListener {
 
     @Override
     public void visitSymbolExpression(final SymbolExpression expression) {
-        ctx.use(expression.getSymbol().getName(), expression.getLine(), expression.getColumn());
+        ctx.use(expression.getSymbol(), expression.getLine(), expression.getColumn());
     }
 
     @Override

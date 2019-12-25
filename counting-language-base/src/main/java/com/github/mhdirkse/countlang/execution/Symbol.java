@@ -1,6 +1,6 @@
 package com.github.mhdirkse.countlang.execution;
 
-public final class Symbol {
+final class Symbol {
     private String name;
 
     public Symbol(String name) {

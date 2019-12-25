@@ -6,7 +6,6 @@ import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.Statement;
-import com.github.mhdirkse.countlang.execution.Symbol;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 
 class AssignmentStatementHandler2 extends AbstractExpressionHandler2
@@ -37,7 +36,7 @@ implements StatementSource, TerminalStrategyCallback2 {
 
     @Override
     public void setText(final String text) {
-        statement.setLhs(new Symbol(text));
+        statement.setLhs(text);
     }
 
     @Override
