@@ -1,14 +1,11 @@
 package com.github.mhdirkse.countlang.ast;
 
-import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Expression;
 import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.StackFrame;
 
 public class FormalParameters extends AstNode implements CompositeNode {
     private List<FormalParameter> formalParameters = new ArrayList<>();
@@ -37,20 +34,15 @@ public class FormalParameters extends AstNode implements CompositeNode {
         return result;
     }
 
-    public StackFrame checkedGetStackFrame(
+    public void fillNewStackFrame(
             final List<? extends Expression> actualParameters,
             final ExecutionContext ctx) {
-        ParameterWalker w = new ParameterWalker(actualParameters, ctx);
-        w.run();
-        return w.getStackFrame();
+        (new ParameterWalker(actualParameters, ctx)).run();
     }
 
     private class ParameterWalker {
         private final List<? extends Expression> actualParameters;
         private ExecutionContext ctx;
-
-        @Getter
-        private final StackFrame stackFrame = new StackFrame();
 
         ParameterWalker(final List<? extends Expression> actualParameters, final ExecutionContext ctx) {
             this.actualParameters = actualParameters;
@@ -72,7 +64,7 @@ public class FormalParameters extends AstNode implements CompositeNode {
 
         private void fillStackFrame() {
             for (int i = 0; i < formalParameters.size(); ++i) {
-                stackFrame.putSymbol(
+                ctx.putSymbolInNewFrame(
                         formalParameters.get(i).getName(),
                         actualParameters.get(i).calculate(ctx));
             }

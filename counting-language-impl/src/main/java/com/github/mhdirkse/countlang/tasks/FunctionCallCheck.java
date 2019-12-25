@@ -20,7 +20,7 @@ import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
 
-public class FunctionCallCheck implements AstListener {
+class FunctionCallCheck implements AstListener {
     private final Map<String, Integer> argumentCounts;
     private final StatusReporter reporter;
 

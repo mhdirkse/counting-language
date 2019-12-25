@@ -8,13 +8,17 @@ public interface ExecutionContext {
 
     void putSymbol(String name, Value value);
 
+    void putSymbolInNewFrame(String name, Value value);
+
     boolean hasFunction(String name);
 
     RunnableFunction getFunction(String name);
 
     void putFunction(final RunnableFunction function);
 
-    void pushFrame(StackFrame frame);
+    void startPreparingNewFrame();
+
+    void pushNewFrame();
 
     void popFrame();
 

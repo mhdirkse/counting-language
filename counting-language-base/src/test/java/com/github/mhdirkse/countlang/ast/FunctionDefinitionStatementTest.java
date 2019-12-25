@@ -1,6 +1,5 @@
 package com.github.mhdirkse.countlang.ast;
 
-import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
@@ -22,7 +21,6 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.StackFrame;
 import com.github.mhdirkse.countlang.execution.Value;
 
 public class FunctionDefinitionStatementTest implements OutputStrategy {
@@ -58,7 +56,10 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         FunctionCreatorValidFunction functionCreator = new FunctionCreatorValidFunction();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = strictMock(ExecutionContext.class);
-        ctx.pushFrame(anyObject(StackFrame.class));
+        ctx.startPreparingNewFrame();
+        ctx.putSymbolInNewFrame(
+        		TestFunctionDefinitions.FORMAL_PARAMETER, TestFunctionDefinitions.VALUE_OF_X_AS_VALUE);
+        ctx.pushNewFrame();
         expect(ctx.hasSymbol(functionCreator.getFormalParameter())).andReturn(true);
         expect(ctx.getValue(functionCreator.getFormalParameter())).andReturn(new Value(functionCreator.getParameterValue()));
         ctx.popFrame();
@@ -123,7 +124,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         @Override
         void handleExtraStatement() {
             ValueExpression ex = new ValueExpression(1, 1);
-            ex.setValue(new Value(ADDED_VALUE));
+            ex.setValue(new Value(TestFunctionDefinitions.ADDED_VALUE));
             PrintStatement statement = new PrintStatement(1, 1);
             statement.setExpression(ex);
             instance.addStatement(statement);

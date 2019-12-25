@@ -6,6 +6,11 @@ import com.github.mhdirkse.countlang.execution.Value;
 
 public final class TestFunctionDefinitions {
 
+    static final int ADDED_VALUE = 5;
+    static final int VALUE_OF_X = 3;
+    static final Value VALUE_OF_X_AS_VALUE = new Value(VALUE_OF_X);
+    static final String FORMAL_PARAMETER = "x";
+
     private TestFunctionDefinitions() {        
     }
 
@@ -14,9 +19,6 @@ public final class TestFunctionDefinitions {
     }
 
     static abstract class FunctionCreatorBase {
-        static final int ADDED_VALUE = 5;
-        private static final int VALUE_OF_X = 3;
-        private static final String FORMAL_PARAMETER = "x";
 
         FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
 
@@ -64,7 +66,7 @@ public final class TestFunctionDefinitions {
 
         ExpressionNode getActualParameter() {
             ValueExpression result = new ValueExpression(1, 1);
-            result.setValue(new Value(VALUE_OF_X));
+            result.setValue(VALUE_OF_X_AS_VALUE);
             return result;
         }
 

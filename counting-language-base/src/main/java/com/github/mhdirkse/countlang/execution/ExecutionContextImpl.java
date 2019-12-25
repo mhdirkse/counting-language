@@ -4,6 +4,7 @@ public final class ExecutionContextImpl implements ExecutionContext {
     private final Scope scope = new Scope();
     private final FunctionDefinitions functions = new FunctionDefinitions();
     private OutputStrategy outputStrategy = null;
+    private StackFrame newStackFrame = null;
 
     public ExecutionContextImpl(final OutputStrategy outputStrategy) {
         this.outputStrategy = outputStrategy;
@@ -25,6 +26,11 @@ public final class ExecutionContextImpl implements ExecutionContext {
     }
 
     @Override
+    public void putSymbolInNewFrame(String name, Value value) {
+    	newStackFrame.putSymbol(name, value);
+    }
+
+    @Override
     public boolean hasFunction(String name) {
         return functions.hasFunction(name);
     }
@@ -40,8 +46,13 @@ public final class ExecutionContextImpl implements ExecutionContext {
     }
 
     @Override
-    public void pushFrame(StackFrame frame) {
-        scope.pushFrame(frame);
+    public void startPreparingNewFrame() {
+    	newStackFrame = new StackFrame();
+    }
+
+    @Override
+    public void pushNewFrame() {
+        scope.pushFrame(newStackFrame);
     }
 
     @Override
