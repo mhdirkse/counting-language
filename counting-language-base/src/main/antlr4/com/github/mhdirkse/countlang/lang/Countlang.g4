@@ -16,6 +16,7 @@ varDecls : ID (',' ID)* ;
 expr
   : '(' expr ')' # bracketExpression
   | ID '(' (expr (',' expr)*)? ')' # functionCallExpression
+  | '-' expr # unaryMinusExpression
   | expr ( '*' | '/' ) expr # multDifExpression
   | expr ( '+' | '-' ) expr # plusMinusExpression
   | ID # symbolReferenceExpression

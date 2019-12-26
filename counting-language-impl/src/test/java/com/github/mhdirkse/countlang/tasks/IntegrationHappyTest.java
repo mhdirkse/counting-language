@@ -48,7 +48,11 @@ public class IntegrationHappyTest implements OutputStrategy
             {"function myFun(x) {return x}; print myFun(2 + 3)", "5"},
             {"function myFun() {return 10}; print myFun()", "10"}, // Function without arguments.
             {"x = 5; print x;", "5"}, // Allow extra ; outside functions.
-            {"function fun() {return 5;}; print 5", "5"} // Allow extra ; within function.
+            {"function fun() {return 5;}; print 5", "5"}, // Allow extra ; within function.
+            {"x = 5; print -x", "-5"}, // The unary minus.
+            {"x = 5; y = 3; print x - - y", "8"}, // Combine unary minus with ordinary minus.
+            {"x = 5; y = 3; print x*-y", "-15"}, // Combine unary minus with multiplication.
+            {"x = 5; y = 3; print -x-y", "-8"} // Have unary minus as first child of binary operator.
         });
     }
 

@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
+import com.github.mhdirkse.countlang.lang.CountlangParser.UnaryMinusExpressionContext;
 
 abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandler {
     AbstractExpressionHandler2() {
@@ -39,6 +40,16 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
             @NotNull final CountlangParser.PlusMinusExpressionContext antlrCtx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return setOperatorExpressionListener(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean enterUnaryMinusExpression(
+    		UnaryMinusExpressionContext antlrCtx,
+    		HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+    	int line = antlrCtx.start.getLine();
+    	int column = antlrCtx.start.getCharPositionInLine();
+    	delegationCtx.addFirst(new UnaryMinusExpressionHandler(line, column));
+    	return true;
     }
 
     @Override
@@ -89,6 +100,13 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
             @NotNull final CountlangParser.PlusMinusExpressionContext antlrCtx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleExpressionExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitUnaryMinusExpression(
+    		@NotNull UnaryMinusExpressionContext antlrCtx,
+    		HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+    	return handleExpressionExit(delegationCtx);
     }
 
     @Override
