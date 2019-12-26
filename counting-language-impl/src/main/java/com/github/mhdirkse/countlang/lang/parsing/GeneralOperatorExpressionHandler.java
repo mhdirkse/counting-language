@@ -10,9 +10,9 @@ import com.github.mhdirkse.countlang.ast.Operator.OperatorDivide;
 import com.github.mhdirkse.countlang.ast.Operator.OperatorMultiply;
 import com.github.mhdirkse.countlang.ast.Operator.OperatorSubtract;
 
-class OperatorExpressionHandler2 extends AbstractExpressionHandler2
-implements ExpressionSource, TerminalStrategyCallback2 {
-    private final TerminalStrategy2 terminalStrategy;
+class GeneralOperatorExpressionHandler extends AbstractExpressionHandler
+implements ExpressionSource, TerminalFilterCallback {
+    private final TerminalFilter terminalFilter;
     private CompositeExpression expression;
 
     @Override
@@ -20,9 +20,9 @@ implements ExpressionSource, TerminalStrategyCallback2 {
         return expression;
     }
 
-    OperatorExpressionHandler2(final int line, final int column) {
+    GeneralOperatorExpressionHandler(final int line, final int column) {
         expression = new CompositeExpression(line, column);
-        terminalStrategy = new TerminalStrategy2(this);
+        terminalFilter = new TerminalFilter(this);
     }
 
     @Override
@@ -34,12 +34,12 @@ implements ExpressionSource, TerminalStrategyCallback2 {
     public boolean visitTerminal(
             final TerminalNode node,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return terminalStrategy.visitTerminal(node, delegationCtx);
+        return terminalFilter.visitTerminal(node, delegationCtx);
     }
 
     @Override
     public int getRequiredType() {
-        return AbstractTerminalHandler2.ANY_TYPE;
+        return AbstractTerminalHandler.ANY_TYPE;
     }
 
     @Override

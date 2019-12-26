@@ -8,9 +8,9 @@ import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 
-class AssignmentStatementHandler2 extends AbstractExpressionHandler2
-implements StatementSource, TerminalStrategyCallback2 {
-    private final TerminalStrategy2 terminalStrategy;
+class AssignmentStatementHandler extends AbstractExpressionHandler
+implements StatementSource, TerminalFilterCallback {
+    private final TerminalFilter terminalFilter;
     private AssignmentStatement statement;
 
     @Override
@@ -18,15 +18,15 @@ implements StatementSource, TerminalStrategyCallback2 {
         return statement;
     }
 
-    AssignmentStatementHandler2(final int line, final int column) {
+    AssignmentStatementHandler(final int line, final int column) {
         statement = new AssignmentStatement(line, column);
-        terminalStrategy = new TerminalStrategy2(this);
+        terminalFilter = new TerminalFilter(this);
     }
 
     @Override
     public boolean visitTerminal(
             final TerminalNode node, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return terminalStrategy.visitTerminal(node, delegationCtx);
+        return terminalFilter.visitTerminal(node, delegationCtx);
     }
 
     @Override

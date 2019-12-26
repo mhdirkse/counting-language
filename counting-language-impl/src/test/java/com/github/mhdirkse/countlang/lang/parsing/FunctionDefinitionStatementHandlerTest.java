@@ -16,7 +16,7 @@ import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 @RunWith(EasyMockRunner.class)
 public class FunctionDefinitionStatementHandlerTest {
-    private FunctionDefinitionStatementHandler2 instance;
+    private FunctionDefinitionStatementHandler instance;
 
     @Mock(type = MockType.STRICT)
     private DelegationContext delegationContext;
@@ -26,7 +26,7 @@ public class FunctionDefinitionStatementHandlerTest {
 
     @Before
     public void setUp() {
-        instance = new FunctionDefinitionStatementHandler2(1, 1);
+        instance = new FunctionDefinitionStatementHandler(1, 1);
     }
 
     @Test

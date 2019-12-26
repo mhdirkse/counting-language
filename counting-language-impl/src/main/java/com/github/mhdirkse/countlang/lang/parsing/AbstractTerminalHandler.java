@@ -4,13 +4,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 
-abstract class AbstractTerminalHandler2
+abstract class AbstractTerminalHandler
 extends AbstractCountlangListenerHandler
-implements TerminalStrategyCallback2
+implements TerminalFilterCallback
 {
     static int ANY_TYPE = -1;
 
-    AbstractTerminalHandler2() {
+    AbstractTerminalHandler() {
         super(false);
     }
 

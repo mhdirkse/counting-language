@@ -4,7 +4,7 @@ import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class SymbolReferenceExpressionHandler2 extends AbstractTerminalHandler2 implements ExpressionSource {
+class SymbolReferenceExpressionHandler extends AbstractTerminalHandler implements ExpressionSource {
     SymbolExpression expression;
 
     @Override
@@ -12,7 +12,7 @@ class SymbolReferenceExpressionHandler2 extends AbstractTerminalHandler2 impleme
         return expression;
     }
 
-    SymbolReferenceExpressionHandler2(final int line, final int column) {
+    SymbolReferenceExpressionHandler(final int line, final int column) {
         expression = new SymbolExpression(line, column);
     }
 

@@ -6,8 +6,8 @@ import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-abstract class AbstractStatementGroupHandler2 extends AbstractCountlangListenerHandler {
-    AbstractStatementGroupHandler2() {
+abstract class AbstractStatementGroupHandler extends AbstractCountlangListenerHandler {
+    AbstractStatementGroupHandler() {
         super(false);
     }
 
@@ -16,7 +16,7 @@ abstract class AbstractStatementGroupHandler2 extends AbstractCountlangListenerH
             @NotNull CountlangParser.PrintStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new PrintStatementHandler2(line, column));
+        delegationCtx.addFirst(new PrintStatementHandler(line, column));
         return true;
     }
 
@@ -25,7 +25,7 @@ abstract class AbstractStatementGroupHandler2 extends AbstractCountlangListenerH
             @NotNull CountlangParser.AssignmentStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new AssignmentStatementHandler2(line, column));
+        delegationCtx.addFirst(new AssignmentStatementHandler(line, column));
         return true;
     }
 
@@ -34,7 +34,7 @@ abstract class AbstractStatementGroupHandler2 extends AbstractCountlangListenerH
             @NotNull CountlangParser.ReturnStatementContext ctx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new ReturnStatementHandler2(line, column));
+        delegationCtx.addFirst(new ReturnStatementHandler(line, column));
         return true;
     }
 
@@ -43,7 +43,7 @@ abstract class AbstractStatementGroupHandler2 extends AbstractCountlangListenerH
             CountlangParser.FunctionDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new FunctionDefinitionStatementHandler2(line, column));
+        delegationCtx.addFirst(new FunctionDefinitionStatementHandler(line, column));
         return true;
     }
 

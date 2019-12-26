@@ -10,9 +10,9 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class FunctionDefinitionStatementHandler2 extends AbstractStatementGroupHandler2
-implements StatementSource, TerminalStrategyCallback2 {
-    private final TerminalStrategy2 terminalStrategy;
+class FunctionDefinitionStatementHandler extends AbstractStatementGroupHandler
+implements StatementSource, TerminalFilterCallback {
+    private final TerminalFilter terminalFilter;
     private FunctionDefinitionStatement statement;
 
     @Override
@@ -20,9 +20,9 @@ implements StatementSource, TerminalStrategyCallback2 {
         return statement;
     }
 
-    FunctionDefinitionStatementHandler2(final int line, final int column) {
+    FunctionDefinitionStatementHandler(final int line, final int column) {
         statement = new FunctionDefinitionStatement(line, column);
-        terminalStrategy = new TerminalStrategy2(this);
+        terminalFilter = new TerminalFilter(this);
     }
 
     @Override
@@ -34,7 +34,7 @@ implements StatementSource, TerminalStrategyCallback2 {
     public boolean visitTerminal(
             @NotNull TerminalNode node,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return terminalStrategy.visitTerminal(node, delegationCtx);
+        return terminalFilter.visitTerminal(node, delegationCtx);
     }
 
     @Override
@@ -51,7 +51,7 @@ implements StatementSource, TerminalStrategyCallback2 {
     public boolean enterVarDecls(
             @NotNull CountlangParser.VarDeclsContext antlrCtx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        delegationCtx.addFirst(new VarDeclsHandler2());
+        delegationCtx.addFirst(new VarDeclsHandler());
         return true;
     }
 
@@ -62,7 +62,7 @@ implements StatementSource, TerminalStrategyCallback2 {
         if (delegationCtx.isFirst()) {
             return false;
         } else {
-            List<String> formalParameters = ((VarDeclsHandler2) delegationCtx.getPreviousHandler()).getFormalParameters();
+            List<String> formalParameters = ((VarDeclsHandler) delegationCtx.getPreviousHandler()).getFormalParameters();
             for (String formalParameter : formalParameters) {
                 statement.addFormalParameter(formalParameter);
             }

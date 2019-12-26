@@ -7,7 +7,7 @@ import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.Operator;
 
-class UnaryMinusExpressionHandler extends AbstractExpressionHandler2 implements ExpressionSource {
+class UnaryMinusExpressionHandler extends AbstractExpressionHandler implements ExpressionSource {
 	private CompositeExpression expression;
 
 	UnaryMinusExpressionHandler(int line, int column) {

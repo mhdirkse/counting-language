@@ -8,9 +8,9 @@ import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class FunctionCallExpressionHandler2 extends AbstractExpressionHandler2
-implements ExpressionSource, TerminalStrategyCallback2 {
-    private final TerminalStrategy2 terminalStrategy;
+class FunctionCallExpressionHandler extends AbstractExpressionHandler
+implements ExpressionSource, TerminalFilterCallback {
+    private final TerminalFilter terminalFilter;
     private FunctionCallExpression expression;
 
     @Override
@@ -18,9 +18,9 @@ implements ExpressionSource, TerminalStrategyCallback2 {
         return expression;
     }
 
-    FunctionCallExpressionHandler2(final int line, final int column) {
+    FunctionCallExpressionHandler(final int line, final int column) {
         expression = new FunctionCallExpression(line, column);
-        terminalStrategy = new TerminalStrategy2(this);
+        terminalFilter = new TerminalFilter(this);
     }
 
     @Override
@@ -32,7 +32,7 @@ implements ExpressionSource, TerminalStrategyCallback2 {
     public boolean visitTerminal(
             @NotNull final TerminalNode node,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return terminalStrategy.visitTerminal(node, delegationCtx);
+        return terminalFilter.visitTerminal(node, delegationCtx);
     }
 
     @Override

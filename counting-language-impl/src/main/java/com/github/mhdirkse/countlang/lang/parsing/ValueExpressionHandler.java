@@ -6,7 +6,7 @@ import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.Value;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class ValueExpressionHandler2 extends AbstractTerminalHandler2 implements ExpressionSource {
+class ValueExpressionHandler extends AbstractTerminalHandler implements ExpressionSource {
     private ValueExpression expression;
 
     @Override
@@ -14,7 +14,7 @@ class ValueExpressionHandler2 extends AbstractTerminalHandler2 implements Expres
         return expression;
     }
 
-    ValueExpressionHandler2(final int line, final int column) {
+    ValueExpressionHandler(final int line, final int column) {
         expression = new ValueExpression(line, column);
     }
 

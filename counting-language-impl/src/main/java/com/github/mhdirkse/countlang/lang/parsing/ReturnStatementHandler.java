@@ -4,7 +4,7 @@ import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 
-class ReturnStatementHandler2 extends AbstractExpressionHandler2 implements StatementSource {
+class ReturnStatementHandler extends AbstractExpressionHandler implements StatementSource {
     private ReturnStatement statement;
 
     @Override
@@ -12,7 +12,7 @@ class ReturnStatementHandler2 extends AbstractExpressionHandler2 implements Stat
         return statement;
     }
 
-    ReturnStatementHandler2(final int line, final int column) {
+    ReturnStatementHandler(final int line, final int column) {
         statement = new ReturnStatement(line, column);
     }
 

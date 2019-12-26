@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class VarDeclsHandler2 extends AbstractTerminalHandler2 {
+class VarDeclsHandler extends AbstractTerminalHandler {
     private List<String> formalParameters = new ArrayList<>();
 
     List<String> getFormalParameters() {

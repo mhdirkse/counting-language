@@ -1,9 +1,9 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
-class TerminalStrategy2 extends AbstractTerminalHandler2 {
-    private final TerminalStrategyCallback2 callback;
+class TerminalFilter extends AbstractTerminalHandler {
+    private final TerminalFilterCallback callback;
 
-    TerminalStrategy2(final TerminalStrategyCallback2 callback) {
+    TerminalFilter(final TerminalFilterCallback callback) {
         this.callback = callback;
     }
 

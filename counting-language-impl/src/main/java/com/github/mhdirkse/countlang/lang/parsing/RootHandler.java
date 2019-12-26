@@ -22,14 +22,14 @@ class RootHandler extends AbstractCountlangListenerHandler {
             @NotNull CountlangParser.ProgContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new ProgHandler2(line, column));
+        delegationCtx.addFirst(new ProgHandler(line, column));
         return true;
     }
 
     @Override
     public boolean exitProg(
             @NotNull CountlangParser.ProgContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        program = ((ProgHandler2) delegationCtx.getPreviousHandler()).getProgram();
+        program = ((ProgHandler) delegationCtx.getPreviousHandler()).getProgram();
         delegationCtx.removeAllPreceeding();
         return true;
     }

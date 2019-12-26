@@ -7,8 +7,8 @@ import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 import com.github.mhdirkse.countlang.lang.CountlangParser.UnaryMinusExpressionContext;
 
-abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandler {
-    AbstractExpressionHandler2() {
+abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandler {
+    AbstractExpressionHandler() {
         super(false);
     }
 
@@ -17,7 +17,7 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
             CountlangParser.FunctionCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new FunctionCallExpressionHandler2(line, column));
+        delegationCtx.addFirst(new FunctionCallExpressionHandler(line, column));
         return true;
     }
 
@@ -31,7 +31,7 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
             @NotNull final CountlangParser.ExprContext ctx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new OperatorExpressionHandler2(line, column));
+        delegationCtx.addFirst(new GeneralOperatorExpressionHandler(line, column));
         return true;   
     }
 
@@ -58,7 +58,7 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new SymbolReferenceExpressionHandler2(line, column));
+        delegationCtx.addFirst(new SymbolReferenceExpressionHandler(line, column));
         return true;
     }
 
@@ -68,7 +68,7 @@ abstract class AbstractExpressionHandler2 extends AbstractCountlangListenerHandl
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new ValueExpressionHandler2(line, column));
+        delegationCtx.addFirst(new ValueExpressionHandler(line, column));
         return true;
     }
 
