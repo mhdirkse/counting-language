@@ -1,18 +1,24 @@
 package com.github.mhdirkse.countlang.execution;
 
 public enum CountlangType {
-    UNKNOWN(Object.class),
-    INT(Integer.class),
-    BOOL(Boolean.class);
+    UNKNOWN(Object.class, null),
+    INT(Integer.class, new Integer(1)),
+    BOOL(Boolean.class, new Boolean(true));
     
     private final Class<?> implementationClass;
-    
-    CountlangType(Class<?> implementationClass) {
+    private final Object example;
+
+    CountlangType(Class<?> implementationClass, Object example) {
         this.implementationClass = implementationClass;
+        this.example = example;
     }
 
     public boolean matches(Class<?> clazz) {
         return implementationClass.isAssignableFrom(clazz); 
+    }
+
+    public Object getExample() {
+        return example;
     }
 
     public static CountlangType typeOf(Object value) {

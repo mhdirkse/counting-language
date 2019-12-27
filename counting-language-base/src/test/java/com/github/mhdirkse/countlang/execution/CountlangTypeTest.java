@@ -23,4 +23,14 @@ public class CountlangTypeTest {
     public void testIntDoesNotMatchLongValue() {
         Assert.assertFalse(CountlangType.INT.matches(Long.class));
     }
+
+    @Test
+    public void testAllCountlangTypesHaveCorrectExample() {
+        for(CountlangType t : CountlangType.values()) {
+            if(t == CountlangType.UNKNOWN) {
+                continue;
+            }
+            Assert.assertTrue(t.matches(t.getExample().getClass()));
+        }
+    }
 }
