@@ -15,7 +15,6 @@ import org.junit.rules.ExpectedException;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.RunnableFunction;
-import com.github.mhdirkse.countlang.execution.Value;
 
 public class FunctionCallExpressionTest extends EasyMockSupport {
     private static final int FUNCTION_RESULT = 5;
@@ -34,15 +33,15 @@ public class FunctionCallExpressionTest extends EasyMockSupport {
         FunctionCallExpression instance = new FunctionCallExpression(1, 1);
         instance.setFunctionName("myFunction");
         instance.addArgument(new ValueExpression(1, 1));
-        Value result = instance.calculate(ctx);
-        Assert.assertEquals(FUNCTION_RESULT, result.getValue());
+        Object result = instance.calculate(ctx);
+        Assert.assertEquals(FUNCTION_RESULT, result);
         verifyAll();
     }
 
     @SuppressWarnings("unchecked")
     private void expectRunFunction(final RunnableFunction functionMock, ExecutionContext ctxMock) {
         expect(functionMock.runFunction(anyObject(List.class), same(ctxMock)))
-        .andReturn(new Value(FUNCTION_RESULT));
+        .andReturn(Integer.valueOf(FUNCTION_RESULT));
     }
 
     @Test

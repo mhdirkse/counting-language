@@ -16,17 +16,17 @@ public final class ExecutionContextImpl implements ExecutionContext {
     }
 
     @Override
-    public Value getValue(String name) {
+    public Object getValue(String name) {
         return scope.getValue(name);
     }
 
     @Override
-    public void putSymbol(String name, Value value) {
+    public void putSymbol(String name, Object value) {
         scope.putSymbol(name, value);
     }
 
     @Override
-    public void putSymbolInNewFrame(String name, Value value) {
+    public void putSymbolInNewFrame(String name, Object value) {
     	newStackFrame.putSymbol(name, value);
     }
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.Value;
 
 public final class CompositeExpression extends ExpressionNode implements CompositeNode {
     private Operator operator = null;
@@ -35,8 +34,8 @@ public final class CompositeExpression extends ExpressionNode implements Composi
     }
 
     @Override
-    public Value calculate(final ExecutionContext ctx) {
-        List<Value> arguments = new ArrayList<Value>();
+    public Object calculate(final ExecutionContext ctx) {
+        List<Object> arguments = new ArrayList<Object>();
         for (ExpressionNode subExpression : subExpressions) {
             arguments.add(subExpression.calculate(ctx));
         }

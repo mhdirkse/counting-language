@@ -1,13 +1,12 @@
 package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
-import com.github.mhdirkse.countlang.execution.Value;
 
 public final class TestFunctionDefinitions {
 
     static final int ADDED_VALUE = 5;
     static final int VALUE_OF_X = 3;
-    static final Value VALUE_OF_X_AS_VALUE = new Value(VALUE_OF_X);
+    static final Object VALUE_OF_X_AS_VALUE = Integer.valueOf(VALUE_OF_X);
     static final String FORMAL_PARAMETER = "x";
 
     private TestFunctionDefinitions() {        
@@ -53,7 +52,7 @@ public final class TestFunctionDefinitions {
 
         CompositeExpression getStatementExpression() {
             ValueExpression ex11 = new ValueExpression(1, 1);
-            ex11.setValue(new Value(ADDED_VALUE));
+            ex11.setValue(ADDED_VALUE);
             SymbolExpression ex12 = new SymbolExpression(1, 1);
             ex12.setSymbol(FORMAL_PARAMETER);
             CompositeExpression ex1 = new CompositeExpression(1, 1);

@@ -4,11 +4,11 @@ public interface ExecutionContext {
 
     boolean hasSymbol(String name);
 
-    Value getValue(String name);
+    Object getValue(String name);
 
-    void putSymbol(String name, Value value);
+    void putSymbol(String name, Object value);
 
-    void putSymbolInNewFrame(String name, Value value);
+    void putSymbolInNewFrame(String name, Object value);
 
     boolean hasFunction(String name);
 

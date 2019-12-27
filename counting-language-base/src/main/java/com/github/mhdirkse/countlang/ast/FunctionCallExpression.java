@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.Value;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +29,7 @@ public class FunctionCallExpression extends ExpressionNode implements CompositeN
     }
 
     @Override
-    public Value calculate(final ExecutionContext ctx) {
+    public Object calculate(final ExecutionContext ctx) {
         if (ctx.hasFunction(functionName)) {
             return ctx.getFunction(functionName).runFunction(arguments, ctx);
         } else {

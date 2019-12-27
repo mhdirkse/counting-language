@@ -51,7 +51,7 @@ public class OperatorsTest extends AstConstructionTestBase {
                 expression.getSubExpression(0), ValueExpression.class);
         ValueExpression expression2 = checkExpressionType(
                 expression.getSubExpression(1), ValueExpression.class);
-        Assert.assertEquals(first, expression1.getValue().getValue());
-        Assert.assertEquals(second, expression2.getValue().getValue());
+        Assert.assertEquals(first, ((Integer) expression1.getValue()).intValue());
+        Assert.assertEquals(second, ((Integer) expression2.getValue()).intValue());
     }
 }

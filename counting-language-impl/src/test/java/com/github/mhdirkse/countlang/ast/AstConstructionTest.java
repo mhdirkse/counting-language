@@ -15,7 +15,7 @@ public class AstConstructionTest extends AstConstructionTestBase {
                 ast.getStatement(0), PrintStatement.class);
         ValueExpression expression = checkExpressionType(
                 statement.getExpression(), ValueExpression.class);
-        Assert.assertEquals(printedValue, expression.getValue().getValue());
+        Assert.assertEquals(printedValue, expression.getValue());
     }
 
     @Test
@@ -30,7 +30,7 @@ public class AstConstructionTest extends AstConstructionTestBase {
         Assert.assertEquals("x", statement.getLhs());
         ValueExpression expression = checkExpressionType(
                 statement.getRhs(), ValueExpression.class);
-        Assert.assertEquals(assignedValue, expression.getValue().getValue());
+        Assert.assertEquals(assignedValue, expression.getValue());
     }
 
     @Test
@@ -49,7 +49,7 @@ public class AstConstructionTest extends AstConstructionTestBase {
                 statement1.getRhs(), ValueExpression.class);
         SymbolExpression expression22 = checkExpressionType(
                 statement2.getExpression(), SymbolExpression.class);
-        Assert.assertEquals(assignedValue, expression11.getValue().getValue());
+        Assert.assertEquals(assignedValue, expression11.getValue());
         Assert.assertEquals("z", expression22.getSymbol());
     }
 }

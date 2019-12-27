@@ -30,8 +30,9 @@ public class ExpressionTest extends AstConstructionTestBase {
     }
 
     private void checkValue(final int expected) {
-        Assert.assertEquals(expected, expression.calculate(new ExecutionContextImpl(
-                new TestOutputStrategy())).getValue(), expected);
+        Assert.assertEquals(expected, ((Integer) (
+        		expression.calculate(new ExecutionContextImpl(new TestOutputStrategy()))
+        )).intValue());
     }
 
     @Test
@@ -54,15 +55,15 @@ public class ExpressionTest extends AstConstructionTestBase {
                 expression.getSubExpression(0), ValueExpression.class);
         CompositeExpression arg2 = checkExpressionType(
                 expression.getSubExpression(1), CompositeExpression.class);
-        Assert.assertEquals(first, arg1.getValue().getValue());
+        Assert.assertEquals(first, ((Integer) arg1.getValue()).intValue());
         Assert.assertEquals("*", arg2.getOperator().getName());
         Assert.assertEquals(2, arg2.getNumSubExpressions());
         ValueExpression arg21 = checkExpressionType(
                 arg2.getSubExpression(0), ValueExpression.class);
         ValueExpression arg22 = checkExpressionType(
                 arg2.getSubExpression(1), ValueExpression.class);
-        Assert.assertEquals(second, arg21.getValue().getValue());
-        Assert.assertEquals(third, arg22.getValue().getValue());
+        Assert.assertEquals(second, ((Integer) arg21.getValue()).intValue());
+        Assert.assertEquals(third, ((Integer) arg22.getValue()).intValue());
     }
 
     @Test
@@ -81,9 +82,9 @@ public class ExpressionTest extends AstConstructionTestBase {
                 arg1.getSubExpression(0), ValueExpression.class);
         ValueExpression arg12 = checkExpressionType(
                 arg1.getSubExpression(1), ValueExpression.class);
-        Assert.assertEquals(first, arg11.getValue().getValue());
-        Assert.assertEquals(second, arg12.getValue().getValue());
-        Assert.assertEquals(third, arg2.getValue().getValue());
+        Assert.assertEquals(first, ((Integer) arg11.getValue()).intValue());
+        Assert.assertEquals(second, ((Integer) arg12.getValue()).intValue());
+        Assert.assertEquals(third, ((Integer) arg2.getValue()).intValue());
     }
 
     @Test
@@ -97,9 +98,9 @@ public class ExpressionTest extends AstConstructionTestBase {
         Assert.assertEquals(2, arg2.getNumSubExpressions());
         ValueExpression arg21 = checkExpressionType(arg2.getSubExpression(0), ValueExpression.class);
         ValueExpression arg22 = checkExpressionType(arg2.getSubExpression(1), ValueExpression.class);
-        Assert.assertEquals(first, arg1.getValue().getValue());
-        Assert.assertEquals(second, arg21.getValue().getValue());
-        Assert.assertEquals(third, arg22.getValue().getValue());
+        Assert.assertEquals(first, ((Integer) arg1.getValue()).intValue());
+        Assert.assertEquals(second, ((Integer) arg21.getValue()).intValue());
+        Assert.assertEquals(third, ((Integer) arg22.getValue()).intValue());
     }
 
     @Test
@@ -118,8 +119,8 @@ public class ExpressionTest extends AstConstructionTestBase {
                 arg1.getSubExpression(0), ValueExpression.class);
         ValueExpression arg12 = checkExpressionType(
                 arg1.getSubExpression(1), ValueExpression.class);
-        Assert.assertEquals(first, arg11.getValue().getValue());
-        Assert.assertEquals(second, arg12.getValue().getValue());
-        Assert.assertEquals(third, arg2.getValue().getValue());
+        Assert.assertEquals(first, ((Integer) arg11.getValue()).intValue());
+        Assert.assertEquals(second, ((Integer) arg12.getValue()).intValue());
+        Assert.assertEquals(third, ((Integer) arg2.getValue()).intValue());
     }
 }

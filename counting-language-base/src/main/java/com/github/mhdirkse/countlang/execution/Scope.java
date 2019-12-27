@@ -14,11 +14,11 @@ final class Scope {
         return frames.getLast().hasSymbol(name);
     }
 
-    public Value getValue(String name) {
+    public Object getValue(String name) {
         return frames.getLast().getValue(name);
     }
 
-    public void putSymbol(String name, Value value) {
+    public void putSymbol(String name, Object value) {
         frames.getLast().putSymbol(name, value);
     }
 

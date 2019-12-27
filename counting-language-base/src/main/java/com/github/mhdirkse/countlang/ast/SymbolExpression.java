@@ -2,7 +2,6 @@ package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.Value;
 
 public final class SymbolExpression extends ExpressionNode {
     private String symbol = null;
@@ -20,7 +19,7 @@ public final class SymbolExpression extends ExpressionNode {
     }
 
     @Override
-    public Value calculate(final ExecutionContext ctx) {
+    public Object calculate(final ExecutionContext ctx) {
         if (ctx.hasSymbol(symbol)) {
             return ctx.getValue(symbol);
         } else {

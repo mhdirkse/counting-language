@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface RunnableFunction {
     String getName();
-    Value runFunction(List<? extends Expression> actualParameters, ExecutionContext ctx);
+    Object runFunction(List<? extends Expression> actualParameters, ExecutionContext ctx);
 }

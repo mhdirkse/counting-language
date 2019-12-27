@@ -7,7 +7,6 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Expression;
 import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.RunnableFunction;
-import com.github.mhdirkse.countlang.execution.Value;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -60,7 +59,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     }
 
     @Override
-    public Value runFunction(
+    public Object runFunction(
             final List<? extends Expression> actualParameters,
             final ExecutionContext ctx) {
         return new FunctionRun(actualParameters, ctx).run();
@@ -81,14 +80,14 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         private ExecutionContext ctx;
         private List<? extends Expression> actualParameters;
 
-        private Value result = null;
+        private Object result = null;
  
         FunctionRun(final List<? extends Expression> actualParameters, final ExecutionContext ctx) {
             this.actualParameters = actualParameters;
             this.ctx = ctx;
         }
 
-        public Value run() {
+        public Object run() {
         	ctx.startPreparingNewFrame();
             formalParameters.fillNewStackFrame(actualParameters, ctx);
             StatementWalker statementWalker = new StatementWalker(statements);

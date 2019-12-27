@@ -21,7 +21,6 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.Value;
 
 public class FunctionDefinitionStatementTest implements OutputStrategy {
     private List<String> outputs;
@@ -61,11 +60,11 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         		TestFunctionDefinitions.FORMAL_PARAMETER, TestFunctionDefinitions.VALUE_OF_X_AS_VALUE);
         ctx.pushNewFrame();
         expect(ctx.hasSymbol(functionCreator.getFormalParameter())).andReturn(true);
-        expect(ctx.getValue(functionCreator.getFormalParameter())).andReturn(new Value(functionCreator.getParameterValue()));
+        expect(ctx.getValue(functionCreator.getFormalParameter())).andReturn(Integer.valueOf(functionCreator.getParameterValue()));
         ctx.popFrame();
         replay(ctx);
-        Value result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
-        Assert.assertEquals(functionCreator.getExpectedResult(), result.getValue());
+        Object result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
+        Assert.assertEquals(functionCreator.getExpectedResult(), result);
         verify(ctx);
     }
 
@@ -74,8 +73,8 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         FunctionCreatorValidFunction functionCreator = new FunctionCreatorValidFunction();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = new ExecutionContextImpl(this);
-        Value result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
-        Assert.assertEquals(functionCreator.getExpectedResult(), result.getValue());
+        Object result = instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);
+        Assert.assertEquals(functionCreator.getExpectedResult(), result);
         Assert.assertEquals(0, outputs.size());
         Assert.assertEquals(0, errors.size());
     }
@@ -124,7 +123,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         @Override
         void handleExtraStatement() {
             ValueExpression ex = new ValueExpression(1, 1);
-            ex.setValue(new Value(TestFunctionDefinitions.ADDED_VALUE));
+            ex.setValue(Integer.valueOf(TestFunctionDefinitions.ADDED_VALUE));
             PrintStatement statement = new PrintStatement(1, 1);
             statement.setExpression(ex);
             instance.addStatement(statement);

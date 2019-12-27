@@ -3,7 +3,6 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.Value;
 
 public abstract class Operator extends AstNode {
     public Operator(final int line, final int column) {
@@ -12,17 +11,17 @@ public abstract class Operator extends AstNode {
 
     public abstract String getName();
 
-    public final Value execute(final List<Value> arguments) {
+    public final Object execute(final List<Object> arguments) {
         long longResult = getLongResult(arguments);
         if((longResult < Integer.MIN_VALUE) || (longResult > Integer.MAX_VALUE)) {
             throw new ProgramException(getLine(), getColumn(), "Overflow or underflow");
         }
         else {
-            return new Value((int) longResult);
+        	return Integer.valueOf((int) longResult);
         }
     }
 
-    abstract long getLongResult(final List<Value> arguments);
+    abstract long getLongResult(final List<Object> arguments);
 
     @Override
     public void accept(final Visitor v) {
@@ -40,8 +39,8 @@ public abstract class Operator extends AstNode {
     	}
 
     	@Override
-    	long getLongResult(final List<Value> arguments) {
-    		long arg = (long) arguments.get(0).getValue();
+    	long getLongResult(final List<Object> arguments) {
+    		long arg = (Integer) arguments.get(0);
     		return -arg;
     	}
     }
@@ -52,9 +51,9 @@ public abstract class Operator extends AstNode {
     	}
 
     	@Override
-    	final long getLongResult(final List<Value> arguments) {
-    		long firstArg = (long) arguments.get(0).getValue();
-            long secondArg = (long) arguments.get(1).getValue();
+    	final long getLongResult(final List<Object> arguments) {
+    		long firstArg = (Integer) arguments.get(0);
+            long secondArg = (Integer) arguments.get(1);
             return executeUnchecked(firstArg, secondArg);
     	}
 
