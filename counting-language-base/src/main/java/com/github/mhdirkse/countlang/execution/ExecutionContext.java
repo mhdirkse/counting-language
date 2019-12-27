@@ -6,6 +6,8 @@ public interface ExecutionContext {
 
     Object getValue(String name);
 
+    CountlangType getType(String name);
+
     void putSymbol(String name, Object value);
 
     void putSymbolInNewFrame(String name, Object value);

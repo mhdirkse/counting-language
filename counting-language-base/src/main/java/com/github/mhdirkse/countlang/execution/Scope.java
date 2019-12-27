@@ -18,6 +18,10 @@ final class Scope {
         return frames.getLast().getValue(name);
     }
 
+    public CountlangType getCountlangType(String name) {
+        return frames.getLast().getCountlangType(name);
+    }
+
     public void putSymbol(String name, Object value) {
         frames.getLast().putSymbol(name, value);
     }

@@ -21,6 +21,11 @@ public final class ExecutionContextImpl implements ExecutionContext {
     }
 
     @Override
+    public CountlangType getType(String name) {
+        return scope.getCountlangType(name);
+    }
+
+    @Override
     public void putSymbol(String name, Object value) {
         scope.putSymbol(name, value);
     }

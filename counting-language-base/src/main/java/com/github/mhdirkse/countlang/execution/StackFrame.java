@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 class StackFrame {
-    private Map<String, Object> symbols;
+    private Map<String, Symbol> symbols;
 
     StackFrame() {
-        symbols = new HashMap<String, Object>();
+        symbols = new HashMap<String, Symbol>();
     }
 
     boolean hasSymbol(String name) {
@@ -15,10 +15,16 @@ class StackFrame {
     }
 
     Object getValue(String name) {
-        return symbols.get(name);
+        return symbols.get(name).getValue();
+    }
+
+    CountlangType getCountlangType(String name) {
+        return symbols.get(name).getCountlangType();
     }
 
     void putSymbol(String name, Object value) {
-        symbols.put(name, value);
+        Symbol symbol = new Symbol(name);
+        symbol.setValue(value);
+        symbols.put(name, symbol);
     }
 }
