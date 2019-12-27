@@ -27,7 +27,14 @@ final class Symbol {
         if(value == null) {
             throw new NullPointerException();
         }
-        this.countlangType = CountlangType.typeOf(value);
+        CountlangType newCountlangType = CountlangType.typeOf(value);
+        if(countlangType == CountlangType.UNKNOWN) {
+            this.countlangType = CountlangType.typeOf(value);
+        } else if(newCountlangType != countlangType) {
+            throw new IllegalArgumentException(String.format(
+                    "Attempt to change type of symbol %s from %s to %s",
+                    name, countlangType.toString(), newCountlangType.toString()));
+        }
         this.value = value;
     }
 }
