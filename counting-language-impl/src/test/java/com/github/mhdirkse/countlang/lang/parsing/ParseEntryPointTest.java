@@ -12,7 +12,7 @@ public class ParseEntryPointTest {
 
     @Before
     public void setUp() {
-        fakeNode = new SymbolExpression(1, 1);
+        fakeNode = new SymbolExpression(1, 1, "x");
         instance = new ParseEntryPoint();
         instance.node = fakeNode;
     }

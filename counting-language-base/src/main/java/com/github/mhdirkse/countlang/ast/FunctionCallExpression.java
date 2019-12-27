@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.execution.CountlangType;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramException;
 
@@ -14,6 +15,10 @@ public class FunctionCallExpression extends ExpressionNode implements CompositeN
     @Setter
     private String functionName = null;
 
+    @Getter
+    @Setter
+    private CountlangType countlangType;
+    
     private List<ExpressionNode> arguments = new ArrayList<>();
 
     public FunctionCallExpression(final int line, final int column) {

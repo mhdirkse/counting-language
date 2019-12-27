@@ -22,6 +22,9 @@ public enum CountlangType {
     }
 
     public static CountlangType typeOf(Object value) {
+        if(value == null) {
+            throw new IllegalArgumentException("Value null does not exist in the CountLang language");
+        }
         for(CountlangType t: CountlangType.values()) {
             if(t == CountlangType.UNKNOWN) {
                 continue;

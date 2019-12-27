@@ -51,10 +51,8 @@ public final class TestFunctionDefinitions {
         }
 
         CompositeExpression getStatementExpression() {
-            ValueExpression ex11 = new ValueExpression(1, 1);
-            ex11.setValue(ADDED_VALUE);
-            SymbolExpression ex12 = new SymbolExpression(1, 1);
-            ex12.setSymbol(FORMAL_PARAMETER);
+            ValueExpression ex11 = new ValueExpression(1, 1, ADDED_VALUE);
+            SymbolExpression ex12 = new SymbolExpression(1, 1, FORMAL_PARAMETER);
             CompositeExpression ex1 = new CompositeExpression(1, 1);
             ex1.setOperator(new OperatorAdd(1, 1));
             ex1.addSubExpression(ex11);
@@ -63,8 +61,7 @@ public final class TestFunctionDefinitions {
         }
 
         ExpressionNode getActualParameter() {
-            ValueExpression result = new ValueExpression(1, 1);
-            result.setValue(VALUE_OF_X_AS_VALUE);
+            ValueExpression result = new ValueExpression(1, 1, VALUE_OF_X_AS_VALUE);
             return result;
         }
 

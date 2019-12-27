@@ -5,7 +5,9 @@ import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class SymbolReferenceExpressionHandler extends AbstractTerminalHandler implements ExpressionSource {
-    SymbolExpression expression;
+    private final int line;
+    private final int column;
+    private SymbolExpression expression;
 
     @Override
     public ExpressionNode getExpression() {
@@ -13,7 +15,8 @@ class SymbolReferenceExpressionHandler extends AbstractTerminalHandler implement
     }
 
     SymbolReferenceExpressionHandler(final int line, final int column) {
-        expression = new SymbolExpression(line, column);
+        this.line = line;
+        this.column = column;
     }
 
     @Override
@@ -23,6 +26,6 @@ class SymbolReferenceExpressionHandler extends AbstractTerminalHandler implement
 
     @Override
     public void setText(final String text) {
-        expression.setSymbol(text);
+        expression = new SymbolExpression(line, column, text);
     }
 }

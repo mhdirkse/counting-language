@@ -33,4 +33,9 @@ public class CountlangTypeTest {
             Assert.assertTrue(t.matches(t.getExample().getClass()));
         }
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenTypeOfNullThenExceptionThrown() {
+        CountlangType.typeOf(null);
+    }
 }

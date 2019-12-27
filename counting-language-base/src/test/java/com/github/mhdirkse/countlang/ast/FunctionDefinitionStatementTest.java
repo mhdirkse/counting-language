@@ -122,8 +122,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
 
         @Override
         void handleExtraStatement() {
-            ValueExpression ex = new ValueExpression(1, 1);
-            ex.setValue(Integer.valueOf(TestFunctionDefinitions.ADDED_VALUE));
+            ValueExpression ex = new ValueExpression(1, 1, Integer.valueOf(TestFunctionDefinitions.ADDED_VALUE));
             PrintStatement statement = new PrintStatement(1, 1);
             statement.setExpression(ex);
             instance.addStatement(statement);

@@ -1,21 +1,26 @@
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.execution.CountlangType;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ProgramException;
 
-public final class SymbolExpression extends ExpressionNode {
-    private String symbol = null;
+import lombok.Getter;
+import lombok.Setter;
 
-    public SymbolExpression(final int line, final int column) {
+public final class SymbolExpression extends ExpressionNode {
+    private final String symbol;
+
+    @Getter
+    @Setter
+    private CountlangType countlangType = CountlangType.UNKNOWN;
+
+    public SymbolExpression(final int line, final int column, String symbol) {
         super(line, column);
+        this.symbol = symbol;
     }
 
     public String getSymbol() {
         return symbol;
-    }
-
-    public void setSymbol(final String symbol) {
-        this.symbol = symbol;
     }
 
     @Override

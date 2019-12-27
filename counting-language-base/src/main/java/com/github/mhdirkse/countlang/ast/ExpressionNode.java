@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.execution.CountlangType;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Expression;
 
@@ -10,4 +11,6 @@ public abstract class ExpressionNode extends AstNode implements Expression {
 
     @Override
     public abstract Object calculate(final ExecutionContext ctx);
+
+    public abstract CountlangType getCountlangType();
 }

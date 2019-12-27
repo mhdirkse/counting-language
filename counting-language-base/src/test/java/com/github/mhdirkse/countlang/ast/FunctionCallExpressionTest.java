@@ -18,6 +18,7 @@ import com.github.mhdirkse.countlang.execution.RunnableFunction;
 
 public class FunctionCallExpressionTest extends EasyMockSupport {
     private static final int FUNCTION_RESULT = 5;
+    private static final Integer DUMMY_ARGUMENT = 0;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -32,7 +33,7 @@ public class FunctionCallExpressionTest extends EasyMockSupport {
         replayAll();
         FunctionCallExpression instance = new FunctionCallExpression(1, 1);
         instance.setFunctionName("myFunction");
-        instance.addArgument(new ValueExpression(1, 1));
+        instance.addArgument(new ValueExpression(1, 1, DUMMY_ARGUMENT));
         Object result = instance.calculate(ctx);
         Assert.assertEquals(FUNCTION_RESULT, result);
         verifyAll();
@@ -51,7 +52,7 @@ public class FunctionCallExpressionTest extends EasyMockSupport {
         replayAll();
         FunctionCallExpression instance = new FunctionCallExpression(1, 1);
         instance.setFunctionName("myFunction");
-        instance.addArgument(new ValueExpression(1, 1));
+        instance.addArgument(new ValueExpression(1, 1, DUMMY_ARGUMENT));
         thrown.expect(ProgramException.class);
         thrown.expectMessage("Function not found: myFunction");
         instance.calculate(ctx);
