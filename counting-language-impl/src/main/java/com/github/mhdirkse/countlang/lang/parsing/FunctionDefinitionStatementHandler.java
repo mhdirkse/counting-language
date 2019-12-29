@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
+import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
@@ -62,9 +63,9 @@ implements StatementSource, TerminalFilterCallback {
         if (delegationCtx.isFirst()) {
             return false;
         } else {
-            List<String> formalParameters = ((VarDeclsHandler) delegationCtx.getPreviousHandler()).getFormalParameters();
-            for (String formalParameter : formalParameters) {
-                statement.addFormalParameter(formalParameter);
+            List<FormalParameter> formalParameters = ((VarDeclsHandler) delegationCtx.getPreviousHandler()).getFormalParameters();
+            for (FormalParameter formalParameter : formalParameters) {
+                statement.addFormalParameter(formalParameter.getName(), formalParameter.getCountlangType());
             }
             delegationCtx.removeAllPreceeding();
             return true;

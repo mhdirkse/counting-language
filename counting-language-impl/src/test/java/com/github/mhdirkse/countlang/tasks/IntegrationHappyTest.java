@@ -39,20 +39,55 @@ public class IntegrationHappyTest implements OutputStrategy
             {"print 0 / 3", "0"}, // Do not round unnecessarily.
             {"print 0 / -3", "0"}, // Do not round unnecessarily.
             {"print -5--3", "-2"},
+            {"print true", "true"}, // Boolean operator tests
+            {"print false", "false"},
+            {"print not true", "false"},
+            {"print true and true", "true"},
+            {"print true and false", "false"},
+            {"print true or false", "true"},
+            {"print false or false", "false"},
+            {"print 3 < 5", "true"},
+            {"print 5 < 5", "false"},
+            {"print 7 < 5", "false"},
+            {"print 3 <= 5", "true"},
+            {"print 5 <= 5", "true"},
+            {"print 7 <= 5", "false"},
+            {"print 3 > 5", "false"},
+            {"print 5 > 5", "false"},
+            {"print 7 > 5", "true"},
+            {"print 3 >= 5", "false"},
+            {"print 5 >= 5", "true"},
+            {"print 7 >= 5", "true"},
+            {"print true == true", "true"},
+            {"print true == false", "false"},
+            {"print 3 == 3", "true"},
+            {"print 3 == 5", "false"},
+            {"print true != true", "false"},
+            {"print true != false", "true"},
+            {"print 3 != 3", "false"},
+            {"print 5 != 3", "true"},
             {INCREMENT_OF_MAX_INT_MINUS_ONE, MAX_INT}, // No overflow.
             {DECREMENT_OF_MIN_INT_PLUS_ONE, MIN_INT}, // No underflow.
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
             {"print testFunction(testFunction(4))", "14"},
-            {"function myFun(x, y) {z = x - y; return z}; print myFun(5, 3)", "2"},
-            {"function myFun(x) {return x}; print myFun(2 + 3)", "5"},
+            {"function myFun(int x, int y) {z = x - y; return z}; print myFun(5, 3)", "2"},
+            {"function myFun(int x) {return x}; print myFun(2 + 3)", "5"},
             {"function myFun() {return 10}; print myFun()", "10"}, // Function without arguments.
             {"x = 5; print x;", "5"}, // Allow extra ; outside functions.
             {"function fun() {return 5;}; print 5", "5"}, // Allow extra ; within function.
             {"x = 5; print -x", "-5"}, // The unary minus.
             {"x = 5; y = 3; print x - - y", "8"}, // Combine unary minus with ordinary minus.
             {"x = 5; y = 3; print x*-y", "-15"}, // Combine unary minus with multiplication.
-            {"x = 5; y = 3; print -x-y", "-8"} // Have unary minus as first child of binary operator.
+            {"x = 5; y = 3; print -x-y", "-8"}, // Have unary minus as first child of binary operator.
+            {"x = true; print x", "true"}, // Symbol reference of type boolean
+            {"function fun(bool x) {return not x and true}; print fun(true)", "false"}, // Formal boolean argument
+            {"function fun(bool x) {return not x and true}; print fun(false)", "true"},
+            {"function fun(int x, int y) {return x < y}; print fun(3, 5)", "true"}, // Handle return type with relop.
+            {"function fun(int x, int y) {return x < y}; print fun(5, 5)", "false"},
+            {"function fun(int x, int y) {return x < y}; print fun(7, 5)", "false"},
+            {"print true and 3 < 5", "true"}, // Operator precedence, comparison before boolop
+            {"print 3 == 5 or 5 == 5", "true"} // Operator precedence, equality before boolop
         });
     }
 

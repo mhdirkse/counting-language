@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.execution.CountlangType;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.Expression;
 import com.github.mhdirkse.countlang.execution.ProgramException;
@@ -16,6 +17,10 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     @Setter
     private String name = null;
 
+    @Getter
+    @Setter
+    private CountlangType returnType = CountlangType.UNKNOWN;
+
     private final FormalParameters formalParameters;
     private List<Statement> statements = new ArrayList<Statement>();
 
@@ -28,9 +33,19 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         return formalParameters.size();
     }
 
-    public void addFormalParameter(final String parameterName) {
+    @Override
+    public String getFormalParameterName(int i) {
+        return formalParameters.getFormalParameterName(i);
+    }
+
+    @Override
+    public CountlangType getFormalParameterType(int i) {
+        return formalParameters.getFormalParameterType(i);
+    }
+
+    public void addFormalParameter(final String parameterName, final CountlangType countlangType) {
         formalParameters.addFormalParameter(
-                new FormalParameter(getLine(), getColumn(), parameterName));
+                new FormalParameter(getLine(), getColumn(), parameterName, countlangType));
     }
 
     public void addStatement(final Statement statement) {

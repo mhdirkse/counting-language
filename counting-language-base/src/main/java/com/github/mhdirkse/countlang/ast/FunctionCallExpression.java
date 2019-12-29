@@ -29,6 +29,10 @@ public class FunctionCallExpression extends ExpressionNode implements CompositeN
         return arguments.size();
     }
 
+    public ExpressionNode getArgument(int i) {
+        return arguments.get(i);
+    }
+
     public void addArgument(final ExpressionNode expression) {
         arguments.add(expression);
     }

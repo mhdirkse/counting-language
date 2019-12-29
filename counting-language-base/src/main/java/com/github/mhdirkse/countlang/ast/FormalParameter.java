@@ -6,14 +6,15 @@ import lombok.Getter;
 
 public class FormalParameter extends AstNode {
     @Getter
-    private String name;
+    private final String name;
 
     @Getter
-    private CountlangType countlangType = CountlangType.INT;
+    private final CountlangType countlangType;
 
-    public FormalParameter(final int line, final int column, final String name) {
+    public FormalParameter(final int line, final int column, final String name, CountlangType countlangType) {
         super(line, column);
         this.name = name;
+        this.countlangType = countlangType;
     }
 
     @Override

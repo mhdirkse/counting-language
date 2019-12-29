@@ -1,11 +1,11 @@
-function funWithExtraStatements(x) {
+function funWithExtraStatements(int x) {
   return x;
   y = x;
   return y
 };
 
-function outer(x) {
-  function inner(y) {
+function outer(int x) {
+  function inner(int y) {
     return y
   };
   return x

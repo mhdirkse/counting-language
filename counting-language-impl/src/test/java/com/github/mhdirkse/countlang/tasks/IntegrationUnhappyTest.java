@@ -35,7 +35,10 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print 5 +", ""}, // Syntax error.
             {"xyz", ""}, // Syntax error.
             {"print 5 ** 3", ""}, // Unknown token.
-            {"print x", ""} // Undefined reference
+            {"print x", ""}, // Undefined reference
+            {"print true and 5", "Type mismatch using operator"},
+            {"print 5 + true", "Type mismatch using operator"},
+            {"print 3 == true", "Type mismatch using operator"},
         });
     }
 

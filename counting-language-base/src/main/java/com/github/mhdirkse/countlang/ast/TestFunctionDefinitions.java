@@ -1,6 +1,7 @@
 package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
+import com.github.mhdirkse.countlang.execution.CountlangType;
 
 public final class TestFunctionDefinitions {
 
@@ -25,13 +26,14 @@ public final class TestFunctionDefinitions {
             handleParameter();
             instance.addStatement(getStatement());
             handleExtraStatement();
+            handleReturnType();
             return instance;
         }
 
         abstract void handleParameter();
 
         void addTheParameter() {
-            instance.addFormalParameter(FORMAL_PARAMETER);
+            instance.addFormalParameter(FORMAL_PARAMETER, CountlangType.INT);
         }
 
         abstract Statement getStatement();
@@ -78,6 +80,9 @@ public final class TestFunctionDefinitions {
         }
 
         abstract void handleExtraStatement();
+
+        void handleReturnType() {
+        }
     }
 
     static class FunctionCreatorValidFunction extends FunctionCreatorBase {
@@ -93,6 +98,11 @@ public final class TestFunctionDefinitions {
 
         @Override
         void handleExtraStatement() {
+        }
+
+        @Override
+        void handleReturnType() {
+            instance.setReturnType(CountlangType.INT);
         }
     }
 }

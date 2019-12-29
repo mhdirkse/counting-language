@@ -1,0 +1,5 @@
+function xor(bool x, bool y) {return x and not y or not x and y};
+print xor(false, false);
+print xor(false, true);
+print xor(true, false);
+print xor(true, true);

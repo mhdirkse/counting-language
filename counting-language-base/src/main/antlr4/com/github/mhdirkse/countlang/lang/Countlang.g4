@@ -11,7 +11,11 @@ statement
   | 'return' expr # returnStatement
   ;
 
-varDecls : ID (',' ID)* ;
+varDecls : varDecl (',' varDecl)* ;
+
+varDecl : typeId ID ;
+
+typeId : INTTYPE | BOOLTYPE ;
 
 expr
   : '(' expr ')' # bracketExpression
@@ -19,10 +23,17 @@ expr
   | '-' expr # unaryMinusExpression
   | expr ( '*' | '/' ) expr # multDifExpression
   | expr ( '+' | '-' ) expr # plusMinusExpression
+  | expr ( '<' | '<=' | '>' | '>=' | '==' | '!=' ) expr # compExpression
+  | 'not' expr # notExpression
+  | expr 'and' expr # andExpression
+  | expr 'or' expr # orExpression
   | ID # symbolReferenceExpression
-  | INT # valueExpression
+  | (INT | BOOL) # valueExpression
   ;
 
-ID : [a-zA-Z] [a-zA-Z0-9]* ;
+BOOLTYPE: 'bool' ;
+INTTYPE: 'int' ;
 INT : '-'? [0-9]+ ;
+BOOL : 'true' | 'false' ;
+ID : [a-zA-Z] [a-zA-Z0-9]* ;
 WS : [ \t\r\n] -> skip ;

@@ -51,7 +51,7 @@ public class VariableCheckTest extends AstConstructionTestBase {
     public void whenVariableIsFormalParameterThenUsed() {
         replay(reporter);
         VariableCheck instance = new VariableCheck(reporter);
-        parse("xyz = 5; function fun(x) {return x}; print fun(xyz)");
+        parse("xyz = 5; function fun(int x) {return x}; print fun(xyz)");
         Assert.assertFalse(hasParseErrors);
         instance.run(ast);
         verify(reporter);        
@@ -63,7 +63,7 @@ public class VariableCheckTest extends AstConstructionTestBase {
         reporter.report(eq(StatusCode.VAR_NOT_USED), eq(1), anyInt(), eq("xyz"));
         replay(reporter);
         VariableCheck instance = new VariableCheck(reporter);
-        parse("xyz = 3; function fun(abc) {print abc; xyz = 3; uvw = 5; print xyz; print uvw}; print uvw");
+        parse("xyz = 3; function fun(int abc) {print abc; xyz = 3; uvw = 5; print xyz; print uvw}; print uvw");
         Assert.assertFalse(hasParseErrors);
         instance.run(ast);
         verify(reporter);        

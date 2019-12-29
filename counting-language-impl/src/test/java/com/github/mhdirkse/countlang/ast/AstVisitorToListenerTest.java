@@ -59,7 +59,7 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.exitAssignmentStatement(isA(AssignmentStatement.class));
         listener.exitProgram(isA(Program.class));
         replay(listener);
-        runProgram("function fun(x) {return x + 2}; y = fun(3)");
+        runProgram("function fun(int x) {return x + 2}; y = fun(3)");
         verify(listener);
     }
 }
