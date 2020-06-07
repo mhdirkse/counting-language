@@ -9,7 +9,7 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
-import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
@@ -21,24 +21,30 @@ class VariableCheck implements AstListener {
 
     private final StatusReporter reporter;
 
+    private boolean inFunctionDefinition = false;
+
     VariableCheck(final StatusReporter reporter) {
         this.reporter = reporter;
     }
 
-    void run(final Program program) {
+    void run(final StatementGroup statementGroup) {
         Visitor v = new AstVisitorToListener(this);
-        program.accept(v);
+        statementGroup.accept(v);
         ctx.report(reporter);
     }
 
     @Override
-    public void enterProgram(final Program p1) {
-        ctx.pushNewFrame();
+    public void enterStatementGroup(final StatementGroup p1) {
+        if(!inFunctionDefinition) {
+            ctx.pushNewFrame();
+        }
     }
 
     @Override
-    public void exitProgram(final Program p1) {
-        ctx.popFrame();
+    public void exitStatementGroup(final StatementGroup p1) {
+        if(!inFunctionDefinition) {
+            ctx.popFrame();
+        }
     }
 
     @Override
@@ -60,12 +66,14 @@ class VariableCheck implements AstListener {
 
     @Override
     public void enterFunctionDefinitionStatement(final FunctionDefinitionStatement p1) {
+        inFunctionDefinition = true;
         ctx.pushNewFrame();
     }
 
     @Override
     public void exitFunctionDefinitionStatement(final FunctionDefinitionStatement p1) {
         ctx.popFrame();
+        inFunctionDefinition = false;
     }
 
     @Override

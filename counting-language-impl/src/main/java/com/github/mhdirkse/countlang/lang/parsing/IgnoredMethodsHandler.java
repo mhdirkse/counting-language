@@ -34,20 +34,6 @@ class IgnoredMethodsHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
-    public boolean enterStatements (
-            final CountlangParser.StatementsContext p1,
-            final HandlerStackContext<CountlangListenerHandler> ctx) {
-        return true;
-    }
-
-    @Override
-    public boolean exitStatements (
-            final CountlangParser.StatementsContext p1,
-            final HandlerStackContext<CountlangListenerHandler> ctx) {
-        return true;
-    }
-
-    @Override
     public boolean enterBracketExpression(CountlangParser.BracketExpressionContext antlrCtx,
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return true;

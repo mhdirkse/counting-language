@@ -13,7 +13,7 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
-import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
@@ -31,17 +31,17 @@ class FunctionCallCheck implements AstListener {
         argumentCounts.put(testFunction.getName(), testFunction.getNumParameters());
     }
 
-    void run(final Program program) {
+    void run(final StatementGroup statementGroup) {
         Visitor v = new AstVisitorToListener(this);
-        program.accept(v);
+        statementGroup.accept(v);
     }
     
     @Override
-    public void enterProgram(Program p1) {
+    public void enterStatementGroup(StatementGroup p1) {
     }
 
     @Override
-    public void exitProgram(Program p1) {
+    public void exitStatementGroup(StatementGroup p1) {
     }
 
     @Override

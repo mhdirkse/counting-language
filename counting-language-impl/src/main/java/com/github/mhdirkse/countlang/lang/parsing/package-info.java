@@ -8,17 +8,17 @@
  * {@link CountlangListenerDelegator} calls the registered handlers from first to last until
  * a handler returns true. If no handler does so, an exception is thrown.
  * {@link ParseEntryPoint} starts by providing a {@link RootHandler} and then a {@link IgnoredMethodsHandler}.
- * The first of these is collects the AST, while the last ensures that irrelevant ANTLR 4 calls are handled.
+ * The first of these collects the AST, while the last ensures that irrelevant ANTLR 4 calls are handled.
  * <p>
  * {@link RootHandler} only has to deal with the enterProg and exitProg methods. On enterProg,
- * a {@link ProgHandler} is added that handles all language elements inside the prog. This is
+ * a {@link StatementGroupHandler} is added that handles all language elements inside the prog. This is
  * done by adding and removing handlers dynamically. None of these can handle the exitProg event,
- * so when that one is called on {@link RootHandler}, parsing is done. The handler after the
- * {@link RootHandler}, which is {@link ProgHandler}, is responsible for building the AST
+ * so when that one is called on {@link RootHandler}, parsing is done. The handler before the
+ * {@link RootHandler}, which is {@link StatementGroupHandler}, is responsible for building the AST
  * node {@link com.github.mhdirkse.countlang.ast.Program}.
  * <p>
- * Both a AST program node and an AST function definition contain a group of statements.
- * Therefore, {@link ProgHandler} has a parent class {@link AbstractStatementGroupHandler}.
+ * The root node of the AST is a StatementGroup. This one also appears inside a FunctionDefinitionStatement.
+ * Therefore, {@link StatementGroupHandler} has a parent class {@link AbstractStatementGroupHandler}.
  * This class assumes that ANTLR 4 is processing the contents of a statement group and handles
  * all enter and exit statements for all statement types. The statement types can be found in
  * the grammar, Countlang.g4. We have the assignment statement, the print statement, the
@@ -26,8 +26,8 @@
  * These eight events are the methods implemented in {@link AbstractStatementGroupHandler}.
  * This results in AST statement nodes, which it passes to abstract method
  * {@link AbstractStatementGroupHandler#addStatement}. This abstract method is implemented by
- * {@link ProgHandler#addStatement}, allowing
- * {@link ProgHandler} to build the AST program node.
+ * {@link StatementGroupHandler#addStatement}, allowing
+ * {@link StatementGroupHandler} to build the AST program node.
  * <p>
  * Any other ANTLR 4 call is either handled by another handler related to some inner language structure,
  * or falls through to the {@link RootHandler}. When the latter happens, parsing is done.

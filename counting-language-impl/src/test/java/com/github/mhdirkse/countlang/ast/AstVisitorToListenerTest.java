@@ -23,7 +23,7 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
 
     @Test
     public void testPrintOperatorExpression() {
-        listener.enterProgram(isA(Program.class));
+        listener.enterStatementGroup(isA(StatementGroup.class));
         listener.enterPrintStatement(isA(PrintStatement.class));
         listener.enterCompositeExpression(isA(CompositeExpression.class));
         listener.visitOperator(isA(Operator.class));
@@ -31,7 +31,7 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitCompositeExpression(isA(CompositeExpression.class));
         listener.exitPrintStatement(isA(PrintStatement.class));
-        listener.exitProgram(isA(Program.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
         replay(listener);
         runProgram("print 5 + 3");
         verify(listener);
@@ -39,11 +39,12 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
 
     @Test
     public void testFunctionDefAndFunctionCallAndAssignment() {
-        listener.enterProgram(isA(Program.class));
+        listener.enterStatementGroup(isA(StatementGroup.class));
         listener.enterFunctionDefinitionStatement(isA(FunctionDefinitionStatement.class));
         listener.enterFormalParameters(isA(FormalParameters.class));
         listener.visitFormalParameter(isA(FormalParameter.class));
         listener.exitFormalParameters(isA(FormalParameters.class));
+        listener.enterStatementGroup(isA(StatementGroup.class));
         listener.enterReturnStatement(isA(ReturnStatement.class));
         listener.enterCompositeExpression(isA(CompositeExpression.class));
         listener.visitOperator(isA(Operator.class));
@@ -51,13 +52,14 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitCompositeExpression(isA(CompositeExpression.class));
         listener.exitReturnStatement(isA(ReturnStatement.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
         listener.exitFunctionDefinitionStatement(isA(FunctionDefinitionStatement.class));
         listener.enterAssignmentStatement(isA(AssignmentStatement.class));
         listener.enterFunctionCallExpression(isA(FunctionCallExpression.class));
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitFunctionCallExpression(isA(FunctionCallExpression.class));
         listener.exitAssignmentStatement(isA(AssignmentStatement.class));
-        listener.exitProgram(isA(Program.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
         replay(listener);
         runProgram("function fun(int x) {return x + 2}; y = fun(3)");
         verify(listener);

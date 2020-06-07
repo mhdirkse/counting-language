@@ -18,7 +18,7 @@ public class ParseEntryPointTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testWhenNotParsedProgramThenGetParsedNodeAsProgramFalse() {
-        instance.getParsedNodeAsProgram();
+    public void testWhenNotParsedProgramThenGetParsedNodeAsStatementGroupFalse() {
+        instance.getParsedNodeAsStatementGroup();
     }
 }

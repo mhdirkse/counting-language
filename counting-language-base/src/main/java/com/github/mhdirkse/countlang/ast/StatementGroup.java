@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 
-public final class Program extends AstNode implements CompositeNode {
+public final class StatementGroup extends AstNode implements CompositeNode {
     private List<Statement> statements = new ArrayList<Statement>();
 
-    public Program(final int line, final int column) {
+    public StatementGroup(final int line, final int column) {
         super(line, column);
     }
 
@@ -32,7 +32,7 @@ public final class Program extends AstNode implements CompositeNode {
 
     @Override
     public void accept(final Visitor v) {
-        v.visitProgram(this);
+        v.visitStatementGroup(this);
     }
 
     @Override

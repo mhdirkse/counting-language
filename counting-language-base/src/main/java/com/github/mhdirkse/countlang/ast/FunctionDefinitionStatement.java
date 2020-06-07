@@ -22,7 +22,10 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     private CountlangType returnType = CountlangType.UNKNOWN;
 
     private final FormalParameters formalParameters;
-    private List<Statement> statements = new ArrayList<Statement>();
+
+    @Getter
+    @Setter
+    private StatementGroup statements;
 
     public FunctionDefinitionStatement(final int line, final int column) {
         super(line, column);
@@ -49,11 +52,13 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     }
 
     public void addStatement(final Statement statement) {
-        statements.add(statement);
+        statements.addStatement(statement);
     }
 
     public void addStatements(final List<Statement> statements) {
-        this.statements.addAll(statements);
+        for(Statement s: statements) {
+            this.statements.addStatement(s);
+        }
     }
 
     @Override
@@ -65,7 +70,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     public List<AstNode> getChildren() {
         List<AstNode> result = new ArrayList<>();
         result.add(formalParameters);
-        result.addAll(statements);
+        result.add(statements);
         return result;
     }
 
@@ -135,11 +140,11 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     }
 
     private static class StatementWalker {
-        private final List<Statement> statements;
+        private final StatementGroup statements;
         private Callback callback = null;
         private boolean didReturn = false;
 
-        StatementWalker(final List<Statement> statements) {
+        StatementWalker(final StatementGroup statements) {
             this.statements = statements;
         }
 
@@ -152,16 +157,16 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         }
 
         private void iterateStatements() {
-            for(int i = 0; (i < statements.size()) && (!didReturn); ++i) {
-                handleStatement(i, statements.get(i));
+            for(int i = 0; (i < statements.getChildren().size()) && (!didReturn); ++i) {
+                handleStatement(i, statements.getStatement(i));
             }
         }
 
         private void handleStatement(final int index, final Statement statement) {
-            if (!(statements.get(index) instanceof ReturnStatement)) {
-                callback.onNormalStatement(statements.get(index));
+            if (!(statements.getStatement(index) instanceof ReturnStatement)) {
+                callback.onNormalStatement(statements.getStatement(index));
             } else {
-                handleReturnStatement(index, (ReturnStatement) statements.get(index));
+                handleReturnStatement(index, (ReturnStatement) statements.getStatement(index));
             }
         }
 
@@ -172,8 +177,8 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         }
 
         private void checkForStatementsWithoutEffect(final int i) {
-            if (i < (statements.size() - 1)) {
-                callback.onStatementWithoutEffect(statements.get(i+1));
+            if (i < (statements.getChildren().size() - 1)) {
+                callback.onStatementWithoutEffect(statements.getStatement(i+1));
             }
         }
     }

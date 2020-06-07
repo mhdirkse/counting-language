@@ -3,34 +3,48 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class RootHandler extends AbstractCountlangListenerHandler {
-    private Program program = null;
+    private StatementGroup statementGroup = null;
 
     RootHandler() {
         super(false);
     }
 
-    Program getProgram() {
-        return program;
+    StatementGroup getProgram() {
+        return statementGroup;
     }
 
     @Override
     public boolean enterProg(
             @NotNull CountlangParser.ProgContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        int line = antlrCtx.start.getLine();
-        int column = antlrCtx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new ProgHandler(line, column));
         return true;
     }
 
     @Override
     public boolean exitProg(
             @NotNull CountlangParser.ProgContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        program = ((ProgHandler) delegationCtx.getPreviousHandler()).getProgram();
-        delegationCtx.removeAllPreceeding();
         return true;
+    }
+
+    @Override
+    public boolean enterStatements(
+            @NotNull CountlangParser.StatementsContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new StatementGroupHandler(line, column));
+        return true;
+    }
+
+    @Override
+    public boolean exitStatements(
+            @NotNull CountlangParser.StatementsContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        statementGroup = ((StatementGroupHandler) delegationCtx.getPreviousHandler()).getStatementGroup();
+        delegationCtx.removeAllPreceeding();
+        return true;        
     }
 }

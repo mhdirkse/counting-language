@@ -8,7 +8,7 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
-import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
@@ -16,43 +16,44 @@ import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
 
 class FunctionAndReturnCheck {
-    private final Program program;
+    private final StatementGroup statementGroup;
     private final StatusReporter reporter;
 
-    FunctionAndReturnCheck(final Program program, final StatusReporter reporter) {
-        this.program = program;
+    FunctionAndReturnCheck(final StatementGroup statementGroup, final StatusReporter reporter) {
+        this.statementGroup = statementGroup;
         this.reporter = reporter;
     }
 
     void run() {
-        program.getChildren().stream()
+        statementGroup.getChildren().stream()
             .filter(c -> (c instanceof ReturnStatement))
             .forEach(c -> reporter.report(StatusCode.RETURN_OUTSIDE_FUNCTION, c.getLine(), c.getColumn()));
-        program.getChildren().stream()
+        statementGroup.getChildren().stream()
             .filter(c -> (c instanceof FunctionDefinitionStatement))
             .map(c -> (FunctionDefinitionStatement) c)
-            .forEach(this::checkFunction);
+            .forEach(this::checkFunctionDefinitionStatement);
     }
 
-    void checkFunction(final FunctionDefinitionStatement fun) {
-        StatementHandler handler = new StatementHandler(fun);
-        fun.getChildren().forEach(c -> c.accept(handler));
+    void checkFunctionDefinitionStatement(final FunctionDefinitionStatement fun) {
+        StatementGroup statements = fun.getStatements();
+        StatementHandler handler = new StatementHandler(fun.getName());
+        statements.getChildren().forEach(c -> c.accept(handler));
         if(!handler.haveTheReturn) {
             reporter.report(
-                    StatusCode.FUNCTION_DOES_NOT_RETURN, fun.getLine(), fun.getColumn(), fun.getName());
+                    StatusCode.FUNCTION_DOES_NOT_RETURN, statements.getLine(), fun.getColumn(), fun.getName());
         }
     }
 
     private class StatementHandler implements Visitor {
-        private final FunctionDefinitionStatement fun;
+        private final String functionName;
         boolean haveTheReturn = false;
 
-        StatementHandler(final FunctionDefinitionStatement fun) {
-            this.fun = fun;
+        StatementHandler(final String functionName) {
+            this.functionName = functionName;
         }
 
         @Override
-        public void visitProgram(Program program) {
+        public void visitStatementGroup(StatementGroup statementGroup) {
         }
 
         @Override
@@ -66,7 +67,7 @@ class FunctionAndReturnCheck {
                         StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT,
                         statement.getLine(),
                         statement.getColumn(),
-                        fun.getName());
+                        functionName);
             }
         }
 
@@ -89,7 +90,7 @@ class FunctionAndReturnCheck {
                 reporter.report(
                         StatusCode.FUNCTION_HAS_EXTRA_RETURN,
                         statement.getLine(),
-                        statement.getColumn(), fun.getName());
+                        statement.getColumn(), functionName);
             }
             haveTheReturn = true;
         }

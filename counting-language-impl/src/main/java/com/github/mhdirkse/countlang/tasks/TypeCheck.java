@@ -12,7 +12,7 @@ import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
-import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
@@ -24,11 +24,11 @@ import com.github.mhdirkse.countlang.execution.RunnableFunction;
 
 class TypeCheck {
     private final StatusReporter reporter;
-    private final Program program;
+    private final StatementGroup statementGroup;
     
-    TypeCheck(final StatusReporter reporter, final Program program) {
+    TypeCheck(final StatusReporter reporter, final StatementGroup statementGroup) {
         this.reporter = reporter;
-        this.program = program;
+        this.statementGroup = statementGroup;
     }
 
     void run() {
@@ -36,7 +36,7 @@ class TypeCheck {
         ExecutionContextImpl executionContext = new ExecutionContextImpl(OutputStrategy.NO_OUTPUT);
         executionContext.putFunction(testFunction);
         Listener l = new Listener(executionContext, reporter);
-        new AstVisitorToListener(l).visitProgram(program);
+        new AstVisitorToListener(l).visitStatementGroup(statementGroup);
     }
 
     private static class Listener extends AbstractAstListener {

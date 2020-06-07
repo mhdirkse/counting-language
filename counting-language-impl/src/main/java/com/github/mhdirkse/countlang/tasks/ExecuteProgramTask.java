@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
@@ -25,62 +25,62 @@ public class ExecuteProgramTask implements AbstractTask {
 
     @Override
     public void run(final OutputStrategy outputStrategy) throws IOException {
-        Optional<Program> program = parseProgram(outputStrategy);
-        if(program.isPresent()) {
-            checkAndRunProgram(outputStrategy, program.get());
+        Optional<StatementGroup> statementGroup = parseProgram(outputStrategy);
+        if(statementGroup.isPresent()) {
+            checkAndRunProgram(outputStrategy, statementGroup.get());
         }
     }
 
-    Optional<Program> parseProgram(final OutputStrategy outputStrategy) throws IOException {
+    Optional<StatementGroup> parseProgram(final OutputStrategy outputStrategy) throws IOException {
         ParseEntryPoint parser = new ParseEntryPoint();
         parser.parseProgram(reader);
         if (parser.hasError()) {
             outputStrategy.error(parser.getError());
-            return Optional.<Program>empty();
+            return Optional.<StatementGroup>empty();
         } else {
-            return Optional.of(parser.getParsedNodeAsProgram());
+            return Optional.of(parser.getParsedNodeAsStatementGroup());
         }
     }
 
-    private void checkAndRunProgram(final OutputStrategy outputStrategy, final Program program) throws IOException {
+    private void checkAndRunProgram(final OutputStrategy outputStrategy, final StatementGroup statementGroup) throws IOException {
         List<Supplier<Boolean>> checks = new ArrayList<>();
-        checks.add(() -> checkFunctionsAndReturns(program, outputStrategy));
-        checks.add(() -> checkVariables(program, outputStrategy));
-        checks.add(() -> checkFunctionCalls(program, outputStrategy));
-        checks.add(() -> typeCheck(program, outputStrategy));
-        Runnable runProgram = () -> runProgram(program, outputStrategy);
+        checks.add(() -> checkFunctionsAndReturns(statementGroup, outputStrategy));
+        checks.add(() -> checkVariables(statementGroup, outputStrategy));
+        checks.add(() -> checkFunctionCalls(statementGroup, outputStrategy));
+        checks.add(() -> typeCheck(statementGroup, outputStrategy));
+        Runnable runProgram = () -> runProgram(statementGroup, outputStrategy);
         Imperative.runWhileTrue(checks, runProgram);
     }
 
-    private boolean checkFunctionsAndReturns(final Program program, final OutputStrategy outputStrategy) {
+    private boolean checkFunctionsAndReturns(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        new FunctionAndReturnCheck(program, reporter).run();
+        new FunctionAndReturnCheck(statementGroup, reporter).run();
         return !reporter.hasErrors();
     }
 
-    private boolean checkVariables(final Program program, final OutputStrategy outputStrategy) {
+    private boolean checkVariables(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        new VariableCheck(reporter).run(program);
+        new VariableCheck(reporter).run(statementGroup);
         return !reporter.hasErrors();
     }
 
-    private boolean checkFunctionCalls(final Program program, final OutputStrategy outputStrategy) {
+    private boolean checkFunctionCalls(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        new FunctionCallCheck(reporter).run(program);
+        new FunctionCallCheck(reporter).run(statementGroup);
         return !reporter.hasErrors();
     }
 
-    private boolean typeCheck(final Program program, final OutputStrategy outputStrategy) {
+    private boolean typeCheck(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        new TypeCheck(reporter, program).run();
+        new TypeCheck(reporter, statementGroup).run();
         return !reporter.hasErrors();
     }
 
-    private void runProgram(final Program program, final OutputStrategy outputStrategy) {
+    private void runProgram(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         try {
             ExecutionContext executionContext = new ExecutionContextImpl(outputStrategy);
             executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
-            program.execute(executionContext);
+            statementGroup.execute(executionContext);
         }
         catch (ProgramException e) {
             outputStrategy.error(e.getMessage());

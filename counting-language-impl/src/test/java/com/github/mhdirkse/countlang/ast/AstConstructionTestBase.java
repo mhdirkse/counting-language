@@ -11,7 +11,7 @@ import org.junit.Assert;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 
 public class AstConstructionTestBase {
-    public Program ast = null;
+    public StatementGroup ast = null;
     public boolean hasParseErrors = false;
 
     public final void parse(final String program) {
@@ -29,7 +29,7 @@ public class AstConstructionTestBase {
     	    ParseEntryPoint parser = new ParseEntryPoint();
     		parser.parseProgram(reader);
     		hasParseErrors = parser.hasError();
-    	    ast = parser.getParsedNodeAsProgram();
+    	    ast = parser.getParsedNodeAsStatementGroup();
     	}
     	finally {
     		reader.close();

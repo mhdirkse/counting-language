@@ -1,7 +1,7 @@
 package com.github.mhdirkse.countlang.ast;
 
 public interface Visitor {
-    public void visitProgram(final Program program);
+    public void visitStatementGroup(final StatementGroup statementGroup);
     public void visitAssignmentStatement(final AssignmentStatement statement);
     public void visitPrintStatement(final PrintStatement statement);
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement);

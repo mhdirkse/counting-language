@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.Program;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
@@ -46,11 +46,11 @@ public class ParseEntryPoint {
         node = rootHandler.getProgram();
     }
 
-    public Program getParsedNodeAsProgram() {
-        if (! (node instanceof Program)) {
-            throw new IllegalStateException("The parsed node was not a Program");
+    public StatementGroup getParsedNodeAsStatementGroup() {
+        if (! (node instanceof StatementGroup)) {
+            throw new IllegalStateException("The parsed node was not a StatementGroup");
         }
-        return (Program) node;
+        return (StatementGroup) node;
     }
 
     public String getError() {
