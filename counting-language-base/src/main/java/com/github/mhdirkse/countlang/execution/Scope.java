@@ -2,28 +2,46 @@ package com.github.mhdirkse.countlang.execution;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 
 final class Scope {
     private final Deque<StackFrame> frames = new ArrayDeque<>();
 
     Scope() {
-        frames.addLast(new StackFrame());
+        frames.addLast(new StackFrame(StackFrameAccess.HIDE_PARENT));
     }
 
     public boolean hasSymbol(String name) {
-        return frames.getLast().hasSymbol(name);
+        return findFrame(name).hasSymbol(name);
+    }
+
+    private StackFrame findFrame(String name) {
+        Iterator<StackFrame> it = frames.descendingIterator();
+        while(it.hasNext()) {
+            StackFrame frame = it.next();
+            if(frame.hasSymbol(name)) {
+                return frame;
+            }
+            switch(frame.getStackFrameAccess()) {
+            case HIDE_PARENT:
+                return frames.getLast();
+            case SHOW_PARENT:
+                break;
+            }
+        }
+        throw new IllegalStateException("Not reachable, because first stack frame hides the (non-existent) parent");
     }
 
     public Object getValue(String name) {
-        return frames.getLast().getValue(name);
+        return findFrame(name).getValue(name);
     }
 
     public CountlangType getCountlangType(String name) {
-        return frames.getLast().getCountlangType(name);
+        return findFrame(name).getCountlangType(name);
     }
 
     public void putSymbol(String name, Object value) {
-        frames.getLast().putSymbol(name, value);
+        findFrame(name).putSymbol(name, value);
     }
 
     public void pushFrame(StackFrame frame) {

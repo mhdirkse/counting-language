@@ -87,7 +87,12 @@ public class IntegrationHappyTest implements OutputStrategy
             {"function fun(int x, int y) {return x < y}; print fun(5, 5)", "false"},
             {"function fun(int x, int y) {return x < y}; print fun(7, 5)", "false"},
             {"print true and 3 < 5", "true"}, // Operator precedence, comparison before boolop
-            {"print 3 == 5 or 5 == 5", "true"} // Operator precedence, equality before boolop
+            {"print 3 == 5 or 5 == 5", "true"}, // Operator precedence, equality before boolop
+
+            // Compound statements
+            {"{print 3}", "3"}, // Program can be compound statement
+            {"x = 3; markUsed x; {x = 5;}; print x", "5"}, // When global exists, you access it
+            {"y = 5; markUsed y; {x = 3; y = x}; print y", "3"} // Instantiate global from local
         });
     }
 

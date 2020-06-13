@@ -9,6 +9,7 @@ import com.github.mhdirkse.countlang.execution.Expression;
 import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.execution.ReturnHandler;
 import com.github.mhdirkse.countlang.execution.RunnableFunction;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -104,7 +105,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
         }
 
         public Object run() {
-        	ctx.startPreparingNewFrame();
+        	ctx.startPreparingNewFrame(StackFrameAccess.HIDE_PARENT);
             formalParameters.fillNewStackFrame(actualParameters, ctx);
             ctx.pushNewFrame();
             statements.execute(ctx, this);

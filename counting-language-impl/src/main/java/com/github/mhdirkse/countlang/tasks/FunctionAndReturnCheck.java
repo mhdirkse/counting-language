@@ -6,6 +6,7 @@ import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
@@ -74,6 +75,11 @@ class FunctionAndReturnCheck {
         @Override
         public void visitPrintStatement(PrintStatement statement) {
             checkBeforeReturn(statement);
+        }
+
+        @Override
+        public void visitMarkUsedStatement(MarkUsedStatement statement) {
+            checkBeforeReturn(statement);            
         }
 
         @Override

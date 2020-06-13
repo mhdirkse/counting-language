@@ -51,8 +51,8 @@ public final class ExecutionContextImpl implements ExecutionContext {
     }
 
     @Override
-    public void startPreparingNewFrame() {
-    	newStackFrame = new StackFrame();
+    public void startPreparingNewFrame(final StackFrameAccess stackFrameAccess) {
+    	newStackFrame = new StackFrame(stackFrameAccess);
     }
 
     @Override

@@ -9,6 +9,8 @@ statement
   | 'function' ID '(' varDecls? ')' '{' statements '}' # functionDefinitionStatement
   | 'print' expr # printStatement
   | 'return' expr # returnStatement
+  | 'markUsed' expr # markUsedStatement
+  | '{' statements '}' # compoundStatement
   ;
 
 varDecls : varDecl (',' varDecl)* ;

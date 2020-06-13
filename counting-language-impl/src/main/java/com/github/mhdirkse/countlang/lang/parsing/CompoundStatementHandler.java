@@ -3,30 +3,20 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
+import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class RootHandler extends AbstractCountlangListenerHandler {
-    private StatementGroup statementGroup = null;
+class CompoundStatementHandler extends AbstractCountlangListenerHandler implements StatementSource {
+    private StatementGroup statementGroup;
 
-    RootHandler() {
-        super(false);
-    }
-
-    StatementGroup getProgram() {
+    @Override
+    public Statement getStatement() {
         return statementGroup;
     }
 
-    @Override
-    public boolean enterProg(
-            @NotNull CountlangParser.ProgContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return true;
-    }
-
-    @Override
-    public boolean exitProg(
-            @NotNull CountlangParser.ProgContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return true;
+    CompoundStatementHandler(final int line, final int column) {
+        super(false);
     }
 
     @Override
@@ -36,7 +26,7 @@ class RootHandler extends AbstractCountlangListenerHandler {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
         delegationCtx.addFirst(new StatementGroupHandlerNoCompound(
-                StatementGroup.StackStrategy.NO_NEW_FRAME, line, column));
+                StatementGroup.StackStrategy.NEW_FRAME_SHOWING_PARENT, line, column));
         return true;
     }
 

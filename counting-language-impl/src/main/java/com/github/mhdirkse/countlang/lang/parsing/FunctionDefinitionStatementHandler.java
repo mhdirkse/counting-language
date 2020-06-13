@@ -34,7 +34,8 @@ implements StatementSource, TerminalFilterCallback {
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new StatementGroupHandler(line, column));
+        delegationCtx.addFirst(new StatementGroupHandlerNoCompound(
+                StatementGroup.StackStrategy.NO_NEW_FRAME, line, column));
         return true;   
     }
 
@@ -45,7 +46,7 @@ implements StatementSource, TerminalFilterCallback {
         if(delegationCtx.isFirst()) {
             return false;
         } else {
-            StatementGroup statements = ((StatementGroupHandler) delegationCtx.getPreviousHandler()).getStatementGroup();
+            StatementGroup statements = ((StatementGroupHandlerNoCompound) delegationCtx.getPreviousHandler()).getStatementGroup();
             statement.setStatements(statements);
             delegationCtx.removeAllPreceeding();
             return true;

@@ -1,30 +1,23 @@
 package com.github.mhdirkse.countlang.tasks;
 
+import com.github.mhdirkse.countlang.ast.AbstractAstListener;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
-import com.github.mhdirkse.countlang.ast.AstListener;
-import com.github.mhdirkse.countlang.ast.CompositeExpression;
-import com.github.mhdirkse.countlang.ast.FormalParameter;
-import com.github.mhdirkse.countlang.ast.FormalParameters;
-import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
-import com.github.mhdirkse.countlang.ast.Operator;
-import com.github.mhdirkse.countlang.ast.PrintStatement;
-import com.github.mhdirkse.countlang.ast.StatementGroup;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
-import com.github.mhdirkse.countlang.ast.SymbolExpression;
-import com.github.mhdirkse.countlang.ast.ValueExpression;
-import com.github.mhdirkse.countlang.ast.Visitor;
 import com.github.mhdirkse.countlang.ast.AstVisitorToListener;
+import com.github.mhdirkse.countlang.ast.FormalParameter;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
+import com.github.mhdirkse.countlang.ast.SymbolExpression;
+import com.github.mhdirkse.countlang.ast.Visitor;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
-class VariableCheck implements AstListener {
+class VariableCheck extends AbstractAstListener {
     private final VariableCheckContext ctx = new VariableCheckContextImpl();
 
     private final StatusReporter reporter;
 
-    private boolean inFunctionDefinition = false;
-
     VariableCheck(final StatusReporter reporter) {
         this.reporter = reporter;
+        ctx.pushNewFrame(StackFrameAccess.HIDE_PARENT);
     }
 
     void run(final StatementGroup statementGroup) {
@@ -34,21 +27,35 @@ class VariableCheck implements AstListener {
     }
 
     @Override
-    public void enterStatementGroup(final StatementGroup p1) {
-        if(!inFunctionDefinition) {
-            ctx.pushNewFrame();
+    public void enterFunctionDefinitionStatement(final FunctionDefinitionStatement statement) {
+        ctx.pushNewFrame(StackFrameAccess.HIDE_PARENT);
+    }
+
+    @Override
+    public void visitFormalParameter(final FormalParameter parameter) {
+        ctx.define(parameter.getName(), parameter.getLine(), parameter.getColumn());
+    }
+
+    @Override
+    public void exitFunctionDefinitionStatement(final FunctionDefinitionStatement statement) {
+        ctx.popFrame();
+    }
+
+    @Override
+    public void enterStatementGroup(final StatementGroup statementGroup) {
+        switch(statementGroup.getStackStrategy()) {
+        case NO_NEW_FRAME:
+            break;
+        default:
+            ctx.pushNewFrame(statementGroup.getStackStrategy().getStackFrameAccess());
         }
     }
 
     @Override
-    public void exitStatementGroup(final StatementGroup p1) {
-        if(!inFunctionDefinition) {
+    public void exitStatementGroup(final StatementGroup statementGroup) {
+        if(statementGroup.getStackStrategy() != StatementGroup.StackStrategy.NO_NEW_FRAME) {
             ctx.popFrame();
         }
-    }
-
-    @Override
-    public void enterAssignmentStatement(final AssignmentStatement p1) {
     }
 
     @Override
@@ -57,72 +64,7 @@ class VariableCheck implements AstListener {
     }
 
     @Override
-    public void enterPrintStatement(final PrintStatement p1) {
-    }
-
-    @Override
-    public void exitPrintStatement(final PrintStatement p1) {
-    }
-
-    @Override
-    public void enterFunctionDefinitionStatement(final FunctionDefinitionStatement p1) {
-        inFunctionDefinition = true;
-        ctx.pushNewFrame();
-    }
-
-    @Override
-    public void exitFunctionDefinitionStatement(final FunctionDefinitionStatement p1) {
-        ctx.popFrame();
-        inFunctionDefinition = false;
-    }
-
-    @Override
-    public void enterReturnStatement(final ReturnStatement p1) {
-    }
-
-    @Override
-    public void exitReturnStatement(final ReturnStatement p1) {
-    }
-
-    @Override
-    public void enterCompositeExpression(final CompositeExpression p1) {
-    }
-
-    @Override
-    public void exitCompositeExpression(final CompositeExpression p1) {
-    }
-
-    @Override
-    public void visitOperator(final Operator p1) {
-    }
-
-    @Override
-    public void enterFunctionCallExpression(final FunctionCallExpression p1) {
-    }
-
-    @Override
-    public void exitFunctionCallExpression(final FunctionCallExpression p1) {
-    }
-
-    @Override
     public void visitSymbolExpression(final SymbolExpression expression) {
         ctx.use(expression.getSymbol(), expression.getLine(), expression.getColumn());
-    }
-
-    @Override
-    public void visitValueExpression(final ValueExpression p1) {
-    }
-
-    @Override
-    public void enterFormalParameters(final FormalParameters p1) {
-    }
-
-    @Override
-    public void exitFormalParameters(final FormalParameters p1) {
-    }
-
-    @Override
-    public void visitFormalParameter(final FormalParameter parameter) {
-        ctx.define(parameter.getName(), parameter.getLine(), parameter.getColumn());
     }
 }

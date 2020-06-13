@@ -23,7 +23,7 @@ public final class TestFunctionDefinitions {
 
         FunctionDefinitionStatement createFunction() {
             instance.setName("testFunction");
-            instance.setStatements(new StatementGroup(1, 1));
+            instance.setStatements(new StatementGroup(StatementGroup.StackStrategy.NO_NEW_FRAME, 1, 1));
             handleParameter();
             instance.addStatement(getStatement());
             handleExtraStatement();

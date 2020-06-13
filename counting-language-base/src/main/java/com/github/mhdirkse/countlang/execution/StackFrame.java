@@ -3,10 +3,16 @@ package com.github.mhdirkse.countlang.execution;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Getter;
+
 class StackFrame {
+    @Getter
+    private final StackFrameAccess stackFrameAccess;
+
     private Map<String, Symbol> symbols;
 
-    StackFrame() {
+    StackFrame(final StackFrameAccess stackFrameAccess) {
+        this.stackFrameAccess = stackFrameAccess;
         symbols = new HashMap<String, Symbol>();
     }
 

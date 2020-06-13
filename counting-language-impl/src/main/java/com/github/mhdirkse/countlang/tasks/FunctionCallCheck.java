@@ -3,24 +3,15 @@ package com.github.mhdirkse.countlang.tasks;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.mhdirkse.countlang.ast.AssignmentStatement;
-import com.github.mhdirkse.countlang.ast.AstListener;
+import com.github.mhdirkse.countlang.ast.AbstractAstListener;
 import com.github.mhdirkse.countlang.ast.AstVisitorToListener;
-import com.github.mhdirkse.countlang.ast.CompositeExpression;
-import com.github.mhdirkse.countlang.ast.FormalParameter;
-import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
-import com.github.mhdirkse.countlang.ast.Operator;
-import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
-import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
-import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
 
-class FunctionCallCheck implements AstListener {
+class FunctionCallCheck extends AbstractAstListener {
     private final Map<String, Integer> argumentCounts;
     private final StatusReporter reporter;
 
@@ -37,30 +28,6 @@ class FunctionCallCheck implements AstListener {
     }
     
     @Override
-    public void enterStatementGroup(StatementGroup p1) {
-    }
-
-    @Override
-    public void exitStatementGroup(StatementGroup p1) {
-    }
-
-    @Override
-    public void enterAssignmentStatement(AssignmentStatement p1) {
-    }
-
-    @Override
-    public void exitAssignmentStatement(AssignmentStatement p1) {
-    }
-
-    @Override
-    public void enterPrintStatement(PrintStatement p1) {
-    }
-
-    @Override
-    public void exitPrintStatement(PrintStatement p1) {
-    }
-
-    @Override
     public void enterFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
         if(argumentCounts.containsKey(statement.getName())) {
             reporter.report(
@@ -70,30 +37,6 @@ class FunctionCallCheck implements AstListener {
         } else {
             argumentCounts.put(statement.getName(), statement.getNumParameters());
         }
-    }
-
-    @Override
-    public void exitFunctionDefinitionStatement(FunctionDefinitionStatement p1) {
-    }
-
-    @Override
-    public void enterReturnStatement(ReturnStatement p1) {
-    }
-
-    @Override
-    public void exitReturnStatement(ReturnStatement p1) {
-    }
-
-    @Override
-    public void enterCompositeExpression(CompositeExpression p1) {
-    }
-
-    @Override
-    public void exitCompositeExpression(CompositeExpression p1) {
-    }
-
-    @Override
-    public void visitOperator(Operator p1) {
     }
 
     @Override
@@ -113,29 +56,5 @@ class FunctionCallCheck implements AstListener {
                     argumentCounts.get(expression.getFunctionName()).toString(),
                     Integer.valueOf(expression.getNumArguments()).toString());
         }
-    }
-
-    @Override
-    public void exitFunctionCallExpression(FunctionCallExpression p1) {
-    }
-
-    @Override
-    public void visitSymbolExpression(SymbolExpression p1) {
-    }
-
-    @Override
-    public void visitValueExpression(ValueExpression p1) {
-    }
-
-    @Override
-    public void enterFormalParameters(FormalParameters p1) {
-    }
-
-    @Override
-    public void exitFormalParameters(FormalParameters p1) {
-    }
-
-    @Override
-    public void visitFormalParameter(FormalParameter p1) {
     }
 }

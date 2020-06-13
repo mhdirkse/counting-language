@@ -12,8 +12,8 @@ import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
-import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.CountlangType;
@@ -21,6 +21,7 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.RunnableFunction;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 class TypeCheck {
     private final StatusReporter reporter;
@@ -50,6 +51,16 @@ class TypeCheck {
         }
 
         @Override
+        public void enterStatementGroup(final StatementGroup statementGroup) {
+            statementGroup.getStackStrategy().before(ctx);
+        }
+
+        @Override
+        public void exitStatementGroup(final StatementGroup statementGroup) {
+            statementGroup.getStackStrategy().after(ctx);
+        }
+
+        @Override
         public void enterFunctionDefinitionStatement(final FunctionDefinitionStatement stmt) {
             if(returnOwner != null) {
                 // This should have been checked already
@@ -60,7 +71,7 @@ class TypeCheck {
 
         @Override
         public void enterFormalParameters(final FormalParameters formalParameters) {
-            ctx.startPreparingNewFrame();            
+            ctx.startPreparingNewFrame(StackFrameAccess.HIDE_PARENT);            
         }
 
         @Override

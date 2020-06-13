@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.tasks;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.utils.AbstractStatusCode;
 
 class VariableCheckFrameImpl implements VariableCheckFrame {
@@ -51,6 +52,17 @@ class VariableCheckFrameImpl implements VariableCheckFrame {
     Map<String, ReportedVariable> undefined = new HashMap<>();
     Map<String, ReportedVariable> notUsed = new HashMap<>();
 
+    private final StackFrameAccess stackFrameAccess;
+    
+    @Override
+    public StackFrameAccess getStackFrameAccess() {
+        return stackFrameAccess;
+    }
+
+    VariableCheckFrameImpl(final StackFrameAccess stackFrameAccess) {
+        this.stackFrameAccess = stackFrameAccess;
+    }
+    
     @Override
     public void define(final String name, final int line, final int column) {
         variableStates.putIfAbsent(name, new VariableState(name, line, column, VariableStateCode.NEW));
@@ -74,6 +86,11 @@ class VariableCheckFrameImpl implements VariableCheckFrame {
         }
     }
 
+    @Override
+    public boolean hasSymbol(final String name) {
+        return variableStates.containsKey(name);
+    }
+    
     @Override
     public void report(final StatusReporter reporter) {
         finishNotUsed();

@@ -18,7 +18,7 @@ public interface ExecutionContext {
 
     void putFunction(final RunnableFunction function);
 
-    void startPreparingNewFrame();
+    void startPreparingNewFrame(StackFrameAccess stackFrameAccess);
 
     void pushNewFrame();
 

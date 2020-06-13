@@ -21,6 +21,7 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.ProgramException;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 public class FunctionDefinitionStatementTest implements OutputStrategy {
     private List<String> outputs;
@@ -55,7 +56,7 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         FunctionCreatorValidFunction functionCreator = new FunctionCreatorValidFunction();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
         ExecutionContext ctx = strictMock(ExecutionContext.class);
-        ctx.startPreparingNewFrame();
+        ctx.startPreparingNewFrame(StackFrameAccess.HIDE_PARENT);
         ctx.putSymbolInNewFrame(
         		TestFunctionDefinitions.FORMAL_PARAMETER, TestFunctionDefinitions.VALUE_OF_X_AS_VALUE);
         ctx.pushNewFrame();

@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
+
 import static org.easymock.EasyMock.*;
 
 @RunWith(EasyMockRunner.class)
@@ -27,7 +29,7 @@ public class VariableCheckFrameImplTest {
 
     @Before
     public void setUp() {
-        instance = new VariableCheckFrameImpl();
+        instance = new VariableCheckFrameImpl(StackFrameAccess.HIDE_PARENT);
     }
 
     @Test

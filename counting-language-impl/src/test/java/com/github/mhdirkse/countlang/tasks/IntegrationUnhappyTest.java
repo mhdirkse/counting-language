@@ -39,6 +39,10 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print true and 5", "Type mismatch using operator"},
             {"print 5 + true", "Type mismatch using operator"},
             {"print 3 == true", "Type mismatch using operator"},
+            
+            // Compound
+            
+            {"{x = 3; markUsed x}; print x", "Undefined"}, // When variable does not exist, it becomes local and is lost
         });
     }
 

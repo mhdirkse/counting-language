@@ -2,15 +2,18 @@ package com.github.mhdirkse.countlang.tasks;
 
 import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.createStrictControl;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.easymock.EasyMock.*;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 public class VariableCheckContextTest {
     private static final String NAME = "xyz";
@@ -20,9 +23,6 @@ public class VariableCheckContextTest {
     private VariableCheckFrame topLevelFrameStrict;
     private VariableCheckFrame functionFrameStrict;
     private IMocksControl ctrl;
-    private VariableCheckFrame topLevelFrameNice;
-    private VariableCheckFrame functionFrameNice;
-    private IMocksControl nice;
     private StatusReporter reporter;
     private List<VariableCheckFrame> mockFrames;
     private int mockFrameIndex;
@@ -33,33 +33,39 @@ public class VariableCheckContextTest {
         ctrl = createStrictControl();
         topLevelFrameStrict = ctrl.createMock(VariableCheckFrame.class);
         functionFrameStrict = ctrl.createMock(VariableCheckFrame.class);
-        nice = createNiceControl();
-        topLevelFrameNice = nice.createMock(VariableCheckFrame.class);
-        functionFrameNice = nice.createMock(VariableCheckFrame.class);
         reporter = createNiceMock(StatusReporter.class);
         mockFrameIndex = 0;
         instance = new VariableCheckContextImpl(this::nextFrame);
     }
 
-    VariableCheckFrame nextFrame() {
+    VariableCheckFrame nextFrame(final StackFrameAccess stackFrameAccess) {
         return mockFrames.get(mockFrameIndex++);
     }
 
     @Test
     public void testDelegatesToFirstFrame() {
-        mockFrames = Arrays.asList(topLevelFrameStrict, functionFrameStrict);
-        topLevelFrameStrict.define(anyObject(String.class), anyInt(), anyInt());
-        functionFrameStrict.define(anyObject(String.class), anyInt(), anyInt());
-        topLevelFrameStrict.define(anyObject(String.class), anyInt(), anyInt());
+        matchExercise();
         ctrl.replay();
         exercise();
         ctrl.verify();
     }
 
+    private void matchExercise() {
+        mockFrames = Arrays.asList(topLevelFrameStrict, functionFrameStrict);
+        EasyMock.expect(topLevelFrameStrict.hasSymbol(NAME)).andReturn(false);
+        EasyMock.expect(topLevelFrameStrict.getStackFrameAccess()).andReturn(StackFrameAccess.HIDE_PARENT);
+        topLevelFrameStrict.define(anyObject(String.class), anyInt(), anyInt());
+        EasyMock.expect(functionFrameStrict.hasSymbol(NAME)).andReturn(false);
+        EasyMock.expect(functionFrameStrict.getStackFrameAccess()).andReturn(StackFrameAccess.HIDE_PARENT);
+        functionFrameStrict.define(anyObject(String.class), anyInt(), anyInt());
+        EasyMock.expect(topLevelFrameStrict.hasSymbol(NAME)).andReturn(true);
+        topLevelFrameStrict.define(anyObject(String.class), anyInt(), anyInt());
+    }
+
     private void exercise() {
-        instance.pushNewFrame();
+        instance.pushNewFrame(StackFrameAccess.HIDE_PARENT);
         instance.define(NAME, LINE, COLUMN);
-        instance.pushNewFrame();
+        instance.pushNewFrame(StackFrameAccess.HIDE_PARENT);
         instance.define(NAME, LINE, COLUMN);
         instance.popFrame();
         instance.define(NAME, LINE, COLUMN);
@@ -68,12 +74,12 @@ public class VariableCheckContextTest {
 
     @Test
     public void testWhenMultipleFramesCreatedThenMultipleReported() {
-        mockFrames = Arrays.asList(topLevelFrameNice, functionFrameNice);
-        topLevelFrameNice.report(reporter);
-        functionFrameNice.report(reporter);
-        nice.replay();
+        matchExercise();
+        topLevelFrameStrict.report(reporter);
+        functionFrameStrict.report(reporter);
+        ctrl.replay();
         exercise();
         instance.report(reporter);
-        nice.verify();
+        ctrl.verify();
     }
 }

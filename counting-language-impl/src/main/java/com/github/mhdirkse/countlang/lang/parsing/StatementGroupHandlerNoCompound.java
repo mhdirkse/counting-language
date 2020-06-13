@@ -1,23 +1,22 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
-import com.github.mhdirkse.countlang.ast.StatementGroup;
-import com.github.mhdirkse.countlang.lang.CountlangParser;
-
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.Statement;
+import com.github.mhdirkse.countlang.ast.StatementGroup;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class StatementGroupHandler extends AbstractCountlangListenerHandler {
+class StatementGroupHandlerNoCompound extends AbstractCountlangListenerHandler {
     private StatementGroup statementGroup;
 
     StatementGroup getStatementGroup() {
         return statementGroup;
     }
 
-    StatementGroupHandler(final int line, final int column) {
+    StatementGroupHandlerNoCompound(final StatementGroup.StackStrategy stackStrategy, final int line, final int column) {
         super(false);
-        statementGroup = new StatementGroup(line, column);
+        statementGroup = new StatementGroup(stackStrategy, line, column);
     }
 
     @Override
@@ -26,6 +25,16 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
         delegationCtx.addFirst(new PrintStatementHandler(line, column));
+        return true;
+    }
+
+    @Override
+    public boolean enterMarkUsedStatement(
+            @NotNull CountlangParser.MarkUsedStatementContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new MarkUsedHandler(line, column));
         return true;
     }
 
@@ -57,6 +66,16 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterCompoundStatement(
+            CountlangParser.CompoundStatementContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new CompoundStatementHandler(line, column));
+        return true;
+    }
+
+    @Override
     public boolean exitPrintStatement(
             @NotNull CountlangParser.PrintStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
@@ -67,12 +86,18 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
             return false;
         } else {
             Statement statement = ((StatementSource) delegationCtx.getPreviousHandler()).getStatement();
-            statementGroup.addStatement(statement);
+            getStatementGroup().addStatement(statement);
             delegationCtx.removeAllPreceeding();
             return true;
         }
     }
 
+    @Override
+    public boolean exitMarkUsedStatement(
+            @NotNull CountlangParser.MarkUsedStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+    
     @Override
     public boolean exitAssignmentStatement(
             @NotNull CountlangParser.AssignmentStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
@@ -88,6 +113,13 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     @Override
     public boolean exitFunctionDefinitionStatement(
             @NotNull CountlangParser.FunctionDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitCompoundStatement(
+            CountlangParser.CompoundStatementContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
     }
 }
