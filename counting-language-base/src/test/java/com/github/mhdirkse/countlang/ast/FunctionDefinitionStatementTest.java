@@ -80,26 +80,6 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
     }
 
     @Test
-    public void testWhenStatementWithoutEffectRaiseError() {
-        FunctionCreatorStatementWithoutEffect functionCreator = new FunctionCreatorStatementWithoutEffect();
-        FunctionDefinitionStatement instance = functionCreator.createFunction();
-        ExecutionContext ctx = new ExecutionContextImpl(this);
-        thrown.expect(ProgramException.class);
-        thrown.expectMessage("Statement has no effect");
-        instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
-    }
-
-    @Test
-    public void testWhenNoReturnStatementRaiseError() {
-        FunctionCreatorNoReturn functionCreator = new FunctionCreatorNoReturn();
-        FunctionDefinitionStatement instance = functionCreator.createFunction();
-        ExecutionContext ctx = new ExecutionContextImpl(this);
-        thrown.expect(ProgramException.class);
-        thrown.expectMessage("No return statement in function");
-        instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
-    }
-
-    @Test
     public void testWhenParameterCountMismatchRaiseError() {
         FunctionCreatorFormalParameterOmitted functionCreator = new FunctionCreatorFormalParameterOmitted();
         FunctionDefinitionStatement instance = functionCreator.createFunction();
@@ -107,42 +87,6 @@ public class FunctionDefinitionStatementTest implements OutputStrategy {
         thrown.expect(ProgramException.class);
         thrown.expectMessage("In function call expected 0 arguments, got 1");
         instance.runFunction(Arrays.asList(functionCreator.getActualParameter()), ctx);        
-    }
-
-    private static class FunctionCreatorStatementWithoutEffect extends FunctionCreatorBase {
-        @Override
-        void handleParameter() {
-            addTheParameter();
-        }
-
-        @Override
-        Statement getStatement() {
-            return getReturnStatement();
-        }
-
-        @Override
-        void handleExtraStatement() {
-            ValueExpression ex = new ValueExpression(1, 1, Integer.valueOf(TestFunctionDefinitions.ADDED_VALUE));
-            PrintStatement statement = new PrintStatement(1, 1);
-            statement.setExpression(ex);
-            instance.addStatement(statement);
-        }
-    }
-
-    private static class FunctionCreatorNoReturn extends FunctionCreatorBase {
-        @Override
-        void handleParameter() {
-            addTheParameter();
-        }
-
-        @Override
-        Statement getStatement() {
-            return getPrintStatement();
-        }
-
-        @Override
-        void handleExtraStatement() {
-        }
     }
 
     private static class FunctionCreatorFormalParameterOmitted extends FunctionCreatorBase {

@@ -13,6 +13,7 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.ProgramException;
+import com.github.mhdirkse.countlang.execution.ReturnHandler;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.utils.Imperative;
 
@@ -80,7 +81,7 @@ public class ExecuteProgramTask implements AbstractTask {
         try {
             ExecutionContext executionContext = new ExecutionContextImpl(outputStrategy);
             executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
-            statementGroup.execute(executionContext);
+            statementGroup.execute(executionContext, ReturnHandler.NO_RETURN);
         }
         catch (ProgramException e) {
             outputStrategy.error(e.getMessage());

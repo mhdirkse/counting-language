@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
+import com.github.mhdirkse.countlang.execution.ReturnHandler;
 
 public final class AssignmentStatement extends Statement implements CompositeNode {
     private String lhs = null;
@@ -30,7 +31,7 @@ public final class AssignmentStatement extends Statement implements CompositeNod
     }
 
     @Override
-    public void execute(final ExecutionContext ctx) {
+    public void execute(final ExecutionContext ctx, final ReturnHandler returnHandler) {
         ctx.putSymbol(lhs, rhs.calculate(ctx));
     }
 
