@@ -23,6 +23,7 @@ public class FunctionDefinitionStatement extends Statement implements RunnableFu
     @Setter
     private CountlangType returnType = CountlangType.UNKNOWN;
 
+    @Getter
     private final FormalParameters formalParameters;
 
     @Getter

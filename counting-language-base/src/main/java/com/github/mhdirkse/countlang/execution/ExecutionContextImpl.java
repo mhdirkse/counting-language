@@ -5,6 +5,8 @@ public final class ExecutionContextImpl implements ExecutionContext {
     private final FunctionDefinitions functions = new FunctionDefinitions();
     private OutputStrategy outputStrategy = null;
     private StackFrame newStackFrame = null;
+    private ReturnContextStack returnContextStack = new ReturnContextStack();
+    private ValueStack valueStack = new ValueStack();
 
     public ExecutionContextImpl(final OutputStrategy outputStrategy) {
         this.outputStrategy = outputStrategy;
@@ -68,5 +70,35 @@ public final class ExecutionContextImpl implements ExecutionContext {
     @Override
     public void output(final String result) {
         outputStrategy.output(result);
+    }
+
+    @Override
+    public void pushValue(final Object value) {
+        valueStack.push(value);
+    }
+
+    @Override
+    public Object popValue() {
+        return valueStack.pop();
+    }
+
+    @Override
+    public void pushNewReturnContext(final int line, final int column, boolean withReturnValue) {
+        returnContextStack.push(line, column, withReturnValue);
+    }
+
+    @Override
+    public void popReturnContextNoValue() {
+        returnContextStack.popNoReturn();
+    }
+
+    @Override
+    public Object popReturnContextValue() {
+        return returnContextStack.popReturnValue();
+    }
+
+    @Override
+    public void setReturnValue(final Object value) {
+        returnContextStack.setReturnValue(value);
     }
 }

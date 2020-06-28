@@ -25,4 +25,16 @@ public interface ExecutionContext {
     void popFrame();
 
     void output(String result);
+
+    void pushValue(Object value);
+    
+    Object popValue();
+
+    void pushNewReturnContext(final int line, final int column, boolean withReturnValue);
+
+    void popReturnContextNoValue();
+
+    Object popReturnContextValue();
+
+    void setReturnValue(final Object value);
 }

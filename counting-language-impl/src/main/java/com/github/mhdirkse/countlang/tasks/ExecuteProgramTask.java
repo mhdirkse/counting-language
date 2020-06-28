@@ -49,7 +49,7 @@ public class ExecuteProgramTask implements AbstractTask {
         checks.add(() -> checkVariables(statementGroup, outputStrategy));
         checks.add(() -> checkFunctionCalls(statementGroup, outputStrategy));
         checks.add(() -> typeCheck(statementGroup, outputStrategy));
-        Runnable runProgram = () -> runProgram(statementGroup, outputStrategy);
+        Runnable runProgram = () -> runProgramVisitor(statementGroup, outputStrategy);
         Imperative.runWhileTrue(checks, runProgram);
     }
 
@@ -82,6 +82,17 @@ public class ExecuteProgramTask implements AbstractTask {
             ExecutionContext executionContext = new ExecutionContextImpl(outputStrategy);
             executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
             statementGroup.execute(executionContext, ReturnHandler.NO_RETURN);
+        }
+        catch (ProgramException e) {
+            outputStrategy.error(e.getMessage());
+        }
+    }
+
+    private void runProgramVisitor(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
+        ExecutionContext executionContext = new ExecutionContextImpl(outputStrategy);
+        executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
+        try {
+            new ProgramRunner(statementGroup, executionContext).run();
         }
         catch (ProgramException e) {
             outputStrategy.error(e.getMessage());

@@ -7,6 +7,8 @@ import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ReturnHandler;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
+import lombok.Getter;
+
 public final class StatementGroup extends Statement implements CompositeNode {
     public enum StackStrategy {
         NO_NEW_FRAME(new StackStrategyNoNewFrame()),
