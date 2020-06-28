@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.StackStrategy;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
@@ -35,7 +36,7 @@ implements StatementSource, TerminalFilterCallback {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
         delegationCtx.addFirst(new StatementGroupHandlerNoCompound(
-                StatementGroup.StackStrategy.NO_NEW_FRAME, line, column));
+                StackStrategy.NO_NEW_FRAME, line, column));
         return true;   
     }
 

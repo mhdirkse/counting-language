@@ -1,7 +1,6 @@
 package com.github.mhdirkse.countlang.ast;
 
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
-import com.github.mhdirkse.countlang.execution.CountlangType;
 
 public final class TestFunctionDefinitions {
 
@@ -23,7 +22,7 @@ public final class TestFunctionDefinitions {
 
         FunctionDefinitionStatement createFunction() {
             instance.setName("testFunction");
-            instance.setStatements(new StatementGroup(StatementGroup.StackStrategy.NO_NEW_FRAME, 1, 1));
+            instance.setStatements(new StatementGroup(StackStrategy.NO_NEW_FRAME, 1, 1));
             handleParameter();
             instance.addStatement(getStatement());
             handleExtraStatement();

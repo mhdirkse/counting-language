@@ -1,5 +1,9 @@
 package com.github.mhdirkse.countlang.execution;
 
+import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
+
 public interface ExecutionContext {
 
     boolean hasSymbol(String name);
@@ -14,9 +18,9 @@ public interface ExecutionContext {
 
     boolean hasFunction(String name);
 
-    RunnableFunction getFunction(String name);
+    FunctionDefinitionStatement getFunction(String name);
 
-    void putFunction(final RunnableFunction function);
+    void putFunction(final FunctionDefinitionStatement function);
 
     void startPreparingNewFrame(StackFrameAccess stackFrameAccess);
 
@@ -29,12 +33,4 @@ public interface ExecutionContext {
     void pushValue(Object value);
     
     Object popValue();
-
-    void pushNewReturnContext(final int line, final int column, boolean withReturnValue);
-
-    void popReturnContextNoValue();
-
-    Object popReturnContextValue();
-
-    void setReturnValue(final Object value);
 }

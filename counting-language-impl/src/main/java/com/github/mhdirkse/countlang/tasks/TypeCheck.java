@@ -7,21 +7,21 @@ import com.github.mhdirkse.countlang.ast.AbstractAstListener;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstVisitorToListener;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
-import com.github.mhdirkse.countlang.execution.CountlangType;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.RunnableFunction;
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
+import com.github.mhdirkse.countlang.execution.StackStrategyExecution;
 
 class TypeCheck {
     private final StatusReporter reporter;
@@ -52,12 +52,12 @@ class TypeCheck {
 
         @Override
         public void enterStatementGroup(final StatementGroup statementGroup) {
-            statementGroup.getStackStrategy().before(ctx);
+            StackStrategyExecution.before(statementGroup.getStackStrategy(), ctx);
         }
 
         @Override
         public void exitStatementGroup(final StatementGroup statementGroup) {
-            statementGroup.getStackStrategy().after(ctx);
+            StackStrategyExecution.after(statementGroup.getStackStrategy(), ctx);
         }
 
         @Override
@@ -147,7 +147,7 @@ class TypeCheck {
                         expr.getFunctionName());
                 return;
             }
-            RunnableFunction fun = ctx.getFunction(expr.getFunctionName());
+            FunctionDefinitionStatement fun = ctx.getFunction(expr.getFunctionName());
             for(int i = 0; i < expr.getNumArguments(); i++) {
                 if(actualParameterTypes.get(i) != fun.getFormalParameterType(i)) {
                     reporter.report(

@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.ast;
 
 public enum CountlangType {
     UNKNOWN(Object.class, null),

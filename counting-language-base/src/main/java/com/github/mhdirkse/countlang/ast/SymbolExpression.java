@@ -1,9 +1,5 @@
 package com.github.mhdirkse.countlang.ast;
 
-import com.github.mhdirkse.countlang.execution.CountlangType;
-import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramException;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,15 +17,6 @@ public final class SymbolExpression extends ExpressionNode {
 
     public String getSymbol() {
         return symbol;
-    }
-
-    @Override
-    public Object calculate(final ExecutionContext ctx) {
-        if (ctx.hasSymbol(symbol)) {
-            return ctx.getValue(symbol);
-        } else {
-            throw new ProgramException(getLine(), getColumn(), "Undefined symbol " + symbol);
-        }
     }
 
     @Override

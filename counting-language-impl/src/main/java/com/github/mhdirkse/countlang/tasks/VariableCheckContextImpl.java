@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 
 class VariableCheckContextImpl implements VariableCheckContext {
     private final Function<StackFrameAccess, VariableCheckFrame> frameFactory;

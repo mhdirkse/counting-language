@@ -3,6 +3,9 @@ package com.github.mhdirkse.countlang.execution;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
+
 import lombok.Getter;
 
 class StackFrame {

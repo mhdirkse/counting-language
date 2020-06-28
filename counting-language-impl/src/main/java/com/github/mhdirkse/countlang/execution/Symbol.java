@@ -1,5 +1,7 @@
 package com.github.mhdirkse.countlang.execution;
 
+import com.github.mhdirkse.countlang.ast.CountlangType;
+
 final class Symbol {
     private String name;
     private CountlangType countlangType;

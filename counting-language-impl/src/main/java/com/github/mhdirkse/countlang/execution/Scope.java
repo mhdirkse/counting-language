@@ -4,6 +4,9 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
 
+import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
+
 final class Scope {
     private final Deque<StackFrame> frames = new ArrayDeque<>();
 

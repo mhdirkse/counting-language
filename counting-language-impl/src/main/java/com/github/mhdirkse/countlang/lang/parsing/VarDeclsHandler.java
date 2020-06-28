@@ -9,8 +9,8 @@ import java.util.Set;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
+import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
-import com.github.mhdirkse.countlang.execution.CountlangType;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 

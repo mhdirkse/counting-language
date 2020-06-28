@@ -3,9 +3,6 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.Arrays;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ReturnHandler;
-
 public final class PrintStatement extends Statement implements CompositeNode {
     private ExpressionNode expression = null;
 
@@ -19,12 +16,6 @@ public final class PrintStatement extends Statement implements CompositeNode {
 
     public void setExpression(final ExpressionNode expression) {
         this.expression = expression;
-    }
-
-    @Override
-    public void execute(final ExecutionContext ctx, final ReturnHandler returnHandler) {
-        String result = expression.calculate(ctx).toString();
-        ctx.output(result);
     }
 
     @Override

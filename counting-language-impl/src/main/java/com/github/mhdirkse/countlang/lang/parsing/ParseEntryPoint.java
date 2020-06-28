@@ -9,8 +9,8 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
-import com.github.mhdirkse.countlang.execution.ProgramException;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 

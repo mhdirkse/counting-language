@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.tasks;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 import com.github.mhdirkse.utils.AbstractStatusCode;
 
 class VariableCheckFrameImpl implements VariableCheckFrame {

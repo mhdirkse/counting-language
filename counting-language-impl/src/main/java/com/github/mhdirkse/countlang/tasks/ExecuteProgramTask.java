@@ -7,13 +7,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
 import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.ReturnHandler;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.utils.Imperative;
 
@@ -75,17 +74,6 @@ public class ExecuteProgramTask implements AbstractTask {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
         new TypeCheck(reporter, statementGroup).run();
         return !reporter.hasErrors();
-    }
-
-    private void runProgram(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        try {
-            ExecutionContext executionContext = new ExecutionContextImpl(outputStrategy);
-            executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
-            statementGroup.execute(executionContext, ReturnHandler.NO_RETURN);
-        }
-        catch (ProgramException e) {
-            outputStrategy.error(e.getMessage());
-        }
     }
 
     private void runProgramVisitor(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {

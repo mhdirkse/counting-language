@@ -3,9 +3,6 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.execution.CountlangType;
-import com.github.mhdirkse.countlang.execution.ExecutionContext;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,15 +36,6 @@ public final class CompositeExpression extends ExpressionNode implements Composi
 
     public void addSubExpression(final ExpressionNode expression) {
         subExpressions.add(expression);
-    }
-
-    @Override
-    public Object calculate(final ExecutionContext ctx) {
-        List<Object> arguments = new ArrayList<Object>();
-        for (ExpressionNode subExpression : subExpressions) {
-            arguments.add(subExpression.calculate(ctx));
-        }
-        return operator.execute(arguments);
     }
 
     @Override

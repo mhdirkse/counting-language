@@ -13,7 +13,7 @@ import org.easymock.IMocksControl;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 
 public class VariableCheckContextTest {
     private static final String NAME = "xyz";

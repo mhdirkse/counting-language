@@ -1,7 +1,5 @@
 package com.github.mhdirkse.countlang.ast;
 
-import com.github.mhdirkse.countlang.execution.CountlangType;
-
 import lombok.Getter;
 
 public class FormalParameter extends AstNode {

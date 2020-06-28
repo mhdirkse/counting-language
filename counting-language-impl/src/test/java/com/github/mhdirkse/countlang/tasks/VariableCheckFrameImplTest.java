@@ -1,5 +1,8 @@
 package com.github.mhdirkse.countlang.tasks;
 
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
 import org.easymock.MockType;
@@ -7,9 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
-
-import static org.easymock.EasyMock.*;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 
 @RunWith(EasyMockRunner.class)
 public class VariableCheckFrameImplTest {

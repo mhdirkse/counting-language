@@ -5,10 +5,11 @@ import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstVisitorToListener;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
+import com.github.mhdirkse.countlang.ast.StackStrategy;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 class VariableCheck extends AbstractAstListener {
     private final VariableCheckContext ctx = new VariableCheckContextImpl();
@@ -46,14 +47,18 @@ class VariableCheck extends AbstractAstListener {
         switch(statementGroup.getStackStrategy()) {
         case NO_NEW_FRAME:
             break;
-        default:
-            ctx.pushNewFrame(statementGroup.getStackStrategy().getStackFrameAccess());
+        case NEW_FRAME_SHOWING_PARENT:
+            ctx.pushNewFrame(StackFrameAccess.SHOW_PARENT);
+            break;
+        case NEW_FRAME_HIDING_PARENT:
+            ctx.pushNewFrame(StackFrameAccess.HIDE_PARENT);
+            break;
         }
     }
 
     @Override
     public void exitStatementGroup(final StatementGroup statementGroup) {
-        if(statementGroup.getStackStrategy() != StatementGroup.StackStrategy.NO_NEW_FRAME) {
+        if(statementGroup.getStackStrategy() != StackStrategy.NO_NEW_FRAME) {
             ctx.popFrame();
         }
     }

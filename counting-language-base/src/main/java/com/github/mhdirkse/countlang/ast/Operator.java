@@ -2,9 +2,6 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.execution.CountlangType;
-import com.github.mhdirkse.countlang.execution.ProgramException;
-
 public abstract class Operator extends AstNode {
     public Operator(final int line, final int column) {
         super(line, column);

@@ -3,6 +3,8 @@ package com.github.mhdirkse.countlang.execution;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.ast.CountlangType;
+
 public class SymbolTest {
     @Test
     public void whenSymbolCreatedThenUnknownTypeAndValueNull() {

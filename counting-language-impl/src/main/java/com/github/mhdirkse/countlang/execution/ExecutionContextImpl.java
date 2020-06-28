@@ -1,11 +1,14 @@
 package com.github.mhdirkse.countlang.execution;
 
+import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
+
 public final class ExecutionContextImpl implements ExecutionContext {
     private final Scope scope = new Scope();
     private final FunctionDefinitions functions = new FunctionDefinitions();
     private OutputStrategy outputStrategy = null;
     private StackFrame newStackFrame = null;
-    private ReturnContextStack returnContextStack = new ReturnContextStack();
     private ValueStack valueStack = new ValueStack();
 
     public ExecutionContextImpl(final OutputStrategy outputStrategy) {
@@ -43,12 +46,12 @@ public final class ExecutionContextImpl implements ExecutionContext {
     }
 
     @Override
-    public RunnableFunction getFunction(String name) {
+    public FunctionDefinitionStatement getFunction(String name) {
         return functions.getFunction(name);
     }
 
     @Override
-    public void putFunction(final RunnableFunction function) {
+    public void putFunction(final FunctionDefinitionStatement function) {
         functions.putFunction(function);
     }
 
@@ -80,25 +83,5 @@ public final class ExecutionContextImpl implements ExecutionContext {
     @Override
     public Object popValue() {
         return valueStack.pop();
-    }
-
-    @Override
-    public void pushNewReturnContext(final int line, final int column, boolean withReturnValue) {
-        returnContextStack.push(line, column, withReturnValue);
-    }
-
-    @Override
-    public void popReturnContextNoValue() {
-        returnContextStack.popNoReturn();
-    }
-
-    @Override
-    public Object popReturnContextValue() {
-        return returnContextStack.popReturnValue();
-    }
-
-    @Override
-    public void setReturnValue(final Object value) {
-        returnContextStack.setReturnValue(value);
     }
 }

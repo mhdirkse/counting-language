@@ -3,10 +3,6 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.execution.CountlangType;
-import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramException;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,16 +31,6 @@ public class FunctionCallExpression extends ExpressionNode implements CompositeN
 
     public void addArgument(final ExpressionNode expression) {
         arguments.add(expression);
-    }
-
-    @Override
-    public Object calculate(final ExecutionContext ctx) {
-        if (ctx.hasFunction(functionName)) {
-            return ctx.getFunction(functionName).runFunction(arguments, ctx);
-        } else {
-            throw new ProgramException(getLine(), getColumn(),
-                    String.format("Function not found: %s", functionName));
-        }
     }
 
     @Override

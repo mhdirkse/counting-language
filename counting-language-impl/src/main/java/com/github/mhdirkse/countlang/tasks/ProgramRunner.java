@@ -16,14 +16,14 @@ import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ProgramException;
-import com.github.mhdirkse.countlang.execution.RunnableFunction;
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
+import com.github.mhdirkse.countlang.execution.StackStrategyExecution;
 
 class ProgramRunner extends AbstractAstListener {
     private AstNode root;
@@ -52,8 +52,7 @@ class ProgramRunner extends AbstractAstListener {
             for (AstNode child : expr.getChildren()) {
                 child.accept(this);
             }
-            RunnableFunction runnableFunction = ProgramRunner.this.executionContext.getFunction(expr.getFunctionName());
-            FunctionDefinitionStatement fun = (FunctionDefinitionStatement) runnableFunction;
+            FunctionDefinitionStatement fun = ProgramRunner.this.executionContext.getFunction(expr.getFunctionName());
             fun.getFormalParameters().accept(this);
             fun.getStatements().accept(this);
             ProgramRunner.this.exitFunctionCallExpression(expr);
@@ -90,12 +89,12 @@ class ProgramRunner extends AbstractAstListener {
     
     @Override
     public void enterStatementGroup (final StatementGroup statementGroup) {
-        statementGroup.getStackStrategy().before(executionContext);
+        StackStrategyExecution.before(statementGroup.getStackStrategy(), executionContext);
     }
 
     @Override
     public void exitStatementGroup (final StatementGroup statementGroup) {
-        statementGroup.getStackStrategy().after(executionContext);
+        StackStrategyExecution.after(statementGroup.getStackStrategy(), executionContext);
     }
 
     @Override
