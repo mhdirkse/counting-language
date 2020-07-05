@@ -55,6 +55,7 @@ class FunctionAndReturnCheck {
 
         @Override
         public void visitStatementGroup(StatementGroup statementGroup) {
+            statementGroup.getChildren().forEach(c -> c.accept(this));
         }
 
         @Override

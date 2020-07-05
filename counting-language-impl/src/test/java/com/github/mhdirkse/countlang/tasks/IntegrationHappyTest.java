@@ -92,7 +92,8 @@ public class IntegrationHappyTest implements OutputStrategy
             // Compound statements
             {"{print 3}", "3"}, // Program can be compound statement
             {"x = 3; markUsed x; {x = 5;}; print x", "5"}, // When global exists, you access it
-            {"y = 5; markUsed y; {x = 3; y = x}; print y", "3"} // Instantiate global from local
+            {"y = 5; markUsed y; {x = 3; y = x}; print y", "3"}, // Instantiate global from local
+            {"function fun() { {x = 3; return x} }; print fun()", "3"}, // Return in compound statement 
         });
     }
 

@@ -46,6 +46,15 @@ public class FunctionAndReturnCheckTest extends AstConstructionTestBase {
     }
 
     @Test
+    public void whenReturnInBlockStatementInFunctionThenNoError() {
+        replay(reporter);
+        parse("function fun() { {x = 3; return x} }");
+        Assert.assertFalse(hasParseErrors);
+        new FunctionAndReturnCheck(ast, reporter).run();
+        verify(reporter);
+    }
+
+    @Test
     public void whenNoReturnInFunctionThenError() {
         reporter.report(eq(StatusCode.FUNCTION_DOES_NOT_RETURN), eq(1), anyInt(), eq("fun"));
         replay(reporter);
@@ -71,6 +80,16 @@ public class FunctionAndReturnCheckTest extends AstConstructionTestBase {
         reporter.report(eq(StatusCode.FUNCTION_NESTED_NOT_ALLOWED), eq(1), anyInt());
         replay(reporter);
         parse("function fun(int x) {function nested(int y) {return y}; return x}");
+        Assert.assertFalse(hasParseErrors);
+        new FunctionAndReturnCheck(ast, reporter).run();
+        verify(reporter);
+    }
+
+    @Test
+    public void whenInFunctionReturnAfterBlockStatementReturnThenError() {
+        reporter.report(eq(StatusCode.FUNCTION_HAS_EXTRA_RETURN), eq(1), anyInt(), eq("fun"));
+        replay(reporter);
+        parse("function fun() { {return 3}; return 5}");
         Assert.assertFalse(hasParseErrors);
         new FunctionAndReturnCheck(ast, reporter).run();
         verify(reporter);
