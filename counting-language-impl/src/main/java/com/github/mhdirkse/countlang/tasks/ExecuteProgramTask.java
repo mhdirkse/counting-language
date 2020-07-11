@@ -3,15 +3,15 @@ package com.github.mhdirkse.countlang.tasks;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
-import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.ExecutionContextImpl;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.utils.Imperative;
@@ -46,8 +46,8 @@ public class ExecuteProgramTask implements AbstractTask {
         List<Supplier<Boolean>> checks = new ArrayList<>();
         checks.add(() -> checkFunctionsAndReturns(statementGroup, outputStrategy));
         checks.add(() -> checkFunctionCalls(statementGroup, outputStrategy));
-        checks.add(() -> checkVariables(statementGroup, outputStrategy));
         checks.add(() -> typeCheck(statementGroup, outputStrategy));
+        checks.add(() -> checkVariables(statementGroup, outputStrategy));
         Runnable runProgram = () -> runProgramVisitor(statementGroup, outputStrategy);
         Imperative.runWhileTrue(checks, runProgram);
     }
@@ -55,12 +55,6 @@ public class ExecuteProgramTask implements AbstractTask {
     private boolean checkFunctionsAndReturns(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
         new FunctionAndReturnCheck(statementGroup, reporter).run();
-        return !reporter.hasErrors();
-    }
-
-    private boolean checkVariables(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        new VariableCheck(reporter).run(statementGroup);
         return !reporter.hasErrors();
     }
 
@@ -72,15 +66,27 @@ public class ExecuteProgramTask implements AbstractTask {
 
     private boolean typeCheck(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        new TypeCheck(reporter, statementGroup).run();
+        statementGroup.accept(TypeCheck2.getInstance(reporter, getPredefinedFunctions()));
+        return !reporter.hasErrors();
+    }
+
+    private List<FunctionDefinitionStatement> getPredefinedFunctions() {
+        return Arrays.asList(TestFunctionDefinitions.createTestFunction());
+    }
+
+    private boolean checkVariables(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
+        StatusReporter reporter = new StatusReporterImpl(outputStrategy);
+        VariableCheck2 check = VariableCheck2.getInstance(reporter, getPredefinedFunctions());
+        statementGroup.accept(check);
+        check.listEvents();
         return !reporter.hasErrors();
     }
 
     private void runProgramVisitor(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        ExecutionContext executionContext = new ExecutionContextImpl(outputStrategy);
-        executionContext.putFunction(TestFunctionDefinitions.createTestFunction());
+        CountlangRunner3 runner = new CountlangRunner3(outputStrategy,
+                getPredefinedFunctions());
         try {
-            new ProgramRunner(statementGroup, executionContext).run();
+            statementGroup.accept(runner);
         }
         catch (ProgramException e) {
             outputStrategy.error(e.getMessage());

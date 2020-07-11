@@ -25,7 +25,7 @@ import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
 @RunWith(Parameterized.class)
 public class IntegrationHappyTest implements OutputStrategy
 {
-    @Parameters(name = "{0}, expect errors {1}")
+    @Parameters(name = "{0}, expect output {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             {"print 5 + 3", "8"},

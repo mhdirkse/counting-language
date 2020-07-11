@@ -17,12 +17,14 @@ enum StatusCode implements AbstractStatusCode {
     FUNCTION_ALREADY_DEFINED("({1}, {2}): Function {3} was already defined."),
     FUNCTION_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch calling {3}. Expected {4}, got {5}."),
     FUNCTION_TYPE_MISMATCH("({1}, {2}): Type mismatch calling function {3}, formal parameter {4}."),
+    FUNCTION_RETURN_TYPE_MISMATCH("({1}, {2}): Type of return value {3} does not match return type {4}."),
     
     OPERATOR_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch for operator {3}. Expected {4}, got {5}."),
     OPERATOR_TYPE_MISMATCH("({1}, {2}): Type mismatch using operator {3}."),
 
     VAR_NOT_USED("({1}, {2}): Variable {3} is not used."),
-    VAR_UNDEFINED("({1}, {2}): Undefined variable {3}.");
+    VAR_UNDEFINED("({1}, {2}): Undefined variable {3}."),
+    VAR_TYPE_CHANGED("({1}, {2}): Cannot change type of variable {3}.");
 
     StatusCode(final String formatString) {
         this.formatString = formatString;
