@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.mhdirkse.countlang.ast.ProgramException;
-import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 
 class SymbolFrameExecute implements SymbolFrame<Object> {
     private final Map<String, Object> symbols = new HashMap<>();
@@ -34,7 +33,7 @@ class SymbolFrameExecute implements SymbolFrame<Object> {
     }
 
     @Override
-    public <V> void write(String name, V value, int line, int column) {
+    public void write(String name, Object value, int line, int column) {
         symbols.put(name, value);
     }
 }

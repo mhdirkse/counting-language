@@ -3,7 +3,6 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.StackStrategy;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
@@ -36,8 +35,7 @@ class RootHandler extends AbstractCountlangListenerHandler {
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new StatementGroupHandlerNoCompound(
-                StackStrategy.NO_NEW_FRAME, line, column));
+        delegationCtx.addFirst(new StatementGroupHandler(line, column));
         return true;
     }
 
@@ -45,7 +43,7 @@ class RootHandler extends AbstractCountlangListenerHandler {
     public boolean exitStatements(
             @NotNull CountlangParser.StatementsContext ctx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        statementGroup = ((StatementGroupHandlerNoCompound) delegationCtx.getPreviousHandler()).getStatementGroup();
+        statementGroup = ((StatementGroupHandler) delegationCtx.getPreviousHandler()).getStatementGroup();
         delegationCtx.removeAllPreceeding();
         return true;        
     }

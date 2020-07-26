@@ -1,24 +1,31 @@
 package com.github.mhdirkse.countlang.execution;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.StackFrameAccess;
+import com.github.mhdirkse.countlang.utils.Stack;
 
-public abstract class SymbolFrameStackImpl<T> implements SymbolFrameStack<T> {
-    private final Deque<SymbolFrame<T>> frameStack = new ArrayDeque<>();
+public abstract class SymbolFrameStackImpl<T, F extends SymbolFrame<T>> implements SymbolFrameStack<T> {
+    private final Stack<F> frameStack;
+
+    SymbolFrameStackImpl() {
+        frameStack = new Stack<>();
+    }
+
+    // Only for testing purposes
+    SymbolFrameStackImpl(Stack<F> frameStack) {
+        this.frameStack = frameStack;
+    }
 
     @Override
     public void pushFrame(StackFrameAccess stackFrameAccess) {
-        frameStack.addLast(create(stackFrameAccess));
+        frameStack.push(create(stackFrameAccess));
     }
 
     @Override
     public void popFrame() {
-        frameStack.removeLast();
+        frameStack.pop();
     }
 
     @Override
@@ -27,13 +34,13 @@ public abstract class SymbolFrameStackImpl<T> implements SymbolFrameStack<T> {
     }
 
     @Override
-    public <V extends T> void write(String name, V value, int line, int column) {
+    public void write(String name, T value, int line, int column) {
         findFrame(name).write(name, value, line, column);
     }
 
-    abstract SymbolFrame<T> create(StackFrameAccess access);
+    abstract F create(StackFrameAccess access);
 
-    private SymbolFrame<T> findFrame(String name) {
+    SymbolFrame<T> findFrame(String name) {
         List<SymbolFrame<T>> accessibleFrames = getAccessibleFrames();
         if(accessibleFrames.isEmpty()) {
             throw new IllegalStateException("No symbol frames to search for symbol: " + name);
@@ -48,7 +55,7 @@ public abstract class SymbolFrameStackImpl<T> implements SymbolFrameStack<T> {
 
     private List<SymbolFrame<T>> getAccessibleFrames() {
         List<SymbolFrame<T>> result = new ArrayList<>();
-        Iterator<SymbolFrame<T>> it = frameStack.descendingIterator();
+        Iterator<F> it = frameStack.topToBottomIterator();
         while(it.hasNext()) {
             SymbolFrame<T> current = it.next();
             result.add(current);

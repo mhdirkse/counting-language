@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
-import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 
 class SymbolFrameTypeCheck implements SymbolFrame<CountlangType>{
     private final Map<String, CountlangType> symbols = new HashMap<>();

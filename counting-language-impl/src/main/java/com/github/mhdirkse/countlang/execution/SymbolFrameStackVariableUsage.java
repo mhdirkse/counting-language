@@ -3,9 +3,7 @@ package com.github.mhdirkse.countlang.execution;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.StackFrameAccess;
-
-public class SymbolFrameStackVariableUsage extends SymbolFrameStackImpl<DummyValue>{
+public class SymbolFrameStackVariableUsage extends SymbolFrameStackImpl<DummyValue, SymbolFrame<DummyValue>>{
     private final List<SymbolFrameVariableUsage> allFrames = new ArrayList<>();
     
     @Override

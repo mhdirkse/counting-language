@@ -1,6 +1,5 @@
 package com.github.mhdirkse.countlang.tasks;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
@@ -12,25 +11,25 @@ import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
-import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
-import com.github.mhdirkse.countlang.execution.CountlangStack;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
+import com.github.mhdirkse.countlang.utils.Stack;
 
 abstract public class AbstractCountlangVisitor<T> implements Visitor {
     final SymbolFrameStack<T> symbols;
-    final CountlangStack<T> stack;
+    final Stack<T> stack;
     final FunctionDefinitions funDefs;
 
     boolean didReturn = false;
 
     protected AbstractCountlangVisitor(
             SymbolFrameStack<T> symbols,
-            CountlangStack<T> stack,
+            Stack<T> stack,
             List<FunctionDefinitionStatement> predefinedFuns) {
         this.symbols = symbols;
         this.stack = stack;
@@ -110,7 +109,6 @@ abstract public class AbstractCountlangVisitor<T> implements Visitor {
     public void visitCompositeExpression(final CompositeExpression expression) {
         expression.getChildren().forEach(c -> c.accept(this));
         List<T> arguments = stack.repeatedPop(expression.getNumSubExpressions());
-        Collections.reverse(arguments);
         stack.push(doCompositeExpression(arguments, expression));
     }
 

@@ -1,4 +1,4 @@
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.ast;
 
 import org.junit.Assert;
 import org.junit.Test;

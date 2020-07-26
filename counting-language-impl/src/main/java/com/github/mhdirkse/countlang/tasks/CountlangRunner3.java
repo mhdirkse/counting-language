@@ -1,6 +1,5 @@
 package com.github.mhdirkse.countlang.tasks;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
@@ -10,15 +9,15 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
-import com.github.mhdirkse.countlang.execution.CountlangStack;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
+import com.github.mhdirkse.countlang.utils.Stack;
 
 public class CountlangRunner3 extends AbstractCountlangVisitor<Object> {
     private final OutputStrategy outputStrategy;
 
     CountlangRunner3(final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFuns) {
-        super(new SymbolFrameStackExecute(), new CountlangStack<Object>(), predefinedFuns);
+        super(new SymbolFrameStackExecute(), new Stack<Object>(), predefinedFuns);
         this.outputStrategy = outputStrategy;
     }
 
@@ -36,7 +35,6 @@ public class CountlangRunner3 extends AbstractCountlangVisitor<Object> {
     public void visitFunctionCallExpression(final FunctionCallExpression expression) {
         expression.getChildren().forEach(c -> c.accept(this));
         List<Object> arguments = stack.repeatedPop(expression.getNumArguments());
-        Collections.reverse(arguments);
         String funName = expression.getFunctionName();
         if(funDefs.hasFunction(funName)) {
             FunctionDefinitionStatement fun = funDefs.getFunction(funName);

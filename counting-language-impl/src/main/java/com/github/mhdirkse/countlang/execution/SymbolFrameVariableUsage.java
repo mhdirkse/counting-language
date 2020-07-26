@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.mhdirkse.countlang.ast.ProgramException;
-import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 
 public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue>{
     class State {
@@ -43,7 +42,7 @@ public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue>{
     }
 
     @Override
-    public <V extends DummyValue> void write(String name, V value, int line, int column) {
+    public void write(String name, DummyValue value, int line, int column) {
         if(states.containsKey(name)) {
             State state = states.get(name);
             if(!state.isUsed) {

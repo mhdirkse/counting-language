@@ -3,21 +3,20 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.StackStrategy;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class StatementGroupHandlerNoCompound extends AbstractCountlangListenerHandler {
+class StatementGroupHandler extends AbstractCountlangListenerHandler {
     private StatementGroup statementGroup;
 
     StatementGroup getStatementGroup() {
         return statementGroup;
     }
 
-    StatementGroupHandlerNoCompound(final StackStrategy stackStrategy, final int line, final int column) {
+    StatementGroupHandler(final int line, final int column) {
         super(false);
-        statementGroup = new StatementGroup(stackStrategy, line, column);
+        statementGroup = new StatementGroup(line, column);
     }
 
     @Override

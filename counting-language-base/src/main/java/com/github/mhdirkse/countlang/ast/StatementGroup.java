@@ -5,13 +5,10 @@ import java.util.List;
 
 public final class StatementGroup extends Statement implements CompositeNode {
 
-    private final StackStrategy stackStrategy;
-
     private List<Statement> statements = new ArrayList<Statement>();
 
-    public StatementGroup(final StackStrategy stackStrategy, final int line, final int column) {
+    public StatementGroup(final int line, final int column) {
         super(line, column);
-        this.stackStrategy = stackStrategy;
     }
 
     public Statement getStatement(final int index) {
@@ -24,10 +21,6 @@ public final class StatementGroup extends Statement implements CompositeNode {
 
     public int getSize() {
         return statements.size();
-    }
-
-    public StackStrategy getStackStrategy() {
-        return stackStrategy;
     }
 
     @Override

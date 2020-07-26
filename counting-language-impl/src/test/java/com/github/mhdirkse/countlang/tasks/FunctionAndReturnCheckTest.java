@@ -6,7 +6,7 @@ import org.easymock.MockType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.github.mhdirkse.countlang.ast.AstConstructionTestBase;
+import com.github.mhdirkse.countlang.testhelper.AstConstructionTestBase;
 
 import org.junit.Assert;
 

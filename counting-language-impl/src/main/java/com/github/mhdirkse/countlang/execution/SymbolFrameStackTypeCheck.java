@@ -1,9 +1,8 @@
 package com.github.mhdirkse.countlang.execution;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
-import com.github.mhdirkse.countlang.ast.StackFrameAccess;
 
-public class SymbolFrameStackTypeCheck extends SymbolFrameStackImpl<CountlangType> {
+public class SymbolFrameStackTypeCheck extends SymbolFrameStackImpl<CountlangType, SymbolFrame<CountlangType>> {
     private SymbolNotAccessibleHandler handler;
 
     public SymbolFrameStackTypeCheck() {

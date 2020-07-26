@@ -8,10 +8,10 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
-import com.github.mhdirkse.countlang.execution.CountlangStack;
 import com.github.mhdirkse.countlang.execution.DummyValue;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackVariableUsage;
 import com.github.mhdirkse.countlang.execution.VariableUsageEventHandler;
+import com.github.mhdirkse.countlang.utils.Stack;
 
 public class VariableCheck2 extends AbstractCountlangAnalysis<DummyValue> implements VariableUsageEventHandler {
     private final SymbolFrameStackVariableUsage symbols;
@@ -28,7 +28,7 @@ public class VariableCheck2 extends AbstractCountlangAnalysis<DummyValue> implem
             final SymbolFrameStackVariableUsage stackFrame,
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {
-        super(stackFrame, new CountlangStack<DummyValue>(), reporter, predefinedFuns);
+        super(stackFrame, new Stack<DummyValue>(), reporter, predefinedFuns);
         this.symbols = stackFrame;
     }
 

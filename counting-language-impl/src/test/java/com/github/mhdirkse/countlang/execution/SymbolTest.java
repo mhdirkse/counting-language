@@ -33,4 +33,10 @@ public class SymbolTest {
         s.setValue(CountlangType.BOOL.getExample());
         s.setValue(CountlangType.INT.getExample());
     }
+
+    @Test(expected= NullPointerException.class)
+    public void whenSymbolSetToNullThenError() {
+        Symbol s = new Symbol("x");
+        s.setValue(null);        
+    }
 }

@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
-import com.github.mhdirkse.countlang.ast.StackStrategy;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
@@ -35,8 +34,7 @@ implements StatementSource, TerminalFilterCallback {
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
         int column = ctx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new StatementGroupHandlerNoCompound(
-                StackStrategy.NO_NEW_FRAME, line, column));
+        delegationCtx.addFirst(new StatementGroupHandler(line, column));
         return true;   
     }
 
@@ -47,7 +45,7 @@ implements StatementSource, TerminalFilterCallback {
         if(delegationCtx.isFirst()) {
             return false;
         } else {
-            StatementGroup statements = ((StatementGroupHandlerNoCompound) delegationCtx.getPreviousHandler()).getStatementGroup();
+            StatementGroup statements = ((StatementGroupHandler) delegationCtx.getPreviousHandler()).getStatementGroup();
             statement.setStatements(statements);
             delegationCtx.removeAllPreceeding();
             return true;

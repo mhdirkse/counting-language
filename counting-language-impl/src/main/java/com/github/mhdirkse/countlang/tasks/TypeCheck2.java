@@ -9,9 +9,9 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
-import com.github.mhdirkse.countlang.execution.CountlangStack;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackTypeCheck;
 import com.github.mhdirkse.countlang.execution.SymbolNotAccessibleHandler;
+import com.github.mhdirkse.countlang.utils.Stack;
 
 class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements SymbolNotAccessibleHandler {
     public static TypeCheck2 getInstance(
@@ -27,7 +27,7 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
             final SymbolFrameStackTypeCheck symbols,
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {
-        super(symbols, new CountlangStack<CountlangType>(), reporter, predefinedFuns);
+        super(symbols, new Stack<CountlangType>(), reporter, predefinedFuns);
     }
     
     @Override
