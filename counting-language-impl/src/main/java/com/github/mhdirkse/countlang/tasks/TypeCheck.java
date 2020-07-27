@@ -13,17 +13,17 @@ import com.github.mhdirkse.countlang.execution.SymbolFrameStackTypeCheck;
 import com.github.mhdirkse.countlang.execution.SymbolNotAccessibleHandler;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements SymbolNotAccessibleHandler {
-    public static TypeCheck2 getInstance(
+class TypeCheck extends AbstractCountlangAnalysis<CountlangType> implements SymbolNotAccessibleHandler {
+    public static TypeCheck getInstance(
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {
         SymbolFrameStackTypeCheck symbols = new SymbolFrameStackTypeCheck();
-        TypeCheck2 instance = new TypeCheck2(symbols, reporter, predefinedFuns);
+        TypeCheck instance = new TypeCheck(symbols, reporter, predefinedFuns);
         symbols.setHandler(instance);
         return instance;
     }
 
-    private TypeCheck2(
+    private TypeCheck(
             final SymbolFrameStackTypeCheck symbols,
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {

@@ -23,11 +23,11 @@ public class VariableCheckTest extends AstConstructionTestBase {
     @Mock
     StatusReporter reporter;
 
-    private VariableCheck2 instance;
+    private VariableCheck instance;
     
     @Before
     public void setUp() {
-        instance = VariableCheck2.getInstance(reporter, new ArrayList<FunctionDefinitionStatement>());
+        instance = VariableCheck.getInstance(reporter, new ArrayList<FunctionDefinitionStatement>());
     }
 
     private void execute() {

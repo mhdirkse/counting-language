@@ -14,18 +14,18 @@ import com.github.mhdirkse.countlang.execution.SymbolFrameStackVariableUsage;
 import com.github.mhdirkse.countlang.execution.VariableUsageEventHandler;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-class VariableCheck2 extends AbstractCountlangAnalysis<DummyValue> implements VariableUsageEventHandler {
+class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements VariableUsageEventHandler {
     private final SymbolFrameStackVariableUsage symbols;
 
-    public static VariableCheck2 getInstance(
+    public static VariableCheck getInstance(
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {
         SymbolFrameStackVariableUsage symbols = new SymbolFrameStackVariableUsage();
-        VariableCheck2 instance = new VariableCheck2(symbols, reporter, predefinedFuns);
+        VariableCheck instance = new VariableCheck(symbols, reporter, predefinedFuns);
         return instance;
     }
 
-    private VariableCheck2(
+    private VariableCheck(
             final SymbolFrameStackVariableUsage stackFrame,
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {

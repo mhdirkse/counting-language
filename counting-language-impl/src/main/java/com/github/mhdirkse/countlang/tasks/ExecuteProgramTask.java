@@ -59,7 +59,7 @@ public class ExecuteProgramTask implements AbstractTask {
 
     private boolean typeCheck(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        statementGroup.accept(TypeCheck2.getInstance(reporter, getPredefinedFunctions()));
+        statementGroup.accept(TypeCheck.getInstance(reporter, getPredefinedFunctions()));
         return !reporter.hasErrors();
     }
 
@@ -69,7 +69,7 @@ public class ExecuteProgramTask implements AbstractTask {
 
     private boolean checkVariables(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        VariableCheck2 check = VariableCheck2.getInstance(reporter, getPredefinedFunctions());
+        VariableCheck check = VariableCheck.getInstance(reporter, getPredefinedFunctions());
         statementGroup.accept(check);
         check.listEvents();
         return !reporter.hasErrors();
