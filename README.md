@@ -12,12 +12,13 @@ Simple programming language to manipulate integer values. In counting-language, 
 * Build codegen using `mvn clean install`.
 * In your codegen copy, checkout the relevant codegen version.
 * Build codegen using `mvn clean install`.
-* Build counting-language using `mvn clean install`.
+* Build counting-language using `mvn clean package`.
 * In your counting-language checkout, go to `counting-language-impl/target/scripts`.
 * Check whether the `run.sh` script contains `${project.version}`. If so, you have to rebuild.
 * Give yourself executable permission on the script `run.sh`.
 * Run the program, for example as `./run.sh inputs/simpleAdd`.
 * See the `inputs` directory for more examples.
+* Javadocs are in `counting-language/target/site/apidocs`.
 
 # Implementation
 
