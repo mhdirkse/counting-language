@@ -14,7 +14,7 @@ import com.github.mhdirkse.countlang.execution.SymbolFrameStackVariableUsage;
 import com.github.mhdirkse.countlang.execution.VariableUsageEventHandler;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-public class VariableCheck2 extends AbstractCountlangAnalysis<DummyValue> implements VariableUsageEventHandler {
+class VariableCheck2 extends AbstractCountlangAnalysis<DummyValue> implements VariableUsageEventHandler {
     private final SymbolFrameStackVariableUsage symbols;
 
     public static VariableCheck2 getInstance(

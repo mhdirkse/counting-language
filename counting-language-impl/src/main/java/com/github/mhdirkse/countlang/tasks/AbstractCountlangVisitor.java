@@ -20,7 +20,7 @@ import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-abstract public class AbstractCountlangVisitor<T> implements Visitor {
+abstract class AbstractCountlangVisitor<T> implements Visitor {
     final SymbolFrameStack<T> symbols;
     final Stack<T> stack;
     final FunctionDefinitions funDefs;

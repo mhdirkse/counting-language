@@ -9,7 +9,7 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-abstract public class AbstractCountlangAnalysis<T> extends AbstractCountlangVisitor<T> {
+abstract class AbstractCountlangAnalysis<T> extends AbstractCountlangVisitor<T> {
     final StatusReporter reporter;
 
     AbstractCountlangAnalysis(

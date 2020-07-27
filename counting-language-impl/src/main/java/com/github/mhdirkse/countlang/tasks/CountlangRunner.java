@@ -13,10 +13,10 @@ import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-public class CountlangRunner3 extends AbstractCountlangVisitor<Object> {
+class CountlangRunner extends AbstractCountlangVisitor<Object> {
     private final OutputStrategy outputStrategy;
 
-    CountlangRunner3(final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFuns) {
+    CountlangRunner(final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFuns) {
         super(new SymbolFrameStackExecute(), new Stack<Object>(), predefinedFuns);
         this.outputStrategy = outputStrategy;
     }

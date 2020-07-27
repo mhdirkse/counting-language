@@ -76,7 +76,7 @@ public class ExecuteProgramTask implements AbstractTask {
     }
 
     private void runProgramVisitor(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        CountlangRunner3 runner = new CountlangRunner3(outputStrategy,
+        CountlangRunner runner = new CountlangRunner(outputStrategy,
                 getPredefinedFunctions());
         try {
             statementGroup.accept(runner);
