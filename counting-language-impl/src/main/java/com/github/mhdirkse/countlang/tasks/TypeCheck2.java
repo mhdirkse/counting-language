@@ -31,6 +31,15 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
     }
     
     @Override
+    void onFunctionRedefined(FunctionDefinitionStatement previous, FunctionDefinitionStatement current) {
+        reporter.report(
+                StatusCode.FUNCTION_ALREADY_DEFINED,
+                current.getLine(),
+                current.getColumn(),
+                current.getName());
+    }
+
+    @Override
     CountlangType getPseudoActualParameter(FormalParameter formalParameter) {
         return formalParameter.getCountlangType();
     }
@@ -54,13 +63,7 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
     CountlangType doCompositeExpression(final List<CountlangType> arguments, final CompositeExpression compositeExpression) {
         CountlangType result = CountlangType.UNKNOWN;
         if(compositeExpression.getOperator().getNumArguments() != arguments.size()) {
-            reporter.report(
-                    StatusCode.OPERATOR_ARGUMENT_COUNT_MISMATCH,
-                    compositeExpression.getLine(),
-                    compositeExpression.getColumn(),
-                    compositeExpression.getOperator().toString(),
-                    Integer.valueOf(compositeExpression.getOperator().getNumArguments()).toString(),
-                    Integer.valueOf(arguments.size()).toString());
+            throw new IllegalStateException("Cannot happen, would be a syntax error");
         } else if(compositeExpression.getOperator().checkAndEstablishTypes(arguments)) {
             result = compositeExpression.getOperator().getResultType();
         }
@@ -80,7 +83,7 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
             final List<CountlangType> arguments,
             final FunctionCallExpression funCallExpr,
             final FunctionDefinitionStatement funDefStatement) {
-        if(arguments.size() != funCallExpr.getNumArguments()) {
+        if(arguments.size() != funDefStatement.getNumParameters()) {
             reporter.report(
                     StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH,
                     funCallExpr.getLine(),
@@ -114,17 +117,6 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
                 funCallExpr.getColumn(),
                 funCallExpr.getFunctionName());
         return CountlangType.UNKNOWN;
-    }
-
-    @Override
-    void onParameterCountMismatch(String functionName, int line, int column, int numActual, int numFormal) {
-        reporter.report(
-                StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH,
-                line,
-                column,
-                functionName,
-                Integer.valueOf(numFormal).toString(),
-                Integer.valueOf(numActual).toString());
     }
 
     @Override

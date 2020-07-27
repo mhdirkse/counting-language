@@ -22,6 +22,9 @@ abstract public class AbstractCountlangAnalysis<T> extends AbstractCountlangVisi
     }
 
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement) {
+        if(funDefs.hasFunction(statement.getName())) {
+            onFunctionRedefined(funDefs.getFunction(statement.getName()), statement);
+        }
         List<T> pseudoArguments = statement.getFormalParameters().getFormalParameters()
                 .stream().map(this::getPseudoActualParameter).collect(Collectors.toList());
         runFunction(pseudoArguments, statement, statement.getLine(), statement.getColumn());
@@ -29,11 +32,8 @@ abstract public class AbstractCountlangAnalysis<T> extends AbstractCountlangVisi
         funDefs.putFunction(statement);
     }
 
-    @Override
-    void onParameterCountMismatch(String functionName, int line, int column, int numActual, int numFormal) {
-        throw new IllegalStateException("Should not happen, because pseudo actual parameters are derived from formal parameters");
-    }
-
+    abstract void onFunctionRedefined(FunctionDefinitionStatement previous, FunctionDefinitionStatement current);
+    
     abstract T getPseudoActualParameter(FormalParameter p);
     abstract void checkReturnValue(T value, FunctionDefinitionStatement fun);
 

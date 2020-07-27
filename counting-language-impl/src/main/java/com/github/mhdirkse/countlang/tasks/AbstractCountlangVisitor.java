@@ -40,27 +40,19 @@ abstract public class AbstractCountlangVisitor<T> implements Visitor {
     }
 
     void runFunction(List<T> arguments, FunctionDefinitionStatement fun, int line, int column) {
-        int actualParameterCount = arguments.size();
         int formalParameterCount = fun.getNumParameters();
-        if(actualParameterCount != formalParameterCount) {
-            onParameterCountMismatch(fun.getName(), line, column, actualParameterCount, formalParameterCount);
+        symbols.pushFrame(StackFrameAccess.HIDE_PARENT);
+        for(int i = 0; i < formalParameterCount; i++) {
+            FormalParameter p = fun.getFormalParameters().getFormalParameter(i);
+            symbols.write(
+                    fun.getFormalParameterName(i),
+                    arguments.get(i),
+                    p.getLine(),
+                    p.getColumn());
         }
-        else {
-            symbols.pushFrame(StackFrameAccess.HIDE_PARENT);
-            for(int i = 0; i < formalParameterCount; i++) {
-                FormalParameter p = fun.getFormalParameters().getFormalParameter(i);
-                symbols.write(
-                        fun.getFormalParameterName(i),
-                        arguments.get(i),
-                        p.getLine(),
-                        p.getColumn());
-            }
-            fun.getStatements().accept(this);
-            symbols.popFrame();
-        }
+        fun.getStatements().accept(this);
+        symbols.popFrame();
     }
-
-    abstract void onParameterCountMismatch(String functionName, int line, int column, int numActual, int numFormal);
 
     public void visitStatementGroup(final StatementGroup sg) {
         symbols.pushFrame(StackFrameAccess.SHOW_PARENT);

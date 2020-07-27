@@ -6,6 +6,7 @@ import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.execution.DummyValue;
@@ -30,6 +31,14 @@ public class VariableCheck2 extends AbstractCountlangAnalysis<DummyValue> implem
             List<FunctionDefinitionStatement> predefinedFuns) {
         super(stackFrame, new Stack<DummyValue>(), reporter, predefinedFuns);
         this.symbols = stackFrame;
+    }
+
+    @Override
+    void onFunctionRedefined(FunctionDefinitionStatement previous, FunctionDefinitionStatement current) {
+        throw new ProgramException(
+                current.getLine(),
+                current.getColumn(),
+                "Should have been caught during type check");
     }
 
     @Override
