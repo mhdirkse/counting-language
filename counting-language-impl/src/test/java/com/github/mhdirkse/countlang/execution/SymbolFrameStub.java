@@ -42,4 +42,20 @@ class SymbolFrameStub implements SymbolFrame<DummyValue> {
     int getSeq() {
         return seq;
     }
+
+    @Override
+    public void onSwitchOpened() {
+    }
+
+    @Override
+    public void onSwitchClosed() {
+    }
+
+    @Override
+    public void onBranchOpened() {
+    }
+
+    @Override
+    public void onBranchClosed() {
+    }
 }

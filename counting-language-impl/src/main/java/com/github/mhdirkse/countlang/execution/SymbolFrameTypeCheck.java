@@ -5,11 +5,27 @@ import java.util.Map;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
 
+/**
+ * Implements a {@link SymbolFrame} for two purposes. First, checking
+ * whether variables exist. Second, checking that each write to
+ * a variable is done with the same {@link com.github.mhdirkse.countlang.ast.CountlangType}.
+ * 
+ * Every branch of an if-statement opens a new block scope. Therefore, we assume that
+ * no new symbols are added while any switch statement is opened. Within a branch,
+ * the same symbols exist in this frame as existed before the switch statement
+ * was started. Therefore we do not have to distinguish branches to check
+ * whether a symbol exists.
+ * 
+ * @author martijn
+ *
+ */
 class SymbolFrameTypeCheck implements SymbolFrame<CountlangType>{
     private final Map<String, CountlangType> symbols = new HashMap<>();
 
     private final SymbolNotAccessibleHandler handler;
     private final StackFrameAccess access;
+    
+    private int numSwitchOpen = 0;
     
     SymbolFrameTypeCheck(StackFrameAccess access, final SymbolNotAccessibleHandler handler) {
         this.handler = handler;
@@ -37,6 +53,9 @@ class SymbolFrameTypeCheck implements SymbolFrame<CountlangType>{
                 handler.notWritable(name, line, column);
             }
         }
+        else if(numSwitchOpen >= 1) {
+            throw new IllegalStateException("Expected no new symbol within a switch statement: " + name);
+        }
         else {
             symbols.put(name, value);
         }
@@ -45,5 +64,23 @@ class SymbolFrameTypeCheck implements SymbolFrame<CountlangType>{
     @Override
     public StackFrameAccess getAccess() {
         return access;
+    }
+
+    @Override
+    public void onSwitchOpened() {
+        numSwitchOpen++;
+    }
+
+    @Override
+    public void onSwitchClosed() {
+        numSwitchOpen--;
+    }
+
+    @Override
+    public void onBranchOpened() {
+    }
+
+    @Override
+    public void onBranchClosed() {
     }
 }

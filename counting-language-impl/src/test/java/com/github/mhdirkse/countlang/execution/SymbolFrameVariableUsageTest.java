@@ -25,6 +25,15 @@ public class SymbolFrameVariableUsageTest {
         instance = new SymbolFrameVariableUsage(DUMMY_STACK_FRAME_ACCESS);
     }
 
+    private void openBranch() {
+        instance.onSwitchOpened();
+        instance.onBranchOpened();
+    }
+
+    private void closeBranch() {
+        instance.onBranchClosed();
+        instance.onSwitchClosed();
+    }
     @Test
     public void whenSymbolWrittenOnceAndReadThenSymbolUsed() {
         EasyMock.replay(handler);
@@ -66,6 +75,107 @@ public class SymbolFrameVariableUsageTest {
         instance.write(SYMBOL, DUMMY, 1, 1);
         instance.write(SYMBOL, DUMMY, 2, 3);
         instance.read(SYMBOL, 3, 4);
+        instance.listEvents(handler);
+        EasyMock.verify(handler);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenNewSymbolWrittenInBranchThenerror() {
+        EasyMock.replay(handler);
+        openBranch();
+        instance.write(SYMBOL, DUMMY, 1, 1);
+    }
+
+    @Test
+    public void whenSwitchClosedThenWriteNewSymbolIsNotAnError() {
+        handler.variableNotUsed(SYMBOL, 1, 1);
+        EasyMock.replay(handler);
+        openBranch();
+        closeBranch();
+        instance.write(SYMBOL, DUMMY, 1, 1);
+        instance.listEvents(handler);
+        EasyMock.verify(handler);
+    }
+
+    @Test
+    public void whenRewrittenInBranchThenInitialWriteNotReportedAsUnused() {
+        EasyMock.replay(handler);
+        instance.write(SYMBOL, DUMMY, 1, 1);
+        openBranch();
+        instance.write(SYMBOL, DUMMY, 2, 3);
+        closeBranch();
+        instance.read(SYMBOL, 3, 4);
+        instance.listEvents(handler);
+        EasyMock.verify(handler);
+    }
+
+    @Test
+    public void whenInBranchVariableWrittenTwiceThenWriteInBranchUnused() {
+        handler.variableNotUsed(SYMBOL, 2, 3);
+        EasyMock.replay(handler);
+        instance.write(SYMBOL, DUMMY, 1, 1);
+        openBranch();
+        instance.write(SYMBOL, DUMMY, 2, 3);
+        instance.write(SYMBOL, DUMMY, 3, 4);
+        closeBranch();
+        instance.read(SYMBOL, 5, 6);
+        instance.listEvents(handler);
+        EasyMock.verify(handler);
+    }
+
+    @Test
+    public void whenWriteBeforeBranchReadInBranchThenNoError() {
+        EasyMock.replay(handler);
+        instance.write(SYMBOL, DUMMY, 1, 1);
+        openBranch();
+        instance.read(SYMBOL, 2, 3);
+        closeBranch();
+        instance.listEvents(handler);
+        EasyMock.verify(handler);
+    }
+
+    @Test
+    public void whenFirstWriteInBranchReadThenSecondWriteMayBeReadOutsideBranch() {
+        EasyMock.replay(handler);
+        instance.write(SYMBOL, DUMMY, 1, 1);
+        openBranch();
+        instance.write(SYMBOL, DUMMY, 2, 3);
+        instance.read(SYMBOL, 3, 4);
+        instance.write(SYMBOL, DUMMY, 4, 5);
+        closeBranch();
+        instance.read(SYMBOL, 5, 6);
+        instance.listEvents(handler);
+        EasyMock.verify(handler);
+    }
+
+    @Test
+    public void whenInNestedBranchVariableWrittenTwiceWithoutReadThenNotUsed() {
+        handler.variableNotUsed(SYMBOL, 2, 3);
+        EasyMock.replay(handler);
+        instance.write(SYMBOL, DUMMY, 1, 1);
+        openBranch();
+        openBranch();
+        instance.write(SYMBOL, DUMMY, 2, 3);
+        instance.write(SYMBOL, DUMMY, 3, 4);
+        closeBranch();
+        instance.read(SYMBOL, 5, 6);
+        closeBranch();
+        instance.listEvents(handler);
+        EasyMock.verify(handler);
+    }
+
+    @Test
+    public void whenFirstWriteInNestedBranchReadThenSecondWriteMayBeReadOutsideBranch() {
+        EasyMock.replay(handler);
+        instance.write(SYMBOL, DUMMY, 1, 1);
+        openBranch();
+        openBranch();
+        instance.write(SYMBOL, DUMMY, 2, 3);
+        instance.read(SYMBOL, 3, 4);
+        instance.write(SYMBOL, DUMMY, 4, 5);
+        closeBranch();
+        closeBranch();
+        instance.read(SYMBOL, 5, 6);
         instance.listEvents(handler);
         EasyMock.verify(handler);
     }

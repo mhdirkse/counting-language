@@ -56,4 +56,20 @@ public class SymbolFrameTypeCheckTest {
         instance.write(SYMBOL, CountlangType.BOOL, 2, 3);
         EasyMock.verify(handler);        
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void whenNewSymbolIntroducedInSwitchThenError() {
+        EasyMock.replay(handler);
+        instance.onSwitchOpened();
+        instance.write(SYMBOL, CountlangType.BOOL, 1, 1);
+    }
+
+    @Test
+    public void whenAllSwitchesClosedThenNewSymbolCanBeWritten() {
+        EasyMock.replay(handler);
+        instance.onSwitchOpened();
+        instance.onSwitchClosed();
+        instance.write(SYMBOL, CountlangType.BOOL, 1, 1);
+        EasyMock.verify(handler);
+    }
 }

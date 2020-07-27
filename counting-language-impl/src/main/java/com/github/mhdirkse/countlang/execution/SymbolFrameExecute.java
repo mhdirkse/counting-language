@@ -36,4 +36,20 @@ class SymbolFrameExecute implements SymbolFrame<Object> {
     public void write(String name, Object value, int line, int column) {
         symbols.put(name, value);
     }
+
+    @Override
+    public void onSwitchOpened() {
+    }
+
+    @Override
+    public void onSwitchClosed() {
+    }
+
+    @Override
+    public void onBranchOpened() {
+    }
+
+    @Override
+    public void onBranchClosed() {
+    }
 }
