@@ -27,18 +27,40 @@ public class IntegrationUnhappyTest implements OutputStrategy
     @Parameters(name = "{0}, expect errors {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
+
+            // Calculating
+            
             {"print 2 / 0", "Division by zero"},
             {"print 12345678901234567890", "Integer value is too big to store"},
             {INCREMENT_OF_MAX_INT, "Overflow or underflow"},
             {DECREMENT_OF_MIN_INT, "Overflow or underflow"},
             {"print 1000000 * 1000000", "Overflow or underflow"},
+            
+            // Syntax
+            
             {"print 5 +", ""}, // Syntax error.
             {"xyz", ""}, // Syntax error.
             {"print 5 ** 3", ""}, // Unknown token.
+            
+            // Variable references and type checking
+            
             {"print x", ""}, // Undefined reference
             {"print true and 5", "Type mismatch using operator"},
             {"print 5 + true", "Type mismatch using operator"},
             {"print 3 == true", "Type mismatch using operator"},
+            {"function fun(int x) {return x}; print fun(true)", "Type mismatch calling function"},
+            {"x = true; print x; x = 5; print x;", "Cannot change type of variable"},
+            
+            // Functions
+            
+            {"function fun(int x, int y) {return x + y}; print fun(5)", "Argument count mismatch"},
+            {"print fun(5);", "does not exist"},
+            {"function fun() {return 3}; function fun() {return 5}", "was already defined"},
+            {"return 3", "Return statement outside function"},
+            {"function fun() {return 3; return 5}; print fun()", "has extra return statement"},
+            {"function fun() {return 3; print 5}; print fun()", "has no effect"},
+            {"function fun() {print 3}; print fun()", "does not return a value"},
+            {"function fun() {function fun2() {return 3}; return 5}", "Nested functions not allowed"},
             
             // Compound
             

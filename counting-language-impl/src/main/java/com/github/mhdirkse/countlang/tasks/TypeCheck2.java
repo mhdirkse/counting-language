@@ -91,7 +91,7 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
             return CountlangType.UNKNOWN;
         }
         for(int i = 0; i < arguments.size(); i++) {
-            if(!arguments.get(i).equals(funCallExpr.getArgument(i).getCountlangType())) {
+            if(!arguments.get(i).equals(funDefStatement.getFormalParameterType(i))) {
                 reporter.report(
                         StatusCode.FUNCTION_TYPE_MISMATCH,
                         funCallExpr.getLine(),
@@ -118,7 +118,6 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
 
     @Override
     void onParameterCountMismatch(String functionName, int line, int column, int numActual, int numFormal) {
-        // FUNCTION_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch calling {3}. Expected {4}, got {5}."),
         reporter.report(
                 StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH,
                 line,
@@ -130,7 +129,6 @@ class TypeCheck2 extends AbstractCountlangAnalysis<CountlangType> implements Sym
 
     @Override
     public void notReadable(String name, int line, int column) {
-        // VAR_UNDEFINED("({1}, {2}): Undefined variable {3}."),
         reporter.report(
                 StatusCode.VAR_UNDEFINED,
                 line,
