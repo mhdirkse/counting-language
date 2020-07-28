@@ -5,7 +5,7 @@ package com.github.mhdirkse.countlang.execution;
  * return a value. When a function contains an if-statement, then
  * return statements may only appear in the then and the else
  * blocks. If both have the return, then the function returns and
- * no statements may appear within the if.
+ * no statements may appear after the if.
  * <p>
  * Instances of this class must be fed by switch open/close
  * events and branch open/close events and also with
@@ -23,7 +23,7 @@ package com.github.mhdirkse.countlang.execution;
  * is closed and another branch opens, the state becomes "NO_RETURN",
  * because the new branch does not have a return statement. When
  * this branch closes and the switching closes, the state appears
- * to the combination of the two branches. That means: "SOME_RETURN".
+ * of the combination of the two branches. That means: "SOME_RETURN".
  * At this point, we can thus check whether the branches within
  * a function do/dont return consistently.
  * <p>
