@@ -44,7 +44,7 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
  * @author martijn
  *
  */
-public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
+class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
     private static enum Usage {
         NEW,
         USED
