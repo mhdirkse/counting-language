@@ -85,9 +85,26 @@
         <version>3.2.0</version>
         <executions>
           <execution>
+            <id>default</id>
             <goals>
               <goal>aggregate</goal>
             </goals>
+            <configuration>
+              <reportOutputDirectory>${project.reporting.outputDirectory}</reportOutputDirectory>
+              <destDir>apidocs</destDir>
+            </configuration>
+            <phase>package</phase>
+          </execution>
+          <execution>
+            <id>detailed</id>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+            <configuration>
+              <show>package</show>
+              <reportOutputDirectory>${project.reporting.outputDirectory}</reportOutputDirectory>
+              <destDir>detaildocs</destDir>
+            </configuration>
             <phase>package</phase>
           </execution>
         </executions>

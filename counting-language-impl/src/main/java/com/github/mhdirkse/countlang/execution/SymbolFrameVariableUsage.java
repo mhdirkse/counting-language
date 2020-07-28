@@ -38,7 +38,7 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
  * if in a branch a symbol is written multiple times without a read in between,
  * then the first write in the branch is unused. This introduces recursion.
  * When there is a branch, then the unused writes in the context of the
- * branch are observed by a copy of the original {@SymbolFrameVariableUsage}.
+ * branch are observed by a copy of the original {@link SymbolFrameVariableUsage}.
  * Managing this recursion is the responsibility of the outer class.
  *
  * @author martijn

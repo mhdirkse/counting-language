@@ -9,7 +9,7 @@ Simple programming language to manipulate integer values. In counting-language, 
 * In your counting-language checkout, checkout the version you want. Check it out using `git checkout`.
 * In your counting-language pom.xml file, check what versions of codegen and utils are required.
 * In your utils copy, checkout the version you found in the counting-language pom.
-* Build codegen using `mvn clean install`.
+* Build utils using `mvn clean install`.
 * In your codegen copy, checkout the relevant codegen version.
 * Build codegen using `mvn clean install`.
 * Build counting-language using `mvn clean package`.
@@ -19,6 +19,7 @@ Simple programming language to manipulate integer values. In counting-language, 
 * Run the program, for example as `./run.sh inputs/simpleAdd`.
 * See the `inputs` directory for more examples.
 * Javadocs are in `counting-language/target/site/apidocs`.
+* There are also detailed Javadocs, see `counting-language/target/site/detaildocs`.
 
 # Implementation
 
