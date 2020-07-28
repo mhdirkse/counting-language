@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class Stack<T> {
@@ -36,6 +37,10 @@ public class Stack<T> {
 
     public Iterator<T> topToBottomIterator() {
         return stack.descendingIterator();
+    }
+
+    public void forEach(Consumer<T> consumer) {
+        stack.forEach(consumer);
     }
 
     public boolean isEmpty() {

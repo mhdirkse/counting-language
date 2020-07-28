@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -61,5 +62,14 @@ public class StackTest {
         Assert.assertTrue(it.hasNext());
         Assert.assertEquals(1, it.next().intValue());
         Assert.assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void testForEach() {
+        instance.push(Integer.valueOf(1));
+        instance.push(Integer.valueOf(2));
+        List<Integer> actual = new ArrayList<>();
+        instance.forEach(elem -> actual.add(elem));
+        Assert.assertEquals(Arrays.asList(1, 2), actual);
     }
 }

@@ -1,6 +1,6 @@
 package com.github.mhdirkse.countlang.execution;
 
-public interface SymbolFrameStack<T> {
+public interface SymbolFrameStack<T> extends BranchHandler {
     void pushFrame(StackFrameAccess stackFrameAccess);
     void popFrame();
     T read(String name, int line, int column);

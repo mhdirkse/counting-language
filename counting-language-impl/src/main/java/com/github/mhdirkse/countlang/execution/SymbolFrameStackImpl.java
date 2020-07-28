@@ -13,34 +13,34 @@ public abstract class SymbolFrameStackImpl<T, F extends SymbolFrame<T>> implemen
         frameStack = new Stack<>();
     }
 
-    // Only for testing purposes
+    /// Only for testing purposes
     SymbolFrameStackImpl(Stack<F> frameStack) {
         this.frameStack = frameStack;
     }
 
     @Override
-    public void pushFrame(StackFrameAccess stackFrameAccess) {
+    public final void pushFrame(StackFrameAccess stackFrameAccess) {
         frameStack.push(create(stackFrameAccess));
     }
 
     @Override
-    public void popFrame() {
+    public final void popFrame() {
         frameStack.pop();
     }
 
     @Override
-    public T read(String name, int line, int column) {
+    public final T read(String name, int line, int column) {
         return findFrame(name).read(name, line, column);
     }
 
     @Override
-    public void write(String name, T value, int line, int column) {
+    public final void write(String name, T value, int line, int column) {
         findFrame(name).write(name, value, line, column);
     }
 
     abstract F create(StackFrameAccess access);
 
-    SymbolFrame<T> findFrame(String name) {
+    final SymbolFrame<T> findFrame(String name) {
         List<SymbolFrame<T>> accessibleFrames = getAccessibleFrames();
         if(accessibleFrames.isEmpty()) {
             throw new IllegalStateException("No symbol frames to search for symbol: " + name);
@@ -64,5 +64,25 @@ public abstract class SymbolFrameStackImpl<T, F extends SymbolFrame<T>> implemen
             }
         }
         return result;
+    }
+
+    @Override
+    public void onSwitchOpened() {
+        frameStack.forEach(frame -> frame.onSwitchOpened());
+    }
+    
+    @Override
+    public void onSwitchClosed() {
+        frameStack.forEach(frame -> frame.onSwitchClosed());
+    }
+    
+    @Override
+    public void onBranchOpened() {
+        frameStack.forEach(frame -> frame.onBranchOpened());
+    }
+    
+    @Override
+    public void onBranchClosed() {
+        frameStack.forEach(frame -> frame.onBranchClosed());
     }
 }
