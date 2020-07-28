@@ -10,19 +10,36 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
 
 /**
  * Implementation of SymbolFrame for checking variable usage.
- *
+ * <p>
+ * Without branching, variable usage checking would be straightforward.
+ * Every write of a symbol should be followed by a read. If a write
+ * is followed by another write, then the first write is reported
+ * as unused. We can assume that a symbol is not read before it is
+ * written, because that would be caught by type checking.
+ * <p>
+ * A symbol can be written and read multiple times during the life
+ * type of the symbol frame. We have to report all occasions that
+ * a write was not read. Therefore an event store is introduced.
+ * When a symbol write is followed by a symbol write, then the
+ * first write is added to the event store.
+ * <p>
+ * This behavior is implemented into the nested class {@link Delegate}.
+ * <p>
+ * The behavior of this class is more complicated because of branching.
  * An if-statement creates its own block scope, so we assume that no new
- * symbols are introduced in a switch statement.
- * 
- * When both branches of an if-statement write a symbol without reading this,
- * we should not note that the write before the switch is unused. This is because
- * this initial write cannot be omitted in counting-language. As a
- * consequence, this also holds if only one branch overwrites.
- * 
- * If a symbol is read in a branch, then the initial write is used.
- * 
+ * symbols are introduced in a switch statement. When both branches
+ * of an if-statement write a symbol without reading it,
+ * we should not note that the write before the switch is unused.
+ * This is because this initial write cannot be omitted in
+ * counting-language. As a consequence, this also holds if
+ * only one branch overwrites. If a symbol is read in a branch,
+ * then the initial write is used.
+ * <p>
  * if in a branch a symbol is written multiple times without a read in between,
- * then the first write in the branch is unused.
+ * then the first write in the branch is unused. This introduces recursion.
+ * When there is a branch, then the unused writes in the context of the
+ * branch are observed by a copy of the original {@SymbolFrameVariableUsage}.
+ * Managing this recursion is the responsibility of the outer class.
  *
  * @author martijn
  *
@@ -30,7 +47,6 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
 public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
     private static enum Usage {
         NEW,
-        PARENT,
         USED
     }
 
@@ -65,7 +81,7 @@ public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
         Delegate(final Delegate parent) {
             for(String key: parent.states.keySet()) {
                 State newState = new State(parent.states.get(key));
-                newState.usage = Usage.PARENT;
+                newState.usage = Usage.USED;
                 states.put(key, newState);
             }
         }
@@ -93,7 +109,7 @@ public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
             return DummyValue.getInstance();
         }
 
-        List<State> getEventStoreAndCheckNew() {
+        List<State> getOverwrittenWrites() {
             for(State s: eventStore) {
                 if(s.usage != Usage.NEW) {
                     throw new IllegalStateException(String.format("Cannot come here: %s, %d, %d",
@@ -109,8 +125,8 @@ public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
             this.eventStore.addAll(states);
         }
 
-        void listEvents(VariableUsageEventHandler handler) {
-            List<State> result = getEventStoreAndCheckNew();
+        void getWritesNotYetRead(VariableUsageEventHandler handler) {
+            List<State> result = getOverwrittenWrites();
             result.addAll(states.values().stream()
                     .filter(s -> s.usage == Usage.NEW)
                     .collect(Collectors.toList()));
@@ -166,12 +182,12 @@ public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
         return delegate.read(name, line, column);
     }
 
-    private List<State> getEventStoreAndCheckNew() {
-        return delegate.getEventStoreAndCheckNew();
+    private List<State> getOverwrittenWrites() {
+        return delegate.getOverwrittenWrites();
     }
 
     void listEvents(final VariableUsageEventHandler handler) {
-        delegate.listEvents(handler);
+        delegate.getWritesNotYetRead(handler);
     }
 
     @Override
@@ -206,7 +222,7 @@ public class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
         if(branchAnalysis.switchOpen) {
             branchAnalysis.onBranchClosed();
         } else {
-            delegate.addEvents(branchAnalysis.getEventStoreAndCheckNew());
+            delegate.addEvents(branchAnalysis.getOverwrittenWrites());
             branchAnalysis = null;
         }
     }
