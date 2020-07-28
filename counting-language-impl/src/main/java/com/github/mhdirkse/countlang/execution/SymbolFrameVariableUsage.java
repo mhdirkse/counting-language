@@ -18,14 +18,14 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
  * written, because that would be caught by type checking.
  * <p>
  * A symbol can be written and read multiple times during the life
- * type of the symbol frame. We have to report all occasions that
+ * time of the symbol frame. We have to report all occasions that
  * a write was not read. Therefore an event store is introduced.
  * When a symbol write is followed by a symbol write, then the
  * first write is added to the event store.
  * <p>
  * This behavior is implemented into the nested class {@link Delegate}.
  * <p>
- * The behavior of this class is more complicated because of branching.
+ * The behavior of the outer class is more complicated because of branching.
  * An if-statement creates its own block scope, so we assume that no new
  * symbols are introduced in a switch statement. When both branches
  * of an if-statement write a symbol without reading it,
