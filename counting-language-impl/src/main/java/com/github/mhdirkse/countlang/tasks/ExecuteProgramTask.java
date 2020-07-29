@@ -44,17 +44,10 @@ public class ExecuteProgramTask implements AbstractTask {
 
     private void checkAndRunProgram(final OutputStrategy outputStrategy, final StatementGroup statementGroup) throws IOException {
         List<Supplier<Boolean>> checks = new ArrayList<>();
-        checks.add(() -> checkFunctionsAndReturns(statementGroup, outputStrategy));
         checks.add(() -> typeCheck(statementGroup, outputStrategy));
         checks.add(() -> checkVariables(statementGroup, outputStrategy));
         Runnable runProgram = () -> runProgramVisitor(statementGroup, outputStrategy);
         Imperative.runWhileTrue(checks, runProgram);
-    }
-
-    private boolean checkFunctionsAndReturns(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        new FunctionAndReturnCheck(statementGroup, reporter).run();
-        return !reporter.hasErrors();
     }
 
     private boolean typeCheck(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
@@ -76,8 +69,8 @@ public class ExecuteProgramTask implements AbstractTask {
     }
 
     private void runProgramVisitor(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        CountlangRunner runner = new CountlangRunner(outputStrategy,
-                getPredefinedFunctions());
+        CountlangRunner runner = CountlangRunner.getInstance(
+                outputStrategy, getPredefinedFunctions());
         try {
             statementGroup.accept(runner);
         }

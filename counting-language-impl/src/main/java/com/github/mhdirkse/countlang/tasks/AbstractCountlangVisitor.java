@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.tasks;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
@@ -15,24 +16,31 @@ import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-abstract class AbstractCountlangVisitor<T> implements Visitor {
+import com.github.mhdirkse.countlang.ast.AstNode;
+
+abstract class AbstractCountlangVisitor<T> 
+implements Visitor {
     final SymbolFrameStack<T> symbols;
     final Stack<T> stack;
+    final FunctionAndReturnCheck<T> functionAndReturnCheck;
     final FunctionDefinitions funDefs;
 
     boolean didReturn = false;
 
-    protected AbstractCountlangVisitor(
+    AbstractCountlangVisitor(
             SymbolFrameStack<T> symbols,
             Stack<T> stack,
+            FunctionAndReturnCheck<T> functionAndReturnCheck,
             List<FunctionDefinitionStatement> predefinedFuns) {
         this.symbols = symbols;
         this.stack = stack;
+        this.functionAndReturnCheck = functionAndReturnCheck;
         this.funDefs = new FunctionDefinitions();
         for(FunctionDefinitionStatement fun: predefinedFuns) {
             funDefs.putFunction(fun);
@@ -40,6 +48,15 @@ abstract class AbstractCountlangVisitor<T> implements Visitor {
     }
 
     void runFunction(List<T> arguments, FunctionDefinitionStatement fun, int line, int column) {
+        functionAndReturnCheck.onFunctionEntered(fun.getName());
+        runFunctionUnchecked(arguments, fun);
+        beforeFunctionLeft(fun, line, column);
+        functionAndReturnCheck.onFunctionLeft();
+    }
+
+    abstract void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column);
+
+    private void runFunctionUnchecked(List<T> arguments, FunctionDefinitionStatement fun) {
         int formalParameterCount = fun.getNumParameters();
         symbols.pushFrame(StackFrameAccess.HIDE_PARENT);
         for(int i = 0; i < formalParameterCount; i++) {
@@ -56,9 +73,17 @@ abstract class AbstractCountlangVisitor<T> implements Visitor {
 
     public void visitStatementGroup(final StatementGroup sg) {
         symbols.pushFrame(StackFrameAccess.SHOW_PARENT);
-        sg.getChildren().forEach(c -> c.accept(this));
+        for(AstNode c : sg.getChildren()) {
+            onStatement(c.getLine(), c.getColumn());
+            c.accept(this);
+            if(functionAndReturnCheck.isStop()) {
+                break;
+            }
+        }
         symbols.popFrame();
     }
+    
+    abstract void onStatement(int line, int column);
     
     public void visitAssignmentStatement(final AssignmentStatement statement) {
         statement.getRhs().accept(this);
@@ -82,7 +107,12 @@ abstract class AbstractCountlangVisitor<T> implements Visitor {
 
     public void visitReturnStatement(final ReturnStatement statement) {
         statement.getExpression().accept(this);
+        functionAndReturnCheck.onReturn(statement.getLine(), statement.getColumn(),
+                Arrays.asList(stack.pop()));
+        afterReturn(statement.getLine(), statement.getColumn());
     }
+
+    abstract void afterReturn(int line, int column);
 
     public void visitValueExpression(final ValueExpression expression) {
         stack.push(representValue(expression));

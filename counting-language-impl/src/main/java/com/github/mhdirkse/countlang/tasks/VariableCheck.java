@@ -10,6 +10,9 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.execution.DummyValue;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck.SimpleContext;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheckSimple;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackVariableUsage;
 import com.github.mhdirkse.countlang.execution.VariableUsageEventHandler;
 import com.github.mhdirkse.countlang.utils.Stack;
@@ -21,15 +24,18 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {
         SymbolFrameStackVariableUsage symbols = new SymbolFrameStackVariableUsage();
-        VariableCheck instance = new VariableCheck(symbols, reporter, predefinedFuns);
+        FunctionAndReturnCheck<DummyValue> functionAndReturnCheck =
+                new FunctionAndReturnCheckSimple<>(SimpleContext<DummyValue>::new);
+        VariableCheck instance = new VariableCheck(symbols, reporter, functionAndReturnCheck, predefinedFuns);
         return instance;
     }
 
     private VariableCheck(
             final SymbolFrameStackVariableUsage stackFrame,
             final StatusReporter reporter,
+            final FunctionAndReturnCheck<DummyValue> functionAndReturnCheck,
             List<FunctionDefinitionStatement> predefinedFuns) {
-        super(stackFrame, new Stack<DummyValue>(), reporter, predefinedFuns);
+        super(stackFrame, new Stack<DummyValue>(), reporter, functionAndReturnCheck, predefinedFuns);
         this.symbols = stackFrame;
     }
 
@@ -47,7 +53,7 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
     }
 
     @Override
-    void checkReturnValue(DummyValue returnValue, FunctionDefinitionStatement funDefStatement) {
+    void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column) {
     }
 
     @Override
@@ -90,5 +96,18 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
                 line,
                 column,
                 name);
+    }
+
+    @Override
+    void onNestedFunction(FunctionDefinitionStatement statement) {
+        throw new IllegalArgumentException("Should have been caught by the type check");
+    }
+
+    @Override
+    void afterReturn(int line, int column) {       
+    }
+
+    @Override
+    void onStatement(int line, int column) {
     }
 }

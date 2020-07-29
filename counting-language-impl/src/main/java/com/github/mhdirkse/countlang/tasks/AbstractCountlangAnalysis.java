@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 import com.github.mhdirkse.countlang.utils.Stack;
 
@@ -16,8 +17,9 @@ abstract class AbstractCountlangAnalysis<T> extends AbstractCountlangVisitor<T> 
             SymbolFrameStack<T> symbols,
             Stack<T> stack,
             final StatusReporter reporter,
+            final FunctionAndReturnCheck<T> functionAndReturnCheck,
             List<FunctionDefinitionStatement> predefinedFuns) {
-        super(symbols, stack, predefinedFuns);
+        super(symbols, stack, functionAndReturnCheck, predefinedFuns);
         this.reporter = reporter;
     }
 
@@ -25,17 +27,19 @@ abstract class AbstractCountlangAnalysis<T> extends AbstractCountlangVisitor<T> 
         if(funDefs.hasFunction(statement.getName())) {
             onFunctionRedefined(funDefs.getFunction(statement.getName()), statement);
         }
+        if(functionAndReturnCheck.getNestedFunctionDepth() >= 1) {
+            onNestedFunction(statement);
+        }
         List<T> pseudoArguments = statement.getFormalParameters().getFormalParameters()
                 .stream().map(this::getPseudoActualParameter).collect(Collectors.toList());
         runFunction(pseudoArguments, statement, statement.getLine(), statement.getColumn());
-        checkReturnValue(stack.pop(), statement);
         funDefs.putFunction(statement);
     }
 
     abstract void onFunctionRedefined(FunctionDefinitionStatement previous, FunctionDefinitionStatement current);
-    
+    abstract void onNestedFunction(FunctionDefinitionStatement statement);
+
     abstract T getPseudoActualParameter(FormalParameter p);
-    abstract void checkReturnValue(T value, FunctionDefinitionStatement fun);
 
     public void visitFunctionCallExpression(final FunctionCallExpression expression) {
         expression.getChildren().forEach(c -> c.accept(this));

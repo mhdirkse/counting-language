@@ -4,7 +4,7 @@ import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Statu
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck.TypeCheckContext;
@@ -31,47 +31,28 @@ public class FunctionAndReturnTypeCheck
 extends FunctionAndReturnCheckSimple<CountlangType, TypeCheckContext>
 implements BranchHandler {
     public static interface Callback {
-        void reportStatementHasNoEffect(int line, int column);
-        void reportInconsistentReturnType(int lineOrigType, int columnOrigType, int line, int column);
+        void reportStatementHasNoEffect(int line, int column, String functionName);
+        void reportInconsistentReturnType(int lineOrigType, int columnOrigType, int line, int column, String functionName);
     }
     
-    private final Callback callback;
+    private Callback callback;
     
     public FunctionAndReturnTypeCheck(
-            final Callback callback,
-            Supplier<TypeCheckContext> contextFactory) {
+            Function<String, TypeCheckContext> contextFactory) {
         super(contextFactory);
-        this.callback = callback;
     }
     
-    @Override
-    public void onSwitchOpened() {
-        enteredFunctions.peek().returnCheck.onSwitchOpened();
-    }
-
-    @Override
-    public void onSwitchClosed() {
-        enteredFunctions.peek().returnCheck.onSwitchClosed();
-    }
-
-    @Override
-    public void onBranchOpened() {
-        enteredFunctions.peek().returnCheck.onBranchOpened();
-    }
-
-    @Override
-    public void onBranchClosed() {
-        enteredFunctions.peek().returnCheck.onBranchClosed();
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
     public void onStatement(int line, int column) {
         if(enteredFunctions.peek().returnCheck.getStatus() == ALL_RETURN) {
-            callback.reportStatementHasNoEffect(line, column);
+            callback.reportStatementHasNoEffect(line, column, enteredFunctions.peek().functionName);
         }
     }
 
     public void onReturn(int line, int column, List<CountlangType> returnTypes) {
-        onStatement(line, column);
         TypeCheckContext context = this.enteredFunctions.peek();
         List<CountlangType> oldReturnTypes = new ArrayList<>(context.returnTypes);
         super.onReturn(line, column, returnTypes);
@@ -80,7 +61,8 @@ implements BranchHandler {
                 callback.reportInconsistentReturnType(
                         context.lineFirstReturn,
                         context.columnFirstReturn,
-                        line, column);
+                        line, column,
+                        context.functionName);
             }
         } else {
             context.hasReturn = true;

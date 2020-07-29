@@ -27,7 +27,8 @@ public class FunctionAndReturnTypeCheckTest {
     
     @Before
     public void setUp() {
-        instance = new FunctionAndReturnTypeCheck(callback, TypeCheckContext::new);
+        instance = new FunctionAndReturnTypeCheck(TypeCheckContext::new);
+        instance.setCallback(callback);
     }
 
     @Test
@@ -61,7 +62,7 @@ public class FunctionAndReturnTypeCheckTest {
 
     @Test
     public void whenStatementAfterReturnThenStatementNoEffectReported() {
-        callback.reportStatementHasNoEffect(2, 3);
+        callback.reportStatementHasNoEffect(2, 3, "");
         replay(callback);
         instance.onReturn(1, 1, new ArrayList<>());
         instance.onStatement(2, 3);
@@ -72,21 +73,9 @@ public class FunctionAndReturnTypeCheckTest {
     }
 
     @Test
-    public void whenExtraReturnAfterReturnThenStatementNoEffectReported() {
-        callback.reportStatementHasNoEffect(2, 3);
-        replay(callback);
-        instance.onReturn(1, 1, new ArrayList<>());
-        instance.onReturn(2, 3, new ArrayList<>());
-        Assert.assertEquals(0, instance.getNestedFunctionDepth());
-        Assert.assertEquals(0, instance.getNumReturnValues());
-        Assert.assertTrue(instance.getReturnValues().isEmpty());
-        verify(callback);        
-    }
-
-    @Test
     public void whenFunctionDefinedAndLeftThenRootReturnValueUnchanged() {
         replay(callback);
-        instance.onFunctionEntered();
+        instance.onFunctionEntered("name");
         instance.onReturn(1, 1, Arrays.asList(CountlangType.BOOL, CountlangType.INT));
         Assert.assertEquals(1, instance.getNestedFunctionDepth());
         Assert.assertEquals(2, instance.getNumReturnValues());
@@ -101,7 +90,7 @@ public class FunctionAndReturnTypeCheckTest {
     @Test
     public void whenFunctionThenOuterScopeUnaffected() {
         replay(callback);
-        instance.onFunctionEntered();
+        instance.onFunctionEntered("name");
         instance.onReturn(1, 1, Arrays.asList(CountlangType.BOOL));
         Assert.assertEquals(1, instance.getNestedFunctionDepth());
         Assert.assertEquals(1, instance.getNumReturnValues());
@@ -116,7 +105,7 @@ public class FunctionAndReturnTypeCheckTest {
 
     @Test
     public void whenInconsistentReturnTypeThenReported() {
-        callback.reportInconsistentReturnType(1, 1, 2, 3);
+        callback.reportInconsistentReturnType(1, 1, 2, 3, "");
         replay(callback);
         instance.onSwitchOpened();
         instance.onBranchOpened();
@@ -131,7 +120,7 @@ public class FunctionAndReturnTypeCheckTest {
 
     @Test
     public void whenInconsistentReturnCountThenReported() {
-        callback.reportInconsistentReturnType(1, 1, 2, 3);
+        callback.reportInconsistentReturnType(1, 1, 2, 3, "");
         replay(callback);
         instance.onSwitchOpened();
         instance.onBranchOpened();
@@ -149,7 +138,7 @@ public class FunctionAndReturnTypeCheckTest {
         replay(callback);
         Assert.assertFalse(instance.hasExplicitReturn());
         Assert.assertFalse(instance.isStop());
-        instance.onFunctionEntered();
+        instance.onFunctionEntered("name");
         Assert.assertFalse(instance.hasExplicitReturn());
         Assert.assertFalse(instance.isStop());
         instance.onReturn(2, 3, new ArrayList<>());

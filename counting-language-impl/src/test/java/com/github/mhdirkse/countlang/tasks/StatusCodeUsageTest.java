@@ -4,7 +4,6 @@ import static com.github.mhdirkse.countlang.tasks.StatusCode.FUNCTION_ALREADY_DE
 import static com.github.mhdirkse.countlang.tasks.StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH;
 import static com.github.mhdirkse.countlang.tasks.StatusCode.FUNCTION_DOES_NOT_EXIST;
 import static com.github.mhdirkse.countlang.tasks.StatusCode.FUNCTION_DOES_NOT_RETURN;
-import static com.github.mhdirkse.countlang.tasks.StatusCode.FUNCTION_HAS_EXTRA_RETURN;
 import static com.github.mhdirkse.countlang.tasks.StatusCode.FUNCTION_NESTED_NOT_ALLOWED;
 import static com.github.mhdirkse.countlang.tasks.StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT;
 import static com.github.mhdirkse.countlang.tasks.StatusCode.RETURN_OUTSIDE_FUNCTION;
@@ -53,7 +52,6 @@ public class StatusCodeUsageTest {
                     "2", "1", "fun", "0", "1"}},
             {FUNCTION_DOES_NOT_EXIST, new String[] {"1", "2", "fun"}},
             {FUNCTION_DOES_NOT_RETURN, new String[] {"1", "1", "fun"}},
-            {FUNCTION_HAS_EXTRA_RETURN, new String[] {"3", "1", "fun"}},
             {FUNCTION_NESTED_NOT_ALLOWED, new String[] {"1", "2"}},
             {FUNCTION_STATEMENT_WITHOUT_EFFECT, new String[] {"2", "1", "fun"}},
             {RETURN_OUTSIDE_FUNCTION, new String[] {"1", "1"}},

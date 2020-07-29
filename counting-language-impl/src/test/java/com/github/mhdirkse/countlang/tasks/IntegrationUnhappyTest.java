@@ -57,10 +57,15 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print fun(5);", "does not exist"},
             {"function fun() {return 3}; function fun() {return 5}", "was already defined"},
             {"return 3", "Return statement outside function"},
-            {"function fun() {return 3; return 5}; print fun()", "has extra return statement"},
+            {"function fun() {return 3; return 5}; print fun()", "Statement in function"},
+            {"function fun(int x) {return 3;\nprint 5;}", "Statement in function"},
             {"function fun() {return 3; print 5}; print fun()", "has no effect"},
             {"function fun() {print 3}; print fun()", "does not return a value"},
             {"function fun() {function fun2() {return 3}; return 5}", "Nested functions not allowed"},
+            {"x = 3; return x", "Return statement outside function"},
+            {"function fun(int x) {y = x}", "does not return a value"},
+            {"function fun(int x) {function nested(int y) {return y}; return x}", "Nested functions not allowed"},
+            {"function fun() { {return 3}; return 5}", "Statement in function"},
             
             // Compound
             

@@ -9,6 +9,9 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck.SimpleContext;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheckSimple;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
 import com.github.mhdirkse.countlang.utils.Stack;
@@ -16,8 +19,19 @@ import com.github.mhdirkse.countlang.utils.Stack;
 class CountlangRunner extends AbstractCountlangVisitor<Object> {
     private final OutputStrategy outputStrategy;
 
-    CountlangRunner(final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFuns) {
-        super(new SymbolFrameStackExecute(), new Stack<Object>(), predefinedFuns);
+    static CountlangRunner getInstance(
+            final OutputStrategy outputStrategy,
+            List<FunctionDefinitionStatement> predefinedFuns) {
+        FunctionAndReturnCheck<Object> functionAndReturnCheck
+                = new FunctionAndReturnCheckSimple<>(SimpleContext::new);
+        return new CountlangRunner(outputStrategy, functionAndReturnCheck, predefinedFuns);
+    }
+    
+    private CountlangRunner(
+            final OutputStrategy outputStrategy,
+            FunctionAndReturnCheck<Object> functionAndReturnCheck,
+            List<FunctionDefinitionStatement> predefinedFuns) {
+        super(new SymbolFrameStackExecute(), new Stack<Object>(), functionAndReturnCheck, predefinedFuns);
         this.outputStrategy = outputStrategy;
     }
 
@@ -73,6 +87,17 @@ class CountlangRunner extends AbstractCountlangVisitor<Object> {
                         functionName, numFormal, numActual));
     }
 
-    void onActualParameter(Object value, FormalParameter parameter) {
+    @Override
+    void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column) {
+        stack.push(functionAndReturnCheck.getReturnValues().get(0));
+    }
+
+    @Override
+    void afterReturn(int line, int column) {
+        functionAndReturnCheck.setStop();
+    }
+
+    @Override
+    void onStatement(int line, int column) {
     }
 }

@@ -1,5 +1,7 @@
 package com.github.mhdirkse.countlang.tasks;
 
+import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Status.SOME_RETURN;
+
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
@@ -9,16 +11,22 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
+import com.github.mhdirkse.countlang.execution.FunctionAndReturnTypeCheck;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackTypeCheck;
 import com.github.mhdirkse.countlang.execution.SymbolNotAccessibleHandler;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-class TypeCheck extends AbstractCountlangAnalysis<CountlangType> implements SymbolNotAccessibleHandler {
+class TypeCheck extends AbstractCountlangAnalysis<CountlangType>
+implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
     public static TypeCheck getInstance(
             final StatusReporter reporter,
             List<FunctionDefinitionStatement> predefinedFuns) {
         SymbolFrameStackTypeCheck symbols = new SymbolFrameStackTypeCheck();
-        TypeCheck instance = new TypeCheck(symbols, reporter, predefinedFuns);
+        FunctionAndReturnTypeCheck functionAndReturnCheck = new FunctionAndReturnTypeCheck(
+                FunctionAndReturnCheck.TypeCheckContext::new);
+        TypeCheck instance = new TypeCheck(symbols, reporter, functionAndReturnCheck, predefinedFuns);
+        functionAndReturnCheck.setCallback(instance);
         symbols.setHandler(instance);
         return instance;
     }
@@ -26,8 +34,9 @@ class TypeCheck extends AbstractCountlangAnalysis<CountlangType> implements Symb
     private TypeCheck(
             final SymbolFrameStackTypeCheck symbols,
             final StatusReporter reporter,
+            FunctionAndReturnTypeCheck functionAndReturnCheck,
             List<FunctionDefinitionStatement> predefinedFuns) {
-        super(symbols, new Stack<CountlangType>(), reporter, predefinedFuns);
+        super(symbols, new Stack<CountlangType>(), reporter, functionAndReturnCheck, predefinedFuns);
     }
     
     @Override
@@ -45,8 +54,17 @@ class TypeCheck extends AbstractCountlangAnalysis<CountlangType> implements Symb
     }
 
     @Override
-    void checkReturnValue(CountlangType returnValue, FunctionDefinitionStatement funDefStatement) {
-        funDefStatement.setReturnType(returnValue);
+    void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column) {
+        FunctionAndReturnTypeCheck cast = (FunctionAndReturnTypeCheck) functionAndReturnCheck;
+        if(functionAndReturnCheck.getReturnStatus() == SOME_RETURN) {
+            throw new IllegalStateException("Not yet implemented");
+        } else if(cast.getNumReturnValues() != 1) {
+            reporter.report(
+                    StatusCode.FUNCTION_DOES_NOT_RETURN,
+                    line, column, fun.getName());
+        } else {
+            fun.setReturnType(cast.getReturnValues().get(0));
+        }
     }
 
     @Override
@@ -135,5 +153,36 @@ class TypeCheck extends AbstractCountlangAnalysis<CountlangType> implements Symb
                 line,
                 column,
                 name);
+    }
+
+    @Override
+    void onStatement(int line, int column) {
+        ((FunctionAndReturnTypeCheck) functionAndReturnCheck).onStatement(line, column);
+    }
+
+    @Override
+    public void reportStatementHasNoEffect(int line, int column, String functionName) {
+        reporter.report(
+                StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT,
+                line, column, functionName);
+        functionAndReturnCheck.setStop();
+    }
+
+    @Override
+    public void reportInconsistentReturnType(int lineOrigType, int columnOrigType, int line, int column, String functionName ) {
+        throw new IllegalStateException("Not yet implemented");
+    }
+
+    @Override
+    void onNestedFunction(FunctionDefinitionStatement statement) {
+        reporter.report(
+                StatusCode.FUNCTION_NESTED_NOT_ALLOWED, statement.getLine(), statement.getColumn());
+    }
+
+    @Override
+    public void afterReturn(int line, int column) {
+        if(functionAndReturnCheck.getNestedFunctionDepth() == 0) {
+            reporter.report(StatusCode.RETURN_OUTSIDE_FUNCTION, line, column);
+        }
     }
 }
