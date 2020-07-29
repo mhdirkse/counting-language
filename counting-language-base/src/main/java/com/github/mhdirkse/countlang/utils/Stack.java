@@ -20,6 +20,10 @@ public class Stack<T> {
         return stack.removeLast();
     }
 
+    public T peek() {
+        return stack.peekLast();
+    }
+
     public void pushAll(List<T> items) {
         for(T item : items) {
             push(item);
@@ -45,5 +49,9 @@ public class Stack<T> {
 
     public boolean isEmpty() {
         return stack.isEmpty();
+    }
+
+    public int size() {
+        return stack.size();
     }
 }

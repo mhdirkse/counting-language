@@ -28,6 +28,16 @@ public class StackTest {
     }
 
     @Test
+    public void testPeek() {
+        instance.push(1);
+        instance.push(2);
+        Assert.assertEquals(2, instance.peek().intValue());
+        Assert.assertEquals(2, instance.pop().intValue());
+        Assert.assertEquals(1, instance.pop().intValue());
+        Assert.assertTrue(instance.isEmpty());
+    }
+
+    @Test
     public void testEmpty() {
         Assert.assertTrue(instance.isEmpty());
         instance.push(Integer.valueOf(1));
