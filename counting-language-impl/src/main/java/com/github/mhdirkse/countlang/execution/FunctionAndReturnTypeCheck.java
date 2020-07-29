@@ -39,6 +39,7 @@ public class FunctionAndReturnTypeCheck implements BranchHandler {
         boolean hasReturn = false;
         int lineFirstReturn = 0;
         int columnFirstReturn = 0;
+        boolean stop = false;
         
         Context() {
             returnTypes = new ArrayList<>();
@@ -150,5 +151,25 @@ public class FunctionAndReturnTypeCheck implements BranchHandler {
         List<CountlangType> result = new ArrayList<>();
         result.addAll(enteredFunctions.peek().returnTypes);
         return result;
+    }
+
+    public boolean hasExplicitReturn() {
+        return enteredFunctions.peek().hasReturn;
+    }
+
+    public int getLineFirstReturn() {
+        return enteredFunctions.peek().lineFirstReturn;
+    }
+
+    public int getColumnFirstReturn() {
+        return enteredFunctions.peek().columnFirstReturn;
+    }
+
+    public void setStop() {
+        enteredFunctions.peek().stop = true;
+    }
+
+    public boolean isStop() {
+        return enteredFunctions.peek().stop;
     }
 }

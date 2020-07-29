@@ -141,4 +141,29 @@ public class FunctionAndReturnTypeCheckTest {
         instance.onSwitchClosed();
         verify(callback);
     }
+
+    @Test
+    public void testContextProperties() {
+        replay(callback);
+        Assert.assertFalse(instance.hasExplicitReturn());
+        Assert.assertFalse(instance.isStop());
+        instance.onFunctionEntered();
+        Assert.assertFalse(instance.hasExplicitReturn());
+        Assert.assertFalse(instance.isStop());
+        instance.onReturn(2, 3);
+        Assert.assertTrue(instance.hasExplicitReturn());
+        Assert.assertEquals(2, instance.getLineFirstReturn());
+        Assert.assertEquals(3, instance.getColumnFirstReturn());
+        Assert.assertFalse(instance.isStop());
+        instance.setStop();
+        Assert.assertTrue(instance.isStop());
+        instance.onFunctionLeft();
+        Assert.assertFalse(instance.hasExplicitReturn());
+        Assert.assertFalse(instance.isStop());
+        instance.onReturn(10, 20, CountlangType.BOOL);
+        Assert.assertTrue(instance.hasExplicitReturn());
+        Assert.assertEquals(10, instance.getLineFirstReturn());
+        Assert.assertEquals(20, instance.getColumnFirstReturn());
+        verify(callback);
+    }
 }
