@@ -57,6 +57,16 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterIfStatement(
+            @NotNull CountlangParser.IfStatementContext ctx, 
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new IfStatementHandler(line, column));
+        return true;
+    }
+
+    @Override
     public boolean enterFunctionDefinitionStatement(
             CountlangParser.FunctionDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
@@ -107,6 +117,12 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     @Override
     public boolean exitReturnStatement(
             @NotNull CountlangParser.ReturnStatementContext ctx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitIfStatement(
+            @NotNull CountlangParser.IfStatementContext ctx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
     }
 

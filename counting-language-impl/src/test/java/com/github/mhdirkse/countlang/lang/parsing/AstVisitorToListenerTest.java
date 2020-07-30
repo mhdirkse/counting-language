@@ -13,6 +13,7 @@ import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
@@ -79,6 +80,53 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.exitStatementGroup(isA(StatementGroup.class));
         replay(listener);
         runProgram("function fun(int x) {return x + 2}; y = fun(3)");
+        verify(listener);
+    }
+
+    @Test
+    public void testIfWithoutElse() {
+        listener.enterStatementGroup(isA(StatementGroup.class));
+        listener.enterIfStatement(isA(IfStatement.class));
+        listener.visitValueExpression(isA(ValueExpression.class));
+        
+        // Then
+        listener.enterStatementGroup(isA(StatementGroup.class));
+        listener.enterPrintStatement(isA(PrintStatement.class));
+        listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitPrintStatement(isA(PrintStatement.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
+        
+        listener.exitIfStatement(isA(IfStatement.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
+        replay(listener);
+        runProgram("if(true) {print 3;}");
+        verify(listener);
+    }
+
+    @Test
+    public void testIfWithElse() {
+        listener.enterStatementGroup(isA(StatementGroup.class));
+        listener.enterIfStatement(isA(IfStatement.class));
+        listener.visitValueExpression(isA(ValueExpression.class));
+        
+        // Then
+        listener.enterStatementGroup(isA(StatementGroup.class));
+        listener.enterPrintStatement(isA(PrintStatement.class));
+        listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitPrintStatement(isA(PrintStatement.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
+        
+        // Else
+        listener.enterStatementGroup(isA(StatementGroup.class));
+        listener.enterPrintStatement(isA(PrintStatement.class));
+        listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitPrintStatement(isA(PrintStatement.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
+
+        listener.exitIfStatement(isA(IfStatement.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
+        replay(listener);
+        runProgram("if(false) {print 3} else {print 5}");
         verify(listener);
     }
 }

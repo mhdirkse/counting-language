@@ -10,6 +10,7 @@ statement
   | 'print' expr # printStatement
   | 'return' expr # returnStatement
   | 'markUsed' expr # markUsedStatement
+  | 'if' '(' expr ')' '{' statements '}' ('else' '{' statements '}')? # ifStatement
   | '{' statements '}' # compoundStatement
   ;
 

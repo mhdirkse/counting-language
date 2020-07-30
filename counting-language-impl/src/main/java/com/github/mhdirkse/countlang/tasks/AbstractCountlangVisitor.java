@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
+import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
@@ -21,8 +23,6 @@ import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 import com.github.mhdirkse.countlang.utils.Stack;
-
-import com.github.mhdirkse.countlang.ast.AstNode;
 
 abstract class AbstractCountlangVisitor<T> 
 implements Visitor {
@@ -69,6 +69,11 @@ implements Visitor {
         }
         fun.getStatements().accept(this);
         symbols.popFrame();
+    }
+
+    @Override
+    public void visitIfStatement(final IfStatement ifStatement) {
+        // TODO: Implement
     }
 
     public void visitStatementGroup(final StatementGroup sg) {

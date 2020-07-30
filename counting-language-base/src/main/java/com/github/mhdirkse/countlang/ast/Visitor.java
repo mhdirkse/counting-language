@@ -7,6 +7,7 @@ public interface Visitor {
     public void visitMarkUsedStatement(final MarkUsedStatement statement);
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement);
     public void visitReturnStatement(final ReturnStatement statement);
+    public void visitIfStatement(final IfStatement ifStatement);
     public void visitCompositeExpression(final CompositeExpression expression);
     public void visitFunctionCallExpression(final FunctionCallExpression expression);
     public void visitSymbolExpression(final SymbolExpression expression);
