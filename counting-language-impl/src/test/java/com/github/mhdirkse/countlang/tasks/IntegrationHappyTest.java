@@ -93,7 +93,13 @@ public class IntegrationHappyTest implements OutputStrategy
             {"{print 3}", "3"}, // Program can be compound statement
             {"x = 3; markUsed x; {x = 5;}; print x", "5"}, // When global exists, you access it
             {"y = 5; markUsed y; {x = 3; y = x}; print y", "3"}, // Instantiate global from local
-            {"function fun() { {x = 3; return x} }; print fun()", "3"}, // Return in compound statement 
+            {"function fun() { {x = 3; return x} }; print fun()", "3"}, // Return in compound statement
+
+            // if statement
+            {"if(true) {print 3}", "3"}, // Only then clause, execute it.
+            {"if(false) {print 3}; print 5", "5"}, // Only then clause, not executed
+            {"if(true) {print 3} else {print 5}", "3"}, // Then and else, execute then.
+            {"if(false) {print 3} else {print 5}", "5"}, // Then and else, execute else
         });
     }
 

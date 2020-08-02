@@ -3,10 +3,13 @@ package com.github.mhdirkse.countlang.tasks;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
@@ -60,6 +63,23 @@ class CountlangRunner extends AbstractCountlangVisitor<Object> {
         }
     }
 
+    @Override
+    public void visitIfStatement(final IfStatement statement) {
+        ExpressionNode selector = statement.getSelector();
+        Statement thenStatement = statement.getThenStatement();
+        Statement elseStatement = statement.getElseStatement();
+        selector.accept(this);
+        Object selectValueRaw = stack.pop();
+        Boolean selectValue = (Boolean) selectValueRaw;
+        if(selectValue.equals(true)) {
+            thenStatement.accept(this);
+        } else {
+            if(elseStatement != null) {
+                elseStatement.accept(this);
+            }
+        }
+    }
+    
     @Override
     public void doPrint(Object value) {
         outputStrategy.output(value.toString());
