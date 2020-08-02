@@ -66,10 +66,16 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"function fun(int x) {y = x}", "does not return a value"},
             {"function fun(int x) {function nested(int y) {return y}; return x}", "Nested functions not allowed"},
             {"function fun() { {return 3}; return 5}", "Statement in function"},
+            {"function fun() {if(true) {return 3} else {print 5}}", "does not return"},
+            {"function fun() {if(true) {return 3}}", "does not return"}, // Else counts as branch, also if omitted.
             
             // Compound
             
             {"{x = 3; markUsed x}; print x", "Undefined"}, // When variable does not exist, it becomes local and is lost
+            
+            // if
+            
+            {"if(1) {print 3}", "must be Boolean"},
         });
     }
 

@@ -23,7 +23,9 @@ enum StatusCode implements AbstractStatusCode {
 
     VAR_NOT_USED("({1}, {2}): Variable {3} is not used."),
     VAR_UNDEFINED("({1}, {2}): Undefined variable {3}."),
-    VAR_TYPE_CHANGED("({1}, {2}): Cannot change type of variable {3}.");
+    VAR_TYPE_CHANGED("({1}, {2}): Cannot change type of variable {3}."),
+
+    IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be Boolean, but was {3}.");
 
     StatusCode(final String formatString) {
         this.formatString = formatString;

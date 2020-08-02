@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -56,17 +57,29 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
     @Override
     void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column) {
         FunctionAndReturnTypeCheck cast = (FunctionAndReturnTypeCheck) functionAndReturnCheck;
-        if(functionAndReturnCheck.getReturnStatus() == SOME_RETURN) {
-            throw new IllegalStateException("Not yet implemented");
-        } else if(cast.getNumReturnValues() != 1) {
-            reporter.report(
-                    StatusCode.FUNCTION_DOES_NOT_RETURN,
-                    line, column, fun.getName());
-        } else {
+        boolean doesNotReturn =
+                (functionAndReturnCheck.getReturnStatus() == SOME_RETURN)
+                || (cast.getNumReturnValues() != 1);
+        if(doesNotReturn) {
+            reporter.report(StatusCode.FUNCTION_DOES_NOT_RETURN, line, column, fun.getName());
+        }
+        else {
             fun.setReturnType(cast.getReturnValues().get(0));
         }
     }
 
+    @Override
+    void checkSelectValue(final CountlangType value, final ExpressionNode selector) {
+        if(!value.equals(CountlangType.BOOL)) {
+            reporter.report(
+                    StatusCode.IF_SELECT_NOT_BOOLEAN,
+                    selector.getLine(),
+                    selector.getColumn(),
+                    selector.getCountlangType().toString());
+        }
+    }
+    
+    
     @Override
     CountlangType representValue(ValueExpression valueExpression) {
         return CountlangType.typeOf(valueExpression.getValue());
@@ -90,7 +103,7 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
                     StatusCode.OPERATOR_TYPE_MISMATCH,
                     compositeExpression.getLine(),
                     compositeExpression.getColumn(),
-                    compositeExpression.getOperator().getResultType().toString());
+                    compositeExpression.getOperator().getName());
         }
         compositeExpression.setCountlangType(result);
         return result;

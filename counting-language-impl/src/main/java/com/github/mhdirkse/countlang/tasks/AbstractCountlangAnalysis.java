@@ -1,17 +1,24 @@
 package com.github.mhdirkse.countlang.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.IfStatement;
+import com.github.mhdirkse.countlang.ast.Statement;
+import com.github.mhdirkse.countlang.execution.BranchHandler;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 abstract class AbstractCountlangAnalysis<T> extends AbstractCountlangVisitor<T> {
     final StatusReporter reporter;
+    final List<BranchHandler> branchHandlers = new ArrayList<>();
 
     AbstractCountlangAnalysis(
             SymbolFrameStack<T> symbols,
@@ -21,6 +28,8 @@ abstract class AbstractCountlangAnalysis<T> extends AbstractCountlangVisitor<T> 
             List<FunctionDefinitionStatement> predefinedFuns) {
         super(symbols, stack, functionAndReturnCheck, predefinedFuns);
         this.reporter = reporter;
+        branchHandlers.add(symbols);
+        branchHandlers.add(functionAndReturnCheck);
     }
 
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement) {
@@ -56,6 +65,26 @@ abstract class AbstractCountlangAnalysis<T> extends AbstractCountlangVisitor<T> 
 
     abstract T checkFunctionCall(List<T> arguments, FunctionCallExpression expr, FunctionDefinitionStatement fun);
     abstract T onUndefinedFunctionCalled(FunctionCallExpression expr);
+
+    @Override
+    public void visitIfStatement(final IfStatement ifStatement) {
+        ExpressionNode selector = ifStatement.getSelector();
+        selector.accept(this);
+        checkSelectValue(stack.pop(), selector);
+        branchHandlers.forEach(h -> h.onSwitchOpened());
+        branchHandlers.forEach(h -> h.onBranchOpened());
+        ifStatement.getThenStatement().accept(this);
+        branchHandlers.forEach(h -> h.onBranchClosed());
+        branchHandlers.forEach(h -> h.onBranchOpened());
+        AstNode elseNode = ifStatement.getElseStatement();
+        if(elseNode != null) {
+            elseNode.accept(this);
+        }
+        branchHandlers.forEach(h -> h.onBranchClosed());
+        branchHandlers.forEach(h -> h.onSwitchClosed());
+    }
+
+    abstract void checkSelectValue(T value, ExpressionNode selector);
 
     void doPrint(T value) {        
     }

@@ -1,0 +1,5 @@
+function fun() {
+  if(true) {
+    return 3
+  }
+}

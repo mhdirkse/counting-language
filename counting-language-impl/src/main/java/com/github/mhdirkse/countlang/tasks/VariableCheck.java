@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.tasks;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -54,6 +55,10 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
 
     @Override
     void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column) {
+    }
+
+    @Override
+    void checkSelectValue(final DummyValue value, final ExpressionNode selector) {       
     }
 
     @Override

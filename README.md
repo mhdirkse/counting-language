@@ -21,6 +21,10 @@ Simple programming language to manipulate integer values. In counting-language, 
 * Javadocs are in `counting-language/target/site/apidocs`.
 * There are also detailed Javadocs, see `counting-language/target/site/detaildocs`.
 
+Here are a few things to take care of when programming:
+* Between two statements, you always need a `;`, also if the first statement ends with `}`.
+* If you have an `else` clause in an `if`-statement, then it may not be empty. But if you have no need for `else`, you can omit it alltogether.
+ 
 # Implementation
 
 counting-language is implemented using ANTLR 4 to parse the input. The syntax of the language is in `counting-language-base/src/main/antlr4/com/github/mhdirkse/countlang/lang/Countlang.g4`. ANTLR 4 generates interface `CountlangListener` and ensures that the methods of this interface are called. Please note that generated code appears in the `target` folders in Eclipse, each project having its own `target` folder.

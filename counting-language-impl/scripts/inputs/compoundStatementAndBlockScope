@@ -1,0 +1,9 @@
+globalVar = 2;
+print globalVar;
+{
+  globalVar = 5;
+  localVar = 3;
+  print globalVar;
+  print localVar;
+};
+print globalVar;
