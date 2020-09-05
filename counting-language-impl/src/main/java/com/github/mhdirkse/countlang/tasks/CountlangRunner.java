@@ -3,12 +3,15 @@ package com.github.mhdirkse.countlang.tasks;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
@@ -17,6 +20,7 @@ import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck.SimpleCont
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheckSimple;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
+import com.github.mhdirkse.countlang.types.Distribution;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class CountlangRunner extends AbstractCountlangVisitor<Object> {
@@ -82,7 +86,11 @@ class CountlangRunner extends AbstractCountlangVisitor<Object> {
     
     @Override
     public void doPrint(Object value) {
-        outputStrategy.output(value.toString());
+        if(value instanceof Distribution) {
+            outputStrategy.output(((Distribution) value).format());
+        } else {
+            outputStrategy.output(value.toString());
+        }
     }
 
     @Override
@@ -96,6 +104,60 @@ class CountlangRunner extends AbstractCountlangVisitor<Object> {
 
     Object doCompositeExpression(List<Object> arguments, CompositeExpression expression) {
         return expression.getOperator().execute(arguments);
+    }
+
+    @Override
+    Object doSimpleDistributionExpression(List<Object> arguments, SimpleDistributionExpression expression) {
+        Distribution.Builder builder = getDistributionBuilderWithScoredValues(arguments);
+        return builder.build();
+    }
+
+    private Distribution.Builder getDistributionBuilderWithScoredValues(List<Object> arguments) {
+        Distribution.Builder builder = new Distribution.Builder();
+        for(Object arg: arguments) {
+            builder.add((Integer) arg); 
+        }
+        return builder;
+    }
+
+    @Override
+    Object doDistributionExpressionWithTotal(List<Object> arguments, DistributionExpressionWithTotal expression) {
+        Distribution.Builder builder = getDistributionBuilderWithScoredValues(
+                arguments.subList(1, arguments.size()));
+        int total = (Integer) arguments.get(0);
+        int totalScored = builder.getTotal();
+        if(total >= totalScored) {
+            int unknown = total - totalScored;
+            builder.addUnknown(unknown);
+            return builder.build();
+        }
+        else {
+            throw new ProgramException(
+                    expression.getLine(),
+                    expression.getColumn(),
+                    String.format(
+                            "The scored items in the distribution make count %d, which is more than %d",
+                            totalScored, total));
+        }
+    }
+
+    @Override
+    Object doDistributionExpressionWithUnknown(List<Object> arguments, DistributionExpressionWithUnknown expression) {
+        Distribution.Builder builder = getDistributionBuilderWithScoredValues(
+                arguments.subList(1, arguments.size()));
+        int unknown = (Integer) arguments.get(0);
+        if(unknown >= 0) {
+            builder.addUnknown(unknown);
+            return builder.build();
+        }
+        else {
+            throw new ProgramException(
+                    expression.getLine(),
+                    expression.getColumn(),
+                    String.format(
+                            "The unknown count in a distribution cannot be negative; you tried %d",
+                            unknown));
+        }
     }
 
     void onFormalParameter(Object value, FormalParameter parameter) {

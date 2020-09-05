@@ -25,7 +25,10 @@ enum StatusCode implements AbstractStatusCode {
     VAR_UNDEFINED("({1}, {2}): Undefined variable {3}."),
     VAR_TYPE_CHANGED("({1}, {2}): Cannot change type of variable {3}."),
 
-    IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be Boolean, but was {3}.");
+    IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be Boolean, but was {3}."),
+
+    DISTRIBUTION_SCORED_NOT_INT("({1}, {2}): Element number {3} in distribution is {4}, should be int."),
+    DISTRIBUTION_AMOUNT_NOT_INT("({1}, {2}): The amount or unknown clause of a distribution should be int.");
 
     StatusCode(final String formatString) {
         this.formatString = formatString;

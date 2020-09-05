@@ -35,6 +35,10 @@ public final class Distribution {
             total += countOfUnknown;
         }
 
+        public int getTotal() {
+            return total;
+        }
+
         public Distribution build() {
             return new Distribution(this);
         }

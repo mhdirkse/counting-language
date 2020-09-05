@@ -10,7 +10,6 @@ import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
-import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.execution.BranchHandler;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;

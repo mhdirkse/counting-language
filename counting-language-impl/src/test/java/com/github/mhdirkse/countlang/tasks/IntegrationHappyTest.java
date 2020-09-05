@@ -21,6 +21,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
+import com.github.mhdirkse.countlang.types.Distribution;
 
 @RunWith(Parameterized.class)
 public class IntegrationHappyTest implements OutputStrategy
@@ -66,6 +67,16 @@ public class IntegrationHappyTest implements OutputStrategy
             {"print true != false", "true"},
             {"print 3 != 3", "false"},
             {"print 5 != 3", "true"},
+            
+            // Test literal distributions
+            {"print distribution 1, 1, 3", getSimpleDistribution().format()},
+            {"print distribution 1 total 3", getDistributionWithUnknown().format()},
+            {"print distribution 1 unknown 2", getDistributionWithUnknown().format()},
+            {"function fun() {return distribution 1, 1, 3}; print fun()", getSimpleDistribution().format()},
+            {"d = distribution 1, 1, 3;\nfunction fun(distribution arg) {print arg; return 0};\nx = fun(d); print x",
+                getSimpleDistribution().format()},
+            {"d = distribution; print d", (new Distribution.Builder().build().format())},
+            {"print distribution 1, 2 - 1, 5 - 2", getSimpleDistribution().format()},
             {INCREMENT_OF_MAX_INT_MINUS_ONE, MAX_INT}, // No overflow.
             {DECREMENT_OF_MIN_INT_PLUS_ONE, MIN_INT}, // No underflow.
             {"print testFunction(4)", "9"},
@@ -101,6 +112,21 @@ public class IntegrationHappyTest implements OutputStrategy
             {"if(true) {print 3} else {print 5}", "3"}, // Then and else, execute then.
             {"if(false) {print 3} else {print 5}", "5"}, // Then and else, execute else
         });
+    }
+
+    private static Distribution getSimpleDistribution() {
+        Distribution.Builder builder = new Distribution.Builder();
+        builder.add(1);
+        builder.add(1);
+        builder.add(3);
+        return builder.build();
+    }
+
+    private static Distribution getDistributionWithUnknown() {
+        Distribution.Builder builder = new Distribution.Builder();
+        builder.add(1);
+        builder.addUnknown(2);
+        return builder.build();
     }
 
     @Parameter(0)

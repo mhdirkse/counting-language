@@ -16,7 +16,7 @@ import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class VarDeclsHandler extends AbstractCountlangListenerHandler {
     private static final Set<Integer> TYPE_TOKENS = new HashSet<>(Arrays.asList(
-            CountlangLexer.BOOLTYPE, CountlangLexer.INTTYPE));
+            CountlangLexer.BOOLTYPE, CountlangLexer.INTTYPE, CountlangLexer.DISTRIBUTIONTYPE));
 
     private int line;
     private int column;
@@ -73,6 +73,8 @@ class VarDeclsHandler extends AbstractCountlangListenerHandler {
             countlangType = CountlangType.BOOL;
         } else if(antlrType == CountlangLexer.INTTYPE) {
             countlangType = CountlangType.INT;
+        } else if(antlrType == CountlangLexer.DISTRIBUTIONTYPE) {
+            countlangType = CountlangType.DISTRIBUTION;
         } else {
             throw new IllegalArgumentException("Unknown type");
         }

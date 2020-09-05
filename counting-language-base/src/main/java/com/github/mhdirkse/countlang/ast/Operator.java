@@ -389,7 +389,8 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            boolean result = (argumentTypes.get(0) == argumentTypes.get(1));
+            boolean result = (argumentTypes.get(0) == argumentTypes.get(1))
+                    && (!argumentTypes.get(0).equals(CountlangType.DISTRIBUTION));
             if(result) {
                 argType = argumentTypes.get(0);
             }
@@ -416,6 +417,7 @@ public abstract class Operator extends AstNode {
                 result = applyInt(i1, i2);
                 break;
             case UNKNOWN:
+            case DISTRIBUTION:
                 throw new IllegalStateException("Cannot execute when type checking failed");
             }
             return Boolean.valueOf(result);

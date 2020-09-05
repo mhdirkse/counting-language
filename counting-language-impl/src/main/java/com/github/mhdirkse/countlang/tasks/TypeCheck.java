@@ -4,12 +4,17 @@ import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Statu
 
 import java.util.List;
 
+import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
+import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
@@ -107,6 +112,65 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
         }
         compositeExpression.setCountlangType(result);
         return result;
+    }
+
+    @Override
+    CountlangType doSimpleDistributionExpression(
+            List<CountlangType> arguments, SimpleDistributionExpression expression) {
+        if(checkDistributionScoredExpressions(arguments, expression.getChildren())) {
+            return CountlangType.DISTRIBUTION;
+        } else {
+            return CountlangType.UNKNOWN;
+        }
+    }
+
+    private boolean checkDistributionScoredExpressions(
+            List<CountlangType> scoredTypes, List<AstNode> scoredExpressions) {
+        boolean typesOk = true;
+        for(int i = 0; i < scoredTypes.size(); i++) {
+            if(!scoredTypes.get(i).equals(CountlangType.INT)) {
+                typesOk = false;
+                reporter.report(
+                        StatusCode.DISTRIBUTION_SCORED_NOT_INT,
+                        scoredExpressions.get(i).getLine(),
+                        scoredExpressions.get(i).getColumn(),
+                        Integer.toString(i),
+                        scoredTypes.get(i).toString());
+            }
+        }
+        return typesOk;
+    }
+
+    CountlangType doDistributionExpressionWithTotal(
+            List<CountlangType> arguments, DistributionExpressionWithTotal expression) {
+        return doDistributionExpressionWithAmount(arguments, expression);
+    }
+
+   CountlangType doDistributionExpressionWithUnknown(
+            List<CountlangType> arguments, DistributionExpressionWithUnknown expression) {
+        return doDistributionExpressionWithAmount(arguments, expression);
+    }
+
+    CountlangType doDistributionExpressionWithAmount(
+            List<CountlangType> arguments, AbstractDistributionExpression expression) {
+        CountlangType amountType = arguments.get(0);
+        ExpressionNode expressionAmount = (ExpressionNode) expression.getChildren().get(0);
+        List<CountlangType> scoredTypes = arguments.subList(1, arguments.size());
+        List<AstNode> scoredExpressions = expression.getChildren().subList(1, expression.getNumSubExpressions());
+        boolean scoredTypesOk = checkDistributionScoredExpressions(scoredTypes, scoredExpressions);
+        boolean amountTypeOk = true;
+        if(!amountType.equals(CountlangType.INT)) {
+            amountTypeOk = false;
+            reporter.report(
+                    StatusCode.DISTRIBUTION_AMOUNT_NOT_INT,
+                    expressionAmount.getLine(),
+                    expressionAmount.getColumn());
+        }
+        if(scoredTypesOk && amountTypeOk) {
+            return CountlangType.DISTRIBUTION;
+        } else {
+            return CountlangType.UNKNOWN;
+        }
     }
 
     @Override

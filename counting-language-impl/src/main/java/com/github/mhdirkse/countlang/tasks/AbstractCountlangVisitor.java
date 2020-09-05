@@ -6,6 +6,8 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -13,6 +15,7 @@ import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
@@ -138,6 +141,33 @@ implements Visitor {
 
     abstract T doCompositeExpression(List<T> arguments, CompositeExpression expression);
 
+    @Override
+    public void visitSimpleDistributionExpression(SimpleDistributionExpression expression) {
+        expression.getChildren().forEach(c -> c.accept(this));
+        List<T> arguments = stack.repeatedPop(expression.getNumSubExpressions());
+        stack.push(doSimpleDistributionExpression(arguments, expression));
+    }
+
+    abstract T doSimpleDistributionExpression(List<T> arguments, SimpleDistributionExpression expression);
+    
+    @Override
+    public void visitDistributionExpressionWithTotal(DistributionExpressionWithTotal expression) {
+        expression.getChildren().forEach(c -> c.accept(this));
+        List<T> arguments = stack.repeatedPop(expression.getNumSubExpressions());
+        stack.push(doDistributionExpressionWithTotal(arguments, expression));
+    }
+
+    abstract T doDistributionExpressionWithTotal(List<T> arguments, DistributionExpressionWithTotal expression);
+
+    @Override
+    public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expression) {
+        expression.getChildren().forEach(c -> c.accept(this));
+        List<T> arguments = stack.repeatedPop(expression.getNumSubExpressions());
+        stack.push(doDistributionExpressionWithUnknown(arguments, expression));
+    }
+
+    abstract T doDistributionExpressionWithUnknown(List<T> arguments, DistributionExpressionWithUnknown expression);
+    
     public void visitFormalParameters(final FormalParameters formalParameters) {
     }
     

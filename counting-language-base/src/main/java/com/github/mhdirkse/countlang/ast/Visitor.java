@@ -15,4 +15,7 @@ public interface Visitor {
     public void visitOperator(final Operator operator);
     public void visitFormalParameters(final FormalParameters formalParameters);
     public void visitFormalParameter(final FormalParameter formalParameter);
+    public void visitSimpleDistributionExpression(final SimpleDistributionExpression expr);
+    public void visitDistributionExpressionWithTotal(final DistributionExpressionWithTotal expr);
+    public void visitDistributionExpressionWithUnknown(final DistributionExpressionWithUnknown expr);
 }

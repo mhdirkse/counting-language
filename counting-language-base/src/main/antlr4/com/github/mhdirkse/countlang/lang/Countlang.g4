@@ -18,7 +18,7 @@ varDecls : varDecl (',' varDecl)* ;
 
 varDecl : typeId ID ;
 
-typeId : INTTYPE | BOOLTYPE ;
+typeId : INTTYPE | BOOLTYPE | DISTRIBUTIONTYPE;
 
 expr
   : '(' expr ')' # bracketExpression
@@ -31,11 +31,17 @@ expr
   | expr 'and' expr # andExpression
   | expr 'or' expr # orExpression
   | ID # symbolReferenceExpression
-  | (INT | BOOL) # valueExpression
+  | 'distribution' (expr ( ',' expr)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression 
+  | (INT | BOOL ) # valueExpression
   ;
 
 BOOLTYPE: 'bool' ;
 INTTYPE: 'int' ;
+DISTRIBUTIONTYPE: 'distribution' ;
+
+TOTAL: 'total' ;
+UNKNOWN: 'unknown' ;
+
 INT : '-'? [0-9]+ ;
 BOOL : 'true' | 'false' ;
 ID : [a-zA-Z] [a-zA-Z0-9]* ;

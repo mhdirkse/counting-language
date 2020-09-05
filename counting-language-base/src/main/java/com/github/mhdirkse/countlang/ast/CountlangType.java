@@ -1,9 +1,12 @@
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.types.Distribution;
+
 public enum CountlangType {
     UNKNOWN(Object.class, null),
     INT(Integer.class, new Integer(1)),
-    BOOL(Boolean.class, new Boolean(true));
+    BOOL(Boolean.class, new Boolean(true)),
+    DISTRIBUTION(Distribution.class, new Distribution.Builder().build());
     
     private final Class<?> implementationClass;
     private final Object example;

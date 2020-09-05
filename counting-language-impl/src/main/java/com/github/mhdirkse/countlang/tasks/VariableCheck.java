@@ -3,11 +3,14 @@ package com.github.mhdirkse.countlang.tasks;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
+import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.execution.DummyValue;
@@ -114,5 +117,23 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
 
     @Override
     void onStatement(int line, int column) {
+    }
+
+    @Override
+    DummyValue doSimpleDistributionExpression(
+            List<DummyValue> arguments, SimpleDistributionExpression expression) {
+        return DummyValue.getInstance();
+    }
+
+    @Override
+    DummyValue doDistributionExpressionWithTotal(
+            List<DummyValue> arguments, DistributionExpressionWithTotal expression) {
+        return DummyValue.getInstance();
+    }
+
+    @Override
+    DummyValue doDistributionExpressionWithUnknown(
+            List<DummyValue> arguments, DistributionExpressionWithUnknown expression) {
+        return DummyValue.getInstance();
     }
 }

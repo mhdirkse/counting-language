@@ -35,7 +35,9 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {INCREMENT_OF_MAX_INT, "Overflow or underflow"},
             {DECREMENT_OF_MIN_INT, "Overflow or underflow"},
             {"print 1000000 * 1000000", "Overflow or underflow"},
-            
+            {"print distribution 1 total 0", "The scored items in the distribution make count"},
+            {"print distribution 1 unknown -1", "The unknown count in a distribution cannot be negative"},
+
             // Syntax
             
             {"print 5 +", ""}, // Syntax error.
@@ -48,8 +50,11 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print true and 5", "Type mismatch using operator"},
             {"print 5 + true", "Type mismatch using operator"},
             {"print 3 == true", "Type mismatch using operator"},
+            {"print 3 + distribution", "Type mismatch using operator"},
             {"function fun(int x) {return x}; print fun(true)", "Type mismatch calling function"},
             {"x = true; print x; x = 5; print x;", "Cannot change type of variable"},
+            {"print distribution true", "in distribution is"}, // Can only score INT values in distribution now
+            {"print distribution total false", "The amount or unknown clause of a distribution should be int"},
             
             // Functions
             
