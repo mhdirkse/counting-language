@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,6 +81,10 @@ public final class Distribution {
 
     public int getCountUnknown() {
         return unknown;
+    }
+
+    public Iterator<Integer> getItemIterator() {
+        return items.keySet().iterator();
     }
 
     public String format() {
