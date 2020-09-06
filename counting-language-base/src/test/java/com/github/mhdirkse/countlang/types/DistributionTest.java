@@ -113,4 +113,38 @@ public class DistributionTest {
         Distribution.Builder b = new Distribution.Builder();
         b.addUnknown(-1);
     }
+
+    @Test
+    public void testRefineWithoutUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(3);
+        b.add(3);
+        b.refine(2);
+        Distribution d = b.build();
+        Assert.assertEquals(4, d.getCountOf(3));
+        Assert.assertEquals(4, d.getTotal());
+        Assert.assertEquals(0, d.getCountUnknown());
+    }
+
+    @Test
+    public void testRefineWithUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.addUnknown(2);
+        b.refine(3);
+        Distribution d = b.build();
+        Assert.assertEquals(6, d.getCountUnknown());
+        Assert.assertEquals(6, d.getTotal());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenRefineWithNegativeFactorThenError() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.refine(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void whenRefineWithFactorZeroThenError() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.refine(0);
+    }
 }

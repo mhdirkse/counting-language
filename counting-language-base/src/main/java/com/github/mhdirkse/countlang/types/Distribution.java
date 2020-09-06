@@ -35,6 +35,17 @@ public final class Distribution {
             total += countOfUnknown;
         }
 
+        public void refine(int factor) {
+            if(factor <= 0) {
+                throw new IllegalArgumentException(
+                        "Refining with factor zero or a negative factor is not allowed, tried: " + Integer.toString(factor));
+            }
+            for(int item: items.keySet()) {
+                items.put(item, factor * items.get(item));
+            }
+            total *= factor;
+        }
+
         public int getTotal() {
             return total;
         }
