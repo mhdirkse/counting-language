@@ -4,7 +4,7 @@ import com.github.mhdirkse.utils.AbstractStatusCode;
 
 import lombok.Setter;
 
-enum StatusCode implements AbstractStatusCode {
+public enum StatusCode implements AbstractStatusCode {
     TEST_LINE_STATUS_NO_EXTRA_ARGS("Test line {1} column {2}."),
     TEST_LINE_STATUS_ONE_EXTRA_ARG("Test line {1} column {2} with {3}."),
 
