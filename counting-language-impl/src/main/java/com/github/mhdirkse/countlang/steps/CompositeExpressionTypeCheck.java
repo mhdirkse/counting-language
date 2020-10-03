@@ -1,28 +1,36 @@
 package com.github.mhdirkse.countlang.steps;
 
+import java.util.List;
+
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 
-class CompositeExpressionTypeCheck extends CompositeExpressionHandler<CountlangType> {
+class CompositeExpressionTypeCheck extends ExpressionResultsCollector<CountlangType> {
     CompositeExpressionTypeCheck(final CompositeExpression node) {
         super(node);
     }
 
     @Override
-    CountlangType processSubExpressionResults(ExecutionContext<CountlangType> context) {
+    void processSubExpressionResults(List<CountlangType> subExpressionResults, ExecutionContext<CountlangType> context) {
+        CompositeExpression nodeAlias = (CompositeExpression) node;
         CountlangType expressionType = CountlangType.UNKNOWN;
-        boolean typeEstablished = node.getOperator().checkAndEstablishTypes(subExpressionResults);
+        boolean typeEstablished = nodeAlias.getOperator().checkAndEstablishTypes(subExpressionResults);
         if(typeEstablished) {
-            expressionType = node.getOperator().getResultType();            
+            expressionType = nodeAlias.getOperator().getResultType();            
         } else {
             context.report(
                     StatusCode.OPERATOR_TYPE_MISMATCH,
-                    node.getLine(),
-                    node.getColumn(),
-                    node.getOperator().getName());
+                    nodeAlias.getLine(),
+                    nodeAlias.getColumn(),
+                    nodeAlias.getOperator().getName());
         }
-        node.setCountlangType(expressionType);
-        return expressionType;
+        nodeAlias.setCountlangType(expressionType);
+        context.onResult(expressionType);
+    }
+
+    @Override
+    boolean isDescendantResultHandled() {
+        return true;
     }
 }

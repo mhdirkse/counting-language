@@ -1,14 +1,21 @@
 package com.github.mhdirkse.countlang.steps;
 
+import java.util.List;
+
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 
-class CompositeExpressionCalculation extends CompositeExpressionHandler<Object> {
+class CompositeExpressionCalculation extends ExpressionResultsCollector<Object> {
     CompositeExpressionCalculation(final CompositeExpression node) {
         super(node);
     }
 
     @Override
-    public Object processSubExpressionResults(ExecutionContext<Object> context) {
-        return node.getOperator().execute(subExpressionResults);        
+    public void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext<Object> context) {
+        context.onResult(((CompositeExpression) node).getOperator().execute(subExpressionResults));     
+    }
+
+    @Override
+    boolean isDescendantResultHandled() {
+        return true;
     }
 }
