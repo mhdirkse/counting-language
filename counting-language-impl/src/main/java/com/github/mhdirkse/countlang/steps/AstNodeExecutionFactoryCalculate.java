@@ -33,44 +33,37 @@ class AstNodeExecutionFactoryCalculate implements AstNodeExecutionFactory<Object
 
     @Override
     public void visitStatementGroup(StatementGroup statementGroup) {
-        // TODO Auto-generated method stub
-        
+        result = new StatementGroupHandler.Calculation(statementGroup);
     }
 
     @Override
     public void visitAssignmentStatement(AssignmentStatement statement) {
         // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void visitPrintStatement(PrintStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new PrintStatementCalculation(statement);
     }
 
     @Override
     public void visitMarkUsedStatement(MarkUsedStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new MarkUsedStatementCalculation(statement);
     }
 
     @Override
     public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new FunctionDefinitionStatementCalculation(statement);
     }
 
     @Override
     public void visitReturnStatement(ReturnStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new ReturnStatementHandler.Calculation(statement);
     }
 
     @Override
     public void visitIfStatement(IfStatement ifStatement) {
-        // TODO Auto-generated method stub
-        
+        result = new IfStatementCalculation(ifStatement);
     }
 
     @Override
@@ -80,8 +73,7 @@ class AstNodeExecutionFactoryCalculate implements AstNodeExecutionFactory<Object
 
     @Override
     public void visitFunctionCallExpression(FunctionCallExpression expression) {
-        // TODO Auto-generated method stub
-        
+        result = new FunctionCallExpressionCalculation(expression);
     }
 
     @Override

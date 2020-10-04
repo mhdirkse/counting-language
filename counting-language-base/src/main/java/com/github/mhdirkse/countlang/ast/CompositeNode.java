@@ -12,4 +12,11 @@ public interface CompositeNode {
                 .map(ex -> (ExpressionNode) ex)
                 .collect(Collectors.toList());
     }
+
+    default List<Statement> getSubStatements() {
+        return getChildren().stream()
+                .filter(st -> st instanceof Statement)
+                .map(st -> (Statement) st)
+                .collect(Collectors.toList());
+    }
 }

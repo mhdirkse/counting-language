@@ -3,7 +3,6 @@ package com.github.mhdirkse.countlang.steps;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CompositeNode;
 
 abstract class ExpressionResultsCollector<T> implements AstNodeExecution<T> {

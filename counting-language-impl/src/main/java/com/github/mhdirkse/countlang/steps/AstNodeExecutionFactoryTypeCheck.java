@@ -32,8 +32,7 @@ class AstNodeExecutionFactoryTypeCheck implements AstNodeExecutionFactory<Countl
 
     @Override
     public void visitStatementGroup(StatementGroup statementGroup) {
-        // TODO Auto-generated method stub
-        
+        result = new StatementGroupHandler.Analysis(statementGroup);
     }
 
     @Override
@@ -44,32 +43,27 @@ class AstNodeExecutionFactoryTypeCheck implements AstNodeExecutionFactory<Countl
 
     @Override
     public void visitPrintStatement(PrintStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new SimpleStatementTypeCheck(statement);
     }
 
     @Override
     public void visitMarkUsedStatement(MarkUsedStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new SimpleStatementTypeCheck(statement);
     }
 
     @Override
     public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new FunctionDefinitionStatementTypeCheck(statement);
     }
 
     @Override
     public void visitReturnStatement(ReturnStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new ReturnStatementHandler.Analysis(statement);
     }
 
     @Override
     public void visitIfStatement(IfStatement ifStatement) {
-        // TODO Auto-generated method stub
-        
+        result = new IfStatementTypeCheck(ifStatement);
     }
 
     @Override
@@ -79,8 +73,7 @@ class AstNodeExecutionFactoryTypeCheck implements AstNodeExecutionFactory<Countl
 
     @Override
     public void visitFunctionCallExpression(FunctionCallExpression expression) {
-        // TODO Auto-generated method stub
-        
+        result = new FunctionCallExpressionTypeCheck(expression);
     }
 
     @Override

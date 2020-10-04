@@ -1,11 +1,17 @@
 package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.utils.AbstractStatusCode;
 
 interface ExecutionContext<T> extends StepperCallback<T> {
     T readSymbol(String symbol);
-    void writeSymbol(T value);
+    void writeSymbol(String symbol, T value);
+    void pushVariableFrame();
+    void popVariableFrame();
+    boolean hasFunction(String name);
+    void defineFunction(FunctionDefinitionStatement functionDefinitionStatement);
+    FunctionDefinitionStatement getFunction(String functionName);
     void output(String text);
     void report(AbstractStatusCode statusCode, int line, int column, String... others);
     void onStatement(AstNode node);
@@ -13,5 +19,8 @@ interface ExecutionContext<T> extends StepperCallback<T> {
     void onSwitchOpened();
     void onSwitchClosed();
     void onBranchOpened();
-    void onBranchClosed();    
+    void onBranchClosed();
+    void onFunctionEntered();
+    void onFunctionLeft();
+    int getFunctionDefinitionDepth();
 }

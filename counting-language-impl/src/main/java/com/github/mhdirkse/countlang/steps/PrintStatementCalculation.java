@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.steps;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.types.Distribution;
 
 class PrintStatementCalculation extends ExpressionResultsCollector<Object> {
     PrintStatementCalculation(PrintStatement node) {
@@ -11,6 +12,12 @@ class PrintStatementCalculation extends ExpressionResultsCollector<Object> {
 
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext<Object> context) {
+        Object value = subExpressionResults.get(0);
+        String output = value.toString();
+        if(value instanceof Distribution) {
+            output = ((Distribution) value).format();
+        }
+        context.output(output);
     }
 
     @Override

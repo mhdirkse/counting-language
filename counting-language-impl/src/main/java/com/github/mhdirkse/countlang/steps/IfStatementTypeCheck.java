@@ -1,10 +1,10 @@
 package com.github.mhdirkse.countlang.steps;
 
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
+import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombinationHandler.State.DOING_EXPRESSIONS;
+import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombinationHandler.State.DOING_STATEMENTS;
+import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombinationHandler.State.DONE;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
@@ -14,25 +14,12 @@ import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 
-class IfStatementTypeCheck implements AstNodeExecution<CountlangType> {
-    private enum State {
-        BEFORE(IfStatementTypeCheck::stepBefore),
-        DOING_SELECTOR(IfStatementTypeCheck::stepDoingSelector),
-        DOING_STATEMENTS(IfStatementTypeCheck::stepDoingStatements),
-        DONE((tc, context) -> null);
-
-        BiFunction<IfStatementTypeCheck, ExecutionContext<CountlangType>, AstNode> runner;
-
-        State(BiFunction<IfStatementTypeCheck, ExecutionContext<CountlangType>, AstNode> runner) {
-            this.runner = runner;
-        }
-    }
-
+class IfStatementTypeCheck extends ExpressionsAndStatementsCombinationHandler.TypeCheck {
     private final IfStatement ifStatement;
     private final SubExpressionStepper<CountlangType> selectorHandler;
     private final List<StatementGroup> statementGroups;
-    State state = State.BEFORE;
     private int statementGroupIndex = 0;
+    private boolean inBranch = false;
 
     IfStatementTypeCheck(IfStatement ifStatement) {
         this.ifStatement = ifStatement;
@@ -49,58 +36,22 @@ class IfStatementTypeCheck implements AstNodeExecution<CountlangType> {
     }
 
     @Override
-    public AstNode step(ExecutionContext<CountlangType> context) {
-        return state.runner.apply(this, context);
-    }
-
     public AstNode stepBefore(ExecutionContext<CountlangType> context) {
-        state = State.DOING_SELECTOR;
+        setState(DOING_EXPRESSIONS);
         return selectorHandler.step(context);
     }
 
-    public AstNode stepDoingSelector(ExecutionContext<CountlangType> context) {
+    @Override
+    AstNode stepDoingExpressions(ExecutionContext<CountlangType> context) {
         if(!selectorHandler.getSubExpressionResults().get(0).equals(CountlangType.BOOL)) {
             reportSelectorNotBoolean((ExpressionNode) ifStatement.getSelector(), context);
         }
-        state = State.DOING_STATEMENTS;
-        return statementGroups.get(statementGroupIndex++);        
+        setState(DOING_STATEMENTS);
+        context.onSwitchOpened();
+        return newBranch(context);
     }
 
-    public AstNode stepDoingStatements(ExecutionContext<CountlangType> context) {
-        if(statementGroupIndex < statementGroups.size()) {
-            return statementGroups.get(statementGroupIndex++);
-        }
-        else {
-            state = State.DONE;
-        }
-        return null;        
-    }
-
-    @Override
-    public AstNodeExecutionState getState() {
-        switch(state) {
-        case BEFORE:
-            return AstNodeExecutionState.BEFORE;
-        case DOING_SELECTOR:
-        case DOING_STATEMENTS:
-            return RUNNING;
-        default:
-            return AFTER;
-        }
-    }
-
-    @Override
-    public boolean handleDescendantResult(CountlangType value) {
-        if(state == State.DOING_SELECTOR) {
-            selectorHandler.handleDescendantResult(value);
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    void reportSelectorNotBoolean(ExpressionNode selector, ExecutionContext<CountlangType> context) {
+    private void reportSelectorNotBoolean(ExpressionNode selector, ExecutionContext<CountlangType> context) {
         context.report(
                 StatusCode.IF_SELECT_NOT_BOOLEAN,
                 selector.getLine(),
@@ -108,4 +59,42 @@ class IfStatementTypeCheck implements AstNodeExecution<CountlangType> {
                 selector.getCountlangType().toString());
 
     }
+
+    private AstNode newBranch(ExecutionContext<CountlangType> context) {
+        ensureBranchClosed(context);
+        context.onBranchOpened();
+        inBranch = true;
+        return statementGroups.get(statementGroupIndex++);                
+    }
+
+    private void ensureBranchClosed(ExecutionContext<CountlangType> context) {
+        if(inBranch) {
+            context.onBranchClosed();
+            inBranch = false;
+        }
+    }
+
+    @Override
+    AstNode stepDoingStatements(ExecutionContext<CountlangType> context) {
+        if(statementGroupIndex < statementGroups.size()) {
+            return newBranch(context);
+        }
+        else {
+            ensureBranchClosed(context);
+            context.onSwitchClosed();
+            setState(DONE);
+        }
+        return null;        
+    }
+
+    @Override
+    boolean handleDescendantResultDoingExpressions(CountlangType value) {
+        selectorHandler.handleDescendantResult(value);
+        return true;        
+    }
+
+    @Override
+    boolean handleDescendantResultDoingStatements(CountlangType value) {
+        return false;        
+    }    
 }
