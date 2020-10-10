@@ -9,6 +9,7 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
+import com.github.mhdirkse.countlang.execution.DummyValue;
 
 abstract class StatementGroupHandler<T> implements AstNodeExecution<T> {
     private final StatementGroup statementGroup;
@@ -33,26 +34,37 @@ abstract class StatementGroupHandler<T> implements AstNodeExecution<T> {
 
     @Override
     public AstNode step(ExecutionContext<T> context) {
+        if(state == AFTER) {
+            return null;
+        }
+        if(state == BEFORE) {
+            context.pushVariableFrame();
+        }
         state = RUNNING;
         if(childIndex < children.size()) {
             beforeChildEntered(children.get(childIndex), context);
             return children.get(childIndex++);
         }
-        state = AFTER;
+        done(context);
         return null;
     }
 
+    void done(ExecutionContext<T> context) {
+        context.popVariableFrame();
+        state = AFTER;
+    }
+
     @Override
-    public boolean handleDescendantResult(T value) {
-        onReturnEncountered();
+    public boolean handleDescendantResult(T value, ExecutionContext<T> context) {
+        onReturnEncountered(context);
         return false;
     }
 
     abstract void beforeChildEntered(AstNode child, ExecutionContext<T> context);
-    abstract void onReturnEncountered();
+    abstract void onReturnEncountered(ExecutionContext<T> context);
 
-    static class Analysis extends StatementGroupHandler<CountlangType> {
-        Analysis(StatementGroup statementGroup) {
+    static class TypeCheck extends StatementGroupHandler<CountlangType> {
+        TypeCheck(StatementGroup statementGroup) {
             super(statementGroup);
         }
 
@@ -62,7 +74,7 @@ abstract class StatementGroupHandler<T> implements AstNodeExecution<T> {
         }
 
         @Override
-        void onReturnEncountered() {
+        void onReturnEncountered(ExecutionContext<CountlangType> context) {
         }
     }
 
@@ -76,8 +88,22 @@ abstract class StatementGroupHandler<T> implements AstNodeExecution<T> {
         }
 
         @Override
-        void onReturnEncountered() {
-            state = AFTER;
+        void onReturnEncountered(ExecutionContext<Object> context) {
+            done(context);
+        }
+    }
+
+    static class VarUsage extends StatementGroupHandler<DummyValue> {
+        VarUsage(StatementGroup statementGroup) {
+            super(statementGroup);
+        }
+
+        @Override
+        void beforeChildEntered(AstNode child, ExecutionContext<DummyValue> context) {
+        }
+
+        @Override
+        void onReturnEncountered(ExecutionContext<DummyValue> context) {
         }
     }
 }

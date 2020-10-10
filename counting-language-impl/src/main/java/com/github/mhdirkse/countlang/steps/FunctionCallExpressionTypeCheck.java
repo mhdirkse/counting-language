@@ -14,7 +14,7 @@ import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 
-class FunctionCallExpressionTypeCheck extends ExpressionsAndStatementsCombinationHandler.TypeCheck {
+class FunctionCallExpressionTypeCheck extends ExpressionsAndStatementsCombinationHandler<CountlangType> {
     private final FunctionCallExpression expression;
     private final SubExpressionStepper<CountlangType> subExpressionStepper;
     private final List<CountlangType> subExpressionResults = new ArrayList<>();

@@ -11,5 +11,5 @@ interface AstNodeExecution<T> {
     }
 
     AstNode step(ExecutionContext<T> context);
-    boolean handleDescendantResult(T value);
+    boolean handleDescendantResult(T value, ExecutionContext<T> context);
 }

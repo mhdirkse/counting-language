@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 
-public class AssignmentStatementHandler<T> extends ExpressionResultsCollector<T> {
+class AssignmentStatementHandler<T> extends ExpressionResultsCollector<T> {
     final private String symbol;
 
     AssignmentStatementHandler(final AssignmentStatement statement) {

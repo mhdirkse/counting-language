@@ -47,7 +47,7 @@ class StepperImpl<T> implements Stepper, StepperCallback<T> {
         it.next();
         boolean handled = false;
         while(it.hasNext() && !handled) {
-            handled = it.next().handleDescendantResult(value);
+            handled = it.next().handleDescendantResult(value, context);
         }
         return value;
     }

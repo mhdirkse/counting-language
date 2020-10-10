@@ -32,7 +32,7 @@ class FunctionDefinitionStatementCalculation implements AstNodeExecution<Object>
     }
 
     @Override
-    public boolean handleDescendantResult(Object value) {
+    public boolean handleDescendantResult(Object value, ExecutionContext<Object> context) {
         throw new IllegalStateException("Function definition statement does not expect results from contained AstNode elements");
     }
 }

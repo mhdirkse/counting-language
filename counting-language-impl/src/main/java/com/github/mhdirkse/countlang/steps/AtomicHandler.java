@@ -1,10 +1,9 @@
 package com.github.mhdirkse.countlang.steps;
 
+import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
-
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 
 abstract class AtomicHandler<T> implements AstNodeExecution<T> {
     private AstNodeExecutionState state;
@@ -28,7 +27,7 @@ abstract class AtomicHandler<T> implements AstNodeExecution<T> {
     abstract T getValue(ExecutionContext<T> context);
 
     @Override
-    public boolean handleDescendantResult(Object value) {
+    public boolean handleDescendantResult(T value, ExecutionContext<T> context) {
         throw new IllegalStateException("Executing non-composite AST node, so there cannot be results from children");
     }
 }

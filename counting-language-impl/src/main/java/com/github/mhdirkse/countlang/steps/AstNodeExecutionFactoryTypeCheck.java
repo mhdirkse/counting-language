@@ -1,38 +1,25 @@
 package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
-import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
-import com.github.mhdirkse.countlang.ast.FormalParameter;
-import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
-import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
-import com.github.mhdirkse.countlang.ast.Visitor;
 
-class AstNodeExecutionFactoryTypeCheck implements AstNodeExecutionFactory<CountlangType>, Visitor {
-    private AstNodeExecution<CountlangType> result;
-
-    @Override
-    public AstNodeExecution<CountlangType> create(AstNode node) {
-        node.accept(this);
-        return result;
-    }
-
+class AstNodeExecutionFactoryTypeCheck extends AbstractAstNodeExecutionFactory<CountlangType> {
     @Override
     public void visitStatementGroup(StatementGroup statementGroup) {
-        result = new StatementGroupHandler.Analysis(statementGroup);
+        result = new StatementGroupHandler.TypeCheck(statementGroup);
     }
 
     @Override
@@ -52,7 +39,7 @@ class AstNodeExecutionFactoryTypeCheck implements AstNodeExecutionFactory<Countl
 
     @Override
     public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-        result = new FunctionDefinitionStatementTypeCheck(statement);
+        result = new FunctionDefinitionStatementAnalysis.TypeCheck(statement);
     }
 
     @Override
@@ -62,7 +49,7 @@ class AstNodeExecutionFactoryTypeCheck implements AstNodeExecutionFactory<Countl
 
     @Override
     public void visitIfStatement(IfStatement ifStatement) {
-        result = new IfStatementTypeCheck(ifStatement);
+        result = new IfStatementAnalysis.TypeCheck(ifStatement);
     }
 
     @Override
@@ -83,18 +70,6 @@ class AstNodeExecutionFactoryTypeCheck implements AstNodeExecutionFactory<Countl
     @Override
     public void visitValueExpression(ValueExpression expression) {
         result = new ValueExpressionTypeCheck(expression);
-    }
-
-    @Override
-    public void visitOperator(Operator operator) {
-    }
-
-    @Override
-    public void visitFormalParameters(FormalParameters formalParameters) {
-    }
-
-    @Override
-    public void visitFormalParameter(FormalParameter formalParameter) {
     }
 
     @Override

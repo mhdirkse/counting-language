@@ -1,5 +1,8 @@
 package com.github.mhdirkse.countlang.steps;
 
+import static com.github.mhdirkse.countlang.steps.ExpressionResultCollectorVarUsage.ResultStrategy.NO_RESULT;
+import static com.github.mhdirkse.countlang.steps.ExpressionResultCollectorVarUsage.ResultStrategy.RESULT;
+
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
@@ -14,75 +17,76 @@ import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.execution.DummyValue;
 
-class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory<Object> {
+class AstNodeExecutionFactoryVarUsage extends AbstractAstNodeExecutionFactory<DummyValue> {
     @Override
     public void visitStatementGroup(StatementGroup statementGroup) {
-        result = new StatementGroupHandler.Calculation(statementGroup);
+        result = new StatementGroupHandler.VarUsage(statementGroup);
     }
 
     @Override
     public void visitAssignmentStatement(AssignmentStatement statement) {
-        result = new AssignmentStatementHandler<Object>(statement);
+        result = new AssignmentStatementHandler<DummyValue>(statement);
     }
 
     @Override
     public void visitPrintStatement(PrintStatement statement) {
-        result = new PrintStatementCalculation(statement);
+        result = new ExpressionResultCollectorVarUsage(statement, NO_RESULT);
     }
 
     @Override
     public void visitMarkUsedStatement(MarkUsedStatement statement) {
-        result = new MarkUsedStatementCalculation(statement);
+        result = new ExpressionResultCollectorVarUsage(statement, NO_RESULT);
     }
 
     @Override
     public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-        result = new FunctionDefinitionStatementCalculation(statement);
+        result = new FunctionDefinitionStatementAnalysis.VarUsage(statement);
     }
 
     @Override
     public void visitReturnStatement(ReturnStatement statement) {
-        result = new ReturnStatementHandler.Calculation(statement);
+        result = new ExpressionResultCollectorVarUsage(statement, RESULT);        
     }
 
     @Override
     public void visitIfStatement(IfStatement ifStatement) {
-        result = new IfStatementCalculation(ifStatement);
+        result = new IfStatementAnalysis.VarUsage(ifStatement);
     }
 
     @Override
     public void visitCompositeExpression(CompositeExpression expression) {
-        result = new CompositeExpressionCalculation(expression);
+        result = new ExpressionResultCollectorVarUsage(expression, RESULT);        
     }
 
     @Override
     public void visitFunctionCallExpression(FunctionCallExpression expression) {
-        result = new FunctionCallExpressionCalculation(expression);
+        result = new ExpressionResultCollectorVarUsage(expression, RESULT);        
     }
 
     @Override
     public void visitSymbolExpression(SymbolExpression expression) {
-        result = new SymbolExpressionCalculation(expression);
+        result = new SymbolExpressionVarUsage(expression);
     }
 
     @Override
     public void visitValueExpression(ValueExpression expression) {
-        result = new ValueExpressionCalculation(expression);
+        result = new ValueExpressionVarUsage(expression);
     }
 
     @Override
     public void visitSimpleDistributionExpression(SimpleDistributionExpression expr) {
-        result = new SimpleDistributionExpressionCalculation(expr);
+        result = new ExpressionResultCollectorVarUsage(expr, RESULT);        
     }
 
     @Override
     public void visitDistributionExpressionWithTotal(DistributionExpressionWithTotal expr) {
-        result = new SpecialDistributionExpressionCalculation.WithTotal(expr);
+        result = new ExpressionResultCollectorVarUsage(expr, RESULT);        
     }
 
     @Override
     public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expr) {
-        result = new SpecialDistributionExpressionCalculation.WithUnknown(expr);
+        result = new ExpressionResultCollectorVarUsage(expr, RESULT);        
     }
 }

@@ -44,7 +44,7 @@ class IfStatementCalculation implements AstNodeExecution<Object> {
     }
 
     @Override
-    public boolean handleDescendantResult(Object value) {
+    public boolean handleDescendantResult(Object value, ExecutionContext<Object> context) {
         if(selectorValue == null) {
             selectorValue = (Boolean) value;
             return true;

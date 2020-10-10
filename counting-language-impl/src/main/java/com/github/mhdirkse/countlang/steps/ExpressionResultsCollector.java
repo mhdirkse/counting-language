@@ -36,7 +36,7 @@ abstract class ExpressionResultsCollector<T> implements AstNodeExecution<T> {
     abstract void processSubExpressionResults(List<T> subExpressionResults, ExecutionContext<T> context);
 
     @Override
-    public boolean handleDescendantResult(T value) {
+    public boolean handleDescendantResult(T value, ExecutionContext<T> context) {
         delegate.handleDescendantResult(value);
         return isDescendantResultHandled();
     }

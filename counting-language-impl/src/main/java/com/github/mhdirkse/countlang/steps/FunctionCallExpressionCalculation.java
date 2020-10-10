@@ -11,7 +11,7 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 
-class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler.Calculation {
+class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler<Object> {
     private final FunctionCallExpression expression;
     private final SubExpressionStepper<Object> subExpressionStepper;
     private final List<Object> subExpressionResults = new ArrayList<>();

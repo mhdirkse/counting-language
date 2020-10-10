@@ -30,6 +30,9 @@ class SubExpressionStepper<T> {
     }
 
     public AstNode step(ExecutionContext<T> context) {
+        if(state == AFTER) {
+            return null;
+        }
         state = RUNNING;
         if(subExpressionIndex < subExpressions.size()) {
             return subExpressions.get(subExpressionIndex++);
