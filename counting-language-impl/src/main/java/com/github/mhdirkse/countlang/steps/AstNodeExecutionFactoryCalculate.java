@@ -38,7 +38,7 @@ class AstNodeExecutionFactoryCalculate implements AstNodeExecutionFactory<Object
 
     @Override
     public void visitAssignmentStatement(AssignmentStatement statement) {
-        // TODO Auto-generated method stub
+        result = new AssignmentStatementHandler<Object>(statement);
     }
 
     @Override
@@ -88,37 +88,28 @@ class AstNodeExecutionFactoryCalculate implements AstNodeExecutionFactory<Object
 
     @Override
     public void visitOperator(Operator operator) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void visitFormalParameters(FormalParameters formalParameters) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void visitFormalParameter(FormalParameter formalParameter) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
     public void visitSimpleDistributionExpression(SimpleDistributionExpression expr) {
-        // TODO Auto-generated method stub
-        
+        result = new SimpleDistributionExpressionCalculation(expr);
     }
 
     @Override
     public void visitDistributionExpressionWithTotal(DistributionExpressionWithTotal expr) {
-        // TODO Auto-generated method stub
-        
+        result = new SpecialDistributionExpressionCalculation.WithTotal(expr);
     }
 
     @Override
     public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expr) {
-        // TODO Auto-generated method stub
-        
+        result = new SpecialDistributionExpressionCalculation.WithUnknown(expr);
     }
 }
