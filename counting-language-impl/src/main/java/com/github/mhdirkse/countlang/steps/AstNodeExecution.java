@@ -2,7 +2,7 @@ package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 
-interface AstNodeExecution<T> {
+interface AstNodeExecution {
     AstNode getAstNode();
     AstNodeExecutionState getState();
 
@@ -10,6 +10,6 @@ interface AstNodeExecution<T> {
         return new ExecutionPointNode(getAstNode(), getState());
     }
 
-    AstNode step(ExecutionContext<T> context);
-    boolean handleDescendantResult(T value, ExecutionContext<T> context);
+    AstNode step(ExecutionContext context);
+    boolean handleDescendantResult(Object value, ExecutionContext context);
 }

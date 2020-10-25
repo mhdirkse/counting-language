@@ -15,15 +15,15 @@ import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 
-class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory<Object> {
+class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitStatementGroup(StatementGroup statementGroup) {
-        result = new StatementGroupHandler.Calculation(statementGroup);
+        result = new StatementGroupCalculation(statementGroup);
     }
 
     @Override
     public void visitAssignmentStatement(AssignmentStatement statement) {
-        result = new AssignmentStatementHandler<Object>(statement);
+        result = new AssignmentStatementCalculation(statement);
     }
 
     @Override
@@ -43,7 +43,7 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory<O
 
     @Override
     public void visitReturnStatement(ReturnStatement statement) {
-        result = new ReturnStatementHandler.Calculation(statement);
+        result = new ReturnStatementCalculation(statement);
     }
 
     @Override

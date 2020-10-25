@@ -6,13 +6,13 @@ import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.Visitor;
 
-abstract class AbstractAstNodeExecutionFactory<T> implements AstNodeExecutionFactory<T>, Visitor {
-    AstNodeExecution<T> result;
+abstract class AbstractAstNodeExecutionFactory implements AstNodeExecutionFactory, Visitor {
+    AstNodeExecution result;
 
     @Override
-    public AstNodeExecution<T> create(AstNode node) {
+    public AstNodeExecution create(AstNode node) {
         node.accept(this);
-        AstNodeExecution<T> currentResult = result;
+        AstNodeExecution currentResult = result;
         result = null;
         return currentResult;
     }

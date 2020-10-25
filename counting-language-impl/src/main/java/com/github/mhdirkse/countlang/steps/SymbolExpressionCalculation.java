@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.steps;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 
-class SymbolExpressionCalculation extends AtomicHandler<Object> {
+class SymbolExpressionCalculation extends AtomicCalculation {
     private final SymbolExpression node;
 
     SymbolExpressionCalculation(final SymbolExpression node) {
@@ -17,7 +17,7 @@ class SymbolExpressionCalculation extends AtomicHandler<Object> {
     }
 
     @Override
-    Object getValue(final ExecutionContext<Object> context) {
-        return context.readSymbol(node.getSymbol());
+    Object getValue(final ExecutionContext context) {
+        return context.readSymbol(node.getSymbol(), node);
     }
 }

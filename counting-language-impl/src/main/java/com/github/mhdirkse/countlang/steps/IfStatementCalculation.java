@@ -1,15 +1,14 @@
 package com.github.mhdirkse.countlang.steps;
 
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
+import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombinationHandler.State.DOING_EXPRESSIONS;
+import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombinationHandler.State.DOING_STATEMENTS;
+import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombinationHandler.State.DONE;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 
-class IfStatementCalculation implements AstNodeExecution<Object> {
+class IfStatementCalculation extends ExpressionsAndStatementsCombinationHandler {
     private final IfStatement ifStatement;
-    private AstNodeExecutionState state = BEFORE;
     Boolean selectorValue = null;
 
     IfStatementCalculation(IfStatement ifStatement) {
@@ -22,36 +21,38 @@ class IfStatementCalculation implements AstNodeExecution<Object> {
     }
 
     @Override
-    public AstNodeExecutionState getState() {
-        return state;
+    AstNode stepBefore(ExecutionContext context) {
+        setState(DOING_EXPRESSIONS);
+        return ifStatement.getSelector();
     }
 
     @Override
-    public AstNode step(ExecutionContext<Object> context) {
-        state = RUNNING;
-        if(selectorValue == null) {
-            return ifStatement.getSelector();
-        }
-        else {
-            if(selectorValue.booleanValue()) {
-                return ifStatement.getThenStatement();
-            } else if(ifStatement.getElseStatement() != null) {
-                return ifStatement.getElseStatement();
-            }
-            state = AFTER;
+    boolean handleDescendantResultDoingExpressions(Object value) {
+        selectorValue = (Boolean) value;
+        return true;
+    }
+
+    @Override
+    AstNode stepDoingExpressions(ExecutionContext context) {
+        setState(DOING_STATEMENTS);
+        if(selectorValue.booleanValue()) {
+            return ifStatement.getThenStatement();
+        } else if(ifStatement.getElseStatement() != null) {
+            return ifStatement.getElseStatement();
+        } else {
             return null;
         }
     }
 
     @Override
-    public boolean handleDescendantResult(Object value, ExecutionContext<Object> context) {
-        if(selectorValue == null) {
-            selectorValue = (Boolean) value;
-            return true;
-        }
-        else {
-            state = AFTER;
-            return false;
-        }
+    boolean handleDescendantResultDoingStatements(Object value) {
+        setState(DONE);
+        return false;
+    }
+
+    @Override
+    AstNode stepDoingStatements(ExecutionContext context) {
+        setState(DONE);
+        return null;
     }
 }

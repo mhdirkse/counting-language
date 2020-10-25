@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.steps;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 
-class ValueExpressionCalculation extends AtomicHandler<Object> {
+class ValueExpressionCalculation extends AtomicCalculation {
     private ValueExpression node;
 
     ValueExpressionCalculation(final ValueExpression node) {
@@ -17,7 +17,7 @@ class ValueExpressionCalculation extends AtomicHandler<Object> {
     }
 
     @Override
-    Object getValue(ExecutionContext<Object> context) {
+    Object getValue(ExecutionContext context) {
         return node.getValue();
     }
 }

@@ -10,16 +10,17 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
-class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler<Object> {
+class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler {
     private final FunctionCallExpression expression;
-    private final SubExpressionStepper<Object> subExpressionStepper;
+    private final SubExpressionStepper subExpressionStepper;
     private final List<Object> subExpressionResults = new ArrayList<>();
     private Object functionResult = null;
 
     FunctionCallExpressionCalculation(final FunctionCallExpression expression) {
         this.expression = expression;
-        this.subExpressionStepper = new SubExpressionStepper<Object>(expression.getSubExpressions());
+        this.subExpressionStepper = new SubExpressionStepper(expression.getSubExpressions());
     }
 
     @Override
@@ -28,7 +29,7 @@ class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinat
     }
 
     @Override
-    AstNode stepBefore(ExecutionContext<Object> context) {
+    AstNode stepBefore(ExecutionContext context) {
         setState(DOING_EXPRESSIONS);
         return subExpressionStepper.step(context);
     }
@@ -40,16 +41,16 @@ class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinat
     }
 
     @Override
-    AstNode stepDoingExpressions(ExecutionContext<Object> context) {
+    AstNode stepDoingExpressions(ExecutionContext context) {
         if(!subExpressionStepper.isDone()) {
             return subExpressionStepper.step(context);
         }
         FunctionDefinitionStatement fun = context.getFunction(expression.getFunctionName());
-        context.pushVariableFrame();
+        context.pushVariableFrame(StackFrameAccess.HIDE_PARENT);
         for(int i = 0; i < fun.getFormalParameters().size(); i++) {
             String parameterName = fun.getFormalParameters().getFormalParameter(i).getName();
             Object value = subExpressionResults.get(i);
-            context.writeSymbol(parameterName, value);
+            context.writeSymbol(parameterName, value, fun.getFormalParameters().getFormalParameter(i));
         }
         setState(DOING_STATEMENTS);
         return fun.getSubStatements().get(0);
@@ -63,7 +64,7 @@ class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinat
 
 
     @Override
-    AstNode stepDoingStatements(ExecutionContext<Object> context) {
+    AstNode stepDoingStatements(ExecutionContext context) {
         context.onResult(functionResult);
         setState(DONE);
         return null;

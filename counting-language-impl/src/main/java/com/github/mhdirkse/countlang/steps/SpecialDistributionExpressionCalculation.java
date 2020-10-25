@@ -5,15 +5,16 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.types.Distribution;
 
-abstract class SpecialDistributionExpressionCalculation extends ExpressionResultsCollector<Object> {
+abstract class SpecialDistributionExpressionCalculation extends ExpressionResultsCollector {
     SpecialDistributionExpressionCalculation(final AbstractDistributionExpression expression) {
         super(expression);
     }
 
     @Override
-    void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext<Object> context) {
+    void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         int extraSubExpressionResult = ((Integer) subExpressionResults.get(0)).intValue();
         Distribution.Builder builder = new Distribution.Builder();
         for(Object scored: subExpressionResults.subList(1, subExpressionResults.size())) {
@@ -39,7 +40,12 @@ abstract class SpecialDistributionExpressionCalculation extends ExpressionResult
         @Override
         int getUnknown(int total, int totalScored) {
             if(totalScored > total) {
-                // TODO: Throw exception because the total is too low
+                throw new ProgramException(
+                        getAstNode().getLine(),
+                        getAstNode().getColumn(),
+                        String.format(
+                                "The scored items in the distribution make count %d, which is more than %d",
+                                totalScored, total));
             }
             return total - totalScored;
         }
@@ -52,6 +58,14 @@ abstract class SpecialDistributionExpressionCalculation extends ExpressionResult
 
         @Override
         int getUnknown(int unknown, int totalScored) {
+            if(unknown < 0) {
+                throw new ProgramException(
+                        getAstNode().getLine(),
+                        getAstNode().getColumn(),
+                        String.format(
+                                "The unknown count in a distribution cannot be negative; you tried %d",
+                                unknown));
+            }
             return unknown;
         }
     }

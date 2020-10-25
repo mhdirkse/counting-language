@@ -14,6 +14,7 @@ import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
+import com.github.mhdirkse.countlang.steps.Stepper;
 import com.github.mhdirkse.utils.Imperative;
 
 public class ExecuteProgramTask implements AbstractTask {
@@ -46,7 +47,7 @@ public class ExecuteProgramTask implements AbstractTask {
         List<Supplier<Boolean>> checks = new ArrayList<>();
         checks.add(() -> typeCheck(statementGroup, outputStrategy));
         checks.add(() -> checkVariables(statementGroup, outputStrategy));
-        Runnable runProgram = () -> runProgramVisitor(statementGroup, outputStrategy);
+        Runnable runProgram = () -> runProgram(statementGroup, outputStrategy);
         Imperative.runWhileTrue(checks, runProgram);
     }
 
@@ -68,6 +69,7 @@ public class ExecuteProgramTask implements AbstractTask {
         return !reporter.hasErrors();
     }
 
+    /*
     private void runProgramVisitor(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         CountlangRunner runner = CountlangRunner.getInstance(
                 outputStrategy, getPredefinedFunctions());
@@ -75,6 +77,16 @@ public class ExecuteProgramTask implements AbstractTask {
             statementGroup.accept(runner);
         }
         catch (ProgramException e) {
+            outputStrategy.error(e.getMessage());
+        }
+    }
+    */
+
+    private void runProgram(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
+        Stepper stepper = Stepper.getInstance(statementGroup, outputStrategy, getPredefinedFunctions());
+        try {
+            stepper.run();
+        } catch(ProgramException e) {
             outputStrategy.error(e.getMessage());
         }
     }

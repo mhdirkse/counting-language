@@ -5,13 +5,13 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeNode;
 
-abstract class ExpressionResultsCollector<T> implements AstNodeExecution<T> {
+abstract class ExpressionResultsCollector implements AstNodeExecution {
     final CompositeNode node;
-    SubExpressionStepper<T> delegate;
+    SubExpressionStepper delegate;
 
     ExpressionResultsCollector(final CompositeNode node) {
         this.node = node;
-        delegate = new SubExpressionStepper<T>(node.getSubExpressions());
+        delegate = new SubExpressionStepper(node.getSubExpressions());
     }
 
     @Override
@@ -25,7 +25,7 @@ abstract class ExpressionResultsCollector<T> implements AstNodeExecution<T> {
     }
 
     @Override
-    public AstNode step(ExecutionContext<T> context) {
+    public AstNode step(ExecutionContext context) {
         AstNode result = delegate.step(context);
         if(delegate.isDone()) {
             processSubExpressionResults(delegate.getSubExpressionResults(), context);
@@ -33,10 +33,10 @@ abstract class ExpressionResultsCollector<T> implements AstNodeExecution<T> {
         return result;
     }
 
-    abstract void processSubExpressionResults(List<T> subExpressionResults, ExecutionContext<T> context);
+    abstract void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context);
 
     @Override
-    public boolean handleDescendantResult(T value, ExecutionContext<T> context) {
+    public boolean handleDescendantResult(Object value, ExecutionContext context) {
         delegate.handleDescendantResult(value);
         return isDescendantResultHandled();
     }

@@ -5,10 +5,10 @@ import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 
-abstract class AtomicHandler<T> implements AstNodeExecution<T> {
+abstract class AtomicCalculation implements AstNodeExecution {
     private AstNodeExecutionState state;
 
-    AtomicHandler() {
+    AtomicCalculation() {
         state = BEFORE; 
     }
 
@@ -18,16 +18,16 @@ abstract class AtomicHandler<T> implements AstNodeExecution<T> {
     }
 
     @Override
-    public AstNode step(ExecutionContext<T> context) {
+    public AstNode step(ExecutionContext context) {
         context.onResult(getValue(context));
         state = AFTER;
         return null;
     }
 
-    abstract T getValue(ExecutionContext<T> context);
+    abstract Object getValue(ExecutionContext context);
 
     @Override
-    public boolean handleDescendantResult(T value, ExecutionContext<T> context) {
+    public boolean handleDescendantResult(Object value, ExecutionContext context) {
         throw new IllegalStateException("Executing non-composite AST node, so there cannot be results from children");
     }
 }

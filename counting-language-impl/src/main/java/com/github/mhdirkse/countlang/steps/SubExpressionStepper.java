@@ -10,11 +10,11 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 
-class SubExpressionStepper<T> {
+class SubExpressionStepper {
     private List<ExpressionNode> subExpressions = null;
     private AstNodeExecutionState state;
     private int subExpressionIndex = 0;
-    private List<T> subExpressionResults = new ArrayList<>();
+    private List<Object> subExpressionResults = new ArrayList<>();
 
     SubExpressionStepper(final List<ExpressionNode> subExpressions) {
         this.subExpressions = subExpressions;
@@ -29,7 +29,7 @@ class SubExpressionStepper<T> {
         return state.equals(AFTER);
     }
 
-    public AstNode step(ExecutionContext<T> context) {
+    public AstNode step(ExecutionContext context) {
         if(state == AFTER) {
             return null;
         }
@@ -43,11 +43,11 @@ class SubExpressionStepper<T> {
         }
     }
 
-    public void handleDescendantResult(T value) {
+    public void handleDescendantResult(Object value) {
         subExpressionResults.add(value);
     }
 
-    public List<T> getSubExpressionResults() {
+    public List<Object> getSubExpressionResults() {
         return subExpressionResults;
     }
 }

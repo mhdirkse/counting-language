@@ -5,13 +5,13 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.types.Distribution;
 
-class PrintStatementCalculation extends ExpressionResultsCollector<Object> {
+class PrintStatementCalculation extends ExpressionResultsCollector {
     PrintStatementCalculation(PrintStatement node) {
         super(node);
     }
 
     @Override
-    void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext<Object> context) {
+    void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         Object value = subExpressionResults.get(0);
         String output = value.toString();
         if(value instanceof Distribution) {

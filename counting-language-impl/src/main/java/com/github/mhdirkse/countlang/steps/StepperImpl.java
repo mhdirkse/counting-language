@@ -8,12 +8,12 @@ import java.util.Iterator;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 
-class StepperImpl<T> implements Stepper, StepperCallback<T> {
-    private final Deque<AstNodeExecution<T>> callStack;
-    private final ExecutionContext<T> context;
-    private final AstNodeExecutionFactory<T> factory;
+class StepperImpl implements Stepper, StepperCallback {
+    private final Deque<AstNodeExecution> callStack;
+    private final ExecutionContext context;
+    private final AstNodeExecutionFactory factory;
 
-    StepperImpl(final AstNode target, final ExecutionContext<T> context, final AstNodeExecutionFactory<T> factory) {
+    StepperImpl(final AstNode target, final ExecutionContext context, final AstNodeExecutionFactory factory) {
         this.factory = factory;
         this.context = context;
         callStack = new ArrayDeque<>();
@@ -42,8 +42,8 @@ class StepperImpl<T> implements Stepper, StepperCallback<T> {
     }
 
     @Override
-    public T onResult(T value) {
-        Iterator<AstNodeExecution<T>> it = callStack.descendingIterator();
+    public Object onResult(Object value) {
+        Iterator<AstNodeExecution> it = callStack.descendingIterator();
         it.next();
         boolean handled = false;
         while(it.hasNext() && !handled) {

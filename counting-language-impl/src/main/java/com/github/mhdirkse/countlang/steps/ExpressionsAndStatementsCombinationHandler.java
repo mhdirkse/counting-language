@@ -2,7 +2,7 @@ package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 
-abstract class ExpressionsAndStatementsCombinationHandler<T> implements AstNodeExecution<T> {
+abstract class ExpressionsAndStatementsCombinationHandler implements AstNodeExecution {
     enum State {
         BEFORE(AstNodeExecutionState.BEFORE),
         DOING_EXPRESSIONS(AstNodeExecutionState.RUNNING),
@@ -32,7 +32,7 @@ abstract class ExpressionsAndStatementsCombinationHandler<T> implements AstNodeE
     }
 
     @Override
-    public AstNode step(ExecutionContext<T> context) {
+    public final AstNode step(ExecutionContext context) {
         switch(state) {
         case BEFORE:
             return stepBefore(context);
@@ -46,7 +46,7 @@ abstract class ExpressionsAndStatementsCombinationHandler<T> implements AstNodeE
     }
 
     @Override
-    public boolean handleDescendantResult(T value, ExecutionContext<T> context) {
+    public final boolean handleDescendantResult(Object value, ExecutionContext context) {
         switch(state) {
         case BEFORE:
         case DONE:
@@ -60,9 +60,9 @@ abstract class ExpressionsAndStatementsCombinationHandler<T> implements AstNodeE
         }
     }
 
-    abstract AstNode stepBefore(ExecutionContext<T> context);
-    abstract AstNode stepDoingExpressions(ExecutionContext<T> context);
-    abstract AstNode stepDoingStatements(ExecutionContext<T> context);
-    abstract boolean handleDescendantResultDoingExpressions(T value);
-    abstract boolean handleDescendantResultDoingStatements(T value);
+    abstract AstNode stepBefore(ExecutionContext context);
+    abstract AstNode stepDoingExpressions(ExecutionContext context);
+    abstract AstNode stepDoingStatements(ExecutionContext context);
+    abstract boolean handleDescendantResultDoingExpressions(Object value);
+    abstract boolean handleDescendantResultDoingStatements(Object value);
 }
