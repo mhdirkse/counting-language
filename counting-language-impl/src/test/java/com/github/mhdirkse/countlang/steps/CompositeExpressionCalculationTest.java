@@ -24,6 +24,7 @@ public class CompositeExpressionCalculationTest {
     @Before
     public void setUp() {
         stepper = new StepperImpl(Target.getCompositeExpression(), context, new AstNodeExecutionFactoryCalculate());
+        stepper.init();
     }
 
     @Test

@@ -9,15 +9,20 @@ import java.util.Iterator;
 import com.github.mhdirkse.countlang.ast.AstNode;
 
 class StepperImpl implements Stepper, StepperCallback {
+    private final AstNode target;
     private final Deque<AstNodeExecution> callStack;
     private final ExecutionContext context;
     private final AstNodeExecutionFactory factory;
 
     StepperImpl(final AstNode target, final ExecutionContext context, final AstNodeExecutionFactory factory) {
+        this.target = target;
         this.factory = factory;
         this.context = context;
         callStack = new ArrayDeque<>();
-        callStack.addLast(factory.create(target));
+    }
+
+    void init() {
+        callStack.addLast(factory.create(target));        
     }
 
     @Override

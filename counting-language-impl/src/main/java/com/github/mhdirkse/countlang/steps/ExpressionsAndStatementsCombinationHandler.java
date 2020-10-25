@@ -56,7 +56,7 @@ abstract class ExpressionsAndStatementsCombinationHandler implements AstNodeExec
         case DOING_EXPRESSIONS:
             return handleDescendantResultDoingExpressions(value);
         default:
-            return handleDescendantResultDoingStatements(value);
+            return handleDescendantResultDoingStatements(value, context);
         }
     }
 
@@ -64,5 +64,5 @@ abstract class ExpressionsAndStatementsCombinationHandler implements AstNodeExec
     abstract AstNode stepDoingExpressions(ExecutionContext context);
     abstract AstNode stepDoingStatements(ExecutionContext context);
     abstract boolean handleDescendantResultDoingExpressions(Object value);
-    abstract boolean handleDescendantResultDoingStatements(Object value);
+    abstract boolean handleDescendantResultDoingStatements(Object value, ExecutionContext context);
 }

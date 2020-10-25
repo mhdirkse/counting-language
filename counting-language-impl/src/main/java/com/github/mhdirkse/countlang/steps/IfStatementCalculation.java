@@ -45,7 +45,7 @@ class IfStatementCalculation extends ExpressionsAndStatementsCombinationHandler 
     }
 
     @Override
-    boolean handleDescendantResultDoingStatements(Object value) {
+    boolean handleDescendantResultDoingStatements(Object value, ExecutionContext context) {
         setState(DONE);
         return false;
     }

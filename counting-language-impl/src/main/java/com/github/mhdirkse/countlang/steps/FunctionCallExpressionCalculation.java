@@ -57,16 +57,16 @@ class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinat
     }
 
     @Override
-    boolean handleDescendantResultDoingStatements(Object value) {
+    boolean handleDescendantResultDoingStatements(Object value, ExecutionContext context) {
         functionResult = value;
-        return true;
+        return false;
     }
-
 
     @Override
     AstNode stepDoingStatements(ExecutionContext context) {
         context.onResult(functionResult);
         setState(DONE);
+        context.popVariableFrame();
         return null;
     }
 }

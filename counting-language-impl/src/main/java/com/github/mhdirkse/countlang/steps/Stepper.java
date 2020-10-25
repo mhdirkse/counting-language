@@ -26,6 +26,7 @@ public interface Stepper {
         AstNodeExecutionFactory factory = new AstNodeExecutionFactoryCalculate();
         ExecutionContextCalculate context = new ExecutionContextCalculate(symbolFrameStack, funDefs, outputStrategy);
         StepperImpl result = new StepperImpl(target, context, factory);
+        result.init();
         context.setStepperCallback(result);
         return result;
     }
