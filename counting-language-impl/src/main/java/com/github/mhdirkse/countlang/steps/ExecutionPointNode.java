@@ -15,4 +15,9 @@ class ExecutionPointNode {
         this.state = state;
         this.node = node;
     }
+
+    ExecutionPointNode(final ExecutionPointNode other) {
+        this.node = other.node;
+        this.state = other.state;
+    }
 }

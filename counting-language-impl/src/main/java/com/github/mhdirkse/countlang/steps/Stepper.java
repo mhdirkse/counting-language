@@ -11,7 +11,8 @@ import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
 public interface Stepper {
     boolean hasMoreSteps();
     void step();
-
+    ExecutionPoint getExecutionPoint();
+    
     default void run() {
         while(hasMoreSteps() ) {
             step();

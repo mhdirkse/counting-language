@@ -3,8 +3,10 @@ package com.github.mhdirkse.countlang.steps;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 
@@ -55,5 +57,12 @@ class StepperImpl implements Stepper, StepperCallback {
             handled = it.next().handleDescendantResult(value, context);
         }
         return value;
+    }
+
+    @Override
+    public ExecutionPoint getExecutionPoint() {
+        List<ExecutionPointNode> nodes = new ArrayList<>();
+        callStack.forEach(node -> nodes.add(node.getExecutionPointNode()));
+        return new ExecutionPointImpl(nodes);
     }
 }
