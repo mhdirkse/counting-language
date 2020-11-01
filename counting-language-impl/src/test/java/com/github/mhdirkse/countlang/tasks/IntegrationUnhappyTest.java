@@ -124,7 +124,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
     private void compileAndRunUnchecked(final String programText) throws IOException {
     	StringReader reader = new StringReader(programText);
     	try {
-	    	new ExecuteProgramTask(reader).run(this);
+	    	new ProgramExecutor(reader).run(this);
     	}
     	finally {
     		reader.close();

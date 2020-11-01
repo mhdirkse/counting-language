@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.tasks.ExecuteProgramTask;
+import com.github.mhdirkse.countlang.tasks.ProgramExecutor;
 
 public final class Main implements OutputStrategy {
     public static void main(String[] args)
@@ -69,7 +69,7 @@ public final class Main implements OutputStrategy {
 
     void executeReader(final Reader reader) throws IOException {
         try {
-            new ExecuteProgramTask(reader).run(this);
+            new ProgramExecutor(reader).run(this);
         }
         finally {
             reader.close();

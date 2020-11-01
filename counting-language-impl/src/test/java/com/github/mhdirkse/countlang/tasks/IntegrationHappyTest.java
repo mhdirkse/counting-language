@@ -21,6 +21,8 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
+import com.github.mhdirkse.countlang.steps.ExecutionPoint;
+import com.github.mhdirkse.countlang.steps.Stepper;
 import com.github.mhdirkse.countlang.types.Distribution;
 
 @RunWith(Parameterized.class)
@@ -169,17 +171,45 @@ public class IntegrationHappyTest implements OutputStrategy
     private void compileAndRunUnchecked(final String programText) throws IOException {
     	StringReader reader = new StringReader(programText);
     	try {
-	    	new ExecuteProgramTask(reader).run(this);
+	    	new ProgramExecutor(reader).run(this);
     	}
     	finally {
     		reader.close();
     	}
     }
 
+    private Stepper compileAndGetStepper(final String programText) {
+        try {
+            return compileAndGetStepperUnchecked(programText);
+        } catch(IOException e) {
+            throw new IllegalStateException(e);
+        }        
+    }
+
+    private Stepper compileAndGetStepperUnchecked(final String programText) throws IOException {
+        StringReader reader = new StringReader(programText);
+        try {
+            return new ProgramExecutor(reader).getStepper(this);
+        }
+        finally {
+            reader.close();
+        }
+    }
+
     @Test
-    public void test() {
+    public void testResult() {
         compileAndRun(input);
         Assert.assertEquals(0, outputStrategy.getNumErrors());
         Assert.assertEquals(expectedResult, outputStrategy.getLine(0));
+    }
+
+    @Test
+    public void testExecutionPointsValid() {
+        Stepper stepper = compileAndGetStepper(input);
+        Assert.assertTrue(stepper.getExecutionPoint().isValid());
+        while(stepper.hasMoreSteps()) {
+            stepper.step();
+            Assert.assertTrue(stepper.getExecutionPoint().isValid());
+        }
     }
 }

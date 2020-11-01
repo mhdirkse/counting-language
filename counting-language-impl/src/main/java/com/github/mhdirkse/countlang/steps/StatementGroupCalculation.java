@@ -15,6 +15,7 @@ class StatementGroupCalculation implements AstNodeExecution {
     AstNodeExecutionState state = BEFORE;
     private List<AstNode> children;
     private int childIndex = 0;
+    private boolean haveDescendantResult = false;
 
     StatementGroupCalculation(StatementGroup statementGroup) {
         this.statementGroup = statementGroup;
@@ -40,7 +41,7 @@ class StatementGroupCalculation implements AstNodeExecution {
             context.pushVariableFrame(StackFrameAccess.SHOW_PARENT);
         }
         state = RUNNING;
-        if(childIndex < children.size()) {
+        if(!haveDescendantResult && childIndex < children.size()) {
             return children.get(childIndex++);
         }
         done(context);
@@ -54,7 +55,7 @@ class StatementGroupCalculation implements AstNodeExecution {
 
     @Override
     public boolean handleDescendantResult(Object value, ExecutionContext context) {
-        done(context);
+        haveDescendantResult = true;
         return false;
     }
 }

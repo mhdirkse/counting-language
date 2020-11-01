@@ -213,7 +213,6 @@ public class DescendantValueHandledTest {
         statementGroup.addStatement(child);
         StatementGroupCalculation calculation = new StatementGroupCalculation(statementGroup);
         context.pushVariableFrame(StackFrameAccess.SHOW_PARENT);
-        context.popVariableFrame();
         replay(context);
         calculation.step(context);
         Assert.assertFalse(calculation.handleDescendantResult(new Integer(5), context));

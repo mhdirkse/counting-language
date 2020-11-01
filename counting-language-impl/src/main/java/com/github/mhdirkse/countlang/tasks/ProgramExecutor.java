@@ -17,14 +17,13 @@ import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.countlang.steps.Stepper;
 import com.github.mhdirkse.utils.Imperative;
 
-public class ExecuteProgramTask implements AbstractTask {
+public class ProgramExecutor {
     private final Reader reader;
 
-    public ExecuteProgramTask(Reader reader) {
+    public ProgramExecutor(Reader reader) {
         this.reader = reader;
     }
 
-    @Override
     public void run(final OutputStrategy outputStrategy) throws IOException {
         Optional<StatementGroup> statementGroup = parseProgram(outputStrategy);
         if(statementGroup.isPresent()) {
@@ -69,19 +68,6 @@ public class ExecuteProgramTask implements AbstractTask {
         return !reporter.hasErrors();
     }
 
-    /*
-    private void runProgramVisitor(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        CountlangRunner runner = CountlangRunner.getInstance(
-                outputStrategy, getPredefinedFunctions());
-        try {
-            statementGroup.accept(runner);
-        }
-        catch (ProgramException e) {
-            outputStrategy.error(e.getMessage());
-        }
-    }
-    */
-
     private void runProgram(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         Stepper stepper = Stepper.getInstance(statementGroup, outputStrategy, getPredefinedFunctions());
         try {
@@ -89,5 +75,23 @@ public class ExecuteProgramTask implements AbstractTask {
         } catch(ProgramException e) {
             outputStrategy.error(e.getMessage());
         }
+    }
+
+    public Stepper getStepper(final OutputStrategy outputStrategy) throws IOException {
+        Optional<StatementGroup> statementGroup = parseProgram(outputStrategy);
+        if(statementGroup.isPresent()) {
+            return checkAndGetStepper(outputStrategy, statementGroup.get());
+        }
+        return null;
+    }
+
+    private Stepper checkAndGetStepper(final OutputStrategy outputStrategy, final StatementGroup statementGroup) throws IOException {
+        if(! typeCheck(statementGroup, outputStrategy)) {
+            return null;
+        }
+        if(! checkVariables(statementGroup, outputStrategy)) {
+            return null;
+        }
+        return Stepper.getInstance(statementGroup, outputStrategy, getPredefinedFunctions());
     }
 }

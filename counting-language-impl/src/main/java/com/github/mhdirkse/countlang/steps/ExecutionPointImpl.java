@@ -93,4 +93,9 @@ class ExecutionPointImpl implements ExecutionPoint {
         int compareLengthResult = new Integer(nodes.size()).compareTo(new Integer(other.nodes.size()));
         return - compareLengthResult;
     }
+
+    @Override
+    public boolean isEmpty() {
+        return nodes.isEmpty();
+    }
 }
