@@ -1,6 +1,6 @@
 package com.github.mhdirkse.countlang.steps;
 
-public interface ExecutionPoint extends Comparable<ExecutionPoint> {
+public interface ExecutionPoint {
     boolean isValid();
     boolean isEmpty();
     ExecutionPoint afterFinished();

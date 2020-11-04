@@ -72,29 +72,6 @@ class ExecutionPointImpl implements ExecutionPoint {
     }
 
     @Override
-    public int compareTo(ExecutionPoint otherRaw) {
-        if(! (otherRaw instanceof ExecutionPointImpl)) {
-            throw new IllegalArgumentException("Cannot compare to ExecutionPoint that is not ExecutionPointImpl");
-        }
-        if(! (isValid() && otherRaw.isValid())) {
-            throw new IllegalArgumentException("Cannot compare invalid instances of ExecutionPoint");
-        }
-        ExecutionPointImpl other = (ExecutionPointImpl) otherRaw;
-        if(nodes.isEmpty() || other.nodes.isEmpty()) {
-            throw new IllegalArgumentException("Cannot compare with empty ExecutionPoint");
-        }
-        int numToCompare = Math.min(nodes.size(), other.nodes.size());
-        for(int i = 0; i < numToCompare; i++) {
-            int nodeCompareResult = nodes.get(i).getState().compareTo(other.nodes.get(i).getState());
-            if(nodeCompareResult != 0) {
-                return nodeCompareResult;
-            }
-        }
-        int compareLengthResult = new Integer(nodes.size()).compareTo(new Integer(other.nodes.size()));
-        return - compareLengthResult;
-    }
-
-    @Override
     public boolean isEmpty() {
         return nodes.isEmpty();
     }

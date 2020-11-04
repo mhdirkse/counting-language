@@ -21,7 +21,6 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
-import com.github.mhdirkse.countlang.steps.ExecutionPoint;
 import com.github.mhdirkse.countlang.steps.Stepper;
 import com.github.mhdirkse.countlang.types.Distribution;
 
