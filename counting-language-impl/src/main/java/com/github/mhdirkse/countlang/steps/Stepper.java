@@ -19,6 +19,12 @@ public interface Stepper {
         }
     }
 
+    default void runUntil(ExecutionPoint executionPoint) {
+        while(hasMoreSteps() && ! getExecutionPoint().equals(executionPoint)) {
+            step();
+        }
+    }
+
     public static Stepper getInstance(
             final AstNode target, final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFunctions) {
         SymbolFrameStackExecute symbolFrameStack = new SymbolFrameStackExecute();

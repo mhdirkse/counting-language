@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 class ExecutionPointImpl implements ExecutionPoint {
     private List<ExecutionPointNode> nodes;
 

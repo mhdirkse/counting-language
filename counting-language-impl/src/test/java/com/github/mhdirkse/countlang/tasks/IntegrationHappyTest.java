@@ -177,24 +177,6 @@ public class IntegrationHappyTest implements OutputStrategy
     	}
     }
 
-    private Stepper compileAndGetStepper(final String programText) {
-        try {
-            return compileAndGetStepperUnchecked(programText);
-        } catch(IOException e) {
-            throw new IllegalStateException(e);
-        }        
-    }
-
-    private Stepper compileAndGetStepperUnchecked(final String programText) throws IOException {
-        StringReader reader = new StringReader(programText);
-        try {
-            return new ProgramExecutor(reader).getStepper(this);
-        }
-        finally {
-            reader.close();
-        }
-    }
-
     @Test
     public void testResult() {
         compileAndRun(input);
@@ -204,7 +186,7 @@ public class IntegrationHappyTest implements OutputStrategy
 
     @Test
     public void testExecutionPointsValid() {
-        Stepper stepper = compileAndGetStepper(input);
+        Stepper stepper = Utils.compileAndGetStepper(input, this);
         Assert.assertTrue(stepper.getExecutionPoint().isValid());
         while(stepper.hasMoreSteps()) {
             stepper.step();
