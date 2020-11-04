@@ -31,8 +31,7 @@ class ExecutionPointImpl implements ExecutionPoint {
     private Set<Transition> allowedTransitions = new HashSet<>(Arrays.asList(
             new Transition(RUNNING, RUNNING),
             new Transition(RUNNING, BEFORE),
-            new Transition(RUNNING, AFTER),
-            new Transition(AFTER, AFTER)));
+            new Transition(RUNNING, AFTER)));
 
     ExecutionPointImpl(List<ExecutionPointNode> nodes) {
         this.nodes = new ArrayList<>();

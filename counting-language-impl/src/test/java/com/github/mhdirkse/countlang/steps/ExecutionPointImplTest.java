@@ -37,6 +37,14 @@ public class ExecutionPointImplTest {
         Assert.assertTrue(instance.isValid());
     }
 
+    @Test
+    public void whenExecutionPointNonEndsWithTwoAfterThenInvalid() {
+        ExecutionPoint instance = new ExecutionPointImpl(Arrays.asList(
+                new ExecutionPointNode(null, AFTER),
+                new ExecutionPointNode(null, AFTER)));
+        Assert.assertFalse(instance.isValid());
+    }
+
     @Test(expected = IllegalStateException.class)
     public void whenEmptyExecutionPointThenCannotDetermineAfterFinished() {
         new ExecutionPointImpl(new ArrayList<>()).afterFinished();
