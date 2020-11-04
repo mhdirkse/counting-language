@@ -5,27 +5,21 @@ import static com.github.mhdirkse.countlang.tasks.Constants.INCREMENT_OF_MAX_INT
 import static com.github.mhdirkse.countlang.tasks.Constants.MAX_INT;
 import static com.github.mhdirkse.countlang.tasks.Constants.MIN_INT;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
 import com.github.mhdirkse.countlang.steps.Stepper;
 import com.github.mhdirkse.countlang.types.Distribution;
 
 @RunWith(Parameterized.class)
-public class IntegrationHappyTest implements OutputStrategy
+public class IntegrationHappyTest extends IntegrationHappyTestBase
 {
     @Parameters(name = "{0}, expect output {1}")
     public static Collection<Object[]> data() {
@@ -115,67 +109,11 @@ public class IntegrationHappyTest implements OutputStrategy
         });
     }
 
-    private static Distribution getSimpleDistribution() {
-        Distribution.Builder builder = new Distribution.Builder();
-        builder.add(1);
-        builder.add(1);
-        builder.add(3);
-        return builder.build();
-    }
-
-    private static Distribution getDistributionWithUnknown() {
-        Distribution.Builder builder = new Distribution.Builder();
-        builder.add(1);
-        builder.addUnknown(2);
-        return builder.build();
-    }
-
     @Parameter(0)
     public String input;
 
     @Parameter(1)
     public String expectedResult;
-
-    TestOutputStrategy outputStrategy;
-
-    @Before
-    public void setUp() {
-        StatusCode.setTestMode(true);
-        outputStrategy = new TestOutputStrategy();
-    }
-
-    @After
-    public void tearDown() {
-        StatusCode.setTestMode(false);
-    }
-
-    @Override
-    public void output(final String output) {
-        outputStrategy.output(output);
-    }
-
-    @Override
-    public void error(final String error) {
-    	outputStrategy.error(error);
-    }
-
-    private void compileAndRun(final String programText) {
-    	try {
-    		compileAndRunUnchecked(programText);
-    	} catch(IOException e) {
-    		throw new IllegalStateException(e);
-    	}
-    }
-
-    private void compileAndRunUnchecked(final String programText) throws IOException {
-    	StringReader reader = new StringReader(programText);
-    	try {
-	    	new ProgramExecutor(reader).run(this);
-    	}
-    	finally {
-    		reader.close();
-    	}
-    }
 
     @Test
     public void testResult() {

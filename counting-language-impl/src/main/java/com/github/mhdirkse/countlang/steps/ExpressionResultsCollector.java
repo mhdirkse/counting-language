@@ -15,17 +15,17 @@ abstract class ExpressionResultsCollector implements AstNodeExecution {
     }
 
     @Override
-    public AstNode getAstNode() {
+    public final AstNode getAstNode() {
         return (AstNode) node;
     }
 
     @Override
-    public AstNodeExecutionState getState() {
+    public final AstNodeExecutionState getState() {
         return delegate.getState();
     }
 
     @Override
-    public AstNode step(ExecutionContext context) {
+    public final AstNode step(ExecutionContext context) {
         AstNode result = delegate.step(context);
         if(delegate.isDone()) {
             processSubExpressionResults(delegate.getSubExpressionResults(), context);
