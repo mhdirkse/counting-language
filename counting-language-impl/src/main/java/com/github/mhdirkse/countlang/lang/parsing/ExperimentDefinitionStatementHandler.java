@@ -1,13 +1,13 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 
-class FunctionDefinitionStatementHandler extends FunctionDefinitionStatementHandlerBase
+class ExperimentDefinitionStatementHandler extends FunctionDefinitionStatementHandlerBase
 implements StatementSource {
-    private FunctionDefinitionStatement statement;
+    private ExperimentDefinitionStatement statement;
 
     @Override
     public Statement getStatement() {
@@ -24,9 +24,9 @@ implements StatementSource {
         statement.setName(text);
     }
 
-    FunctionDefinitionStatementHandler(final int line, final int column) {
+    ExperimentDefinitionStatementHandler(final int line, final int column) {
         super(line, column);
-        statement = new FunctionDefinitionStatement(line, column);
+        statement = new ExperimentDefinitionStatement(line, column);
     }
 
     @Override

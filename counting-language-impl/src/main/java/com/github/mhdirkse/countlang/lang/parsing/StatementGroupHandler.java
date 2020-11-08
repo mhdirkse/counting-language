@@ -48,6 +48,15 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterSampleStatement(
+            @NotNull CountlangParser.SampleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new SampleStatementHandler(line, column));
+        return true;
+    }
+
+    @Override
     public boolean enterReturnStatement(
             @NotNull CountlangParser.ReturnStatementContext ctx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
@@ -72,6 +81,15 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
         delegationCtx.addFirst(new FunctionDefinitionStatementHandler(line, column));
+        return true;
+    }
+
+    @Override
+    public boolean enterExperimentDefinitionStatement(
+            CountlangParser.ExperimentDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new ExperimentDefinitionStatementHandler(line, column));
         return true;
     }
 
@@ -115,6 +133,12 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean exitSampleStatement(
+            @NotNull CountlangParser.SampleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+
+    @Override
     public boolean exitReturnStatement(
             @NotNull CountlangParser.ReturnStatementContext ctx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
@@ -129,6 +153,12 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     @Override
     public boolean exitFunctionDefinitionStatement(
             @NotNull CountlangParser.FunctionDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitExperimentDefinitionStatement(
+            @NotNull CountlangParser.ExperimentDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
     }
 

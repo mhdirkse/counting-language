@@ -10,6 +10,7 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
@@ -20,6 +21,7 @@ import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
@@ -237,5 +239,17 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
     }
     
     public void visitFormalParameter(final FormalParameter formalParameter) {
+    }
+
+    @Override
+    public void visitSampleStatement(SampleStatement statement) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
+        // TODO Auto-generated method stub
+        
     }
 }

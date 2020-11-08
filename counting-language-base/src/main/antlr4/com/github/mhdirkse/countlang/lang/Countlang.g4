@@ -7,9 +7,11 @@ statements : statement (';' statement)* ';'? ;
 statement
   : ID '=' expr # assignmentStatement
   | 'function' ID '(' varDecls? ')' '{' statements '}' # functionDefinitionStatement
+  | 'experiment' ID '(' varDecls? ')' '{' statements '}' # experimentDefinitionStatement
   | 'print' expr # printStatement
   | 'return' expr # returnStatement
   | 'markUsed' expr # markUsedStatement
+  | 'sample' ID 'from' expr # sampleStatement
   | 'if' '(' expr ')' '{' statements '}' ('else' '{' statements '}')? # ifStatement
   | '{' statements '}' # compoundStatement
   ;

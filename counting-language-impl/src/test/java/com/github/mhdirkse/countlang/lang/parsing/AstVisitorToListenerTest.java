@@ -17,6 +17,7 @@ import com.github.mhdirkse.countlang.ast.AstVisitorToListener;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
@@ -25,6 +26,7 @@ import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
@@ -188,6 +190,33 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.exitStatementGroup(isA(StatementGroup.class));
         replay(listener);
         runProgram("print distribution");
+        verify(listener);
+    }
+
+    @Test
+    public void testExperimentSample() {
+        listener.enterStatementGroup(isA(StatementGroup.class));
+        listener.enterExperimentDefinitionStatement(isA(ExperimentDefinitionStatement.class));
+        listener.enterFormalParameters(isA(FormalParameters.class));
+        listener.exitFormalParameters(isA(FormalParameters.class));
+        listener.enterStatementGroup(isA(StatementGroup.class));
+
+        listener.enterSampleStatement(isA(SampleStatement.class));
+        listener.enterSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
+        listener.visitValueExpression(isA(ValueExpression.class));
+        listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
+        listener.exitSampleStatement(isA(SampleStatement.class));
+
+        listener.enterReturnStatement(isA(ReturnStatement.class));
+        listener.visitSymbolExpression(isA(SymbolExpression.class));
+        listener.exitReturnStatement(isA(ReturnStatement.class));
+
+        listener.exitStatementGroup(isA(StatementGroup.class));
+        listener.exitExperimentDefinitionStatement(isA(ExperimentDefinitionStatement.class));
+        listener.exitStatementGroup(isA(StatementGroup.class));
+        replay(listener);
+        runProgram("experiment coin() {sample c from distribution 0, 1; return c}");
         verify(listener);
     }
 }

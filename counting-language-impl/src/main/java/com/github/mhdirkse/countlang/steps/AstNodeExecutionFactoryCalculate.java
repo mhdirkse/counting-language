@@ -4,12 +4,14 @@ import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
@@ -84,5 +86,17 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expr) {
         result = new SpecialDistributionExpressionCalculation.WithUnknown(expr);
+    }
+
+    @Override
+    public void visitSampleStatement(SampleStatement statement) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
+        // TODO Auto-generated method stub
+        
     }
 }

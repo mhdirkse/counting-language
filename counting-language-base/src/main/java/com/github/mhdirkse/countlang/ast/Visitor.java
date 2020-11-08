@@ -3,9 +3,11 @@ package com.github.mhdirkse.countlang.ast;
 public interface Visitor {
     public void visitStatementGroup(final StatementGroup statementGroup);
     public void visitAssignmentStatement(final AssignmentStatement statement);
+    public void visitSampleStatement(final SampleStatement statement);
     public void visitPrintStatement(final PrintStatement statement);
     public void visitMarkUsedStatement(final MarkUsedStatement statement);
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement);
+    public void visitExperimentDefinitionStatement(final ExperimentDefinitionStatement statement);
     public void visitReturnStatement(final ReturnStatement statement);
     public void visitIfStatement(final IfStatement ifStatement);
     public void visitCompositeExpression(final CompositeExpression expression);
