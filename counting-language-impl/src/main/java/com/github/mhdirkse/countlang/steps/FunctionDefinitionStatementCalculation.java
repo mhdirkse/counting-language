@@ -6,7 +6,7 @@ import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 
-class FunctionDefinitionStatementCalculation implements AstNodeExecution {
+final class FunctionDefinitionStatementCalculation implements AstNodeExecution {
     private final FunctionDefinitionStatement statement;
     private AstNodeExecutionState state = BEFORE;
     
@@ -29,10 +29,5 @@ class FunctionDefinitionStatementCalculation implements AstNodeExecution {
         context.defineFunction(statement);
         state = AFTER;
         return null;
-    }
-
-    @Override
-    public boolean handleDescendantResult(Object value, ExecutionContext context) {
-        throw new IllegalStateException("Function definition statement does not expect results from contained AstNode elements");
     }
 }

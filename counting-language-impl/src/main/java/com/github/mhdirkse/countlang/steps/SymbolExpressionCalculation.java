@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.steps;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 
-class SymbolExpressionCalculation extends AtomicCalculation {
+final class SymbolExpressionCalculation extends AtomicCalculation {
     private final SymbolExpression node;
 
     SymbolExpressionCalculation(final SymbolExpression node) {

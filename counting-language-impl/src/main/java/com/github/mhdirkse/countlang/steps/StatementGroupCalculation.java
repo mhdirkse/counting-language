@@ -10,12 +10,12 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
-class StatementGroupCalculation implements AstNodeExecution {
+final class StatementGroupCalculation implements AstNodeExecution {
     private final StatementGroup statementGroup;
     AstNodeExecutionState state = BEFORE;
     private List<AstNode> children;
     private int childIndex = 0;
-    private boolean haveDescendantResult = false;
+    private boolean stopRequested = false;
 
     StatementGroupCalculation(StatementGroup statementGroup) {
         this.statementGroup = statementGroup;
@@ -41,21 +41,19 @@ class StatementGroupCalculation implements AstNodeExecution {
             context.pushVariableFrame(StackFrameAccess.SHOW_PARENT);
         }
         state = RUNNING;
-        if(!haveDescendantResult && childIndex < children.size()) {
+        if(!stopRequested && childIndex < children.size()) {
             return children.get(childIndex++);
         }
         done(context);
         return null;
     }
 
-    void done(ExecutionContext context) {
+    private void done(ExecutionContext context) {
         context.popVariableFrame();
         state = AFTER;
     }
 
-    @Override
-    public boolean handleDescendantResult(Object value, ExecutionContext context) {
-        haveDescendantResult = true;
-        return false;
+    public void stopFunctionCall() {
+        stopRequested = true;
     }
 }

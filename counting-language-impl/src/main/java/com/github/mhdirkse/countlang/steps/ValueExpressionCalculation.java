@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.steps;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 
-class ValueExpressionCalculation extends AtomicCalculation {
+final class ValueExpressionCalculation extends AtomicCalculation {
     private ValueExpression node;
 
     ValueExpressionCalculation(final ValueExpression node) {

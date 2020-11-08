@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.types.Distribution;
 
-class SimpleDistributionExpressionCalculation extends ExpressionResultsCollector {
+final class SimpleDistributionExpressionCalculation extends ExpressionResultsCollector {
     SimpleDistributionExpressionCalculation(SimpleDistributionExpression expression) {
         super(expression);
     }
@@ -17,10 +17,5 @@ class SimpleDistributionExpressionCalculation extends ExpressionResultsCollector
             builder.add(((Integer) subExpressionResult).intValue());
         }
         context.onResult(builder.build());
-    }
-
-    @Override
-    boolean isDescendantResultHandled() {
-        return true;
     }
 }

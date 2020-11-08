@@ -1,6 +1,7 @@
 package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
@@ -29,6 +30,11 @@ class ExecutionContextCalculate implements ExecutionContext {
     @Override
     public Object onResult(Object value) {
         return stepperCallback.onResult(value);
+    }
+
+    @Override
+    public void stopFunctionCall(FunctionCallExpression expression) {
+        stepperCallback.stopFunctionCall(expression);
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.types.Distribution;
 
-class PrintStatementCalculation extends ExpressionResultsCollector {
+final class PrintStatementCalculation extends ExpressionResultsCollector {
     PrintStatementCalculation(PrintStatement node) {
         super(node);
     }
@@ -18,10 +18,5 @@ class PrintStatementCalculation extends ExpressionResultsCollector {
             output = ((Distribution) value).format();
         }
         context.output(output);
-    }
-
-    @Override
-    boolean isDescendantResultHandled() {
-        return true;
     }
 }

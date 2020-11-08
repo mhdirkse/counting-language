@@ -43,7 +43,7 @@ class SubExpressionStepper {
         }
     }
 
-    public void handleDescendantResult(Object value) {
+    public void acceptChildResult(Object value) {
         subExpressionResults.add(value);
     }
 

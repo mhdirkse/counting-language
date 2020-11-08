@@ -14,7 +14,7 @@ abstract class SpecialDistributionExpressionCalculation extends ExpressionResult
     }
 
     @Override
-    void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
+    final void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         int extraSubExpressionResult = ((Integer) subExpressionResults.get(0)).intValue();
         Distribution.Builder builder = new Distribution.Builder();
         for(Object scored: subExpressionResults.subList(1, subExpressionResults.size())) {
@@ -27,12 +27,7 @@ abstract class SpecialDistributionExpressionCalculation extends ExpressionResult
 
     abstract int getUnknown(int extraSubExpressionResult, int totalScored);
 
-    @Override
-    boolean isDescendantResultHandled() {
-        return true;
-    }
-
-    static class WithTotal extends SpecialDistributionExpressionCalculation {
+    static final class WithTotal extends SpecialDistributionExpressionCalculation {
         WithTotal(DistributionExpressionWithTotal expression) {
             super(expression);
         }
@@ -51,7 +46,7 @@ abstract class SpecialDistributionExpressionCalculation extends ExpressionResult
         }
     }
 
-    static class WithUnknown extends SpecialDistributionExpressionCalculation {
+    static final class WithUnknown extends SpecialDistributionExpressionCalculation {
         WithUnknown(DistributionExpressionWithUnknown expression) {
             super(expression);
         }

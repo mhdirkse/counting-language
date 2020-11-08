@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 
 class StepperImpl implements Stepper, StepperCallback {
     private final AstNode target;
@@ -52,11 +54,31 @@ class StepperImpl implements Stepper, StepperCallback {
     public Object onResult(Object value) {
         Iterator<AstNodeExecution> it = callStack.descendingIterator();
         it.next();
-        boolean handled = false;
-        while(it.hasNext() && !handled) {
-            handled = it.next().handleDescendantResult(value, context);
-        }
+        nextChildAcceptor(it).ifPresent(acc -> acc.acceptChildResult(value, context));
         return value;
+    }
+
+    private Optional<AstNodeExecution> nextChildAcceptor(Iterator<AstNodeExecution> it) {
+        while(it.hasNext()) {
+            AstNodeExecution current = it.next();
+            if(current.isAcceptingChildResults()) {
+                return Optional.of(current);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void stopFunctionCall(FunctionCallExpression functionCallExpression) {
+        Iterator<AstNodeExecution> it = callStack.descendingIterator();
+        AstNodeExecution currentExecution = it.next();
+        // We do not check on reaching the end of the callStack, but on finding the function we want to stop.
+        while(currentExecution.getAstNode() != functionCallExpression) {
+            if(currentExecution instanceof StatementGroupCalculation) {
+                ((StatementGroupCalculation) currentExecution).stopFunctionCall();
+            }
+            currentExecution = it.next();
+        }
     }
 
     @Override

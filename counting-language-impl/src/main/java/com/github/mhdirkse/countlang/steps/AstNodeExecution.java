@@ -11,5 +11,12 @@ interface AstNodeExecution {
     }
 
     AstNode step(ExecutionContext context);
-    boolean handleDescendantResult(Object value, ExecutionContext context);
+
+    default boolean isAcceptingChildResults() {
+        return false;
+    }
+
+    default void acceptChildResult(Object value, ExecutionContext context) {
+        throw new IllegalStateException("Programming error. Did not expect child result");
+    }
 }

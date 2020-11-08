@@ -7,7 +7,7 @@ import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombin
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 
-class IfStatementCalculation extends ExpressionsAndStatementsCombinationHandler {
+final class IfStatementCalculation extends ExpressionsAndStatementsCombinationHandler {
     private final IfStatement ifStatement;
     Boolean selectorValue = null;
 
@@ -27,9 +27,8 @@ class IfStatementCalculation extends ExpressionsAndStatementsCombinationHandler 
     }
 
     @Override
-    boolean handleDescendantResultDoingExpressions(Object value) {
+    void acceptChildResultDoingExpressions(Object value, ExecutionContext context) {
         selectorValue = (Boolean) value;
-        return true;
     }
 
     @Override
@@ -45,9 +44,13 @@ class IfStatementCalculation extends ExpressionsAndStatementsCombinationHandler 
     }
 
     @Override
-    boolean handleDescendantResultDoingStatements(Object value, ExecutionContext context) {
-        setState(DONE);
+    boolean isAcceptingChildResultsDoingStatements() {
         return false;
+    }
+
+    @Override
+    public void acceptChildResultDoingStatements(Object value, ExecutionContext context) {
+        throw new IllegalStateException("Programming error: Cannot handle child result after getting selector expression");
     }
 
     @Override

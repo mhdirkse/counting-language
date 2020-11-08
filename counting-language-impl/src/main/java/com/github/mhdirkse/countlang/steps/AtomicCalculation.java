@@ -13,7 +13,7 @@ abstract class AtomicCalculation implements AstNodeExecution {
     }
 
     @Override
-    public AstNodeExecutionState getState() {
+    public final AstNodeExecutionState getState() {
         return state;
     }
 
@@ -27,7 +27,7 @@ abstract class AtomicCalculation implements AstNodeExecution {
     abstract Object getValue(ExecutionContext context);
 
     @Override
-    public final boolean handleDescendantResult(Object value, ExecutionContext context) {
-        throw new IllegalStateException("Executing non-composite AST node, so there cannot be results from children");
+    public final boolean isAcceptingChildResults() {
+        return false;
     }
 }

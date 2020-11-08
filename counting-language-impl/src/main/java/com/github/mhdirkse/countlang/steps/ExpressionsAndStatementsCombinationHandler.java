@@ -46,23 +46,35 @@ abstract class ExpressionsAndStatementsCombinationHandler implements AstNodeExec
     }
 
     @Override
-    public final boolean handleDescendantResult(Object value, ExecutionContext context) {
+    public final boolean isAcceptingChildResults() {
         switch(state) {
-        case BEFORE:
-        case DONE:
-            throw new IllegalArgumentException(
-                    String.format("Unexpected descendant result for state %s, value %s",
-                            state.toString(), value.toString()));
         case DOING_EXPRESSIONS:
-            return handleDescendantResultDoingExpressions(value);
+            return true;
+        case DOING_STATEMENTS:
+            return isAcceptingChildResultsDoingStatements();
         default:
-            return handleDescendantResultDoingStatements(value, context);
+            return false;
+        }
+    }
+
+    @Override
+    public final void acceptChildResult(Object value, ExecutionContext context) {
+        switch(state) {
+        case DOING_EXPRESSIONS:
+            acceptChildResultDoingExpressions(value, context);
+            break;
+        case DOING_STATEMENTS:
+            acceptChildResultDoingStatements(value, context);
+            break;
+        default:
+            throw new IllegalStateException("Programming error: Unexpected child result");
         }
     }
 
     abstract AstNode stepBefore(ExecutionContext context);
     abstract AstNode stepDoingExpressions(ExecutionContext context);
     abstract AstNode stepDoingStatements(ExecutionContext context);
-    abstract boolean handleDescendantResultDoingExpressions(Object value);
-    abstract boolean handleDescendantResultDoingStatements(Object value, ExecutionContext context);
+    abstract boolean isAcceptingChildResultsDoingStatements();
+    abstract void acceptChildResultDoingExpressions(Object value, ExecutionContext context);
+    abstract void acceptChildResultDoingStatements(Object value, ExecutionContext context);
 }
