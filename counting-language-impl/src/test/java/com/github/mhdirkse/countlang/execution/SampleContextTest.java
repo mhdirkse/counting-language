@@ -82,6 +82,18 @@ public class SampleContextTest {
         Assert.assertEquals(getDistributionWithUnknown().format(), instance.getResult().format());
     }
 
+    @Test
+    public void whenScoredWithoutSamplingThenSingletonDistribution() {
+        instance.score(3);
+        Assert.assertEquals(getSingletonDistribution().format(), instance.getResult().format());
+    }
+
+    @Test
+    public void whenScoredUnknownWithoutSamplingThenSingletonDistributionWithUnknown() {
+        instance.scoreUnknown();
+        Assert.assertEquals(getSingletonDistributionWithUnknown().format(), instance.getResult().format());
+    }
+
     private Distribution getBinomialDistribution() {
         Distribution.Builder b = new Distribution.Builder();
         b.add(1);
@@ -126,6 +138,18 @@ public class SampleContextTest {
         b.add(2, 3);
         b.add(3);
         b.add(4);
+        return b.build();
+    }
+
+    private Distribution getSingletonDistribution() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(3);
+        return b.build();
+    }
+
+    private Distribution getSingletonDistributionWithUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.addUnknown(1);
         return b.build();
     }
 }

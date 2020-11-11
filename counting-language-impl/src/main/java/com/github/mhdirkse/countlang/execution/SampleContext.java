@@ -113,7 +113,14 @@ class SampleContext {
 
     void score(int value) {
         checkScoreOnce();
-        distributionBuilder.add(value, sampleContexts.peek().getCountOfCurrent());
+        distributionBuilder.add(value, getScoreCount());
+    }
+
+    private int getScoreCount() {
+        if(sampleContexts.size() == 0) {
+            return 1;
+        }
+        return sampleContexts.peek().getCountOfCurrent();
     }
 
     private void checkScoreOnce() {
@@ -125,7 +132,7 @@ class SampleContext {
 
     void scoreUnknown() {
         checkScoreOnce();
-        distributionBuilder.addUnknown(sampleContexts.peek().getCountOfCurrent());
+        distributionBuilder.addUnknown(getScoreCount());
     }
 
     Distribution getResult() {
