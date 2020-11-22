@@ -2,6 +2,7 @@ package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.types.Distribution;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class StepperImpl implements Stepper, StepperCallback {
@@ -50,5 +51,25 @@ class StepperImpl implements Stepper, StepperCallback {
     @Override
     public void stopExecutor() {
         executors.pop();
+    }
+
+    @Override
+    public void startSampledVariable(Distribution sampledDistribution) {
+        executors.peek().startSampledVariable(sampledDistribution);
+    }
+
+    @Override
+    public void stopSampledVariable() {
+        executors.peek().stopSampledVariable();
+    }
+
+    @Override
+    public boolean hasNextValue() {
+        return executors.peek().hasNextValue();
+    }
+
+    @Override
+    public int nextValue() {
+        return executors.peek().nextValue();
     }
 }

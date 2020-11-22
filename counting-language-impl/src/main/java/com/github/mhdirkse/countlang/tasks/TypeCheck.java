@@ -111,7 +111,11 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
         }
     }
     
-    
+    @Override
+    CountlangType getSampleResultValue() {
+        return CountlangType.INT;
+    }
+
     @Override
     CountlangType representValue(ValueExpression valueExpression) {
         return CountlangType.typeOf(valueExpression.getValue());

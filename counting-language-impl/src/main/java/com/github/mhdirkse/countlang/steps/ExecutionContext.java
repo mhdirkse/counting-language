@@ -1,7 +1,6 @@
 package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
@@ -11,7 +10,7 @@ interface ExecutionContext extends StepperCallback {
     void pushVariableFrame(StackFrameAccess access);
     void popVariableFrame();
     boolean hasFunction(String name);
-    void defineFunction(FunctionDefinitionStatement functionDefinitionStatement);
+    void defineFunction(FunctionDefinitionStatementBase functionDefinitionStatement);
     FunctionDefinitionStatementBase getFunction(String functionName);
     void output(String text);
 }

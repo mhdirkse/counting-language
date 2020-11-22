@@ -11,9 +11,13 @@ import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.execution.SampleContext;
+import com.github.mhdirkse.countlang.execution.SampleContextBase;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
+import com.github.mhdirkse.countlang.types.Distribution;
 
-final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler {
+final class FunctionCallExpressionCalculation
+extends ExpressionsAndStatementsCombinationHandler
+implements SampleContextBase {
     private final FunctionCallExpression expression;
     private final SubExpressionStepper subExpressionStepper;
     private FunctionDefinitionStatementBase fun;
@@ -30,9 +34,21 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         this.expression = orig.expression;
         this.subExpressionStepper = new SubExpressionStepper(orig.subExpressionStepper);
         this.fun = orig.fun;
-        this.statementsHandler = new StatementsHandlerExperimentForked(
-                (StatementsHandlerExperiment) orig.statementsHandler);
         this.isStartedAfterFork = orig.isStartedAfterFork;
+        this.statementsHandler = this.createStatementsHandlerFrom(orig);
+    }
+
+    private StatementsHandler createStatementsHandlerFrom(FunctionCallExpressionCalculation orig) {
+        if(orig.statementsHandler == null) {
+            return null;
+        }
+        else if(orig.statementsHandler instanceof StatementsHandlerFunction) {
+            return new StatementsHandlerFunction(((StatementsHandlerFunction) orig.statementsHandler).functionResult);
+        } else if(orig.statementsHandler instanceof StatementsHandlerExperiment) {
+            return new StatementsHandlerExperimentForked(((StatementsHandlerExperiment) orig.statementsHandler).sampleContext);
+        } else {
+            return new StatementsHandlerExperimentForked(((StatementsHandlerExperimentForked) orig.statementsHandler).sampleContext);
+        }
     }
 
     @Override
@@ -56,6 +72,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         if(!subExpressionStepper.isDone()) {
             return subExpressionStepper.step(context);
         }
+        setState(DOING_STATEMENTS);
         fun = context.getFunction(expression.getFunctionName());
         if(fun instanceof ExperimentDefinitionStatement) {
             statementsHandler = new StatementsHandlerExperiment();
@@ -69,7 +86,6 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
             Object value = subExpressionResults.get(i);
             context.writeSymbol(parameterName, value, fun.getFormalParameters().getFormalParameter(i));
         }
-        setState(DOING_STATEMENTS);
         statementsHandler.forkIfNeeded(context);
         return null;
     }
@@ -83,6 +99,13 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
 
     private class StatementsHandlerFunction extends StatementsHandler {
         private Object functionResult;
+
+        StatementsHandlerFunction() {
+        }
+
+        StatementsHandlerFunction(Object functionResult) {
+            this.functionResult = functionResult;
+        }
 
         void forkIfNeeded(ExecutionContext context) {
         }
@@ -105,7 +128,11 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
     }
 
     private class StatementsHandlerExperiment extends StatementsHandler {
-        SampleContext sampleContext = SampleContext.getInstance();
+        SampleContext sampleContext;
+
+        StatementsHandlerExperiment() {
+            sampleContext = SampleContext.getInstance();
+        }
 
         void forkIfNeeded(ExecutionContext context) {
             context.forkExecutor();
@@ -127,11 +154,12 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         }
     }
 
-    private class StatementsHandlerExperimentForked extends StatementsHandler {
+    private class StatementsHandlerExperimentForked
+    extends StatementsHandler implements SampleContextBase {
         private SampleContext sampleContext;
 
-        StatementsHandlerExperimentForked(StatementsHandlerExperiment orig) {
-            this.sampleContext = orig.sampleContext;
+        StatementsHandlerExperimentForked(SampleContext sampleContext) {
+            this.sampleContext = sampleContext;
         }
 
         void forkIfNeeded(ExecutionContext context) {
@@ -155,8 +183,29 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
             }
             context.stopExecutor();
         }
+
+        @Override
+        public void startSampledVariable(Distribution sampledDistribution) {
+            sampleContext.startSampledVariable(sampledDistribution);
+        }
+
+        @Override
+        public void stopSampledVariable() {
+            sampleContext.stopSampledVariable();
+        }
+
+        @Override
+        public boolean hasNextValue() {
+            return sampleContext.hasNextValue();
+        }
+
+        @Override
+        public int nextValue() {
+            return sampleContext.nextValue();
+        }
     }
 
+    
     @Override
     boolean isAcceptingChildResultsDoingStatements() {
         return true;
@@ -185,5 +234,25 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
             throw new IllegalStateException("Calling a function is not expected on the call stack when running an experiment is started");
         }
         return new FunctionCallExpressionCalculation(this);
+    }
+
+    @Override
+    public void startSampledVariable(Distribution sampledDistribution) {
+        ((StatementsHandlerExperimentForked) statementsHandler).startSampledVariable(sampledDistribution);
+    }
+
+    @Override
+    public void stopSampledVariable() {
+        ((StatementsHandlerExperimentForked) statementsHandler).stopSampledVariable();
+    }
+
+    @Override
+    public boolean hasNextValue() {
+        return ((StatementsHandlerExperimentForked) statementsHandler).hasNextValue();
+    }
+
+    @Override
+    public int nextValue() {
+        return ((StatementsHandlerExperimentForked) statementsHandler).nextValue();
     }
 }

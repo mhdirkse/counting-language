@@ -106,7 +106,17 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"if(false) {print 3}; print 5", "5"}, // Only then clause, not executed
             {"if(true) {print 3} else {print 5}", "3"}, // Then and else, execute then.
             {"if(false) {print 3} else {print 5}", "5"}, // Then and else, execute else
+
+            {"experiment exp() {sample x from distribution 1, 2; return 2*x}; print exp()", getDistribution(2, 4)},
         });
+    }
+
+    private static String getDistribution(int ...values) {
+        Distribution.Builder b = new Distribution.Builder();
+        for(int v: values) {
+            b.add(v);
+        }
+        return b.build().format();
     }
 
     @Parameter(0)

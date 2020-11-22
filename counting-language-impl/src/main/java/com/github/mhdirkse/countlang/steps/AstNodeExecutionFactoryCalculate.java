@@ -40,7 +40,7 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
 
     @Override
     public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-        result = new FunctionDefinitionStatementCalculation(statement);
+        result = new FunctionDefinitionStatementBaseCalculation(statement);
     }
 
     @Override
@@ -90,13 +90,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
 
     @Override
     public void visitSampleStatement(SampleStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new SampleStatementCalculation(statement);
     }
 
     @Override
     public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
-        // TODO Auto-generated method stub
-        
+        result = new FunctionDefinitionStatementBaseCalculation(statement);
     }
 }

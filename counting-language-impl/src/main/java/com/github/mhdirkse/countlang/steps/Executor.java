@@ -11,8 +11,10 @@ import java.util.Optional;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.execution.SampleContextBase;
+import com.github.mhdirkse.countlang.types.Distribution;
 
-class Executor {
+class Executor implements SampleContextBase {
     private final Deque<AstNodeExecution> callStack;
     private final ExecutionContext context;
     private final AstNodeExecutionFactory factory;
@@ -99,5 +101,36 @@ class Executor {
         List<ExecutionPointNode> nodes = new ArrayList<>();
         callStack.forEach(node -> nodes.add(node.getExecutionPointNode()));
         return new ExecutionPointImpl(nodes);
+    }
+
+    @Override
+    public void startSampledVariable(Distribution sampledDistribution) {
+        findExperiment().startSampledVariable(sampledDistribution);
+    }
+
+    private FunctionCallExpressionCalculation findExperiment() {
+        Iterator<AstNodeExecution> it = callStack.descendingIterator();
+        while(it.hasNext()) {
+            AstNodeExecution candidate = it.next();
+            if(candidate instanceof FunctionCallExpressionCalculation) {
+                return (FunctionCallExpressionCalculation) candidate;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void stopSampledVariable() {
+        findExperiment().stopSampledVariable();
+    }
+
+    @Override
+    public boolean hasNextValue() {
+        return findExperiment().hasNextValue();
+    }
+
+    @Override
+    public int nextValue() {
+        return findExperiment().nextValue();
     }
 }

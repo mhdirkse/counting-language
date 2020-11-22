@@ -187,12 +187,13 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
         T distributionValue = stack.pop();
         checkSampledDistribution(distributionValue, statement);
         String lhs = statement.getSymbol();
-        symbols.write(lhs, distributionValue, statement.getLine(), statement.getColumn());        
+        symbols.write(lhs, getSampleResultValue(), statement.getLine(), statement.getColumn());        
     }
 
     abstract void onSamplingOutsideExperiment(SampleStatement statement);
     abstract void checkSampledDistribution(T value, SampleStatement statement);
-    
+    abstract T getSampleResultValue();
+
     public void visitPrintStatement(final PrintStatement statement) {
         statement.getExpression().accept(this);
         T rhs = stack.pop();

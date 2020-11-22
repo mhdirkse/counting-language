@@ -1,16 +1,16 @@
 package com.github.mhdirkse.countlang.steps;
 
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
+import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 
-final class FunctionDefinitionStatementCalculation implements AstNodeExecution {
-    private final FunctionDefinitionStatement statement;
+final class FunctionDefinitionStatementBaseCalculation implements AstNodeExecution {
+    private final FunctionDefinitionStatementBase statement;
     private AstNodeExecutionState state = BEFORE;
     
-    FunctionDefinitionStatementCalculation(final FunctionDefinitionStatement statement) {
+    FunctionDefinitionStatementBaseCalculation(final FunctionDefinitionStatementBase statement) {
         this.statement = statement;
     }
 

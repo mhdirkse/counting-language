@@ -72,6 +72,11 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
     }
 
     @Override
+    DummyValue getSampleResultValue() {
+        return DummyValue.getInstance();
+    }
+
+    @Override
     DummyValue doCompositeExpression(
             final List<DummyValue> arguments,
             final CompositeExpression compositeExpression) {

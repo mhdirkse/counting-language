@@ -2,12 +2,12 @@ package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
+import com.github.mhdirkse.countlang.types.Distribution;
 
 class ExecutionContextCalculate implements ExecutionContext {
     private final SymbolFrameStackExecute symbolFrame;
@@ -72,7 +72,7 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public void defineFunction(FunctionDefinitionStatement functionDefinitionStatement) {
+    public void defineFunction(FunctionDefinitionStatementBase functionDefinitionStatement) {
         funDefs.putFunction(functionDefinitionStatement);
     }
 
@@ -94,5 +94,25 @@ class ExecutionContextCalculate implements ExecutionContext {
     @Override
     public void stopExecutor() {
         stepperCallback.stopExecutor();
+    }
+
+    @Override
+    public void startSampledVariable(Distribution sampledDistribution) {
+        stepperCallback.startSampledVariable(sampledDistribution);
+    }
+
+    @Override
+    public void stopSampledVariable() {
+        stepperCallback.stopSampledVariable();
+    }
+
+    @Override
+    public boolean hasNextValue() {
+        return stepperCallback.hasNextValue();
+    }
+
+    @Override
+    public int nextValue() {
+        return stepperCallback.nextValue();
     }
 }
