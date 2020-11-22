@@ -2,7 +2,7 @@ package com.github.mhdirkse.countlang.execution;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Status;
 import com.github.mhdirkse.countlang.utils.Stack;
@@ -10,12 +10,12 @@ import com.github.mhdirkse.countlang.utils.Stack;
 public class FunctionAndReturnCheckSimple<T, C extends FunctionAndReturnCheck.SimpleContext<T>>
 implements FunctionAndReturnCheck<T> {
     final Stack<C> enteredFunctions;
-    final Function<String, C> contextFactory;
+    final BiFunction<String, Boolean, C> contextFactory;
 
-    public FunctionAndReturnCheckSimple(Function<String, C> contextFactory) {
+    public FunctionAndReturnCheckSimple(BiFunction<String, Boolean, C> contextFactory) {
         this.enteredFunctions = new Stack<C>();
         this.contextFactory = contextFactory;
-        this.enteredFunctions.push(contextFactory.apply(""));
+        this.enteredFunctions.push(contextFactory.apply("", false));
     }
 
     @Override
@@ -39,8 +39,8 @@ implements FunctionAndReturnCheck<T> {
     }
 
     @Override
-    public void onFunctionEntered(final String name) {
-        enteredFunctions.push(contextFactory.apply(name));
+    public void onFunctionEntered(final String name, boolean isExperiment) {
+        enteredFunctions.push(contextFactory.apply(name, isExperiment));
     }
     
     @Override
@@ -99,5 +99,10 @@ implements FunctionAndReturnCheck<T> {
     @Override
     public boolean isStop() {
         return enteredFunctions.peek().stop;
+    }
+
+    @Override
+    public boolean isInExperiment() {
+        return enteredFunctions.peek().isExperiment;
     }
 }

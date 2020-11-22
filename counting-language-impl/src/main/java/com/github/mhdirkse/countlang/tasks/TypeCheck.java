@@ -1,6 +1,7 @@
 package com.github.mhdirkse.countlang.tasks;
 
 import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Status.SOME_RETURN;
+import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Status.NO_RETURN;
 
 import java.util.List;
 
@@ -10,10 +11,13 @@ import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
+import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
@@ -46,7 +50,7 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
     }
     
     @Override
-    void onFunctionRedefined(FunctionDefinitionStatement previous, FunctionDefinitionStatement current) {
+    void onFunctionRedefined(FunctionDefinitionStatementBase previous, FunctionDefinitionStatementBase current) {
         reporter.report(
                 StatusCode.FUNCTION_ALREADY_DEFINED,
                 current.getLine(),
@@ -70,6 +74,29 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
         }
         else {
             fun.setReturnType(cast.getReturnValues().get(0));
+        }
+    }
+
+    @Override
+    void beforeExperimentLeft(ExperimentDefinitionStatement exp, int line, int column) {
+        FunctionAndReturnTypeCheck cast = (FunctionAndReturnTypeCheck) functionAndReturnCheck;
+        boolean isFunctionReturns = cast.getReturnStatus() != NO_RETURN;
+        if(isFunctionReturns) {
+            if(cast.getReturnValues().get(0) != CountlangType.INT) {
+                reporter.report(StatusCode.EXPERIMENT_SCORE_NOT_INT, line, column, exp.getName());
+            }
+        }
+    }
+
+    @Override
+    void onSamplingOutsideExperiment(SampleStatement statement) {
+        reporter.report(StatusCode.SAMPLING_OUTSIDE_EXPERIMENT, statement.getLine(), statement.getColumn());
+    }
+    
+    @Override
+    void checkSampledDistribution(CountlangType value, SampleStatement statement) {
+        if(value != CountlangType.DISTRIBUTION) {
+            reporter.report(StatusCode.SAMPLED_FROM_NON_DISTRIBUTION, statement.getLine(), statement.getColumn(), value.toString());
         }
     }
 
@@ -177,7 +204,7 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
     CountlangType checkFunctionCall(
             final List<CountlangType> arguments,
             final FunctionCallExpression funCallExpr,
-            final FunctionDefinitionStatement funDefStatement) {
+            final FunctionDefinitionStatementBase funDefStatement) {
         if(arguments.size() != funDefStatement.getNumParameters()) {
             reporter.report(
                     StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH,
@@ -251,7 +278,7 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
     }
 
     @Override
-    void onNestedFunction(FunctionDefinitionStatement statement) {
+    void onNestedFunction(FunctionDefinitionStatementBase statement) {
         reporter.report(
                 StatusCode.FUNCTION_NESTED_NOT_ALLOWED, statement.getLine(), statement.getColumn());
     }

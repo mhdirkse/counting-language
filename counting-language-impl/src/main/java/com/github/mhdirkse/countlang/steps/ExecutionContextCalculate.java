@@ -3,6 +3,7 @@ package com.github.mhdirkse.countlang.steps;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
@@ -69,7 +70,7 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public FunctionDefinitionStatement getFunction(String functionName) {
+    public FunctionDefinitionStatementBase getFunction(String functionName) {
         return funDefs.getFunction(functionName);
     }
 

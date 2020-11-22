@@ -5,11 +5,14 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
@@ -44,7 +47,7 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
     }
 
     @Override
-    void onFunctionRedefined(FunctionDefinitionStatement previous, FunctionDefinitionStatement current) {
+    void onFunctionRedefined(FunctionDefinitionStatementBase previous, FunctionDefinitionStatementBase current) {
         throw new ProgramException(
                 current.getLine(),
                 current.getColumn(),
@@ -58,6 +61,10 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
 
     @Override
     void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column) {
+    }
+
+    @Override
+    void beforeExperimentLeft(ExperimentDefinitionStatement fun, int line, int column) {
     }
 
     @Override
@@ -75,7 +82,7 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
     DummyValue checkFunctionCall(
             final List<DummyValue> arguments,
             final FunctionCallExpression expr,
-            final FunctionDefinitionStatement fun) {
+            final FunctionDefinitionStatementBase fun) {
         return DummyValue.getInstance();
     }
 
@@ -107,7 +114,7 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
     }
 
     @Override
-    void onNestedFunction(FunctionDefinitionStatement statement) {
+    void onNestedFunction(FunctionDefinitionStatementBase statement) {
         throw new IllegalArgumentException("Should have been caught by the type check");
     }
 
@@ -135,5 +142,13 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
     DummyValue doDistributionExpressionWithUnknown(
             List<DummyValue> arguments, DistributionExpressionWithUnknown expression) {
         return DummyValue.getInstance();
+    }
+
+    @Override
+    void onSamplingOutsideExperiment(SampleStatement statement) {
+    }
+
+    @Override
+    void checkSampledDistribution(DummyValue value, SampleStatement statement) {
     }
 }

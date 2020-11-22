@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class FunctionDefinitionStatement extends FunctionDefinitionStatementBase {
-    @Getter
+    @Getter(onMethod = @__(@Override))
     @Setter
     private CountlangType returnType = CountlangType.UNKNOWN;
 

@@ -16,6 +16,7 @@ import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
@@ -63,6 +64,11 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
     }
 
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement) {
+        handleFunctionDefinitionStatementBase(statement, this::beforeFunctionLeft);
+    }
+
+    private <U extends FunctionDefinitionStatementBase> void handleFunctionDefinitionStatementBase(
+            final U statement, FunctionDefinitionFinisher<U> finisher) {
         if(funDefs.hasFunction(statement.getName())) {
             onFunctionRedefined(funDefs.getFunction(statement.getName()), statement);
         }
@@ -71,24 +77,36 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
         }
         List<T> pseudoArguments = statement.getFormalParameters().getFormalParameters()
                 .stream().map(this::getPseudoActualParameter).collect(Collectors.toList());
-        runFunction(pseudoArguments, statement, statement.getLine(), statement.getColumn());
+        runFunction(pseudoArguments, statement, statement.getLine(), statement.getColumn(), finisher);
         funDefs.putFunction(statement);
+        
     }
 
-    abstract void onFunctionRedefined(FunctionDefinitionStatement previous, FunctionDefinitionStatement current);
-    abstract void onNestedFunction(FunctionDefinitionStatement statement);
+    abstract void onFunctionRedefined(FunctionDefinitionStatementBase previous, FunctionDefinitionStatementBase current);
+    abstract void onNestedFunction(FunctionDefinitionStatementBase statement);
     abstract T getPseudoActualParameter(FormalParameter p);
 
-    void runFunction(List<T> arguments, FunctionDefinitionStatement fun, int line, int column) {
-        functionAndReturnCheck.onFunctionEntered(fun.getName());
+    <U extends FunctionDefinitionStatementBase> void runFunction(List<T> arguments, U fun, int line, int column, FunctionDefinitionFinisher<U> finisher) {
+        functionAndReturnCheck.onFunctionEntered(fun.getName(), fun instanceof ExperimentDefinitionStatement);
         runFunctionUnchecked(arguments, fun);
-        beforeFunctionLeft(fun, line, column);
+        finisher.apply(fun, line, column);
         functionAndReturnCheck.onFunctionLeft();
     }
 
-    abstract void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column);
+    @Override
+    public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
+        handleFunctionDefinitionStatementBase(statement, this::beforeExperimentLeft);
+    }
 
-    private void runFunctionUnchecked(List<T> arguments, FunctionDefinitionStatement fun) {
+    @FunctionalInterface
+    private interface FunctionDefinitionFinisher<U extends FunctionDefinitionStatementBase> {
+        public void apply(U statement, int line, int column);
+    }
+
+    abstract void beforeFunctionLeft(FunctionDefinitionStatement fun, int line, int column);
+    abstract void beforeExperimentLeft(ExperimentDefinitionStatement fun, int line, int column);
+
+    private void runFunctionUnchecked(List<T> arguments, FunctionDefinitionStatementBase fun) {
         int formalParameterCount = fun.getNumParameters();
         symbols.pushFrame(StackFrameAccess.HIDE_PARENT);
         for(int i = 0; i < formalParameterCount; i++) {
@@ -108,7 +126,7 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
         List<T> arguments = stack.repeatedPop(expression.getNumArguments());
         String funName = expression.getFunctionName();
         if(funDefs.hasFunction(funName)) {
-            FunctionDefinitionStatement fun = funDefs.getFunction(funName);
+            FunctionDefinitionStatementBase fun = funDefs.getFunction(funName);
             stack.push(checkFunctionCall(arguments, expression, fun));
         }
         else {
@@ -116,7 +134,7 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
         }
     }
 
-    abstract T checkFunctionCall(List<T> arguments, FunctionCallExpression expr, FunctionDefinitionStatement fun);
+    abstract T checkFunctionCall(List<T> arguments, FunctionCallExpression expr, FunctionDefinitionStatementBase fun);
     abstract T onUndefinedFunctionCalled(FunctionCallExpression expr);
 
     @Override
@@ -160,6 +178,21 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
         symbols.write(lhs, rhs, statement.getLine(), statement.getColumn());
     }
 
+    @Override
+    public void visitSampleStatement(SampleStatement statement) {
+        if(! functionAndReturnCheck.isInExperiment()) {
+            onSamplingOutsideExperiment(statement);
+        }
+        statement.getSampledDistribution().accept(this);
+        T distributionValue = stack.pop();
+        checkSampledDistribution(distributionValue, statement);
+        String lhs = statement.getSymbol();
+        symbols.write(lhs, distributionValue, statement.getLine(), statement.getColumn());        
+    }
+
+    abstract void onSamplingOutsideExperiment(SampleStatement statement);
+    abstract void checkSampledDistribution(T value, SampleStatement statement);
+    
     public void visitPrintStatement(final PrintStatement statement) {
         statement.getExpression().accept(this);
         T rhs = stack.pop();
@@ -239,17 +272,5 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
     }
     
     public void visitFormalParameter(final FormalParameter formalParameter) {
-    }
-
-    @Override
-    public void visitSampleStatement(SampleStatement statement) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
-        // TODO Auto-generated method stub
-        
     }
 }

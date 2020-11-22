@@ -4,7 +4,7 @@ import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Statu
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck.TypeCheckContext;
@@ -38,7 +38,7 @@ implements BranchHandler {
     private Callback callback;
     
     public FunctionAndReturnTypeCheck(
-            Function<String, TypeCheckContext> contextFactory) {
+            BiFunction<String, Boolean, TypeCheckContext> contextFactory) {
         super(contextFactory);
     }
     

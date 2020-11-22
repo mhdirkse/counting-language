@@ -75,7 +75,7 @@ public class FunctionAndReturnTypeCheckTest {
     @Test
     public void whenFunctionDefinedAndLeftThenRootReturnValueUnchanged() {
         replay(callback);
-        instance.onFunctionEntered("name");
+        instance.onFunctionEntered("name", false);
         instance.onReturn(1, 1, Arrays.asList(CountlangType.BOOL, CountlangType.INT));
         Assert.assertEquals(1, instance.getNestedFunctionDepth());
         Assert.assertEquals(2, instance.getNumReturnValues());
@@ -90,7 +90,7 @@ public class FunctionAndReturnTypeCheckTest {
     @Test
     public void whenFunctionThenOuterScopeUnaffected() {
         replay(callback);
-        instance.onFunctionEntered("name");
+        instance.onFunctionEntered("name", false);
         instance.onReturn(1, 1, Arrays.asList(CountlangType.BOOL));
         Assert.assertEquals(1, instance.getNestedFunctionDepth());
         Assert.assertEquals(1, instance.getNumReturnValues());
@@ -138,7 +138,7 @@ public class FunctionAndReturnTypeCheckTest {
         replay(callback);
         Assert.assertFalse(instance.hasExplicitReturn());
         Assert.assertFalse(instance.isStop());
-        instance.onFunctionEntered("name");
+        instance.onFunctionEntered("name", false);
         Assert.assertFalse(instance.hasExplicitReturn());
         Assert.assertFalse(instance.isStop());
         instance.onReturn(2, 3, new ArrayList<>());

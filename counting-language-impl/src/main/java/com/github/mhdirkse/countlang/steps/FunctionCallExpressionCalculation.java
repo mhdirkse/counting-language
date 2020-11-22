@@ -42,7 +42,8 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         if(!subExpressionStepper.isDone()) {
             return subExpressionStepper.step(context);
         }
-        FunctionDefinitionStatement fun = context.getFunction(expression.getFunctionName());
+        // TODO: Implement executiong experiments
+        FunctionDefinitionStatement fun = (FunctionDefinitionStatement) context.getFunction(expression.getFunctionName());
         context.pushVariableFrame(StackFrameAccess.HIDE_PARENT);
         List<Object> subExpressionResults = subExpressionStepper.getSubExpressionResults();
         for(int i = 0; i < fun.getFormalParameters().size(); i++) {

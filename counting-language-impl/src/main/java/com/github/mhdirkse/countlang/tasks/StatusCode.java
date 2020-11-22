@@ -26,9 +26,12 @@ public enum StatusCode implements AbstractStatusCode {
     VAR_TYPE_CHANGED("({1}, {2}): Cannot change type of variable {3}."),
 
     IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be Boolean, but was {3}."),
+    EXPERIMENT_SCORE_NOT_INT("({1}, {2}): Experiment can only score integers: {3}."),
 
     DISTRIBUTION_SCORED_NOT_INT("({1}, {2}): Element number {3} in distribution is {4}, should be int."),
-    DISTRIBUTION_AMOUNT_NOT_INT("({1}, {2}): The amount or unknown clause of a distribution should be int.");
+    DISTRIBUTION_AMOUNT_NOT_INT("({1}, {2}): The amount or unknown clause of a distribution should be int."),
+    SAMPLING_OUTSIDE_EXPERIMENT("({1}, {2}): Sampling is only allowed within an experiment."),
+    SAMPLED_FROM_NON_DISTRIBUTION("({1}, {2}): The value you sample from is a {3}, but should be a distribution.");
 
     StatusCode(final String formatString) {
         this.formatString = formatString;

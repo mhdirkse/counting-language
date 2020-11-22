@@ -18,6 +18,8 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
     @Setter
     private StatementGroup statements;
 
+    public abstract CountlangType getReturnType();
+
     public FunctionDefinitionStatementBase(final int line, final int column) {
         super(line, column);
         formalParameters = new FormalParameters(line, column);

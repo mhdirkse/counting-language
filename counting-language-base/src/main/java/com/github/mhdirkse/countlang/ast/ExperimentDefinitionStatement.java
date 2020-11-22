@@ -4,7 +4,12 @@ public class ExperimentDefinitionStatement extends FunctionDefinitionStatementBa
     public ExperimentDefinitionStatement(int line, int column) {
         super(line, column);
     }
-    
+
+    @Override
+    public CountlangType getReturnType() {
+        return CountlangType.INT;
+    }
+
     @Override
     public void accept(Visitor v) {
         v.visitExperimentDefinitionStatement(this);
