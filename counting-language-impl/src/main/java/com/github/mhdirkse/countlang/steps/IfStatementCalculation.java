@@ -15,6 +15,12 @@ final class IfStatementCalculation extends ExpressionsAndStatementsCombinationHa
         this.ifStatement = ifStatement;
     }
 
+    private IfStatementCalculation(IfStatementCalculation orig) {
+        super(orig);
+        this.ifStatement = orig.ifStatement;
+        selectorValue = new Boolean(orig.selectorValue);
+    }
+
     @Override
     public AstNode getAstNode() {
         return ifStatement;
@@ -57,5 +63,10 @@ final class IfStatementCalculation extends ExpressionsAndStatementsCombinationHa
     AstNode stepDoingStatements(ExecutionContext context) {
         setState(DONE);
         return null;
+    }
+
+    @Override
+    public AstNodeExecution fork() {
+        return new IfStatementCalculation(this);
     }
 }

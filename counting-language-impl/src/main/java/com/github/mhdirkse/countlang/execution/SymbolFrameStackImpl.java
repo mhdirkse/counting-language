@@ -13,6 +13,14 @@ public abstract class SymbolFrameStackImpl<T, F extends SymbolFrame<T>> implemen
         frameStack = new Stack<>();
     }
 
+    // Only works if F = SymbolFrameStackExecute
+    @SuppressWarnings("unchecked")
+    SymbolFrameStackImpl(SymbolFrameStackImpl<T, F> orig) {
+        final Stack<F> copied = new Stack<F>();
+        orig.frameStack.forEach(f -> copied.push((F) new SymbolFrameExecute((SymbolFrameExecute) f)));
+        frameStack = copied;
+    }
+
     /// Only for testing purposes
     SymbolFrameStackImpl(Stack<F> frameStack) {
         this.frameStack = frameStack;

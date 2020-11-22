@@ -6,12 +6,20 @@ import java.util.Map;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 class SymbolFrameExecute implements SymbolFrame<Object> {
-    private final Map<String, Object> symbols = new HashMap<>();
+    private final Map<String, Object> symbols;
 
     private final StackFrameAccess access;
 
     public SymbolFrameExecute(StackFrameAccess access) {
+        symbols = new HashMap<>();
         this.access = access;
+    }
+
+    SymbolFrameExecute(SymbolFrameExecute orig) {
+        Map<String, Object> theSymbols = new HashMap<>();
+        theSymbols.putAll(orig.symbols);
+        this.symbols = theSymbols;
+        this.access = orig.access;
     }
 
     @Override

@@ -21,6 +21,13 @@ class SubExpressionStepper {
         this.state = BEFORE;
     }
 
+    SubExpressionStepper(final SubExpressionStepper orig) {
+        subExpressions = new ArrayList<>(orig.subExpressionIndex);
+        this.state = orig.state;
+        this.subExpressionIndex = orig.subExpressionIndex;
+        subExpressionResults = new ArrayList<>(orig.subExpressionResults);
+    }
+
     public AstNodeExecutionState getState() {
         return state;
     }

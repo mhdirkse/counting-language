@@ -9,8 +9,17 @@ final class ReturnStatementCalculation extends ExpressionResultsCollector {
         super(statement);
     }
 
+    private ReturnStatementCalculation(final ReturnStatementCalculation orig) {
+        super(orig);
+    }
+
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         context.onResult(subExpressionResults.get(0));
+    }
+
+    @Override
+    public AstNodeExecution fork() {
+        return new ReturnStatementCalculation(this);
     }
 }

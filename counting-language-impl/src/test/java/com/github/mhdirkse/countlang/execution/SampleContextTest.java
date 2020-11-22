@@ -7,11 +7,11 @@ import org.junit.Test;
 import com.github.mhdirkse.countlang.types.Distribution;
 
 public class SampleContextTest {
-    private SampleContext instance;
+    private SampleContextImpl instance;
 
     @Before
     public void setUp() {
-        instance = new SampleContext();
+        instance = new SampleContextImpl();
     }
 
     @Test

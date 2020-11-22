@@ -1,37 +1,22 @@
 package com.github.mhdirkse.countlang.steps;
 
-import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.utils.Stack;
 
 class StepperImpl implements Stepper, StepperCallback {
-    private final AstNode target;
-    private final Deque<AstNodeExecution> callStack;
-    private final ExecutionContext context;
-    private final AstNodeExecutionFactory factory;
+    private final Stack<Executor> executors = new Stack<>();
 
     StepperImpl(final AstNode target, final ExecutionContext context, final AstNodeExecutionFactory factory) {
-        this.target = target;
-        this.factory = factory;
-        this.context = context;
-        callStack = new ArrayDeque<>();
-    }
-
-    void init() {
-        callStack.addLast(factory.create(target));        
+        executors.push(new Executor(context, factory, factory.create(target)));
     }
 
     @Override
     public boolean hasMoreSteps() {
-        return !callStack.isEmpty();
+        if(executors.isEmpty()) {
+            return false;
+        }
+        return executors.peek().hasMoreSteps();
     }
 
     @Override
@@ -39,52 +24,31 @@ class StepperImpl implements Stepper, StepperCallback {
         if(!hasMoreSteps()) {
             throw new IllegalStateException("No more steps");
         }
-        if(callStack.getLast().getState() == AFTER) {
-            callStack.removeLast();
-        }
-        if(!callStack.isEmpty()) {
-            AstNode child = callStack.getLast().step(context);
-            if(child != null) {
-                callStack.addLast(factory.create(child));
-            }
-        }
+        executors.peek().step();
     }
 
     @Override
     public Object onResult(Object value) {
-        Iterator<AstNodeExecution> it = callStack.descendingIterator();
-        it.next();
-        nextChildAcceptor(it).ifPresent(acc -> acc.acceptChildResult(value, context));
-        return value;
-    }
-
-    private Optional<AstNodeExecution> nextChildAcceptor(Iterator<AstNodeExecution> it) {
-        while(it.hasNext()) {
-            AstNodeExecution current = it.next();
-            if(current.isAcceptingChildResults()) {
-                return Optional.of(current);
-            }
-        }
-        return Optional.empty();
+        return executors.peek().onResult(value);
     }
 
     @Override
     public void stopFunctionCall(FunctionCallExpression functionCallExpression) {
-        Iterator<AstNodeExecution> it = callStack.descendingIterator();
-        AstNodeExecution currentExecution = it.next();
-        // We do not check on reaching the end of the callStack, but on finding the function we want to stop.
-        while(currentExecution.getAstNode() != functionCallExpression) {
-            if(currentExecution instanceof StatementGroupCalculation) {
-                ((StatementGroupCalculation) currentExecution).stopFunctionCall();
-            }
-            currentExecution = it.next();
-        }
+        executors.peek().stopFunctionCall(functionCallExpression);
     }
 
     @Override
     public ExecutionPoint getExecutionPoint() {
-        List<ExecutionPointNode> nodes = new ArrayList<>();
-        callStack.forEach(node -> nodes.add(node.getExecutionPointNode()));
-        return new ExecutionPointImpl(nodes);
+        return executors.peek().getExecutionPoint();
+    }
+
+    @Override
+    public void forkExecutor() {
+        executors.push(new Executor(executors.peek()));
+    }
+
+    @Override
+    public void stopExecutor() {
+        executors.pop();
     }
 }

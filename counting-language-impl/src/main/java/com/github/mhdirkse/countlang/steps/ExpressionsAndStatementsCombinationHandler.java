@@ -22,6 +22,13 @@ abstract class ExpressionsAndStatementsCombinationHandler implements AstNodeExec
 
     private State state = State.BEFORE;
 
+    ExpressionsAndStatementsCombinationHandler() {
+    }
+
+    ExpressionsAndStatementsCombinationHandler(ExpressionsAndStatementsCombinationHandler orig) {
+        this.state = orig.state;
+    }
+
     @Override
     public final AstNodeExecutionState getState() {
         return state.getGeneralState();

@@ -19,4 +19,8 @@ interface AstNodeExecution {
     default void acceptChildResult(Object value, ExecutionContext context) {
         throw new IllegalStateException("Programming error. Did not expect child result");
     }
+
+    default AstNodeExecution fork() {
+        throw new IllegalStateException("Fork only happens in sample statements or experiment definitions; this element should not be in the call stack then");
+    }
 }

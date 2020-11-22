@@ -4,6 +4,7 @@ import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
@@ -20,6 +21,14 @@ final class StatementGroupCalculation implements AstNodeExecution {
     StatementGroupCalculation(StatementGroup statementGroup) {
         this.statementGroup = statementGroup;
         this.children = statementGroup.getChildren();
+    }
+
+    private StatementGroupCalculation(final StatementGroupCalculation orig) {
+        this.statementGroup = orig.statementGroup;
+        this.state = orig.state;
+        this.children = new ArrayList<>(orig.children);
+        this.childIndex = orig.childIndex;
+        this.stopRequested = orig.stopRequested;
     }
 
     @Override
@@ -55,5 +64,10 @@ final class StatementGroupCalculation implements AstNodeExecution {
 
     public void stopFunctionCall() {
         stopRequested = true;
+    }
+
+    @Override
+    public AstNodeExecution fork() {
+        return new StatementGroupCalculation(this);
     }
 }

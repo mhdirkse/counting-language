@@ -24,6 +24,13 @@ class ExecutionContextCalculate implements ExecutionContext {
         this.outputStrategy = outputStrategy;
     }
 
+    ExecutionContextCalculate(ExecutionContextCalculate orig) {
+        this.symbolFrame = new SymbolFrameStackExecute(orig.symbolFrame);
+        this.stepperCallback = orig.stepperCallback;
+        this.funDefs = orig.funDefs;
+        this.outputStrategy = orig.outputStrategy;
+    }
+
     void setStepperCallback(final StepperCallback stepperCallback) {
         this.stepperCallback = stepperCallback;
     }
@@ -77,5 +84,15 @@ class ExecutionContextCalculate implements ExecutionContext {
     @Override
     public void output(String text) {
         outputStrategy.output(text);
+    }
+
+    @Override
+    public void forkExecutor() {
+        stepperCallback.forkExecutor();
+    }
+
+    @Override
+    public void stopExecutor() {
+        stepperCallback.stopExecutor();
     }
 }
