@@ -27,18 +27,11 @@ class SampleStatementCalculation implements AstNodeExecution {
     @Override
     public final AstNode step(ExecutionContext context) {
         if(distribution == null) {
-            AstNode result = delegate.step(context);
-            if(result != null) {
-                return result;
-            }
-            if(! delegate.isDone()) {
-                return null;
-            } else {
-                distribution = (Distribution) delegate.getSubExpressionResults().get(0);
-            }
+            return delegate.step(context);
         }
         if(! isSamplingStarted) {
             context.startSampledVariable(distribution);
+            isSamplingStarted = true;
         }
         if(context.hasNextValue()) {
             value = context.nextValue();
@@ -58,6 +51,16 @@ class SampleStatementCalculation implements AstNodeExecution {
         } else {
             return delegateState;
         }
+    }
+
+    @Override
+    public boolean isAcceptingChildResults() {
+        return true;
+    }
+
+    @Override
+    public void acceptChildResult(Object value, ExecutionContext context) {
+        distribution = (Distribution) value;
     }
 
     @Override
