@@ -108,6 +108,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"if(false) {print 3} else {print 5}", "5"}, // Then and else, execute else
 
             {"experiment exp() {sample x from distribution 1, 2; return 2*x}; print exp()", getDistribution(2, 4)},
+            {"experiment exp(distribution d1, distribution d2) {sample x from d1; sample y from d2; return x + y}; print exp((distribution 1, 2), (distribution 1, 2, 3));",
+                getDistribution(2, 3, 4, 3, 4, 5)}
         });
     }
 
