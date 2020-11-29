@@ -45,7 +45,7 @@ with real-valued probabilities, but gives exact results.
 An experiment looks like a function but it has a different meaning
 that is specific to probability theory. An experiment contains "sample"
 statements. The statement `sample d1 from distribution 1, 2, 3, 4, 5, 6`
-means: Draw the stochastic variable from the probability distribution
+means: Draw a stochastic variable from the probability distribution
 `distribution 1, 2, 3, 4, 5, 6`, which means a uniform distribution
 from 1 to 6, and store the sampled value in variable `d1`.
 The interpreter iterates over all possible values for `d1` and maintains
@@ -66,11 +66,11 @@ When all possible values for `d2` are exhausted, the copy running
 copy of the execution state, which is executing `sample d1 from dice;`.
 The interpreter sets `d1 = 2`, copies its state and continues execution.
 This way, calculations with one sampled value `d1` do not influence results
-that come from another sampled value for `d1`. The samples `d2` are also
+that come from another sampled value `d1`. The samples `d2` are also
 independent of each other and they only depend on the sampled value `d1`.
 
-The shown result is the probability distribution of `S = D1 + D2`, where
-D1 has a uniform distribution on `1 .. 6` and where `P( D2 | D1 = d1)` is
+The shown result is the probability distribution of stochastic variable `S = D1 + D2`, 
+where D1 has a uniform distribution on `1 .. 6` and where `P( D2 | D1 = d1)` is
 also a uniform distribution on `1 .. 6` for each possible `d1`.
 
 ### Incomplete probability distributions
