@@ -45,17 +45,18 @@ with real-valued probabilities, but gives exact results.
 An experiment looks like a function but it has a different meaning
 that is specific to probability theory. An experiment contains "sample"
 statements. The statement `sample d1 from distribution 1, 2, 3, 4, 5, 6`
-means: Draw the stochastic variable `d1` from the probability distribution
+means: Draw the stochastic variable from the probability distribution
 `distribution 1, 2, 3, 4, 5, 6`, which means a uniform distribution
-from 1 to 6. The interpreter iterates over all possible values of `d1` and maintains
+from 1 to 6, and store the sampled value in variable `d1`.
+The interpreter iterates over all possible values for `d1` and maintains
 the probability of each possibility.
 
 The iterations over `1 ... 6` are independent because the interpreter copies its state
 before continuing with the next statement. The interpreter copies its state before setting
 `d1 = 1`. The next statement is `sample d2 from dice;`. The interpreter copies its state
 again before setting `d2 = 1`. The next statement is `return d1 + d2;`. This means the
-following: if the stochastic variables `d1` and `d2` are 1 and 1, then the result of the
-experiment being defined is `d1 + d1 = 2`.
+following: If the stochastic variables sampled in integer variables `d1` and `d2` are 1
+ and 1, then the result of the experiment being defined is `d1 + d1 = 2`.
 
 A "return" statement signals the interpreter to throw away the running copy of its state.
 Execution continues with the old copy, which is still executing the statement
@@ -64,13 +65,13 @@ When all possible values for `d2` are exhausted, the copy running
 `sample d2 from dice;` is thrown away. Execution continues with the original
 copy of the execution state, which is executing `sample d1 from dice;`.
 The interpreter sets `d1 = 2`, copies its state and continues execution.
-This way, calculations with one sample for `d1` do not influence results
-that come from another sample for `d1`. The samples for `d2` are also
-independent of each other and they only depend on the sampled value of `d1`.
+This way, calculations with one sampled value `d1` do not influence results
+that come from another sampled value for `d1`. The samples `d2` are also
+independent of each other and they only depend on the sampled value `d1`.
 
 The shown result is the probability distribution of `S = D1 + D2`, where
-D1 has a uniform distribution on `1 .. 6` and where `P( . | D2 = d2)` is
-also a uniform distribution on `1 .. 6` for each possible `d2`.
+D1 has a uniform distribution on `1 .. 6` and where `P( D2 | D1 = d1)` is
+also a uniform distribution on `1 .. 6` for each possible `d1`.
 
 ### Incomplete probability distributions
 
@@ -101,6 +102,10 @@ when `coin1` == 1. That possibility has probability 2 / 4, and it is assigned to
 named "unknown". You can extend this program with other experiments that sample from experiment
 `incomplete`. Those experiments will have the unknown event as outcome when they sample
 the unknown event from experiment `incomplete`.
+
+In the near future, I will add a statement to counting-language that removes the
+unknown event from a distribution. This statement will be used to calculate
+conditional probability distributions.
 
 ## Other features of the language
 
