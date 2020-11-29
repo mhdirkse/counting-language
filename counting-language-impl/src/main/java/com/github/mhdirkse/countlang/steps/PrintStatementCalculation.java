@@ -10,10 +10,6 @@ final class PrintStatementCalculation extends ExpressionResultsCollector {
         super(node);
     }
 
-    private PrintStatementCalculation(PrintStatementCalculation orig) {
-        super(orig);
-    }
-
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         Object value = subExpressionResults.get(0);
@@ -22,10 +18,5 @@ final class PrintStatementCalculation extends ExpressionResultsCollector {
             output = ((Distribution) value).format();
         }
         context.output(output);
-    }
-
-    @Override
-    public AstNodeExecution fork() {
-        return new PrintStatementCalculation(this);
     }
 }

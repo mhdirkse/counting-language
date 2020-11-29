@@ -7,7 +7,7 @@ public class ExperimentDefinitionStatement extends FunctionDefinitionStatementBa
 
     @Override
     public CountlangType getReturnType() {
-        return CountlangType.INT;
+        return CountlangType.DISTRIBUTION;
     }
 
     @Override

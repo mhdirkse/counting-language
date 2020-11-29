@@ -14,11 +14,6 @@ abstract class ExpressionResultsCollector implements AstNodeExecution {
         delegate = new SubExpressionStepper(node.getSubExpressions());
     }
 
-    ExpressionResultsCollector(final ExpressionResultsCollector orig) {
-        this.node = orig.node;
-        this.delegate = new SubExpressionStepper(orig.delegate);
-    }
-
     @Override
     public final AstNode getAstNode() {
         return (AstNode) node;

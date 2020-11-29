@@ -165,7 +165,7 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
                         StatusCode.DISTRIBUTION_SCORED_NOT_INT,
                         scoredExpressions.get(i).getLine(),
                         scoredExpressions.get(i).getColumn(),
-                        Integer.toString(i),
+                        Integer.toString(i+1),
                         scoredTypes.get(i).toString());
             }
         }

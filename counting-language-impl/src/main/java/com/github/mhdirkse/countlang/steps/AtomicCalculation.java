@@ -25,9 +25,4 @@ abstract class AtomicCalculation implements AstNodeExecution {
     }
 
     abstract Object getValue(ExecutionContext context);
-
-    @Override
-    public final boolean isAcceptingChildResults() {
-        return false;
-    }
 }

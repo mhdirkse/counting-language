@@ -39,15 +39,12 @@ implements SampleContextBase {
     }
 
     private StatementsHandler createStatementsHandlerFrom(FunctionCallExpressionCalculation orig) {
-        if(orig.statementsHandler == null) {
-            return null;
-        }
-        else if(orig.statementsHandler instanceof StatementsHandlerFunction) {
-            return new StatementsHandlerFunction(((StatementsHandlerFunction) orig.statementsHandler).functionResult);
-        } else if(orig.statementsHandler instanceof StatementsHandlerExperiment) {
+        if(orig.statementsHandler instanceof StatementsHandlerExperiment) {
             return new StatementsHandlerExperimentForked(((StatementsHandlerExperiment) orig.statementsHandler).sampleContext);
-        } else {
+        } else if(orig.statementsHandler instanceof StatementsHandlerExperimentForked){
             return new StatementsHandlerExperimentForked(((StatementsHandlerExperimentForked) orig.statementsHandler).sampleContext);
+        } else {
+            throw new IllegalStateException("Programming error: unexpected type of StatementsHandler encountered");
         }
     }
 
@@ -101,10 +98,6 @@ implements SampleContextBase {
         private Object functionResult;
 
         StatementsHandlerFunction() {
-        }
-
-        StatementsHandlerFunction(Object functionResult) {
-            this.functionResult = functionResult;
         }
 
         void forkIfNeeded(ExecutionContext context) {

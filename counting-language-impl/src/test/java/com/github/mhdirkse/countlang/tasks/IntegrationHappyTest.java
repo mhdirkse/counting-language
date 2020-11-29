@@ -7,6 +7,8 @@ import static com.github.mhdirkse.countlang.tasks.Constants.MIN_INT;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -109,14 +111,50 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
 
             {"experiment exp() {sample x from distribution 1, 2; return 2*x}; print exp()", getDistribution(2, 4)},
             {"experiment exp(distribution d1, distribution d2) {sample x from d1; sample y from d2; return x + y}; print exp((distribution 1, 2), (distribution 1, 2, 3));",
-                getDistribution(2, 3, 4, 3, 4, 5)}
+                getDistribution(2, 3, 4, 3, 4, 5)},
+            {getProgramExperimentUsesExperiment(), getDistribution(1, 1, 1, 3, 4, 5)},
+            {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print exp();", getDistributionWithUnknown(3, 1)}
         });
+    }
+
+    private static String getProgramExperimentUsesExperiment() {
+        List<String> lines = Arrays.asList(
+                "experiment two() {",
+                "  sample x from distribution 1, 2;",
+                "  return x;",
+                "};",
+                "experiment three() {",
+                "  sample x from distribution 1, 2, 3;",
+                "  return x;",
+                "};",
+                "experiment combine() {",
+                "  sample x from two();",
+                "  if(x == 2) {",
+                "    sample y from three();",
+                "    x = x + y;",
+                "  };",
+                "  return x;",
+                "};",
+                "print combine();");
+        return lines.stream().collect(Collectors.joining("\n"));
     }
 
     private static String getDistribution(int ...values) {
         Distribution.Builder b = new Distribution.Builder();
         for(int v: values) {
             b.add(v);
+        }
+        return b.build().format();
+    }
+
+    private static String getDistributionWithUnknown(int ...values) {
+        Distribution.Builder b = new Distribution.Builder();
+        for(int i = 0; i < values.length; i++) {
+            if(i < (values.length - 1)) {
+                b.add(values[i]);
+            } else {
+                b.addUnknown(values[i]);
+            }
         }
         return b.build().format();
     }
