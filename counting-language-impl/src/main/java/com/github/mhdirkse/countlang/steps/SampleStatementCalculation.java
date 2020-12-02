@@ -23,6 +23,7 @@ import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.types.Distribution;
 
@@ -47,6 +48,9 @@ class SampleStatementCalculation implements AstNodeExecution {
     public final AstNode step(ExecutionContext context) {
         if(distribution == null) {
             return delegate.step(context);
+        }
+        if(distribution.getTotal() == 0) {
+            throw new ProgramException(statement.getLine(), statement.getColumn(), "Cannot sample from empty distribution.");
         }
         if(! isSamplingStarted) {
             context.startSampledVariable(distribution);

@@ -108,7 +108,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
 
             {"experiment exp() {return true;}; print exp();", "Experiment can only score INT"},
             {"sample x from distribution 1, 2; print x", "Sampling is only allowed within an experiment."},
-            {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a INT"}
+            {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a INT"},
+            {"experiment exp() {sample x from distribution; return x}; print exp();", "Cannot sample from empty distribution"}
         });
     }
 
