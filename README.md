@@ -128,7 +128,7 @@ Here are a few things to take care of when programming:
 
 # Usage instructions
 
-* Ensure that git and Maven are installed on your PC.
+* You need Java 8 and Maven 3.6.
 * Clone counting-language, codegen and utils.
 * Choose the version of counting-language that you want to build. I recommend using the latest tagged version.
 * In your counting-language checkout, checkout the version you want. Check it out using `git checkout`.
