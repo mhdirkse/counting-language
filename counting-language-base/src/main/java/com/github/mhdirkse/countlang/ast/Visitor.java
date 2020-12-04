@@ -39,4 +39,6 @@ public interface Visitor {
     public void visitSimpleDistributionExpression(final SimpleDistributionExpression expr);
     public void visitDistributionExpressionWithTotal(final DistributionExpressionWithTotal expr);
     public void visitDistributionExpressionWithUnknown(final DistributionExpressionWithUnknown expr);
+    public void visitDistributionItemItem(DistributionItemItem item);
+    public void visitDistributionItemCount(DistributionItemCount item);
 }

@@ -19,29 +19,34 @@
 
 package com.github.mhdirkse.countlang.steps;
 
-import java.util.List;
-
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.types.Distribution;
 
-abstract class SpecialDistributionExpressionCalculation extends ExpressionResultsCollector {
+abstract class SpecialDistributionExpressionCalculation extends SimpleDistributionExpressionCalculation {
+    Integer finalValue;
+
     SpecialDistributionExpressionCalculation(final AbstractDistributionExpression expression) {
         super(expression);
     }
 
     @Override
-    final void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        int extraSubExpressionResult = ((Integer) subExpressionResults.get(0)).intValue();
-        Distribution.Builder builder = new Distribution.Builder();
-        for(Object scored: subExpressionResults.subList(1, subExpressionResults.size())) {
-            builder.add(((Integer) scored).intValue());
-        }
+    public boolean isAcceptingChildResults() {
+        return true;
+    }
+
+    @Override
+    public void acceptChildResult(Object value, ExecutionContext context) {
+        finalValue = (Integer) value;
+    }
+
+    @Override
+    public void finishBuilder() {
+        Distribution.Builder builder = ((Distribution.Builder) getContext());
         int totalScored = builder.getTotal();
-        builder.addUnknown(getUnknown(extraSubExpressionResult, totalScored));
-        context.onResult(builder.build());
+        builder.addUnknown(getUnknown(finalValue, totalScored));        
     }
 
     abstract int getUnknown(int extraSubExpressionResult, int totalScored);

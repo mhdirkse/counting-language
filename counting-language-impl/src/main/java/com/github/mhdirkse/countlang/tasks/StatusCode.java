@@ -47,7 +47,8 @@ public enum StatusCode implements AbstractStatusCode {
     IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be BOOL, but was {3}."),
     EXPERIMENT_SCORE_NOT_INT("({1}, {2}): Experiment can only score INT: {3}."),
 
-    DISTRIBUTION_SCORED_NOT_INT("({1}, {2}): Element number {3} in distribution is {4}, should be INT."),
+    DISTRIBUTION_SCORED_COUNT_NOT_INT("({1}, {2}): Element number {3}, the count, in distribution is {4}, should be INT."),
+    DISTRIBUTION_SCORED_VALUE_NOT_INT("({1}, {2}): Element number {3}, the value,  in distribution is {4}, should be INT."),
     DISTRIBUTION_AMOUNT_NOT_INT("({1}, {2}): The amount or unknown clause of a distribution should be INT."),
     SAMPLING_OUTSIDE_EXPERIMENT("({1}, {2}): Sampling is only allowed within an experiment."),
     SAMPLED_FROM_NON_DISTRIBUTION("({1}, {2}): The value you sample from is a {3}, but should be DISTRIBUTION.");

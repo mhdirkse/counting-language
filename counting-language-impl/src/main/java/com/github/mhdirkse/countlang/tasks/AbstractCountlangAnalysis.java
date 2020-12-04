@@ -24,11 +24,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.DistributionItemCount;
+import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
@@ -63,6 +66,8 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
     final List<BranchHandler> branchHandlers = new ArrayList<>();
 
     boolean didReturn = false;
+    int indexInDistributionExpression = 0;
+    boolean distributionOk = true;
 
     AbstractCountlangAnalysis(
             SymbolFrameStack<T> symbols,
@@ -263,31 +268,56 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
 
     @Override
     public void visitSimpleDistributionExpression(SimpleDistributionExpression expression) {
-        expression.getChildren().forEach(c -> c.accept(this));
-        List<T> arguments = stack.repeatedPop(expression.getNumSubExpressions());
-        stack.push(doSimpleDistributionExpression(arguments, expression));
+        distributionOk = true;
+        handleDistributionScoredItems(expression.getChildren());
     }
 
-    abstract T doSimpleDistributionExpression(List<T> arguments, SimpleDistributionExpression expression);
+    private void handleDistributionScoredItems(List<AstNode> scoredItems) {
+        for(int i = 0; i < scoredItems.size(); i++) {
+            indexInDistributionExpression = i+1;
+            scoredItems.get(i).accept(this);
+        }
+        stack.push(typeDistribution());
+    }
+
+    abstract T typeDistribution();
     
     @Override
     public void visitDistributionExpressionWithTotal(DistributionExpressionWithTotal expression) {
-        expression.getChildren().forEach(c -> c.accept(this));
-        List<T> arguments = stack.repeatedPop(expression.getNumSubExpressions());
-        stack.push(doDistributionExpressionWithTotal(arguments, expression));
+        handleSpecialDistribution(expression);
     }
 
-    abstract T doDistributionExpressionWithTotal(List<T> arguments, DistributionExpressionWithTotal expression);
+    private void handleSpecialDistribution(AbstractDistributionExpression expression) {
+        distributionOk = true;
+        expression.getChildren().get(0).accept(this);
+        checkDistributionFinishingCount(stack.pop(), expression);
+        handleDistributionScoredItems(expression.getChildren().subList(1, expression.getChildren().size()));
+    }
+
+    abstract void checkDistributionFinishingCount(T value, AstNode node);
 
     @Override
     public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expression) {
-        expression.getChildren().forEach(c -> c.accept(this));
-        List<T> arguments = stack.repeatedPop(expression.getNumSubExpressions());
-        stack.push(doDistributionExpressionWithUnknown(arguments, expression));
+        handleSpecialDistribution(expression);
     }
 
-    abstract T doDistributionExpressionWithUnknown(List<T> arguments, DistributionExpressionWithUnknown expression);
-    
+    @Override
+    public void visitDistributionItemCount(DistributionItemCount item) {
+        item.getCount().accept(this);
+        checkDistributionItemCount(stack.pop(), item);
+        item.getItem().accept(this);
+        checkDistributionItemItem(stack.pop(), item);
+    }
+
+    abstract void checkDistributionItemCount(T value, AstNode node);
+    abstract void checkDistributionItemItem(T value, AstNode node);
+
+    @Override
+    public void visitDistributionItemItem(DistributionItemItem item) {
+        item.getItem().accept(this);
+        checkDistributionItemItem(stack.pop(), item);        
+    }
+
     public void visitFormalParameters(final FormalParameters formalParameters) {
     }
     

@@ -82,7 +82,8 @@ class Executor implements SampleContextBase {
         if(!callStack.isEmpty()) {
             AstNode child = callStack.getLast().step(context);
             if(child != null) {
-                callStack.addLast(factory.create(child));
+                AstNodeExecution newNodeExecution = factory.create(child, callStack.getLast().getContext());
+                callStack.addLast(newNodeExecution);
             }
         }
     }

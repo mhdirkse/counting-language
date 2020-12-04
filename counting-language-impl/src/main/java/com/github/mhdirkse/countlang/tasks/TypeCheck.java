@@ -19,17 +19,14 @@
 
 package com.github.mhdirkse.countlang.tasks;
 
-import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Status.SOME_RETURN;
 import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Status.NO_RETURN;
+import static com.github.mhdirkse.countlang.execution.BranchingReturnCheck.Status.SOME_RETURN;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
-import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
-import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
@@ -37,7 +34,6 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
-import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
@@ -165,58 +161,41 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
     }
 
     @Override
-    CountlangType doSimpleDistributionExpression(
-            List<CountlangType> arguments, SimpleDistributionExpression expression) {
-        if(checkDistributionScoredExpressions(arguments, expression.getChildren())) {
-            return CountlangType.DISTRIBUTION;
-        } else {
-            return CountlangType.UNKNOWN;
+    void checkDistributionFinishingCount(CountlangType value, AstNode node) {
+        if(! value.equals(CountlangType.INT)) {
+            distributionOk = false;
+            reporter.report(StatusCode.DISTRIBUTION_AMOUNT_NOT_INT, node.getLine(), node.getColumn());
         }
     }
 
-    private boolean checkDistributionScoredExpressions(
-            List<CountlangType> scoredTypes, List<AstNode> scoredExpressions) {
-        boolean typesOk = true;
-        for(int i = 0; i < scoredTypes.size(); i++) {
-            if(!scoredTypes.get(i).equals(CountlangType.INT)) {
-                typesOk = false;
-                reporter.report(
-                        StatusCode.DISTRIBUTION_SCORED_NOT_INT,
-                        scoredExpressions.get(i).getLine(),
-                        scoredExpressions.get(i).getColumn(),
-                        Integer.toString(i+1),
-                        scoredTypes.get(i).toString());
-            }
-        }
-        return typesOk;
-    }
-
-    CountlangType doDistributionExpressionWithTotal(
-            List<CountlangType> arguments, DistributionExpressionWithTotal expression) {
-        return doDistributionExpressionWithAmount(arguments, expression);
-    }
-
-   CountlangType doDistributionExpressionWithUnknown(
-            List<CountlangType> arguments, DistributionExpressionWithUnknown expression) {
-        return doDistributionExpressionWithAmount(arguments, expression);
-    }
-
-    CountlangType doDistributionExpressionWithAmount(
-            List<CountlangType> arguments, AbstractDistributionExpression expression) {
-        CountlangType amountType = arguments.get(0);
-        ExpressionNode expressionAmount = (ExpressionNode) expression.getChildren().get(0);
-        List<CountlangType> scoredTypes = arguments.subList(1, arguments.size());
-        List<AstNode> scoredExpressions = expression.getChildren().subList(1, expression.getNumSubExpressions());
-        boolean scoredTypesOk = checkDistributionScoredExpressions(scoredTypes, scoredExpressions);
-        boolean amountTypeOk = true;
-        if(!amountType.equals(CountlangType.INT)) {
-            amountTypeOk = false;
+    @Override
+    void checkDistributionItemCount(CountlangType value, AstNode node) {
+        if(! value.equals(CountlangType.INT)) {
+            distributionOk = false;
             reporter.report(
-                    StatusCode.DISTRIBUTION_AMOUNT_NOT_INT,
-                    expressionAmount.getLine(),
-                    expressionAmount.getColumn());
+                    StatusCode.DISTRIBUTION_SCORED_COUNT_NOT_INT,
+                    node.getLine(),
+                    node.getColumn(),
+                    new Integer(indexInDistributionExpression).toString(),
+                    value.toString());
         }
-        if(scoredTypesOk && amountTypeOk) {
+    }
+
+    @Override
+    void checkDistributionItemItem(CountlangType value, AstNode node) {
+        if(! value.equals(CountlangType.INT)) {
+            distributionOk = false;
+            reporter.report(
+                    StatusCode.DISTRIBUTION_SCORED_VALUE_NOT_INT,
+                    node.getLine(),
+                    node.getColumn(),
+                    new Integer(indexInDistributionExpression).toString(),
+                    value.toString());
+        }        
+    }
+
+    CountlangType typeDistribution() {
+        if(distributionOk) {
             return CountlangType.DISTRIBUTION;
         } else {
             return CountlangType.UNKNOWN;

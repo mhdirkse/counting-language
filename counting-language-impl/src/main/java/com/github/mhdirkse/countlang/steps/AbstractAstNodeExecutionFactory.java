@@ -27,9 +27,11 @@ import com.github.mhdirkse.countlang.ast.Visitor;
 
 abstract class AbstractAstNodeExecutionFactory implements AstNodeExecutionFactory, Visitor {
     AstNodeExecution result;
+    Object context;
 
     @Override
-    public AstNodeExecution create(AstNode node) {
+    public AstNodeExecution create(AstNode node, Object context) {
+        this.context = context;
         node.accept(this);
         AstNodeExecution currentResult = result;
         result = null;

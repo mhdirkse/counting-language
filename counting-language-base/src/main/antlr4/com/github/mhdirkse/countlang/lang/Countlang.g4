@@ -33,8 +33,13 @@ expr
   | expr 'and' expr # andExpression
   | expr 'or' expr # orExpression
   | ID # symbolReferenceExpression
-  | 'distribution' (expr ( ',' expr)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression 
+  | 'distribution' (distItem ( ',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression 
   | (INT | BOOL ) # valueExpression
+  ;
+
+distItem
+  : expr 'of' expr # distItemCount
+  | expr # distItemSimple
   ;
 
 BOOLTYPE: 'bool' ;

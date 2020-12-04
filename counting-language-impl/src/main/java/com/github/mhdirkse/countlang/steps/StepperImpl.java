@@ -28,7 +28,7 @@ class StepperImpl implements Stepper, StepperCallback {
     private final Stack<Executor> executors = new Stack<>();
 
     StepperImpl(final AstNode target, final ExecutionContext context, final AstNodeExecutionFactory factory) {
-        executors.push(new Executor(context, factory, factory.create(target)));
+        executors.push(new Executor(context, factory, factory.create(target, null)));
     }
 
     @Override

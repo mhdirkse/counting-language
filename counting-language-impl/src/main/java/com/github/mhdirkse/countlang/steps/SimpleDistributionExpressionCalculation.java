@@ -19,22 +19,54 @@
 
 package com.github.mhdirkse.countlang.steps;
 
-import java.util.List;
+import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
+import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
+import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
 
-import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
+import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
+import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.types.Distribution;
 
-final class SimpleDistributionExpressionCalculation extends ExpressionResultsCollector {
-    SimpleDistributionExpressionCalculation(SimpleDistributionExpression expression) {
-        super(expression);
+class SimpleDistributionExpressionCalculation implements AstNodeExecution {
+    private AstNodeExecutionState state = BEFORE;
+    private Distribution.Builder builder = new Distribution.Builder();
+    AbstractDistributionExpression expression;
+    int indexInItems = 0;
+
+    SimpleDistributionExpressionCalculation(AbstractDistributionExpression expression) {
+        this.expression = expression;
     }
 
     @Override
-    void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        Distribution.Builder builder = new Distribution.Builder();
-        for(Object subExpressionResult: subExpressionResults) {
-            builder.add(((Integer) subExpressionResult).intValue());
+    public AstNodeExecutionState getState() {
+        return state;
+    }
+
+    @Override
+    public AstNode getAstNode() {
+        return expression;
+    }
+
+    @Override
+    public AstNode step(ExecutionContext context) {
+        if(state == AFTER) {
+            return null;
         }
+        state = RUNNING;
+        if(indexInItems < expression.getChildren().size()) {
+            return expression.getChildren().get(indexInItems++);    
+        }
+        state = AFTER;
+        finishBuilder();
         context.onResult(builder.build());
+        return null;
+    }
+
+    void finishBuilder() {
+    }
+
+    @Override
+    public Object getContext() {
+        return builder;
     }
 }

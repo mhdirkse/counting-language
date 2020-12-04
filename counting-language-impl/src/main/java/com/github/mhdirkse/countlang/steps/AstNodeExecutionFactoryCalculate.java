@@ -23,6 +23,8 @@ import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.DistributionItemCount;
+import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -35,6 +37,7 @@ import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.types.Distribution;
 
 class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
@@ -115,5 +118,16 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
         result = new FunctionDefinitionStatementBaseCalculation(statement);
+    }
+
+    @Override
+    public void visitDistributionItemItem(DistributionItemItem item) {
+        result = new DistributionItemItemCalculation(item, (Distribution.Builder) context);
+    }
+
+    @Override
+    public void visitDistributionItemCount(DistributionItemCount item) {
+
+        result = new DistributionItemCountCalculation(item, (Distribution.Builder) context);
     }
 }

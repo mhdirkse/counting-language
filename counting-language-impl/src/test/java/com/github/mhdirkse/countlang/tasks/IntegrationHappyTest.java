@@ -83,6 +83,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print true != false", "true"},
             {"print 3 != 3", "false"},
             {"print 5 != 3", "true"},
+            {INCREMENT_OF_MAX_INT_MINUS_ONE, MAX_INT}, // No overflow.
+            {DECREMENT_OF_MIN_INT_PLUS_ONE, MIN_INT}, // No underflow.
             
             // Test literal distributions
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
@@ -93,8 +95,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
                 getSimpleDistribution().format()},
             {"d = distribution; print d", (new Distribution.Builder().build().format())},
             {"print distribution 1, 2 - 1, 5 - 2", getSimpleDistribution().format()},
-            {INCREMENT_OF_MAX_INT_MINUS_ONE, MAX_INT}, // No overflow.
-            {DECREMENT_OF_MIN_INT_PLUS_ONE, MIN_INT}, // No underflow.
+            {"print distribution 2 of 3;", getDistribution(3, 3)},
+            
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
             {"print testFunction(testFunction(4))", "14"},

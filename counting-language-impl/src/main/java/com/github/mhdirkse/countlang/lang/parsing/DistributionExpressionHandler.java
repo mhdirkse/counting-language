@@ -26,8 +26,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
+import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.DistributionItemCount;
+import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
@@ -44,12 +47,52 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
     private int line;
     private int column;
 
-    private List<ExpressionNode> scoredExpressions = new ArrayList<>();
+    private List<AbstractDistributionItem> scoredExpressions = new ArrayList<>();
     private ExpressionNode extraExpression;
-    
+    private AbstractDistributionItem item;
+
     public DistributionExpressionHandler(final int line, final int column) {
         this.line = line;
         this.column = column;
+        this.item = null;
+    }
+
+    @Override
+    public boolean enterDistItemCount(
+            CountlangParser.DistItemCountContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        item = new DistributionItemCount(line, column);
+        return true;
+    }
+
+    @Override
+    public boolean exitDistItemCount(
+            CountlangParser.DistItemCountContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        scoredExpressions.add(item);
+        item = null;
+        return true;
+    }
+
+    @Override
+    public boolean enterDistItemSimple(
+            CountlangParser.DistItemSimpleContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        item = new DistributionItemItem(line, column);
+        return true;
+    }
+
+    @Override
+    public boolean exitDistItemSimple(
+            CountlangParser.DistItemSimpleContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        scoredExpressions.add(item);
+        item = null;
+        return true;
     }
 
     @Override
@@ -69,12 +112,25 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
     void addExpression(ExpressionNode expression) {
         switch(kind) {
         case DEFAULT:
-            scoredExpressions.add(expression);
+            handleScoredExpression(expression);
             break;
         case WITH_TOTAL:
         case WITH_UNKNOWN:
             extraExpression = expression;
             break;
+        }
+    }
+
+    private void handleScoredExpression(ExpressionNode expression) {
+        if(item instanceof DistributionItemItem) {
+            item.setItem(expression);
+        } else {
+            DistributionItemCount withCount = (DistributionItemCount) item;
+            if(withCount.getCount() == null) {
+                withCount.setCount(expression);
+            } else {
+                withCount.setItem(expression);
+            }
         }
     }
 
@@ -99,7 +155,7 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
         default:
             throw new IllegalStateException("Cannot happen");
         }
-        for(ExpressionNode se: scoredExpressions) {
+        for(AbstractDistributionItem se: scoredExpressions) {
             distributionExpression.addScoredValue(se);
         }
         return distributionExpression;
