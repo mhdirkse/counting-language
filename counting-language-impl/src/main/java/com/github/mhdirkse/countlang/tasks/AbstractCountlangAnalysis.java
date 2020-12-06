@@ -50,6 +50,7 @@ import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
+import com.github.mhdirkse.countlang.ast.WhileStatement;
 import com.github.mhdirkse.countlang.execution.BranchHandler;
 import com.github.mhdirkse.countlang.execution.FunctionAndReturnCheck;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
@@ -180,6 +181,16 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
     }
 
     abstract void checkSelectValue(T value, ExpressionNode selector);
+
+    @Override
+    public void visitWhileStatement(final WhileStatement whileStatement) {
+        ExpressionNode testExpr = whileStatement.getTestExpr();
+        testExpr.accept(this);
+        checkWhileTestValue(stack.pop(), testExpr);
+        whileStatement.getStatement().accept(this);
+    }
+
+    abstract void checkWhileTestValue(T value, ExpressionNode testExpr);
 
     public void visitStatementGroup(final StatementGroup sg) {
         symbols.pushFrame(StackFrameAccess.SHOW_PARENT);

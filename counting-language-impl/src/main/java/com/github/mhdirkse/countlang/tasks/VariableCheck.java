@@ -172,4 +172,8 @@ class VariableCheck extends AbstractCountlangAnalysis<DummyValue> implements Var
     @Override
     void checkDistributionItemItem(DummyValue value, AstNode node) {
     }
+
+    @Override
+    void checkWhileTestValue(DummyValue value, ExpressionNode testExpr) {
+    }
 }

@@ -37,6 +37,7 @@ import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.ast.WhileStatement;
 import com.github.mhdirkse.countlang.types.Distribution;
 
 class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
@@ -73,6 +74,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitIfStatement(IfStatement ifStatement) {
         result = new IfStatementCalculation(ifStatement);
+    }
+
+    @Override
+    public void visitWhileStatement(WhileStatement whileStatement) {
+        result = new WhileStatementCalculation(whileStatement);        
     }
 
     @Override

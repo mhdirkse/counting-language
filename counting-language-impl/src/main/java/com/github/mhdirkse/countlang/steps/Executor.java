@@ -110,8 +110,8 @@ class Executor implements SampleContextBase {
         AstNodeExecution currentExecution = it.next();
         // We do not check on reaching the end of the callStack, but on finding the function we want to stop.
         while(currentExecution.getAstNode() != functionCallExpression) {
-            if(currentExecution instanceof StatementGroupCalculation) {
-                ((StatementGroupCalculation) currentExecution).stopFunctionCall();
+            if(currentExecution instanceof NeedsExplicitStop) {
+                ((NeedsExplicitStop) currentExecution).stopFunctionCall();
             }
             currentExecution = it.next();
         }

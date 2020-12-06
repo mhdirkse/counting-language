@@ -30,7 +30,7 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
-final class StatementGroupCalculation implements AstNodeExecution {
+final class StatementGroupCalculation implements AstNodeExecution, NeedsExplicitStop {
     private final StatementGroup statementGroup;
     AstNodeExecutionState state = BEFORE;
     private List<AstNode> children;
@@ -81,6 +81,7 @@ final class StatementGroupCalculation implements AstNodeExecution {
         state = AFTER;
     }
 
+    @Override
     public void stopFunctionCall() {
         stopRequested = true;
     }

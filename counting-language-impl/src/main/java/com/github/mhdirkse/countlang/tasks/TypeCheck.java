@@ -127,6 +127,17 @@ implements SymbolNotAccessibleHandler, FunctionAndReturnTypeCheck.Callback {
     }
     
     @Override
+    void checkWhileTestValue(CountlangType value, ExpressionNode testExpr) {
+        if(!value.equals(CountlangType.BOOL)) {
+            reporter.report(
+                    StatusCode.WHILE_TEST_NOT_BOOLEAN,
+                    testExpr.getLine(),
+                    testExpr.getColumn(),
+                    testExpr.getCountlangType().toString());
+        }        
+    }
+
+    @Override
     CountlangType getSampleResultValue() {
         return CountlangType.INT;
     }

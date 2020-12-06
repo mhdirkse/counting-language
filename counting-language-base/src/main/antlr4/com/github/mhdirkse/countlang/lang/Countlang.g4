@@ -13,6 +13,7 @@ statement
   | 'markUsed' expr # markUsedStatement
   | 'sample' ID 'from' expr # sampleStatement
   | 'if' '(' expr ')' '{' statements '}' ('else' '{' statements '}')? # ifStatement
+  | 'while' '(' expr ')' '{' statements '}' # whileStatement
   | '{' statements '}' # compoundStatement
   ;
 
