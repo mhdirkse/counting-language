@@ -36,8 +36,8 @@ public class DistributionExpressionWithTotal extends AbstractDistributionExpress
     @Override
     public List<AstNode> getChildren() {
         List<AstNode> result = new ArrayList<>();
-        result.add(totalExpression);
         result.addAll(super.getChildren());
+        result.add(totalExpression);
         return result;
     }
 

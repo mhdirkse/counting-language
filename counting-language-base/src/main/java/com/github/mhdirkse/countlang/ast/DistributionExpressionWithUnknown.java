@@ -36,8 +36,8 @@ public class DistributionExpressionWithUnknown extends AbstractDistributionExpre
     @Override
     public List<AstNode> getChildren() {
         List<AstNode> result = new ArrayList<>();
-        result.add(unknownExpression);
         result.addAll(super.getChildren());
+        result.add(unknownExpression);
         return result;
     }
 

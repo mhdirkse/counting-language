@@ -36,6 +36,7 @@ import com.github.mhdirkse.countlang.ast.AstVisitorToListener;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
+import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
@@ -160,7 +161,9 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.enterStatementGroup(isA(StatementGroup.class));
         listener.enterPrintStatement(isA(PrintStatement.class));
         listener.enterSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
+        listener.enterDistributionItemItem(isA(DistributionItemItem.class));
         listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitDistributionItemItem(isA(DistributionItemItem.class));
         listener.exitSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
         listener.exitPrintStatement(isA(PrintStatement.class));
         listener.exitStatementGroup(isA(StatementGroup.class));
@@ -174,7 +177,9 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.enterStatementGroup(isA(StatementGroup.class));
         listener.enterPrintStatement(isA(PrintStatement.class));
         listener.enterDistributionExpressionWithTotal(isA(DistributionExpressionWithTotal.class));
+        listener.enterDistributionItemItem(isA(DistributionItemItem.class));
         listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitDistributionItemItem(isA(DistributionItemItem.class));
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitDistributionExpressionWithTotal(isA(DistributionExpressionWithTotal.class));
         listener.exitPrintStatement(isA(PrintStatement.class));
@@ -189,7 +194,9 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.enterStatementGroup(isA(StatementGroup.class));
         listener.enterPrintStatement(isA(PrintStatement.class));
         listener.enterDistributionExpressionWithUnknown(isA(DistributionExpressionWithUnknown.class));
+        listener.enterDistributionItemItem(isA(DistributionItemItem.class));
         listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitDistributionItemItem(isA(DistributionItemItem.class));
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitDistributionExpressionWithUnknown(isA(DistributionExpressionWithUnknown.class));
         listener.exitPrintStatement(isA(PrintStatement.class));
@@ -222,8 +229,12 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
 
         listener.enterSampleStatement(isA(SampleStatement.class));
         listener.enterSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
+        listener.enterDistributionItemItem(isA(DistributionItemItem.class));
         listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitDistributionItemItem(isA(DistributionItemItem.class));
+        listener.enterDistributionItemItem(isA(DistributionItemItem.class));
         listener.visitValueExpression(isA(ValueExpression.class));
+        listener.exitDistributionItemItem(isA(DistributionItemItem.class));
         listener.exitSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
         listener.exitSampleStatement(isA(SampleStatement.class));
 

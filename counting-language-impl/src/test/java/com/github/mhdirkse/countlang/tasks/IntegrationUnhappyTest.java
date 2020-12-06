@@ -74,7 +74,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"x = true; print x; x = 5; print x;", "Cannot change type of variable"},
             {"print distribution true", "in distribution is"}, // Can only score INT values in distribution now
             {"print distribution total false", "The amount or unknown clause of a distribution should be INT"},
-            {"print distribution 1, true", "Element number 2 in distribution is BOOL, should be INT"},
+            {"print distribution 1, true", "Element number 2, the value, in distribution is BOOL, should be INT"},
             {"print distribution 1 total true", "The amount or unknown clause of a distribution should be INT."},
             {"print distribution 1 unknown true", "The amount or unknown clause of a distribution should be INT."},
             

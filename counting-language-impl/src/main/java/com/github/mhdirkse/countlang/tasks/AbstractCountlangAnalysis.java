@@ -289,9 +289,10 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
 
     private void handleSpecialDistribution(AbstractDistributionExpression expression) {
         distributionOk = true;
-        expression.getChildren().get(0).accept(this);
+        int numChildren = expression.getChildren().size();
+        expression.getChildren().get(numChildren-1).accept(this);
         checkDistributionFinishingCount(stack.pop(), expression);
-        handleDistributionScoredItems(expression.getChildren().subList(1, expression.getChildren().size()));
+        handleDistributionScoredItems(expression.getChildren().subList(0, numChildren-1));
     }
 
     abstract void checkDistributionFinishingCount(T value, AstNode node);
