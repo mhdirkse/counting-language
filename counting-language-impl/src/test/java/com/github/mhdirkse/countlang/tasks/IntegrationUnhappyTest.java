@@ -100,6 +100,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"function fun() { {return 3}; return 5}", "Statement in function"},
             {"function fun() {if(true) {return 3} else {print 5}}", "does not return"},
             {"function fun() {if(true) {return 3}}", "does not return"}, // Else counts as branch, also if omitted.
+            {"print fun()", "Function fun does not exist"},
             
             // Compound
             
