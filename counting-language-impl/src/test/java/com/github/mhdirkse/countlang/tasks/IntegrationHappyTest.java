@@ -96,6 +96,11 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"d = distribution; print d", (new Distribution.Builder().build().format())},
             {"print distribution 1, 2 - 1, 5 - 2", getSimpleDistribution().format()},
             {"print distribution 2 of 3;", getDistribution(3, 3)},
+            {"print distribution 2 of 3, 4;", getDistribution(3, 3, 4)},
+            {"print distribution 4, 2 of 3;", getDistribution(3, 3, 4)},
+            {"print distribution 2 of 3, 4 total 5", getDistributionWithUnknown(3, 3, 4, 2)},
+            {"print distribution 4, 2 of 3 unknown 12", getDistributionWithUnknown(3, 3, 4, 12)},
+            {"print distribution 2 of -1", getDistribution(-1, -1)},
             
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
