@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mhdirkse.countlang.types.Distribution;
+import com.github.mhdirkse.countlang.types.Distribution.Builder;
 
 public class SampleContextTest {
     private SampleContextImpl instance;
@@ -39,11 +40,11 @@ public class SampleContextTest {
         Assert.assertEquals(getSumOfTwoSamplesFromBinomial().format(), instance.getResult().format());
     }
 
-    private void sampleTwice(Distribution d) {
-        instance.startSampledVariable(d);
+    private void sampleTwice(Distribution d1, Distribution d2) {
+        instance.startSampledVariable(d1);
         while(instance.hasNextValue()) {
             int i1 = instance.nextValue();
-            instance.startSampledVariable(d);
+            instance.startSampledVariable(d2);
             while(instance.hasNextValue()) {
                 int i2 = instance.nextValue();
                 instance.score(i1 + i2);
@@ -51,6 +52,10 @@ public class SampleContextTest {
             instance.stopSampledVariable();
         }
         instance.stopSampledVariable();
+    }
+
+    private void sampleTwice(Distribution d) {
+        sampleTwice(d, d);
     }
 
     @Test
@@ -123,6 +128,22 @@ public class SampleContextTest {
     public void testPluralDistributionWithUnknown() {
         sampleTwice(getDistributionPluralWithUnknown());
         Assert.assertEquals(getDistributionSumOfTwoPluralWithUnknown().format(), instance.getResult().format());
+    }
+
+    @Test
+    public void testPluralDistributionWithUnknown_2() {
+        sampleTwice(getDistributionPluralWithUnknown(), getDistributionPluralMultipleUnknown());
+        Assert.assertEquals(
+                getDistributionPluralWithUnknownPlusDistributionPluralMultipleUnknown().format(),
+                instance.getResult().format());
+    }
+
+    @Test
+    public void testPluralDistributionWithUnknown_3() {
+        sampleTwice(getDistributionPluralMultipleUnknown(), getDistributionPluralWithUnknown());
+        Assert.assertEquals(
+                getDistributionPluralWithUnknownPlusDistributionPluralMultipleUnknown().format(),
+                instance.getResult().format());
     }
 
     private Distribution getBinomialDistribution() {
@@ -216,6 +237,23 @@ public class SampleContextTest {
         b.add(3, 12);
         b.add(4, 4);
         b.addUnknown(11);
+        return b.build();
+    }
+
+    private Distribution getDistributionPluralMultipleUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.addUnknown(3);
+        b.add(2, 2);
+        b.add(3, 1);
+        return b.build();
+    }
+
+    private Distribution getDistributionPluralWithUnknownPlusDistributionPluralMultipleUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(3, 6);
+        b.add(4, 7);
+        b.add(5, 2);
+        b.addUnknown(21);
         return b.build();
     }
 }
