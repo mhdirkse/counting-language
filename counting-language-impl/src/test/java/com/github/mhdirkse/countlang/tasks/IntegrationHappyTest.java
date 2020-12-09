@@ -101,6 +101,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution 2 of 3, 4 total 5", getDistributionWithUnknown(3, 3, 4, 2)},
             {"print distribution 4, 2 of 3 unknown 12", getDistributionWithUnknown(3, 3, 4, 12)},
             {"print distribution 2 of -1", getDistribution(-1, -1)},
+            {"print known of distribution 1, 2 total 5", getDistribution(1, 2)},
+            {"print known of distribution total 1", getDistribution()},
             
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
@@ -140,7 +142,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
                 getDistribution(2, 3, 4, 3, 4, 5)},
             {getProgramExperimentUsesExperiment(), getDistribution(1, 1, 1, 3, 4, 5)},
             {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print exp();", getDistributionWithUnknown(3, 1)},
-            {getProgramAboutDisease(), getProgramAboutDiseaseExpectedResult()}
+            {getProgramAboutDisease(), getProgramAboutDiseaseExpectedResult()},
+            {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print known of exp();", getDistribution(3)},
         });
     }
 
