@@ -102,4 +102,12 @@ class SymbolFrameTypeCheck implements SymbolFrame<CountlangType>{
     @Override
     public void onBranchClosed() {
     }
+
+    @Override
+    public void onRepetitionOpened() {
+    }
+
+    @Override
+    public void onRepetitionClosed() {
+    }
 }

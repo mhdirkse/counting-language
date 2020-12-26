@@ -124,4 +124,12 @@ implements FunctionAndReturnCheck<T> {
     public boolean isInExperiment() {
         return enteredFunctions.peek().isExperiment;
     }
+
+    @Override
+    public void onRepetitionOpened() {
+    }
+
+    @Override
+    public void onRepetitionClosed() {
+    }
 }

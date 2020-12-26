@@ -110,4 +110,12 @@ public class BranchingReturnCheckImpl implements BranchingReturnCheck {
             return status;
         }
     }
+
+    @Override
+    public void onRepetitionOpened() {
+    }
+
+    @Override
+    public void onRepetitionClosed() {
+    }
 }

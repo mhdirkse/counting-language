@@ -112,4 +112,14 @@ public abstract class SymbolFrameStackImpl<T, F extends SymbolFrame<T>> implemen
     public void onBranchClosed() {
         frameStack.forEach(frame -> frame.onBranchClosed());
     }
+
+    @Override
+    public void onRepetitionOpened() {
+        frameStack.forEach(frame -> frame.onRepetitionOpened());
+    }
+
+    @Override
+    public void onRepetitionClosed() {
+        frameStack.forEach(frame -> frame.onRepetitionClosed());
+    }
 }

@@ -77,4 +77,12 @@ class SymbolFrameStub implements SymbolFrame<DummyValue> {
     @Override
     public void onBranchClosed() {
     }
+
+    @Override
+    public void onRepetitionOpened() {
+    }
+
+    @Override
+    public void onRepetitionClosed() {
+    }
 }

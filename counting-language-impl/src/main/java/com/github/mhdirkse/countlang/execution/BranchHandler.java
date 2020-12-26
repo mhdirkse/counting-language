@@ -24,4 +24,6 @@ public interface BranchHandler {
     void onSwitchClosed();
     void onBranchOpened();
     void onBranchClosed();
+    void onRepetitionOpened();
+    void onRepetitionClosed();
 }

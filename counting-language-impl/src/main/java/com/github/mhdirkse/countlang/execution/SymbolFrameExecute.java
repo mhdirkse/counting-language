@@ -79,4 +79,12 @@ class SymbolFrameExecute implements SymbolFrame<Object> {
     @Override
     public void onBranchClosed() {
     }
+
+    @Override
+    public void onRepetitionOpened() {
+    }
+
+    @Override
+    public void onRepetitionClosed() {
+    }
 }

@@ -143,7 +143,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             // no return within the body.
             {"function factorial(int n) {result = 1; i = 1; while(i <= n) {result = result * i; i = i + 1}; return result}; print factorial(3)", "6"},
             // with return in the body 
-            {"function factorial(int n) {result = 1; i = 1; while(true) {result = result * i; i = i + 1; if(i > n) {return result}; }; print factorial(3)", "6"},
+            {"function factorial(int n) {result = 1; i = 1; while(true) {result = result * i; i = i + 1; if(i > n) {return result}; }; }; print factorial(3)", "6"},
             {"experiment exp() {sample x from distribution 1, 2; return 2*x}; print exp()", getDistribution(2, 4)},
             {"experiment exp(distribution d1, distribution d2) {sample x from d1; sample y from d2; return x + y}; print exp((distribution 1, 2), (distribution 1, 2, 3));",
                 getDistribution(2, 3, 4, 3, 4, 5)},

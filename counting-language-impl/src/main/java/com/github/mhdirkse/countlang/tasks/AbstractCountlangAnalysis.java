@@ -184,10 +184,12 @@ abstract class AbstractCountlangAnalysis<T> implements Visitor {
 
     @Override
     public void visitWhileStatement(final WhileStatement whileStatement) {
+        branchHandlers.forEach(h -> h.onRepetitionOpened());
         ExpressionNode testExpr = whileStatement.getTestExpr();
         testExpr.accept(this);
         checkWhileTestValue(stack.pop(), testExpr);
         whileStatement.getStatement().accept(this);
+        branchHandlers.forEach(h -> h.onRepetitionClosed());
     }
 
     abstract void checkWhileTestValue(T value, ExpressionNode testExpr);
