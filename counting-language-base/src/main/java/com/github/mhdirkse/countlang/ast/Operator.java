@@ -21,6 +21,8 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.util.List;
 
+import com.github.mhdirkse.countlang.types.Distribution;
+
 public abstract class Operator extends AstNode {
     public Operator(final int line, final int column) {
         super(line, column);
@@ -485,6 +487,37 @@ public abstract class Operator extends AstNode {
         @Override
         final boolean applyBool(final boolean b1, final boolean b2) {
             return b1 != b2;
+        }
+    }
+
+    public static class OperatorKnown extends Operator {
+        public OperatorKnown(final int line, final int column) {
+            super(line, column);
+        }
+
+        @Override
+        public final String getName() {
+            return "known";
+        }
+
+        @Override
+        public final Object execute(final List<Object> arguments) {
+            return ((Distribution) arguments.get(0)).getDistributionOfKnown();
+        }
+
+        @Override
+        public final int getNumArguments() {
+            return 1;
+        }
+
+        @Override
+        public final boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
+            return argumentTypes.get(0) == CountlangType.DISTRIBUTION;
+        }
+
+        @Override
+        public final CountlangType getResultType() {
+            return CountlangType.DISTRIBUTION;
         }
     }
 }
