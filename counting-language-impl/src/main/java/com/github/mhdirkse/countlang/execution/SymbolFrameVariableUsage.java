@@ -90,70 +90,8 @@ class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
         }
     }
 
-    private static class Delegate {
-        private final List<State> eventStore = new ArrayList<>();
-        private final Map<String, State> states = new HashMap<>();
-
-        Delegate() {
-        }
-
-        Delegate(final Delegate parent) {
-            for(String key: parent.states.keySet()) {
-                State newState = new State(parent.states.get(key));
-                newState.usage = Usage.USED;
-                states.put(key, newState);
-            }
-        }
-
-        boolean has(String name) {
-            return states.containsKey(name);
-        }
-
-        void write(String name, int line, int column) {
-            if(states.containsKey(name)) {
-                State state = states.get(name);
-                if(state.usage == Usage.NEW) {
-                    eventStore.add(state);
-                }
-            }
-            states.put(name, new State(name, line, column));
-        }
-
-        private DummyValue read(String name, int line, int column) {
-            if(!states.containsKey(name)) {
-                throw new ProgramException(line, column, "Variable does not exist: " + name);
-            }
-            State state = states.get(name);
-            state.usage = Usage.USED;
-            return DummyValue.getInstance();
-        }
-
-        List<State> getOverwrittenWrites() {
-            for(State s: eventStore) {
-                if(s.usage != Usage.NEW) {
-                    throw new IllegalStateException(String.format("Cannot come here: %s, %d, %d",
-                            s.name, s.line, s.column));
-                }
-            }
-            return eventStore.stream()
-                    .map(State::new)
-                    .collect(Collectors.toList());
-        }
-        
-        void addEvents(List<State> states) {
-            this.eventStore.addAll(states);
-        }
-
-        void getWritesNotYetRead(VariableUsageEventHandler handler) {
-            List<State> result = getOverwrittenWrites();
-            result.addAll(states.values().stream()
-                    .filter(s -> s.usage == Usage.NEW)
-                    .collect(Collectors.toList()));
-            result.forEach(s -> handler.variableNotUsed(s.name, s.line, s.column));
-        }
-    }
-
-    private final Delegate delegate;
+    private final List<State> eventStore = new ArrayList<>();
+    private final Map<String, State> states = new HashMap<>();
 
     private boolean switchOpen = false;
     private SymbolFrameVariableUsage branchAnalysis = null;
@@ -162,12 +100,15 @@ class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
     
     SymbolFrameVariableUsage(final StackFrameAccess access) {
         this.access = access;
-        delegate = new Delegate();
     }
 
     private SymbolFrameVariableUsage(SymbolFrameVariableUsage parent) {
         access = parent.access;
-        delegate = new Delegate(parent.delegate);
+        for(String key: parent.states.keySet()) {
+            State newState = new State(parent.states.get(key));
+            newState.usage = Usage.USED;
+            states.put(key, newState);
+        }
     }
     
     @Override
@@ -177,7 +118,7 @@ class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
 
     @Override
     public boolean has(String name) {
-        return delegate.has(name);
+        return states.containsKey(name);
     }
 
     @Override
@@ -189,7 +130,13 @@ class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
             branchAnalysis.write(name, value, line, column);
         } 
         else {
-            delegate.write(name, line, column);
+            if(states.containsKey(name)) {
+                State state = states.get(name);
+                if(state.usage == Usage.NEW) {
+                    eventStore.add(state);
+                }
+            }
+            states.put(name, new State(name, line, column));
         }
     }
 
@@ -198,15 +145,32 @@ class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
         if(branchAnalysis != null) {
             branchAnalysis.read(name, line, column);
         }
-        return delegate.read(name, line, column);
+        if(!states.containsKey(name)) {
+            throw new ProgramException(line, column, "Variable does not exist: " + name);
+        }
+        State state = states.get(name);
+        state.usage = Usage.USED;
+        return DummyValue.getInstance();
     }
 
     private List<State> getOverwrittenWrites() {
-        return delegate.getOverwrittenWrites();
+        for(State s: eventStore) {
+            if(s.usage != Usage.NEW) {
+                throw new IllegalStateException(String.format("Cannot come here: %s, %d, %d",
+                        s.name, s.line, s.column));
+            }
+        }
+        return eventStore.stream()
+                .map(State::new)
+                .collect(Collectors.toList());
     }
 
     void listEvents(final VariableUsageEventHandler handler) {
-        delegate.getWritesNotYetRead(handler);
+        List<State> result = getOverwrittenWrites();
+        result.addAll(states.values().stream()
+                .filter(s -> s.usage == Usage.NEW)
+                .collect(Collectors.toList()));
+        result.forEach(s -> handler.variableNotUsed(s.name, s.line, s.column));
     }
 
     @Override
@@ -241,7 +205,7 @@ class SymbolFrameVariableUsage implements SymbolFrame<DummyValue> {
         if(branchAnalysis.switchOpen) {
             branchAnalysis.onBranchClosed();
         } else {
-            delegate.addEvents(branchAnalysis.getOverwrittenWrites());
+            eventStore.addAll(branchAnalysis.getOverwrittenWrites());
             branchAnalysis = null;
         }
     }
