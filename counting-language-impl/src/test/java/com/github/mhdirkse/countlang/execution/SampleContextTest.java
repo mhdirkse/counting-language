@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mhdirkse.countlang.types.Distribution;
-import com.github.mhdirkse.countlang.types.Distribution.Builder;
 
 public class SampleContextTest {
     private SampleContextImpl instance;
