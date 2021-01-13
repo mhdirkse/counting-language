@@ -38,7 +38,8 @@ class Scope implements BlockListener {
         if(variables.containsKey(name)) {
             variables.get(name).write(line, column, countlangType, codeBlock);
         } else {
-            new Variable(name, line, column, countlangType, VariableWriteKind.ASSIGNMENT, codeBlock);
+            Variable v = new Variable(name, line, column, countlangType, VariableWriteKind.ASSIGNMENT, codeBlock);
+            variables.put(v.getName(), v);
         }
     }
 

@@ -59,6 +59,7 @@ class Variable implements BlockListener {
 
     Variable(String name, int line, int column, CountlangType countlangType, VariableWriteKind kind, CodeBlock codeBlock) {
         this.name = name;
+        this.countlangType = countlangType;
         VariableWrite firstWrite = new VariableWrite(this, line, column, countlangType, kind, codeBlock, true);
         updateOtherWritesAndRegister(firstWrite, codeBlock);
     }
@@ -78,25 +79,26 @@ class Variable implements BlockListener {
         codeBlock.addVariableWrite(write);
         readableWrites.forEach(rw -> rw.overwrite(write));
         readableWrites = new HashSet<>();
+        readableWrites.add(write);
     }
 
     @Override
-    public void startSwitch() {
+    public void startSwitch(CodeBlock codeBlock) {
         contexts.push(new SwitchContext());
     }
 
     @Override
-    public void startBranch() {
+    public void startBranch(CodeBlock codeBlock) {
         ((SwitchContext) contexts.peek()).startBranch();
     }
 
     @Override
-    public void stopBranch() {
+    public void stopBranch(CodeBlock codeBlock) {
         ((SwitchContext) contexts.peek()).stopBranch();
     }
 
     @Override
-    public void stopSwitch() {
+    public void stopSwitch(CodeBlock codeBlock) {
         SwitchContext switchContext = (SwitchContext) contexts.pop();
         readableWrites = new HashSet<>(switchContext.endReadableWrites);
     }
@@ -107,7 +109,7 @@ class Variable implements BlockListener {
     }
 
     @Override
-    public void stopRepetition() {
+    public void stopRepetition(CodeBlock codeBlock) {
         RepetitionContext repetitionContext = (RepetitionContext) contexts.pop();
         for(CodeBlock circularReader: repetitionContext.circularReaders) {
             readableWrites.forEach(w -> w.read(circularReader));    

@@ -1,6 +1,7 @@
 package com.github.mhdirkse.countlang.analysis;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,8 +10,12 @@ import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class Memory implements BlockListener {
-    Stack<Scope> scopes = new Stack<>();
-    List<VariableErrorEvent> variableErrorEvents = new ArrayList<>();
+    private Stack<Scope> scopes = new Stack<>();
+    private List<VariableErrorEvent> variableErrorEvents = new ArrayList<>();
+
+    List<VariableErrorEvent> getVariableErrorEvents() {
+        return Collections.unmodifiableList(variableErrorEvents);
+    }
 
     void pushScope(Scope scope) {
         scopes.push(scope);

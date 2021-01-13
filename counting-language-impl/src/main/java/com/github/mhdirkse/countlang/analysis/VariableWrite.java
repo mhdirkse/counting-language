@@ -36,4 +36,12 @@ class VariableWrite {
     void overwrite(VariableWrite overwritingWrite) {
         overwrittenBy.add(overwritingWrite.getCodeBlock());
     }
+
+    boolean isRead() {
+        return ! readBy.isEmpty();
+    }
+
+    boolean isOverwritten() {
+        return ! overwrittenBy.isEmpty();
+    }
 }
