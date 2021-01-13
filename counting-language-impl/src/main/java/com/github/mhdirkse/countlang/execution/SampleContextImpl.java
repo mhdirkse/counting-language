@@ -76,7 +76,7 @@ class SampleContextImpl implements SampleContext {
         int weight = 1;
         int refineFactor = 1;
         if(!sampleContexts.isEmpty()) {
-            int availableShare = sampleContexts.peek().weight;
+            int availableShare = sampleContexts.peek().getCountOfCurrent();
             int shareUpdate = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
             refineFactor = shareUpdate / availableShare;
             weight = shareUpdate / sampledDistribution.getTotal();

@@ -166,4 +166,17 @@ public class DistributionTest {
         Distribution.Builder b = new Distribution.Builder();
         b.refine(0);
     }
+
+    @Test
+    public void testGetDistributionOfKnown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(2, 1);
+        b.add(3, 4);
+        b.addUnknown(5);
+        Distribution result = b.build().getDistributionOfKnown();
+        Assert.assertEquals(5, result.getTotal());
+        Assert.assertEquals(0, result.getCountUnknown());
+        Assert.assertEquals(1, result.getCountOf(2));
+        Assert.assertEquals(4, result.getCountOf(3));
+    }
 }

@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mhdirkse.countlang.types.Distribution;
+import com.github.mhdirkse.countlang.types.Distribution.Builder;
 
 public class SampleContextTest {
     private SampleContextImpl instance;
@@ -39,11 +40,11 @@ public class SampleContextTest {
         Assert.assertEquals(getSumOfTwoSamplesFromBinomial().format(), instance.getResult().format());
     }
 
-    private void sampleTwice(Distribution d) {
-        instance.startSampledVariable(d);
+    private void sampleTwice(Distribution d1, Distribution d2) {
+        instance.startSampledVariable(d1);
         while(instance.hasNextValue()) {
             int i1 = instance.nextValue();
-            instance.startSampledVariable(d);
+            instance.startSampledVariable(d2);
             while(instance.hasNextValue()) {
                 int i2 = instance.nextValue();
                 instance.score(i1 + i2);
@@ -53,10 +54,14 @@ public class SampleContextTest {
         instance.stopSampledVariable();
     }
 
+    private void sampleTwice(Distribution d) {
+        sampleTwice(d, d);
+    }
+
     @Test
     public void testHandlingUnknown() {
         sampleTwice(getDistributionWithUnknown());
-        Assert.assertEquals(getSumOfTwoSamplesFromUnknown().format(), instance.getResult().format());
+        Assert.assertEquals(getSumOfTwoDistributionWithUnknown().format(), instance.getResult().format());
     }
 
     @Test
@@ -113,6 +118,34 @@ public class SampleContextTest {
         Assert.assertEquals(getSingletonDistributionWithUnknown().format(), instance.getResult().format());
     }
 
+    @Test
+    public void testPluralDistributionsWithoutUnknown() {
+        sampleTwice(getDistributionPlural());
+        Assert.assertEquals(getDistributionSumOfTwoPlural().format(), instance.getResult().format());
+    }
+
+    @Test
+    public void testPluralDistributionWithUnknown() {
+        sampleTwice(getDistributionPluralWithUnknown());
+        Assert.assertEquals(getDistributionSumOfTwoPluralWithUnknown().format(), instance.getResult().format());
+    }
+
+    @Test
+    public void testPluralDistributionWithUnknown_2() {
+        sampleTwice(getDistributionPluralWithUnknown(), getDistributionPluralMultipleUnknown());
+        Assert.assertEquals(
+                getDistributionPluralWithUnknownPlusDistributionPluralMultipleUnknown().format(),
+                instance.getResult().format());
+    }
+
+    @Test
+    public void testPluralDistributionWithUnknown_3() {
+        sampleTwice(getDistributionPluralMultipleUnknown(), getDistributionPluralWithUnknown());
+        Assert.assertEquals(
+                getDistributionPluralWithUnknownPlusDistributionPluralMultipleUnknown().format(),
+                instance.getResult().format());
+    }
+
     private Distribution getBinomialDistribution() {
         Distribution.Builder b = new Distribution.Builder();
         b.add(1);
@@ -136,7 +169,7 @@ public class SampleContextTest {
         return b.build();
     }
 
-    private Distribution getSumOfTwoSamplesFromUnknown() {
+    private Distribution getSumOfTwoDistributionWithUnknown() {
         Distribution.Builder b = new Distribution.Builder();
         b.add(2);
         b.addUnknown(3);
@@ -169,6 +202,58 @@ public class SampleContextTest {
     private Distribution getSingletonDistributionWithUnknown() {
         Distribution.Builder b = new Distribution.Builder();
         b.addUnknown(1);
+        return b.build();
+    }
+
+    private Distribution getDistributionPlural() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(1, 3);
+        b.add(2, 2);
+        b.add(3);
+        return b.build();
+    }
+
+    private Distribution getDistributionSumOfTwoPlural() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(2, 9);
+        b.add(3, 12);
+        b.add(4, 10);
+        b.add(5, 4);
+        b.add(6, 1);
+        return b.build();
+    }
+
+    private Distribution getDistributionPluralWithUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(1, 3);
+        b.add(2, 2);
+        b.addUnknown(1);
+        return b.build();
+    }
+
+    private Distribution getDistributionSumOfTwoPluralWithUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(2, 9);
+        b.add(3, 12);
+        b.add(4, 4);
+        b.addUnknown(11);
+        return b.build();
+    }
+
+    private Distribution getDistributionPluralMultipleUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.addUnknown(3);
+        b.add(2, 2);
+        b.add(3, 1);
+        return b.build();
+    }
+
+    private Distribution getDistributionPluralWithUnknownPlusDistributionPluralMultipleUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(3, 6);
+        b.add(4, 7);
+        b.add(5, 2);
+        b.addUnknown(21);
         return b.build();
     }
 }

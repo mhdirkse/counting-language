@@ -90,6 +90,14 @@ public final class Distribution {
         }
     }
 
+    public Distribution getDistributionOfKnown() {
+        Builder b = new Builder();
+        for(Integer item: items.keySet()) {
+            b.add(item, items.get(item));
+        }
+        return b.build();
+    }
+
     public int getCountOf(int value) {
         return items.getOrDefault(value, 0);
     }

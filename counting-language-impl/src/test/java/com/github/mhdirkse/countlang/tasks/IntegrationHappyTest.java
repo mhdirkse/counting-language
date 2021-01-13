@@ -101,6 +101,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution 2 of 3, 4 total 5", getDistributionWithUnknown(3, 3, 4, 2)},
             {"print distribution 4, 2 of 3 unknown 12", getDistributionWithUnknown(3, 3, 4, 12)},
             {"print distribution 2 of -1", getDistribution(-1, -1)},
+            {"print known of distribution 1, 2 total 5", getDistribution(1, 2)},
+            {"print known of distribution total 1", getDistribution()},
             
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
@@ -139,7 +141,9 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"experiment exp(distribution d1, distribution d2) {sample x from d1; sample y from d2; return x + y}; print exp((distribution 1, 2), (distribution 1, 2, 3));",
                 getDistribution(2, 3, 4, 3, 4, 5)},
             {getProgramExperimentUsesExperiment(), getDistribution(1, 1, 1, 3, 4, 5)},
-            {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print exp();", getDistributionWithUnknown(3, 1)}
+            {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print exp();", getDistributionWithUnknown(3, 1)},
+            {getProgramAboutDisease(), getProgramAboutDiseaseExpectedResult()},
+            {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print known of exp();", getDistribution(3)},
         });
     }
 
@@ -163,6 +167,34 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
                 "};",
                 "print combine();");
         return lines.stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getProgramAboutDisease() {
+        return Arrays.asList("experiment sick() {",
+            "distSick = distribution 9999 of 0, 1 of 1;",
+            "distDiagnosedIfSick = distribution 1 of 0, 99 of 1;",
+            "distDiagnosedIfNotSick = distribution 99 of 0, 1 of 1;",
+            "diagnosed = 0;",
+            "sample sick from distSick;",
+            "if(sick == 0) {",
+            "    sample diagnosed from distDiagnosedIfNotSick;",
+            "} else {",
+            "    sample diagnosed from distDiagnosedIfSick;",
+            "};",
+            "if(diagnosed == 1) {",
+            "    return sick;",
+            "};",
+            "};",
+            "print sick();").stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getProgramAboutDiseaseExpectedResult() {
+        // I did this with a Spreadsheet.
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(0, 9999);
+        b.add(1, 99);
+        b.addUnknown(989902);
+        return b.build().format();
     }
 
     private static String getDistribution(int ...values) {
