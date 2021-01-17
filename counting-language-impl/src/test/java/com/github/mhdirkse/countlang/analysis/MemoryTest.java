@@ -19,7 +19,7 @@ public class MemoryTest {
     @Before
     public void setUp() {
         block = new CodeBlock();
-        memory = new Memory();
+        memory = new MemoryImpl();
     }
 
     @Test

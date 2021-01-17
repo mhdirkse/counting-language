@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.analysis;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +18,11 @@ class VariableWrite {
     private final @Getter boolean initial;
 
     private final Set<CodeBlock> readBy = new HashSet<>();
+
+    Set<CodeBlock> getReadBy() {
+        return Collections.unmodifiableSet(readBy);
+    }
+
     private final Set<CodeBlock> overwrittenBy = new HashSet<>();
 
     VariableWrite(Variable variable, int line, int column, CountlangType countlangType, VariableWriteKind variableWriteKind, CodeBlock codeBlock, boolean initial) {

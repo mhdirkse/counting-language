@@ -34,10 +34,12 @@ class Variable implements BlockListener {
     }
 
     private class RepetitionContext extends SwitchContext {
+        private final Set<VariableWrite> startReadableWrites;
         private final CodeBlock repetitionCodeBlock;
         private Set<CodeBlock> circularReaders = new HashSet<>();
 
         RepetitionContext(CodeBlock repetitionCodeBlock) {
+            startReadableWrites = new HashSet<>(readableWrites);
             this.repetitionCodeBlock = repetitionCodeBlock;
         }
 
@@ -70,9 +72,14 @@ class Variable implements BlockListener {
         return countlangType;
     }
 
-    void write(int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
+    VariableErrorEvent write(int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
         VariableWrite write = new VariableWrite(this, line, column, countlangType, VariableWriteKind.ASSIGNMENT, codeBlock, false);
         updateOtherWritesAndRegister(write, codeBlock);
+        if(this.countlangType != countlangType) {
+            return new VariableErrorEvent(name, line, column, this.countlangType, countlangType);
+        } else {
+            return null;
+        }
     }
 
     private void updateOtherWritesAndRegister(VariableWrite write, CodeBlock codeBlock) {
@@ -114,6 +121,7 @@ class Variable implements BlockListener {
         for(CodeBlock circularReader: repetitionContext.circularReaders) {
             readableWrites.forEach(w -> w.read(circularReader));    
         }
+        readableWrites.addAll(repetitionContext.startReadableWrites);
     }
 
     /**

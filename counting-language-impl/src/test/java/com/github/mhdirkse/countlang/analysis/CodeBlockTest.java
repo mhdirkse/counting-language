@@ -4,15 +4,19 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class CodeBlockTest implements BlockListener {
+import com.github.mhdirkse.countlang.ast.CountlangType;
+
+public class CodeBlockTest implements Memory {
     private static enum BlockKind {
         SWITCH,
         BRANCH,
@@ -86,6 +90,39 @@ public class CodeBlockTest implements BlockListener {
     @Override
     public Iterator<? extends BlockListener> getChildren() {
         throw new IllegalStateException("This class overrides the block listening method, no children needed");
+    }
+
+    @Override
+    public List<VariableErrorEvent> getVariableErrorEvents() {
+        fail("Should not be used by CodeBlocks, except in its decorator role");
+        return null;
+    }
+
+    @Override
+    public void pushScope(Scope scope) {
+        fail("Should not be used by CodeBlocks, except in its decorator role");
+    }
+
+    @Override
+    public Scope popScope() {
+        fail("Should not be used by CodeBlocks, except in its decorator role");
+        return null;
+    }
+
+    @Override
+    public CountlangType read(String name, int line, int column, CodeBlock codeBlock) {
+        fail("Should not be used by CodeBlocks, except in its decorator role");
+        return null;
+    }
+
+    @Override
+    public void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
+        fail("Should not be used by CodeBlocks, except in its decorator role");
+    }
+
+    @Override
+    public void addParameter(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
+        fail("Should not be used by CodeBlocks, except in its decorator role");
     }
 
     @Before

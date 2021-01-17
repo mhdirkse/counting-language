@@ -53,6 +53,6 @@ class CodeBlock {
     }
 
     boolean contains(CodeBlock other) {
-        return descendants.contains(other);
+        return (this == other) || descendants.contains(other);
     }
 }

@@ -34,12 +34,13 @@ class Scope implements BlockListener {
         return variables.get(name).read(codeBlock);
     }
 
-    void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
+    VariableErrorEvent write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
         if(variables.containsKey(name)) {
-            variables.get(name).write(line, column, countlangType, codeBlock);
+            return variables.get(name).write(line, column, countlangType, codeBlock);
         } else {
             Variable v = new Variable(name, line, column, countlangType, VariableWriteKind.ASSIGNMENT, codeBlock);
             variables.put(v.getName(), v);
+            return null;
         }
     }
 
