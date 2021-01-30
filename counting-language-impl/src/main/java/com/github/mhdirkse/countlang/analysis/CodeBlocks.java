@@ -8,54 +8,68 @@ import com.github.mhdirkse.countlang.utils.Stack;
 class CodeBlocks {
     private final Memory memory;
     private Stack<CodeBlock> codeBlocks = new Stack<>();
+    private StatementHandler statementHandler = null;
 
     CodeBlocks(final Memory memory) {
         this.memory = memory;
     }
 
     void start() {
-        codeBlocks.push(new CodeBlock());
+        codeBlocks.push(new CodeBlockRoot());
+        statementHandler = new StatementHandler.Idle();
     }
 
     void stop() {
         codeBlocks.pop();
     }
 
+    // Only for testing purposes
     CodeBlock getLastAddedBlock() {
         return codeBlocks.peek();
     }
 
     void startSwitch() {
-        CodeBlock newBlock = codeBlocks.peek().createChild();
+        CodeBlock newBlock = codeBlocks.peek().createChildForSwitch();
         codeBlocks.push(newBlock);
         memory.startSwitch(newBlock);
     }
 
     void stopSwitch() {
+        memory.stopSwitch(commonStop());
+    }
+
+    private CodeBlock commonStop() {
         CodeBlock stoppedBlock = codeBlocks.pop();
-        memory.stopSwitch(stoppedBlock);
+        statementHandler = new StatementHandler.AfterBlock(stoppedBlock);
+        return stoppedBlock;
     }
 
     void startBranch() {
-        CodeBlock newBlock = codeBlocks.peek().createChild();
+        CodeBlock newBlock = codeBlocks.peek().createChildForBranch();
         codeBlocks.push(newBlock);
         memory.startBranch(newBlock);
     }
 
     void stopBranch() {
-        CodeBlock stoppedBlock = codeBlocks.pop();
-        memory.stopBranch(stoppedBlock);
+        memory.stopBranch(commonStop());
     }
 
     void startRepetition() {
-        CodeBlock newBlock = codeBlocks.peek().createChild();
+        CodeBlock newBlock = codeBlocks.peek().createChildForRepetition();
         codeBlocks.push(newBlock);
         memory.startRepetition(newBlock);
     }
 
     void stopRepetition() {
-        CodeBlock stoppedBlock = codeBlocks.pop();
-        memory.stopRepetition(stoppedBlock);
+        memory.stopRepetition(commonStop());
+    }
+
+    void handleReturn(int line, int column) {
+        statementHandler = codeBlocks.peek().handleReturn(line, column);
+    }
+
+    void handleStatement(int line, int column) {
+        statementHandler = statementHandler.handleStatement(line, column);
     }
 
     List<VariableErrorEvent> getVariableErrorEvents() {

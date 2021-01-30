@@ -18,7 +18,7 @@ public class MemoryTest {
 
     @Before
     public void setUp() {
-        block = new CodeBlock();
+        block = new CodeBlockRoot();
         memory = new MemoryImpl();
     }
 
