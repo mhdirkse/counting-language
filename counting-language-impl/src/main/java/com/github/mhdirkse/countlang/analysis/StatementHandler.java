@@ -25,15 +25,15 @@ interface StatementHandler {
     }
 
     static class AfterReturn implements StatementHandler {
-        private final CodeBlockEvents.Return returnStatement;
+        private final CodeBlockEvent.Return returnStatement;
 
-        AfterReturn(CodeBlockEvents.Return returnStatement) {
+        AfterReturn(CodeBlockEvent.Return returnStatement) {
             this.returnStatement = returnStatement;
         }
 
         @Override
         public StatementHandler handleStatement(int line, int column) {
-            returnStatement.setAfter(new CodeBlockEvents.Statement(line, column));
+            returnStatement.setAfter(new CodeBlockEvent.Statement(line, column));
             return new StatementHandler.Idle();
         }
     }

@@ -18,15 +18,19 @@ public class SortingStatusReporter implements StatusReporter {
         private @Getter StatusCode statusCode;
         private List<String> others;
         
-        public List<String> getOthers() {
-            return new ArrayList<>(others);
-        }
-
         Item(StatusCode statusCode, int line, int column, List<String> others) {
             this.line = line;
             this.column = column;
             this.statusCode = statusCode;
             this.others = others;
+        }
+
+        private String[] othersAsStringArray() {
+            String[] result = new String[others.size()];
+            for(int i = 0; i < others.size(); i++) {
+                result[i] = others.get(i);
+            }
+            return result;
         }
 
         static Comparator<Item> comparator() {
@@ -55,6 +59,6 @@ public class SortingStatusReporter implements StatusReporter {
 
     public void reportTo(StatusReporter reporter) {
         Collections.sort(items, Item.comparator());
-        items.forEach(i -> reporter.report(i.getStatusCode(), i.getLine(), i.getColumn(), (String[]) i.getOthers().toArray()));
+        items.forEach(i -> reporter.report(i.getStatusCode(), i.getLine(), i.getColumn(), i.othersAsStringArray()));
     }
 }

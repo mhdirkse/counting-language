@@ -28,6 +28,11 @@ class MemoryImpl implements Memory {
         return scopes.pop();
     }
 
+    @Override
+    public boolean isAtRootScope() {
+        return scopes.size() == 1;
+    }
+
     /**
      * Enables default implementations of interface {@link BlockListener}.
      */

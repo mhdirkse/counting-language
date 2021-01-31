@@ -8,6 +8,7 @@ interface Memory extends BlockListener {
     List<VariableErrorEvent> getVariableErrorEvents();
     void pushScope(Scope scope);
     Scope popScope();
+    boolean isAtRootScope();
     CountlangType read(String name, int line, int column, CodeBlock codeBlock);
     void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock);
     void addParameter(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock);

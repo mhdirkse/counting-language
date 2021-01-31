@@ -1,6 +1,7 @@
 package com.github.mhdirkse.countlang.analysis;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 
 import lombok.Getter;
@@ -41,6 +42,16 @@ class VariableErrorEvent {
     }
 
     public void report(StatusReporter reporter) {
-        
+        switch(kind) {
+        case DOES_NOT_EXIST:
+            reporter.report(StatusCode.VAR_UNDEFINED, line, column, name);
+            break;
+        case DUPLICATE_PARAMETER:
+            reporter.report(StatusCode.DUPLICATE_PARAMETER, line, column, name);
+            break;
+        case TYPE_MISMATCH:
+            reporter.report(StatusCode.VAR_TYPE_CHANGED, line, column, name);
+            break;
+        }
     }
 }

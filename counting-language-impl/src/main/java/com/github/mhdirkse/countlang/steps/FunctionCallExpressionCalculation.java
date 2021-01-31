@@ -29,6 +29,7 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.execution.SampleContext;
 import com.github.mhdirkse.countlang.execution.SampleContextBase;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
@@ -135,6 +136,9 @@ implements SampleContextBase {
 
         @Override
         void after(ExecutionContext context) {
+            if(functionResult == null) {
+                throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Function %s does not return a value", fun.getName()));
+            }
             context.onResult(functionResult);
         }
     }

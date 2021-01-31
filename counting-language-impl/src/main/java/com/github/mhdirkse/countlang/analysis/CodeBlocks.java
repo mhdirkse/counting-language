@@ -3,11 +3,13 @@ package com.github.mhdirkse.countlang.analysis;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.tasks.StatusReporter;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class CodeBlocks {
     private final Memory memory;
     private Stack<CodeBlock> codeBlocks = new Stack<>();
+    private CodeBlockRoot rootBlock;
     private StatementHandler statementHandler = null;
 
     CodeBlocks(final Memory memory) {
@@ -15,12 +17,17 @@ class CodeBlocks {
     }
 
     void start() {
-        codeBlocks.push(new CodeBlockRoot());
+        rootBlock = new CodeBlockRoot();
+        codeBlocks.push(rootBlock);
         statementHandler = new StatementHandler.Idle();
     }
 
     void stop() {
         codeBlocks.pop();
+    }
+
+    boolean isAtRootLevel() {
+        return memory.isAtRootScope() && (codeBlocks.size() == 1);
     }
 
     // Only for testing purposes
@@ -29,6 +36,7 @@ class CodeBlocks {
     }
 
     void startSwitch() {
+        statementHandler = new StatementHandler.Idle();
         CodeBlock newBlock = codeBlocks.peek().createChildForSwitch();
         codeBlocks.push(newBlock);
         memory.startSwitch(newBlock);
@@ -45,6 +53,7 @@ class CodeBlocks {
     }
 
     void startBranch() {
+        statementHandler = new StatementHandler.Idle();
         CodeBlock newBlock = codeBlocks.peek().createChildForBranch();
         codeBlocks.push(newBlock);
         memory.startBranch(newBlock);
@@ -55,6 +64,7 @@ class CodeBlocks {
     }
 
     void startRepetition() {
+        statementHandler = new StatementHandler.Idle();
         CodeBlock newBlock = codeBlocks.peek().createChildForRepetition();
         codeBlocks.push(newBlock);
         memory.startRepetition(newBlock);
@@ -62,6 +72,17 @@ class CodeBlocks {
 
     void stopRepetition() {
         memory.stopRepetition(commonStop());
+    }
+
+    void startFunction(final int line, final int column, final String functionName) {
+        statementHandler = new StatementHandler.Idle();
+        CodeBlock newBlock = codeBlocks.peek().createChildForFunction(line, column, functionName);
+        codeBlocks.push(newBlock);
+    }
+
+    void stopFunction() {
+        codeBlocks.pop();
+        statementHandler = new StatementHandler.Idle();
     }
 
     void handleReturn(int line, int column) {
@@ -72,8 +93,14 @@ class CodeBlocks {
         statementHandler = statementHandler.handleStatement(line, column);
     }
 
+    // Only for testing purposes
     List<VariableErrorEvent> getVariableErrorEvents() {
         return memory.getVariableErrorEvents();
+    }
+
+    void report(StatusReporter reporter) {
+        getVariableErrorEvents().forEach(ev -> ev.report(reporter));
+        rootBlock.report(reporter);
     }
 
     void pushScope(Scope scope) {

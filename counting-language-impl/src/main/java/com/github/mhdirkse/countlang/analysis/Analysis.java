@@ -1,18 +1,24 @@
 package com.github.mhdirkse.countlang.analysis;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
+import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
+import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
@@ -26,157 +32,268 @@ import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
 import com.github.mhdirkse.countlang.ast.WhileStatement;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
+import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.tasks.SortingStatusReporter;
+import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 
-public class Analysis implements Visitor {
+public class Analysis {
     private final FunctionDefinitions funDefs;
-    private final SortingStatusReporter reporter;
     private final CodeBlocks codeBlocks;
+    private FunctionDefinitionStatementBase analyzedFunction = null;
+    int distributionItemIndex = -1;
 
     public Analysis(List<FunctionDefinitionStatement> funDefs) {
         this.funDefs = new FunctionDefinitions();
         funDefs.forEach(fds -> this.funDefs.putFunction(fds));
-        reporter = new SortingStatusReporter();
         codeBlocks = new CodeBlocks(new MemoryImpl());
     }
 
     public void analyze(StatementGroup rootStatement, StatusReporter reporterDelegate) {
-        rootStatement.accept(this);
-        codeBlocks.getVariableErrorEvents().forEach(ev -> ev.report(reporter));
-        // TODO: Also report errors related to returning.
-        this.reporter.reportTo(reporterDelegate);
+        SortingStatusReporter reporter = new SortingStatusReporter();
+        AnalysisVisitor v = new AnalysisVisitor(reporter);
+        codeBlocks.start();
+        rootStatement.accept(v);
+        codeBlocks.stop();
+        codeBlocks.report(reporter);
+        reporter.reportTo(reporterDelegate);
     }
 
-    @Override
-    public void visitStatementGroup(StatementGroup statementGroup) {
-        // TODO Auto-generated method stub
-        
-    }
+    private class AnalysisVisitor implements Visitor {
+        private final StatusReporter reporter;
 
-    @Override
-    public void visitAssignmentStatement(AssignmentStatement statement) {
-        // TODO Auto-generated method stub
-        
-    }
+        AnalysisVisitor(StatusReporter reporter) {
+            this.reporter = reporter;
+        }
 
-    @Override
-    public void visitSampleStatement(SampleStatement statement) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitStatementGroup(StatementGroup statementGroup) {
+            codeBlocks.pushScope(new Scope(StackFrameAccess.SHOW_PARENT));
+            for(AstNode statement: statementGroup.getChildren()) {
+                codeBlocks.handleStatement(statement.getLine(), statement.getColumn());
+                statement.accept(this);
+            }
+            codeBlocks.popScope();
+        }
 
-    @Override
-    public void visitPrintStatement(PrintStatement statement) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitAssignmentStatement(AssignmentStatement statement) {
+            ExpressionNode rhs = statement.getRhs();
+            rhs.accept(this);
+            codeBlocks.write(statement.getLhs(), statement.getLine(), statement.getColumn(), rhs.getCountlangType());
+        }
 
-    @Override
-    public void visitMarkUsedStatement(MarkUsedStatement statement) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitSampleStatement(SampleStatement statement) {
+            statement.getSampledDistribution().accept(this);
+            codeBlocks.write(statement.getSymbol(), statement.getLine(), statement.getColumn(), CountlangType.DISTRIBUTION);
+        }
 
-    @Override
-    public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitPrintStatement(PrintStatement statement) {
+            statement.getExpression().accept(this);
+        }
 
-    @Override
-    public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitMarkUsedStatement(MarkUsedStatement statement) {
+            statement.getExpression().accept(this);            
+        }
 
-    @Override
-    public void visitReturnStatement(ReturnStatement statement) {
-        // TODO Auto-generated method stub
+        @Override
+        public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
+            analyzeFunctionDefinitionBase(statement);
+        }
         
-    }
+        private void analyzeFunctionDefinitionBase(FunctionDefinitionStatementBase statement) {
+            if(! codeBlocks.isAtRootLevel()) {
+                reporter.report(StatusCode.FUNCTION_NESTED_NOT_ALLOWED, statement.getLine(), statement.getColumn());
+            }
+            else if(funDefs.hasFunction(statement.getName())) {
+                reporter.report(StatusCode.FUNCTION_ALREADY_DEFINED, statement.getLine(), statement.getColumn(), statement.getName());
+            } else {
+                analyzeFunction(statement);
+                funDefs.putFunction(statement);
+            }
+        }
 
-    @Override
-    public void visitIfStatement(IfStatement ifStatement) {
-        // TODO Auto-generated method stub
-        
-    }
+        private void analyzeFunction(FunctionDefinitionStatementBase statement) {
+            analyzedFunction = statement;
+            codeBlocks.startFunction(statement.getLine(), statement.getColumn(), statement.getName());
+            codeBlocks.pushScope(new Scope(StackFrameAccess.HIDE_PARENT));
+            for(FormalParameter p: statement.getFormalParameters().getFormalParameters()) {
+                codeBlocks.addParameter(p.getName(), p.getLine(), p.getColumn(), p.getCountlangType());
+            }
+            statement.getStatements().accept(this);
+            codeBlocks.popScope();
+            codeBlocks.stopFunction();
+            analyzedFunction = null;
+        }
 
-    @Override
-    public void visitWhileStatement(WhileStatement whileStatement) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
+            analyzeFunctionDefinitionBase(statement);            
+        }
 
-    @Override
-    public void visitCompositeExpression(CompositeExpression expression) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitReturnStatement(ReturnStatement statement) {
+            statement.getExpression().accept(this);
+            CountlangType newReturnType = statement.getExpression().getCountlangType();
+            codeBlocks.handleReturn(statement.getLine(), statement.getColumn());
+            if(newReturnType == CountlangType.UNKNOWN) {
+                // UNKNOWN should appear here because of earlier errors, no need to report something.
+                return;
+            }
+            if(analyzedFunction instanceof FunctionDefinitionStatement) {
+                FunctionDefinitionStatement f = (FunctionDefinitionStatement) analyzedFunction;
+                if(f.getReturnType() == CountlangType.UNKNOWN) {
+                    f.setReturnType(newReturnType);
+                } else if(newReturnType != f.getReturnType()) {
+                    reporter.report(StatusCode.FUNCTION_RETURN_TYPE_MISMATCH, f.getLine(), f.getColumn(), newReturnType.toString(), f.getReturnType().toString());
+                }
+            }
+        }
 
-    @Override
-    public void visitFunctionCallExpression(FunctionCallExpression expression) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitIfStatement(IfStatement ifStatement) {
+            ifStatement.getSelector().accept(this);
+            if(ifStatement.getSelector().getCountlangType() != CountlangType.BOOL) {
+                reporter.report(StatusCode.IF_SELECT_NOT_BOOLEAN, ifStatement.getLine(), ifStatement.getColumn(), ifStatement.getSelector().getCountlangType().toString());
+            }
+            codeBlocks.startSwitch();
+            codeBlocks.startBranch();
+            ifStatement.getThenStatement().accept(this);
+            codeBlocks.stopBranch();
+            codeBlocks.startBranch();
+            if(ifStatement.getElseStatement() != null) {
+                ifStatement.getElseStatement().accept(this);
+            }
+            codeBlocks.stopBranch();
+            codeBlocks.stopSwitch();
+        }
 
-    @Override
-    public void visitSymbolExpression(SymbolExpression expression) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitWhileStatement(WhileStatement whileStatement) {
+            codeBlocks.startRepetition();
+            whileStatement.getTestExpr().accept(this);
+            if(whileStatement.getTestExpr().getCountlangType() != CountlangType.BOOL) {
+                reporter.report(StatusCode.WHILE_TEST_NOT_BOOLEAN, whileStatement.getLine(), whileStatement.getColumn(), whileStatement.getTestExpr().getCountlangType().toString());
+            }
+            whileStatement.getStatement().accept(this);
+            codeBlocks.stopRepetition();
+        }
 
-    @Override
-    public void visitValueExpression(ValueExpression expression) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitCompositeExpression(CompositeExpression expression) {
+            expression.getSubExpressions().forEach(ex -> ex.accept(this));
+            expression.setCountlangType(CountlangType.UNKNOWN);
+            List<CountlangType> types = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
+            if(types.size() != expression.getOperator().getNumArguments()) {
+                reporter.report(StatusCode.OPERATOR_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(),
+                        expression.getOperator().getName(), new Integer(expression.getOperator().getNumArguments()).toString(), new Integer(types.size()).toString());
+            }
+            boolean typesOk = expression.getOperator().checkAndEstablishTypes(types);
+            if(! typesOk) {
+                reporter.report(StatusCode.OPERATOR_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getOperator().getName());
+            }
+            expression.setCountlangType(expression.getOperator().getResultType());
+        }
 
-    @Override
-    public void visitOperator(Operator operator) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitFunctionCallExpression(FunctionCallExpression expression) {
+            expression.setCountlangType(CountlangType.UNKNOWN);
+            expression.getSubExpressions().forEach(ex -> ex.accept(this));
+            if(! funDefs.hasFunction(expression.getFunctionName())) {
+                reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getFunctionName());
+                return;
+            }
+            expression.setCountlangType(funDefs.getFunction(expression.getFunctionName()).getReturnType());
+            List<CountlangType> types = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
+            if(types.size() != expression.getNumArguments()) {
+                reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getFunctionName(),
+                        new Integer(expression.getNumArguments()).toString(), new Integer(types.size()).toString());
+                return;
+            } else {
+                for(int i = 0; i < expression.getNumArguments(); i++) {
+                    if(expression.getArgument(i).getCountlangType() != types.get(i)) {
+                        reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getFunctionName(), new Integer(i).toString());
+                        return;
+                    }
+                }
+            }
+        }
 
-    @Override
-    public void visitFormalParameters(FormalParameters formalParameters) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitSymbolExpression(SymbolExpression expression) {
+            expression.setCountlangType(codeBlocks.read(expression.getSymbol(), expression.getLine(), expression.getColumn()));
+        }
 
-    @Override
-    public void visitFormalParameter(FormalParameter formalParameter) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitValueExpression(ValueExpression expression) {
+        }
 
-    @Override
-    public void visitSimpleDistributionExpression(SimpleDistributionExpression expr) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitOperator(Operator operator) {
+        }
 
-    @Override
-    public void visitDistributionExpressionWithTotal(DistributionExpressionWithTotal expr) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitFormalParameters(FormalParameters formalParameters) {
+        }
 
-    @Override
-    public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expr) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitFormalParameter(FormalParameter formalParameter) {
+        }
 
-    @Override
-    public void visitDistributionItemItem(DistributionItemItem item) {
-        // TODO Auto-generated method stub
-        
-    }
+        @Override
+        public void visitSimpleDistributionExpression(SimpleDistributionExpression expr) {
+            genericHandleDistributionExpression(expr);
+        }
 
-    @Override
-    public void visitDistributionItemCount(DistributionItemCount item) {
-        // TODO Auto-generated method stub
-        
+        private void genericHandleDistributionExpression(AbstractDistributionExpression expr) {
+            for(distributionItemIndex = 0; distributionItemIndex < expr.getNumSubExpressions(); distributionItemIndex++) {
+                expr.getChildren().get(distributionItemIndex).accept(this);
+            }
+        }
+
+        @Override
+        public void visitDistributionExpressionWithTotal(DistributionExpressionWithTotal expr) {
+            genericHandleDistributionExpression(expr);
+            ExpressionNode extra = (ExpressionNode) expr.getChildren().get(expr.getNumSubExpressions() - 1);
+            checkExtraValue(extra);
+        }
+
+        void checkExtraValue(ExpressionNode extra) {
+            if(extra.getCountlangType() != CountlangType.INT) {
+                reporter.report(StatusCode.DISTRIBUTION_AMOUNT_NOT_INT, extra.getLine(), extra.getColumn());
+            }
+        }
+
+        @Override
+        public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expr) {
+            genericHandleDistributionExpression(expr);
+            ExpressionNode extra = (ExpressionNode) expr.getChildren().get(expr.getNumSubExpressions() - 1);
+            checkExtraValue(extra);
+        }
+
+        @Override
+        public void visitDistributionItemItem(DistributionItemItem item) {
+            item.getChildren().forEach(c -> c.accept(this));
+            CountlangType actual = item.getItem().getCountlangType();
+            if(actual != CountlangType.INT) {
+                reporter.report(StatusCode.DISTRIBUTION_SCORED_VALUE_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
+            }
+        }
+
+        @Override
+        public void visitDistributionItemCount(DistributionItemCount item) {
+            item.getChildren().forEach(c -> c.accept(this));
+            CountlangType actual = item.getCount().getCountlangType();
+            if(actual != CountlangType.INT) {
+                reporter.report(StatusCode.DISTRIBUTION_SCORED_COUNT_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
+            }
+            actual = item.getItem().getCountlangType();
+            if(item.getItem().getCountlangType() != CountlangType.INT) {
+                reporter.report(StatusCode.DISTRIBUTION_SCORED_VALUE_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
+            }
+        }        
     }
 }

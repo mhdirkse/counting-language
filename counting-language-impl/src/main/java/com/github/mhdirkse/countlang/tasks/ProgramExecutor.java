@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.github.mhdirkse.countlang.analysis.Analysis;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
@@ -63,28 +64,19 @@ public class ProgramExecutor {
 
     private void checkAndRunProgram(final OutputStrategy outputStrategy, final StatementGroup statementGroup) throws IOException {
         List<Supplier<Boolean>> checks = new ArrayList<>();
-        checks.add(() -> typeCheck(statementGroup, outputStrategy));
-        checks.add(() -> checkVariables(statementGroup, outputStrategy));
+        checks.add(() -> check(statementGroup, outputStrategy));
         Runnable runProgram = () -> runProgram(statementGroup, outputStrategy);
         Imperative.runWhileTrue(checks, runProgram);
     }
 
-    private boolean typeCheck(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
+    private boolean check(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
         StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        statementGroup.accept(TypeCheck.getInstance(reporter, getPredefinedFunctions()));
-        return !reporter.hasErrors();
+        new Analysis(getPredefinedFunctions()).analyze(statementGroup, reporter);
+        return ! reporter.hasErrors();
     }
 
     private List<FunctionDefinitionStatement> getPredefinedFunctions() {
         return Arrays.asList(TestFunctionDefinitions.createTestFunction());
-    }
-
-    private boolean checkVariables(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
-        StatusReporter reporter = new StatusReporterImpl(outputStrategy);
-        VariableCheck check = VariableCheck.getInstance(reporter, getPredefinedFunctions());
-        statementGroup.accept(check);
-        check.listEvents();
-        return !reporter.hasErrors();
     }
 
     private void runProgram(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {
@@ -105,10 +97,7 @@ public class ProgramExecutor {
     }
 
     private Stepper checkAndGetStepper(final OutputStrategy outputStrategy, final StatementGroup statementGroup) throws IOException {
-        if(! typeCheck(statementGroup, outputStrategy)) {
-            return null;
-        }
-        if(! checkVariables(statementGroup, outputStrategy)) {
+        if(! check(statementGroup, outputStrategy)) {
             return null;
         }
         return Stepper.getInstance(statementGroup, outputStrategy, getPredefinedFunctions());

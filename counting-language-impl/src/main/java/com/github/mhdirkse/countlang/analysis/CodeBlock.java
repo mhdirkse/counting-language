@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.tasks.StatusCode;
+import com.github.mhdirkse.countlang.tasks.StatusReporter;
+
 import lombok.Getter;
 
 abstract class CodeBlock {
@@ -27,13 +30,13 @@ abstract class CodeBlock {
         return Collections.unmodifiableSet(descendants);
     }
 
-    private List<CodeBlockEvents.Return> returnStatements = new ArrayList<>();
+    private List<CodeBlockEvent.Return> returnStatements = new ArrayList<>();
 
-    final List<CodeBlockEvents.Return> getReturnStatements() {
+    final List<CodeBlockEvent.Return> getReturnStatements() {
         return Collections.unmodifiableList(returnStatements);
     }
 
-    private @Getter CodeBlockEvents.Statement statementAfter = null;
+    private @Getter CodeBlockEvent.Statement statementAfter = null;
 
     private final List<VariableWrite> variableWrites = new ArrayList<>();
 
@@ -59,6 +62,12 @@ abstract class CodeBlock {
 
     final CodeBlock createChildForRepetition() {
         CodeBlock result = new CodeBlockRepeated(this);
+        registerChild(result);
+        return result;
+    }
+
+    final CodeBlock createChildForFunction(final int line, final int column, final String functionName) {
+        CodeBlock result = new CodeBlockFunction(this, line, column, functionName);
         registerChild(result);
         return result;
     }
@@ -92,20 +101,21 @@ abstract class CodeBlock {
      * @throws IllegalArgumentException When a statement appears unexpectedly after the block has ended.
      */
     void handleStatementAfterStopped(int line, int column) {
-        statementAfter = new CodeBlockEvents.Statement(line, column);
+        statementAfter = new CodeBlockEvent.Statement(line, column);
     }
 
     /**
      * @throws IllegalStateException When a return statement appears in a code block it is not expected in.
      */
     StatementHandler handleReturn(int line, int column) {
-        CodeBlockEvents.Return returnStatement = new CodeBlockEvents.Return(line, column);
+        CodeBlockEvent.Return returnStatement = new CodeBlockEvent.Return(line, column);
         returnStatements.add(returnStatement);
         return new StatementHandler.AfterReturn(returnStatement);
     }
 
     /**
-     * @throws IllegalStateException When a CodeBlockParallel does not have children for branches.
+     * @throws IllegalStateException When a CodeBlockParallel does not have children for branches, which
+     * would be a programming error.
      */
     final ReturnStatus getReturnStatus() {
         ReturnStatus result = getSpecificReturnStatus();
@@ -114,7 +124,16 @@ abstract class CodeBlock {
         }
         return result;
     }
-    
+
+    void reportStatementHasNoEffect(final StatusReporter reporter, String functionName) {
+        returnStatements.stream()
+            .filter(ret -> ret.getAfter() != null)
+            .forEach(ret -> reporter.report(StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT, ret.getAfter().getLine(), ret.getAfter().getColumn(), functionName));
+        if((getReturnStatus() == ReturnStatus.STRONG_ALL_RETURN) && (getStatementAfter() != null)) {
+            reporter.report(StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT, getStatementAfter().getLine(), getStatementAfter().getColumn(), functionName);
+        }
+    }
+
     abstract ReturnStatus getSpecificReturnStatus();
     abstract boolean isRootOrFunction();
 }

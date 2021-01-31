@@ -200,4 +200,9 @@ public class CodeBlockTest implements Memory {
         assertTrue(receivedBlocks.get(switchBlock).isStopped);
         assertEquals(BlockKind.SWITCH, receivedBlocks.get(switchBlock).kind);
     }
+
+    @Override
+    public boolean isAtRootScope() {
+        throw new IllegalStateException("Not expected to be called");
+    }
 }
