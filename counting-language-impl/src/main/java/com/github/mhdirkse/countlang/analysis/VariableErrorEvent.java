@@ -1,6 +1,7 @@
 package com.github.mhdirkse.countlang.analysis;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.tasks.StatusReporter;
 
 import lombok.Getter;
 
@@ -37,5 +38,9 @@ class VariableErrorEvent {
         this.column = column;
         this.variableType = variableType;
         this.typeMismatch = typeMismatch;
+    }
+
+    public void report(StatusReporter reporter) {
+        
     }
 }
