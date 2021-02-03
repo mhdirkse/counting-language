@@ -25,6 +25,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
+
 public class DistributionTest {
     private static final String EMPTY = "empty";
     private static final int FIRST_ITEM = 3;

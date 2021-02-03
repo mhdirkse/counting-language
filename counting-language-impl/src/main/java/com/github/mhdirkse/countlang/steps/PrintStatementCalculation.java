@@ -21,8 +21,8 @@ package com.github.mhdirkse.countlang.steps;
 
 import java.util.List;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 final class PrintStatementCalculation extends ExpressionResultsCollector {
     PrintStatementCalculation(PrintStatement node) {

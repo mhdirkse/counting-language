@@ -22,7 +22,7 @@ package com.github.mhdirkse.countlang.execution;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import com.github.mhdirkse.countlang.types.Distribution;
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class SampleContextImpl implements SampleContext {

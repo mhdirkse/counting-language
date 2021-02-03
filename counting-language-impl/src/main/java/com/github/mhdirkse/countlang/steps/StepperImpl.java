@@ -19,9 +19,9 @@
 
 package com.github.mhdirkse.countlang.steps;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
-import com.github.mhdirkse.countlang.types.Distribution;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class StepperImpl implements Stepper, StepperCallback {

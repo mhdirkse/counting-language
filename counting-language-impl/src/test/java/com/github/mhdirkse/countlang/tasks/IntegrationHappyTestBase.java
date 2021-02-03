@@ -25,9 +25,9 @@ import java.io.StringReader;
 import org.junit.After;
 import org.junit.Before;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 public class IntegrationHappyTestBase implements OutputStrategy {
     TestOutputStrategy outputStrategy;

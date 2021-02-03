@@ -19,7 +19,7 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.types.Distribution;
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 
 public interface SampleContextBase {
     public void startSampledVariable(final Distribution sampledDistribution);

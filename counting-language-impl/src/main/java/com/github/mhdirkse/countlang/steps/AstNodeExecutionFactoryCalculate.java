@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.steps;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
@@ -38,7 +39,6 @@ import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.WhileStatement;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override

@@ -28,10 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.execution.SampleContextBase;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 class Executor implements SampleContextBase {
     private final Deque<AstNodeExecution> callStack;

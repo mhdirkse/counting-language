@@ -21,7 +21,7 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.types.Distribution;
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 
 public abstract class Operator extends AstNode {
     public Operator(final int line, final int column) {

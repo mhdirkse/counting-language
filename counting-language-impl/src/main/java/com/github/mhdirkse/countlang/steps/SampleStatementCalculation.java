@@ -22,10 +22,10 @@ package com.github.mhdirkse.countlang.steps;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 class SampleStatementCalculation implements AstNodeExecution {
     SubExpressionStepper delegate;

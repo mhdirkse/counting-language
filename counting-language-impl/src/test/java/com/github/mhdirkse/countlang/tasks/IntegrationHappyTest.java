@@ -37,8 +37,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.steps.Stepper;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 @RunWith(Parameterized.class)
 public class IntegrationHappyTest extends IntegrationHappyTestBase

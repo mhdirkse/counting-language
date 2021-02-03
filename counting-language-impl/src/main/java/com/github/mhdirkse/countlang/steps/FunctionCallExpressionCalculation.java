@@ -25,6 +25,7 @@ import static com.github.mhdirkse.countlang.steps.ExpressionsAndStatementsCombin
 
 import java.util.List;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
@@ -33,7 +34,6 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.execution.SampleContext;
 import com.github.mhdirkse.countlang.execution.SampleContextBase;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 final class FunctionCallExpressionCalculation
 extends ExpressionsAndStatementsCombinationHandler

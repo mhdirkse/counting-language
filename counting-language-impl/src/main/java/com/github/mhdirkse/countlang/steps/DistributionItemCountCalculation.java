@@ -2,9 +2,9 @@ package com.github.mhdirkse.countlang.steps;
 
 import java.util.List;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.ProgramException;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 class DistributionItemCountCalculation extends ExpressionResultsCollector {
     private final Distribution.Builder builder;

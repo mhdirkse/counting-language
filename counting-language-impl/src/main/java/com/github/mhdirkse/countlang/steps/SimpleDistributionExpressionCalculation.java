@@ -23,9 +23,9 @@ import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.AFTER;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.BEFORE;
 import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.types.Distribution;
 
 class SimpleDistributionExpressionCalculation implements AstNodeExecution {
     private AstNodeExecutionState state = BEFORE;
