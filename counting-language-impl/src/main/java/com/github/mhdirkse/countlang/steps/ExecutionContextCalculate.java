@@ -25,17 +25,17 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
-import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
+import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 import com.github.mhdirkse.countlang.types.Distribution;
 
 class ExecutionContextCalculate implements ExecutionContext {
-    private final SymbolFrameStackExecute symbolFrame;
+    private final SymbolFrameStack symbolFrame;
     private StepperCallback stepperCallback;
     private final FunctionDefinitions funDefs;
     private final OutputStrategy outputStrategy;
 
     ExecutionContextCalculate(
-            final SymbolFrameStackExecute symbolFrame,
+            final SymbolFrameStack symbolFrame,
             final FunctionDefinitions funDefs,
             final OutputStrategy outputStrategy) {
         this.symbolFrame = symbolFrame;
@@ -44,7 +44,7 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     ExecutionContextCalculate(ExecutionContextCalculate orig) {
-        this.symbolFrame = new SymbolFrameStackExecute(orig.symbolFrame);
+        this.symbolFrame = new SymbolFrameStack(orig.symbolFrame);
         this.stepperCallback = orig.stepperCallback;
         this.funDefs = orig.funDefs;
         this.outputStrategy = orig.outputStrategy;

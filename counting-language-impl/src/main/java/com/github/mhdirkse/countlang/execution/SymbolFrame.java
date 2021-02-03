@@ -19,9 +19,44 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-interface SymbolFrame<T> extends BranchHandler {
-    boolean has(String name);
-    T read(String name, int line, int column);
-    void write(String name, T value, int line, int column);
-    StackFrameAccess getAccess();
+import java.util.HashMap;
+import java.util.Map;
+
+import com.github.mhdirkse.countlang.ast.ProgramException;
+
+class SymbolFrame {
+    private final Map<String, Object> symbols;
+
+    private final StackFrameAccess access;
+
+    public SymbolFrame(StackFrameAccess access) {
+        symbols = new HashMap<>();
+        this.access = access;
+    }
+
+    SymbolFrame(SymbolFrame orig) {
+        Map<String, Object> theSymbols = new HashMap<>();
+        theSymbols.putAll(orig.symbols);
+        this.symbols = theSymbols;
+        this.access = orig.access;
+    }
+
+    public StackFrameAccess getAccess() {
+        return access;
+    }
+
+    public boolean has(String name) {
+        return symbols.containsKey(name);
+    }
+
+    public Object read(String name, int line, int column) {
+        if(symbols.containsKey(name)) {
+            return symbols.get(name);
+        }
+        throw new ProgramException(line, column, "Undefined variable %s" + name);
+    }
+
+    public void write(String name, Object value, int line, int column) {
+        symbols.put(name, value);
+    }
 }

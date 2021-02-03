@@ -25,7 +25,7 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.SymbolFrameStackExecute;
+import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 
 public interface Stepper {
     boolean hasMoreSteps();
@@ -46,7 +46,7 @@ public interface Stepper {
 
     public static Stepper getInstance(
             final AstNode target, final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFunctions) {
-        SymbolFrameStackExecute symbolFrameStack = new SymbolFrameStackExecute();
+        SymbolFrameStack symbolFrameStack = new SymbolFrameStack();
         FunctionDefinitions funDefs = new FunctionDefinitions();
         predefinedFunctions.forEach(f -> funDefs.putFunction(f));
         AstNodeExecutionFactory factory = new AstNodeExecutionFactoryCalculate();

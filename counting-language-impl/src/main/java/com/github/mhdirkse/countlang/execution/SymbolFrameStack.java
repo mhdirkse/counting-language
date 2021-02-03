@@ -19,9 +19,73 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-public interface SymbolFrameStack<T> extends BranchHandler {
-    void pushFrame(StackFrameAccess stackFrameAccess);
-    void popFrame();
-    T read(String name, int line, int column);
-    void write(String name, T value, int line, int column);
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import com.github.mhdirkse.countlang.utils.Stack;
+
+public class SymbolFrameStack {
+    private final Stack<SymbolFrame> frameStack;
+
+    public SymbolFrameStack() {
+        frameStack = new Stack<>();
+    }
+
+    public SymbolFrameStack(SymbolFrameStack orig) {
+        final Stack<SymbolFrame> copied = new Stack<>();
+        orig.frameStack.forEach(f -> copied.push(new SymbolFrame(f)));
+        frameStack = copied;
+    }
+
+    /// Only for testing purposes
+    SymbolFrameStack(Stack<SymbolFrame> frameStack) {
+        this.frameStack = frameStack;
+    }
+
+    public final void pushFrame(StackFrameAccess stackFrameAccess) {
+        frameStack.push(create(stackFrameAccess));
+    }
+
+    public final void popFrame() {
+        frameStack.pop();
+    }
+
+    public final Object read(String name, int line, int column) {
+        return findFrame(name).read(name, line, column);
+    }
+
+    public final void write(String name, Object value, int line, int column) {
+        findFrame(name).write(name, value, line, column);
+    }
+
+    SymbolFrame create(StackFrameAccess access) {
+        return new SymbolFrame(access);
+    }
+
+    final SymbolFrame findFrame(String name) {
+        List<SymbolFrame> accessibleFrames = getAccessibleFrames();
+        if(accessibleFrames.isEmpty()) {
+            throw new IllegalStateException("No symbol frames to search for symbol: " + name);
+        }
+        for(SymbolFrame s: accessibleFrames) {
+            if(s.has(name)) {
+                return s;
+            }
+        }
+        return accessibleFrames.get(0);
+    }
+
+    private List<SymbolFrame> getAccessibleFrames() {
+        List<SymbolFrame> result = new ArrayList<>();
+        Iterator<SymbolFrame> it = frameStack.topToBottomIterator();
+        while(it.hasNext()) {
+            SymbolFrame current = it.next();
+            result.add(current);
+            if(current.getAccess() == StackFrameAccess.HIDE_PARENT) {
+                break;
+            }
+        }
+        return result;
+    }
 }

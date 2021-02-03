@@ -28,11 +28,11 @@ public class SymbolFrameExecuteTest {
     private static final String SYMBOL = "x";
     private static final Integer VALUE = Integer.valueOf(10);
 
-    private SymbolFrameExecute instance;
+    private SymbolFrame instance;
 
     @Before
     public void setUp() {
-        instance = new SymbolFrameExecute(DUMMY_ACCESS);
+        instance = new SymbolFrame(DUMMY_ACCESS);
     }
 
     @Test
