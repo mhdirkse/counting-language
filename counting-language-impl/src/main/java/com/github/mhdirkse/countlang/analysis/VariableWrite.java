@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.tasks.StatusCode;
+import com.github.mhdirkse.countlang.tasks.StatusReporter;
 
 import lombok.Getter;
 
@@ -49,5 +51,32 @@ class VariableWrite {
 
     boolean isOverwritten() {
         return ! overwrittenBy.isEmpty();
+    }
+
+    void report(StatusReporter reporter) {
+        if(! readBy.isEmpty()) {
+            return;
+        }
+        if(variableWriteKind == VariableWriteKind.PARAMETER) {
+            issueVarNotUsed(reporter);
+            return;
+        }
+        if(! isInitial()) {
+            issueVarNotUsed(reporter);
+            return;
+        }
+        if(! isOverwrittenFromDescendantBlock()) {
+            issueVarNotUsed(reporter);
+        }
+    }
+
+    private void issueVarNotUsed(StatusReporter reporter) {
+        reporter.report(StatusCode.VAR_NOT_USED, line, column, variable.getName());
+    }
+
+    private boolean isOverwrittenFromDescendantBlock() {
+        Set<CodeBlock> relevantOverwriters = new HashSet<>(overwrittenBy);
+        relevantOverwriters.remove(codeBlock);
+        return ! relevantOverwriters.isEmpty();
     }
 }

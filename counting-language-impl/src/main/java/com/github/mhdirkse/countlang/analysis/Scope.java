@@ -45,6 +45,7 @@ class Scope implements BlockListener {
     }
 
     void addParameter(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
-        new Variable(name, line, column, countlangType, VariableWriteKind.PARAMETER, codeBlock);
+        Variable v = new Variable(name, line, column, countlangType, VariableWriteKind.PARAMETER, codeBlock);
+        variables.put(v.getName(), v);
     }
 }

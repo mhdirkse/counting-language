@@ -80,6 +80,12 @@ class CodeBlocks {
         codeBlocks.push(newBlock);
     }
 
+    void startExperiment(final int line, final int column, final String functionName) {
+        statementHandler = new StatementHandler.Idle();
+        CodeBlock newBlock = codeBlocks.peek().createChildForExperiment(line, column, functionName);
+        codeBlocks.push(newBlock);        
+    }
+
     void stopFunction() {
         codeBlocks.pop();
         statementHandler = new StatementHandler.Idle();

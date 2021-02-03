@@ -67,9 +67,15 @@ abstract class CodeBlock {
     }
 
     final CodeBlock createChildForFunction(final int line, final int column, final String functionName) {
-        CodeBlock result = new CodeBlockFunction(this, line, column, functionName);
+        CodeBlock result = new CodeBlockFunctionBase.Function(this, line, column, functionName);
         registerChild(result);
         return result;
+    }
+
+    final CodeBlock createChildForExperiment(final int line, final int column, final String functionName) {
+        CodeBlock result = new CodeBlockFunctionBase.Experiment(this, line, column, functionName);
+        registerChild(result);
+        return result;        
     }
 
     final private void registerChild(CodeBlock child) {

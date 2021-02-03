@@ -85,8 +85,15 @@ public class Analysis {
 
         @Override
         public void visitSampleStatement(SampleStatement statement) {
+            if(analyzedFunction == null) {
+                reporter.report(StatusCode.SAMPLING_OUTSIDE_EXPERIMENT, statement.getLine(), statement.getColumn());
+            }
             statement.getSampledDistribution().accept(this);
-            codeBlocks.write(statement.getSymbol(), statement.getLine(), statement.getColumn(), CountlangType.DISTRIBUTION);
+            CountlangType actualType = statement.getSampledDistribution().getCountlangType();
+            if(actualType != CountlangType.DISTRIBUTION) {
+                reporter.report(StatusCode.SAMPLED_FROM_NON_DISTRIBUTION, statement.getLine(), statement.getColumn(), actualType.toString());
+            }
+            codeBlocks.write(statement.getSymbol(), statement.getLine(), statement.getColumn(), CountlangType.INT);
         }
 
         @Override
@@ -101,24 +108,24 @@ public class Analysis {
 
         @Override
         public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-            analyzeFunctionDefinitionBase(statement);
+            analyzeFunctionDefinitionBase(statement, () -> codeBlocks.startFunction(statement.getLine(), statement.getColumn(), statement.getName()));
         }
         
-        private void analyzeFunctionDefinitionBase(FunctionDefinitionStatementBase statement) {
+        private void analyzeFunctionDefinitionBase(FunctionDefinitionStatementBase statement, Runnable blockCreator) {
             if(! codeBlocks.isAtRootLevel()) {
                 reporter.report(StatusCode.FUNCTION_NESTED_NOT_ALLOWED, statement.getLine(), statement.getColumn());
             }
             else if(funDefs.hasFunction(statement.getName())) {
                 reporter.report(StatusCode.FUNCTION_ALREADY_DEFINED, statement.getLine(), statement.getColumn(), statement.getName());
             } else {
-                analyzeFunction(statement);
+                analyzeFunction(statement, blockCreator);
                 funDefs.putFunction(statement);
             }
         }
 
-        private void analyzeFunction(FunctionDefinitionStatementBase statement) {
+        private void analyzeFunction(FunctionDefinitionStatementBase statement, Runnable blockCreator) {
             analyzedFunction = statement;
-            codeBlocks.startFunction(statement.getLine(), statement.getColumn(), statement.getName());
+            blockCreator.run();
             codeBlocks.pushScope(new Scope(StackFrameAccess.HIDE_PARENT));
             for(FormalParameter p: statement.getFormalParameters().getFormalParameters()) {
                 codeBlocks.addParameter(p.getName(), p.getLine(), p.getColumn(), p.getCountlangType());
@@ -131,7 +138,7 @@ public class Analysis {
 
         @Override
         public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
-            analyzeFunctionDefinitionBase(statement);            
+            analyzeFunctionDefinitionBase(statement, () -> codeBlocks.startExperiment(statement.getLine(), statement.getColumn(), statement.getName()));
         }
 
         @Override
@@ -149,6 +156,11 @@ public class Analysis {
                     f.setReturnType(newReturnType);
                 } else if(newReturnType != f.getReturnType()) {
                     reporter.report(StatusCode.FUNCTION_RETURN_TYPE_MISMATCH, f.getLine(), f.getColumn(), newReturnType.toString(), f.getReturnType().toString());
+                }
+            }
+            if(analyzedFunction instanceof ExperimentDefinitionStatement) {
+                if(newReturnType != CountlangType.INT) {
+                    reporter.report(StatusCode.EXPERIMENT_SCORE_NOT_INT, statement.getLine(), statement.getColumn(), analyzedFunction.getName());
                 }
             }
         }
@@ -206,15 +218,16 @@ public class Analysis {
                 reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getFunctionName());
                 return;
             }
-            expression.setCountlangType(funDefs.getFunction(expression.getFunctionName()).getReturnType());
-            List<CountlangType> types = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
-            if(types.size() != expression.getNumArguments()) {
+            FunctionDefinitionStatementBase fun = funDefs.getFunction(expression.getFunctionName());
+            expression.setCountlangType(fun.getReturnType());
+            if(expression.getNumArguments() != fun.getNumParameters()) {
                 reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getFunctionName(),
-                        new Integer(expression.getNumArguments()).toString(), new Integer(types.size()).toString());
+                        new Integer(fun.getNumParameters()).toString(), new Integer(expression.getNumArguments()).toString());
                 return;
             } else {
+                List<CountlangType> types = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
                 for(int i = 0; i < expression.getNumArguments(); i++) {
-                    if(expression.getArgument(i).getCountlangType() != types.get(i)) {
+                    if(types.get(i) != fun.getFormalParameterType(i)) {
                         reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getFunctionName(), new Integer(i).toString());
                         return;
                     }

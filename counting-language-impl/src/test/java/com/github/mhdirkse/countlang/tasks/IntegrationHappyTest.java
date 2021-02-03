@@ -24,6 +24,7 @@ import static com.github.mhdirkse.countlang.tasks.Constants.INCREMENT_OF_MAX_INT
 import static com.github.mhdirkse.countlang.tasks.Constants.MAX_INT;
 import static com.github.mhdirkse.countlang.tasks.Constants.MIN_INT;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -233,8 +234,16 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     @Test
     public void testResult() {
         compileAndRun(input);
-        Assert.assertEquals(0, outputStrategy.getNumErrors());
+        Assert.assertEquals(getOutputStrategyErrors(), 0, outputStrategy.getNumErrors());
         Assert.assertEquals(expectedResult, outputStrategy.getLine(0));
+    }
+
+    private String getOutputStrategyErrors() {
+        final List<String> lines = new ArrayList<>();
+        for(int i = 0; i < outputStrategy.getNumErrors(); i++) {
+            lines.add(outputStrategy.getError(i));
+        }
+        return lines.stream().collect(Collectors.joining(". "));
     }
 
     @Test
