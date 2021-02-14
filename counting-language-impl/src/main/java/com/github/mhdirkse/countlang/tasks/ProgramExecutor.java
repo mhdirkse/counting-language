@@ -33,8 +33,8 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
+import com.github.mhdirkse.countlang.execution.Stepper;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
-import com.github.mhdirkse.countlang.steps.Stepper;
 import com.github.mhdirkse.utils.Imperative;
 
 public class ProgramExecutor {

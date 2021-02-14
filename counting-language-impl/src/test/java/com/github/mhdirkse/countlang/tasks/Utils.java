@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
-import com.github.mhdirkse.countlang.steps.Stepper;
+import com.github.mhdirkse.countlang.execution.Stepper;
 
 class Utils {
     static Stepper compileAndGetStepper(final String programText, OutputStrategy outputStrategy) {
