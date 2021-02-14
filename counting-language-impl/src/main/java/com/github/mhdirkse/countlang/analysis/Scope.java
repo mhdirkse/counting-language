@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.CountlangType;
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 import lombok.Getter;
 

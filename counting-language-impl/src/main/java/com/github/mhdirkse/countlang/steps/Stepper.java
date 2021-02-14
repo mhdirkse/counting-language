@@ -24,8 +24,7 @@ import java.util.List;
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
-import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
-import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
 
 public interface Stepper {
     boolean hasMoreSteps();

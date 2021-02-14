@@ -19,17 +19,29 @@
 
 package com.github.mhdirkse.countlang.steps;
 
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
-import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-interface ExecutionContext extends StepperCallback {
-    Object readSymbol(String symbol, AstNode node);
-    void writeSymbol(String symbol, Object value, AstNode node);
-    void pushVariableFrame(StackFrameAccess access);
-    void popVariableFrame();
-    boolean hasFunction(String name);
-    void defineFunction(FunctionDefinitionStatementBase functionDefinitionStatement);
-    FunctionDefinitionStatementBase getFunction(String functionName);
-    void output(String text);
+import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.steps.SymbolFrame;
+
+public class SymbolFrameExecuteTest {
+    private static final StackFrameAccess DUMMY_ACCESS = StackFrameAccess.SHOW_PARENT;
+    private static final String SYMBOL = "x";
+    private static final Integer VALUE = Integer.valueOf(10);
+
+    private SymbolFrame instance;
+
+    @Before
+    public void setUp() {
+        instance = new SymbolFrame(DUMMY_ACCESS);
+    }
+
+    @Test
+    public void testWhenSymbolWrittenThenSymbolCanBeRead() {
+        instance.write(SYMBOL, VALUE, 1, 1);
+        Object result = instance.read(SYMBOL, 2, 3);
+        Assert.assertEquals(VALUE, result);
+    }
 }

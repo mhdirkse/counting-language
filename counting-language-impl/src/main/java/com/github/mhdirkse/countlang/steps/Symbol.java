@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
 

@@ -17,9 +17,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.ast;
 
-public enum StackFrameAccess {
-    SHOW_PARENT,
-    HIDE_PARENT
+import java.util.HashMap;
+import java.util.Map;
+
+public class FunctionDefinitions {
+    private Map<String, FunctionDefinitionStatementBase> functions = new HashMap<>();
+
+    public boolean hasFunction(final String name) {
+        return functions.containsKey(name);
+    }
+
+    public FunctionDefinitionStatementBase getFunction(final String name) {
+        return functions.get(name);
+    }
+
+    public void putFunction(final FunctionDefinitionStatementBase function) {
+        functions.put(function.getName(), function);
+    }
 }

@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.CountlangType;
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 public class MemoryTest {
     private Memory memory;

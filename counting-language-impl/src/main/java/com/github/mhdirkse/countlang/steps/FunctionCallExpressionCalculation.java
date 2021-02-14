@@ -28,12 +28,12 @@ import java.util.List;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
+import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.ProgramException;
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 final class FunctionCallExpressionCalculation
 extends ExpressionsAndStatementsCombinationHandler

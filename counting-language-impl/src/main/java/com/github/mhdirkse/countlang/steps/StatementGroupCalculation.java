@@ -26,9 +26,9 @@ import static com.github.mhdirkse.countlang.steps.AstNodeExecutionState.RUNNING;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
-import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 
 final class StatementGroupCalculation implements AstNodeExecution, NeedsExplicitStop {
     private final StatementGroup statementGroup;

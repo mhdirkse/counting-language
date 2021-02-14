@@ -17,12 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.steps;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 public class SymbolFrameStack {
