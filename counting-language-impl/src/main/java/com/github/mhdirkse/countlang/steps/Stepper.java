@@ -21,10 +21,10 @@ package com.github.mhdirkse.countlang.steps;
 
 import java.util.List;
 
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 
 public interface Stepper {

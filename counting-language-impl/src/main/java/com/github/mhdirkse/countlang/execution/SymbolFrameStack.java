@@ -38,11 +38,6 @@ public class SymbolFrameStack {
         frameStack = copied;
     }
 
-    /// Only for testing purposes
-    SymbolFrameStack(Stack<SymbolFrame> frameStack) {
-        this.frameStack = frameStack;
-    }
-
     public final void pushFrame(StackFrameAccess stackFrameAccess) {
         frameStack.push(create(stackFrameAccess));
     }

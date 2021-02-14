@@ -17,16 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.algorithm;
 
-public interface OutputStrategy {
-    public void output(String s);
-    public void error(String s);
+public interface SampleContextBase {
+    public void startSampledVariable(final Distribution sampledDistribution);
+    public void stopSampledVariable();
+    public boolean hasNextValue();
+    public int nextValue();
 
-    public static final OutputStrategy NO_OUTPUT = new OutputStrategy() {
-        @Override
-        public void output(String s) {}
-        @Override
-        public void error(String s) {}
-    };
 }

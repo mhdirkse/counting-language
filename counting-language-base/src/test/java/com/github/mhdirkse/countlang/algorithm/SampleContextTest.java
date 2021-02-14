@@ -17,13 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.algorithm;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.SampleContextImpl;
 
 public class SampleContextTest {
     private SampleContextImpl instance;

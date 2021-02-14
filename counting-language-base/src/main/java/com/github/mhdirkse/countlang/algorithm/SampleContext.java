@@ -17,9 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.execution;
-
-import com.github.mhdirkse.countlang.algorithm.Distribution;
+package com.github.mhdirkse.countlang.algorithm;
 
 /**
  * This class does the calculations behind sampling variables from distributions and

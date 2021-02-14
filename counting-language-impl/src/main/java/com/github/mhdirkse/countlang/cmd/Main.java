@@ -24,7 +24,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.tasks.ProgramExecutor;
 
 public final class Main implements OutputStrategy {

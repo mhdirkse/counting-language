@@ -20,11 +20,11 @@
 package com.github.mhdirkse.countlang.steps;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.execution.FunctionDefinitions;
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
 import com.github.mhdirkse.countlang.execution.StackFrameAccess;
 import com.github.mhdirkse.countlang.execution.SymbolFrameStack;
 

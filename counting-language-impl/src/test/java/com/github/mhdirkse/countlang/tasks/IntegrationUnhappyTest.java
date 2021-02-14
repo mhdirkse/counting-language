@@ -40,8 +40,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.TestOutputStrategy;
 
 @RunWith(Parameterized.class)
 public class IntegrationUnhappyTest implements OutputStrategy

@@ -29,9 +29,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
-import com.github.mhdirkse.countlang.execution.SampleContextBase;
 
 class Executor implements SampleContextBase {
     private final Deque<AstNodeExecution> callStack;
