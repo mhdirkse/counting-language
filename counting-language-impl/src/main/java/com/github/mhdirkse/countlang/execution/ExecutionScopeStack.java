@@ -22,7 +22,7 @@ package com.github.mhdirkse.countlang.execution;
 import com.github.mhdirkse.countlang.algorithm.ScopeStack;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 
-public class ExecutionScopeStack {
+class ExecutionScopeStack {
     private final ScopeStack<ExecutionScope> scopeStack;
 
     public ExecutionScopeStack() {
