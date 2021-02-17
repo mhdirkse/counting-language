@@ -88,7 +88,7 @@ class StepperImpl implements Stepper, StepperCallback {
     }
 
     @Override
-    public int nextValue() {
+    public Object nextValue() {
         return executors.peek().nextValue();
     }
 }

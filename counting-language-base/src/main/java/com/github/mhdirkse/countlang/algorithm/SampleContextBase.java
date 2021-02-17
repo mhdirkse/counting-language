@@ -23,6 +23,6 @@ public interface SampleContextBase {
     public void startSampledVariable(final Distribution sampledDistribution);
     public void stopSampledVariable();
     public boolean hasNextValue();
-    public int nextValue();
+    public Object nextValue();
 
 }

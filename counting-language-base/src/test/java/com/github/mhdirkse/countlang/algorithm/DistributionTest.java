@@ -19,13 +19,14 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
-
-import com.github.mhdirkse.countlang.algorithm.Distribution;
 
 public class DistributionTest {
     private static final String EMPTY = "empty";
@@ -180,5 +181,57 @@ public class DistributionTest {
         Assert.assertEquals(0, result.getCountUnknown());
         Assert.assertEquals(1, result.getCountOf(2));
         Assert.assertEquals(4, result.getCountOf(3));
+    }
+
+    @Test
+    public void testDistributionComparison() {
+        List<Distribution> toSort = new ArrayList<>();
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(1);
+        toSort.add(b.build());
+        b.add(1);
+        toSort.add(b.build());
+        b = new Distribution.Builder();
+        b.add(1);
+        b.add(2);
+        toSort.add(b.build());
+        Collections.sort(toSort);
+        String actual = toSort.stream().map(Object::toString).collect(Collectors.joining(", "));
+        List<String> expItems = new ArrayList<>();
+        expItems.add("(1)");
+        expItems.add("(1, 1)");
+        expItems.add("(1, 2)");
+        String expected = expItems.stream().collect(Collectors.joining(", "));
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testDistributionOfBoolean() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(false, 2);
+        b.add(true, 3);
+        Assert.assertEquals("(false, false, true, true, true)", b.build().toString());
+    }
+
+    @Test
+    public void testDistributionOfDistribution() {
+        Distribution.Builder childBuilder = new Distribution.Builder();
+        Distribution empty = childBuilder.build();
+        childBuilder = new Distribution.Builder();
+        childBuilder.add(1);
+        childBuilder.add(2);
+        childBuilder.addUnknown(2);
+        Distribution filled = childBuilder.build();
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(empty, 2);
+        b.add(filled, 3);
+        String actual = b.build().format();
+        List<String> expectedItems = new ArrayList<>();
+        expectedItems.add("                      ()  2");
+        expectedItems.add("(1, 2, unknown, unknown)  3");
+        expectedItems.add("---------------------------");
+        expectedItems.add("                   total  5");
+        String expected = expectedItems.stream().collect(Collectors.joining("\n"));
+        Assert.assertEquals(expected, actual);
     }
 }

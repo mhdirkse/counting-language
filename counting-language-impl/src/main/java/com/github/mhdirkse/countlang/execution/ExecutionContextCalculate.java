@@ -130,7 +130,7 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public int nextValue() {
+    public Object nextValue() {
         return stepperCallback.nextValue();
     }
 }

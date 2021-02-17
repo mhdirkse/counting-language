@@ -25,20 +25,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
-public final class Distribution {
+public final class Distribution implements Comparable<Distribution> {
     public static class Builder {
-        private Map<Integer, Integer> items = new HashMap<>();
+        private Map<Object, Integer> items = new HashMap<>();
         private int total = 0;
 
-        public void add(int item) {
+        public void add(Object item) {
             add(item, 1);
         }
 
-        public void add(int item, int count) {
+        public void add(Object item, int count) {
             if(count < 0) {
                 throw new IllegalArgumentException("Cannot reduce the count of an item");
             } else if(count == 0) {
@@ -60,7 +63,7 @@ public final class Distribution {
                 throw new IllegalArgumentException(
                         "Refining with factor zero or a negative factor is not allowed, tried: " + Integer.toString(factor));
             }
-            for(int item: items.keySet()) {
+            for(Object item: items.keySet()) {
                 items.put(item, factor * items.get(item));
             }
             total *= factor;
@@ -75,12 +78,12 @@ public final class Distribution {
         }
     }
 
-    private final Map<Integer, Integer> items;
+    private final Map<Object, Integer> items;
     private final int total;
     private final int unknown;
 
     private Distribution(final Builder builder) {
-        Map<Integer, Integer> newItems = new HashMap<>();
+        Map<Object, Integer> newItems = new TreeMap<>();
         newItems.putAll(builder.items);
         this.items = newItems;
         this.total = builder.total;
@@ -92,13 +95,13 @@ public final class Distribution {
 
     public Distribution getDistributionOfKnown() {
         Builder b = new Builder();
-        for(Integer item: items.keySet()) {
+        for(Object item: items.keySet()) {
             b.add(item, items.get(item));
         }
         return b.build();
     }
 
-    public int getCountOf(int value) {
+    public int getCountOf(Object value) {
         return items.getOrDefault(value, 0);
     }
 
@@ -110,7 +113,7 @@ public final class Distribution {
         return unknown;
     }
 
-    public Iterator<Integer> getItemIterator() {
+    public Iterator<Object> getItemIterator() {
         return items.keySet().iterator();
     }
 
@@ -129,10 +132,8 @@ public final class Distribution {
 
     private List<List<String>> createTable() {
         List<List<String>> table = new ArrayList<>();
-        List<Integer> sortedItems = new ArrayList<>(items.keySet());
-        sortedItems.sort((i1, i2) -> i1.compareTo(i2));
-        for(int item: sortedItems) {
-            String strItem = Integer.toString(item);
+        for(Object item: items.keySet()) {
+            String strItem = item.toString();
             String strCount = Integer.toString(items.get(item));
             table.add(Arrays.asList(strItem, strCount));
         }
@@ -165,5 +166,49 @@ public final class Distribution {
         String value = StringUtils.leftPad(row.get(0), columnWidths.get(0), " ");
         String count = StringUtils.leftPad(row.get(1), columnWidths.get(1), " ");
         return value + "  " + count;
+    }
+
+    /**
+     * Distributions are sorted as follows. Every distribution being sorted is transformed
+     * into a list and then lexicographical sorting is applied. Example: (distribution 2 of 2, 3)
+     * is sorted as if it were (distribution 2, 2, 3). And when (distribution 1, 2) and
+     * (distribution 2, 2, 3) are compared, then the former goes first because 1 &lt; 2.
+     */
+    @Override
+    public int compareTo(Distribution other) {
+        List<Comparable<Object>> itemsOfThis = writeOut();
+        List<Comparable<Object>> itemsOfOther = other.writeOut();
+        int numToCompare = Math.min(itemsOfThis.size(), itemsOfOther.size());
+        int result = 0;
+        for(int i = 0; i < numToCompare; i++) {
+            result = itemsOfThis.get(i).compareTo(itemsOfOther.get(i));
+            if(result != 0) {
+                return result;
+            }
+        }
+        result = Integer.compare(itemsOfThis.size(), itemsOfOther.size());
+        if(result != 0) {
+            return result;
+        }
+        result = Integer.compare(getTotal(), other.getTotal());
+        return result;
+    }
+
+    private List<Comparable<Object>> writeOut() {
+        final List<Comparable<Object>> result = new ArrayList<>(getTotal() - getCountUnknown());
+        for(Object item: items.keySet()) {
+            @SuppressWarnings("unchecked")
+            Comparable<Object> c = (Comparable<Object>) item;
+            IntStream.range(0, items.get(item)).forEach(i -> result.add(c));
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {        
+        List<Comparable<Object>> items = writeOut();
+        String result = Stream.concat(items.stream().map(Object::toString), IntStream.range(0, unknown).mapToObj(i -> "unknown"))
+                .collect(Collectors.joining(", "));
+        return "(" + result + ")";
     }
 }

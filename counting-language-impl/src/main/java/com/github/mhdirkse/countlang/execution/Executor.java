@@ -150,7 +150,7 @@ class Executor implements SampleContextBase {
     }
 
     @Override
-    public int nextValue() {
+    public Object nextValue() {
         return findExperiment().nextValue();
     }
 }

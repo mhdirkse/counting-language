@@ -29,10 +29,10 @@ class SampleContextImpl implements SampleContext {
 
     private static class SampledDistributionContext {
         final private Distribution sampledDistribution;
-        final private Iterator<Integer> sampledValues;
+        final private Iterator<Object> sampledValues;
         private int weight;
         private boolean hasCurrentValue = false;
-        private int currentValue;
+        private Object currentValue;
 
         SampledDistributionContext(final Distribution sampledDistribution, final int initialWeight) {
             this.sampledDistribution = sampledDistribution;
@@ -44,7 +44,7 @@ class SampleContextImpl implements SampleContext {
             return sampledValues.hasNext();
         }
 
-        Integer nextValue() {
+        Object nextValue() {
             hasCurrentValue = true;
             currentValue = sampledValues.next();
             return currentValue;
@@ -121,7 +121,7 @@ class SampleContextImpl implements SampleContext {
     }
 
     @Override
-    public int nextValue() {
+    public Object nextValue() {
         checkScoringNotForgotten();
         isScored = false;
         return sampleContexts.peek().nextValue();
@@ -134,7 +134,7 @@ class SampleContextImpl implements SampleContext {
     }
 
     @Override
-    public void score(int value) {
+    public void score(Object value) {
         checkScoreOnce();
         distributionBuilder.add(value, getScoreCount());
     }

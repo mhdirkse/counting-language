@@ -43,10 +43,10 @@ public class SampleContextTest {
     private void sampleTwice(Distribution d1, Distribution d2) {
         instance.startSampledVariable(d1);
         while(instance.hasNextValue()) {
-            int i1 = instance.nextValue();
+            int i1 = (Integer) instance.nextValue();
             instance.startSampledVariable(d2);
             while(instance.hasNextValue()) {
-                int i2 = instance.nextValue();
+                int i2 = (Integer) instance.nextValue();
                 instance.score(i1 + i2);
             }
             instance.stopSampledVariable();
@@ -69,7 +69,7 @@ public class SampleContextTest {
         Distribution binomial = getBinomialDistribution();
         instance.startSampledVariable(binomial);
         while(instance.hasNextValue()) {
-            int choice = instance.nextValue();
+            int choice = (Integer) instance.nextValue();
             if(choice == 1) {
                 instance.startSampledVariable(binomial);
                 while(instance.hasNextValue()) {
@@ -94,7 +94,7 @@ public class SampleContextTest {
     public void testScoringUnknown() {
         instance.startSampledVariable(getBinomialDistribution());
         while(instance.hasNextValue()) {
-            int choice = instance.nextValue();
+            int choice = (Integer) instance.nextValue();
             if(choice == 1) {
                 instance.score(choice);
             }

@@ -57,7 +57,8 @@ class SampleStatementCalculation implements AstNodeExecution {
             isSamplingStarted = true;
         }
         if(context.hasNextValue()) {
-            value = context.nextValue();
+            // TODO: Make this for generic distribution subtype
+            value = (Integer) context.nextValue();
             context.forkExecutor();
             return null;
         }
