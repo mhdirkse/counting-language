@@ -97,7 +97,7 @@ public class MemoryTest {
         Scope scope = new Scope(StackFrameAccess.SHOW_PARENT);
         memory.pushScope(scope);
         memory.addParameter("x", 1, 2, CountlangType.BOOL, block);
-        assertTrue(scope.hasVariable("x"));
+        assertTrue(scope.has("x"));
         memory.popScope();
         assertEquals(1, block.getVariableWrites().size());
         VariableWrite write = block.getVariableWrites().get(0);

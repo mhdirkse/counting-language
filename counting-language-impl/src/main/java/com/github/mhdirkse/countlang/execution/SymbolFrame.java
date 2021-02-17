@@ -19,13 +19,14 @@
 
 package com.github.mhdirkse.countlang.execution;
 
+import com.github.mhdirkse.countlang.algorithm.CountlangStackItem;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
-class SymbolFrame {
+class SymbolFrame implements CountlangStackItem {
     private final Map<String, Object> symbols;
 
     private final StackFrameAccess access;
@@ -42,10 +43,12 @@ class SymbolFrame {
         this.access = orig.access;
     }
 
+    @Override
     public StackFrameAccess getAccess() {
         return access;
     }
 
+    @Override
     public boolean has(String name) {
         return symbols.containsKey(name);
     }

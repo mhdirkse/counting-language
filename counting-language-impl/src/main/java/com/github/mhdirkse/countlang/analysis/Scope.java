@@ -4,18 +4,22 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.github.mhdirkse.countlang.algorithm.CountlangStackItem;
 import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 
-import lombok.Getter;
-
-class Scope implements BlockListener {
-    private final @Getter StackFrameAccess access;
+class Scope implements BlockListener, CountlangStackItem {
+    private final StackFrameAccess access;
 
     private Map<String, Variable> variables = new HashMap<>();
 
     Scope(StackFrameAccess access) {
         this.access = access;
+    }
+
+    @Override
+    public StackFrameAccess getAccess() {
+        return access;
     }
 
     /**
@@ -26,7 +30,8 @@ class Scope implements BlockListener {
         return variables.values().iterator();
     }
 
-    boolean hasVariable(String name) {
+    @Override
+    public boolean has(String name) {
         return variables.containsKey(name);
     }
 
