@@ -29,6 +29,7 @@ public interface Visitor {
     public void visitExperimentDefinitionStatement(final ExperimentDefinitionStatement statement);
     public void visitReturnStatement(final ReturnStatement statement);
     public void visitIfStatement(final IfStatement ifStatement);
+    public void visitWhileStatement(final WhileStatement whileStatement);
     public void visitCompositeExpression(final CompositeExpression expression);
     public void visitFunctionCallExpression(final FunctionCallExpression expression);
     public void visitSymbolExpression(final SymbolExpression expression);

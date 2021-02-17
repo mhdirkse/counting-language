@@ -24,6 +24,7 @@ import static com.github.mhdirkse.countlang.tasks.Constants.INCREMENT_OF_MAX_INT
 import static com.github.mhdirkse.countlang.tasks.Constants.MAX_INT;
 import static com.github.mhdirkse.countlang.tasks.Constants.MIN_INT;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -36,8 +37,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.mhdirkse.countlang.steps.Stepper;
-import com.github.mhdirkse.countlang.types.Distribution;
+import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.execution.Stepper;
 
 @RunWith(Parameterized.class)
 public class IntegrationHappyTest extends IntegrationHappyTestBase
@@ -137,6 +138,13 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"if(true) {print 3} else {print 5}", "3"}, // Then and else, execute then.
             {"if(false) {print 3} else {print 5}", "5"}, // Then and else, execute else
 
+            // while statement
+            {"i = 0; while(i < 2) {i = i + 1}; print i", "2"},
+            {"i = 0; while(i < 0) {i = i + 1}; print i", "0"},
+            // no return within the body.
+            {"function factorial(int n) {result = 1; i = 1; while(i <= n) {result = result * i; i = i + 1}; return result}; print factorial(3)", "6"},
+            // with return in the body 
+            {"function factorial(int n) {result = 1; i = 1; while(true) {result = result * i; i = i + 1; if(i > n) {return result}; }; }; print factorial(3)", "6"},
             {"experiment exp() {sample x from distribution 1, 2; return 2*x}; print exp()", getDistribution(2, 4)},
             {"experiment exp(distribution d1, distribution d2) {sample x from d1; sample y from d2; return x + y}; print exp((distribution 1, 2), (distribution 1, 2, 3));",
                 getDistribution(2, 3, 4, 3, 4, 5)},
@@ -226,8 +234,16 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     @Test
     public void testResult() {
         compileAndRun(input);
-        Assert.assertEquals(0, outputStrategy.getNumErrors());
+        Assert.assertEquals(getOutputStrategyErrors(), 0, outputStrategy.getNumErrors());
         Assert.assertEquals(expectedResult, outputStrategy.getLine(0));
+    }
+
+    private String getOutputStrategyErrors() {
+        final List<String> lines = new ArrayList<>();
+        for(int i = 0; i < outputStrategy.getNumErrors(); i++) {
+            lines.add(outputStrategy.getError(i));
+        }
+        return lines.stream().collect(Collectors.joining(". "));
     }
 
     @Test

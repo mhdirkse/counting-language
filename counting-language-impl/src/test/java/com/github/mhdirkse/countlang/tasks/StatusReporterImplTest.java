@@ -31,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 
 @RunWith(EasyMockRunner.class)
 public class StatusReporterImplTest {

@@ -104,6 +104,8 @@
             <configuration>
               <reportOutputDirectory>${project.reporting.outputDirectory}</reportOutputDirectory>
               <destDir>apidocs</destDir>
+              <!-- Disable Javadoc strict errors -->
+              <doclint>none</doclint>
             </configuration>
             <phase>package</phase>
           </execution>
@@ -116,6 +118,8 @@
               <show>package</show>
               <reportOutputDirectory>${project.reporting.outputDirectory}</reportOutputDirectory>
               <destDir>detaildocs</destDir>
+              <!-- Disable Javadoc strict errors -->
+              <doclint>none</doclint>
             </configuration>
             <phase>package</phase>
           </execution>

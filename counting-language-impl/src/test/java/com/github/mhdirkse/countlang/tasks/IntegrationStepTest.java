@@ -26,9 +26,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.steps.ExecutionPoint;
-import com.github.mhdirkse.countlang.steps.Stepper;
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
+import com.github.mhdirkse.countlang.execution.ExecutionPoint;
+import com.github.mhdirkse.countlang.execution.Stepper;
 
 public class IntegrationStepTest implements OutputStrategy {
     private List<String> outputs;

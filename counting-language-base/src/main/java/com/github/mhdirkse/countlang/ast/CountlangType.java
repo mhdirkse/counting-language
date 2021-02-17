@@ -19,7 +19,7 @@
 
 package com.github.mhdirkse.countlang.ast;
 
-import com.github.mhdirkse.countlang.types.Distribution;
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 
 public enum CountlangType {
     UNKNOWN(Object.class, null),

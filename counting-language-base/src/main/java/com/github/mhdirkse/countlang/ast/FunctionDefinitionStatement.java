@@ -19,13 +19,16 @@
 
 package com.github.mhdirkse.countlang.ast;
 
-import lombok.Getter;
 import lombok.Setter;
 
 public class FunctionDefinitionStatement extends FunctionDefinitionStatementBase {
-    @Getter(onMethod = @__(@Override))
     @Setter
     private CountlangType returnType = CountlangType.UNKNOWN;
+
+    @Override
+    public CountlangType getReturnType() {
+        return returnType;
+    }
 
     public FunctionDefinitionStatement(final int line, final int column) {
         super(line, column);

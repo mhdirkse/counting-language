@@ -19,7 +19,7 @@
 
 package com.github.mhdirkse.countlang.tasks;
 
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.utils.AbstractStatusCode;
 
 class StatusReporterImpl implements StatusReporter {

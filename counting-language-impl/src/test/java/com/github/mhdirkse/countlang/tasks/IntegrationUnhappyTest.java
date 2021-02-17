@@ -24,12 +24,15 @@ import static com.github.mhdirkse.countlang.tasks.Constants.INCREMENT_OF_MAX_INT
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,8 +40,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.mhdirkse.countlang.execution.OutputStrategy;
-import com.github.mhdirkse.countlang.execution.TestOutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.TestOutputStrategy;
 
 @RunWith(Parameterized.class)
 public class IntegrationUnhappyTest implements OutputStrategy
@@ -169,7 +172,15 @@ public class IntegrationUnhappyTest implements OutputStrategy
     @Test
     public void test() {
         compileAndRun(input);
-        Assert.assertEquals(1, outputStrategy.getNumErrors());
-        Assert.assertThat(outputStrategy.getError(0), CoreMatchers.containsString(expectedError));
+        Assert.assertTrue(outputStrategy.getNumErrors() >= 1);
+        Assert.assertThat(getErrors(), CoreMatchers.containsString(expectedError));
+    }
+
+    private String getErrors() {
+        List<String> lines = new ArrayList<>();
+        for(int i = 0; i < outputStrategy.getNumErrors(); i++) {
+            lines.add(outputStrategy.getError(i));
+        }
+        return lines.stream().collect(Collectors.joining(". "));
     }
 }
