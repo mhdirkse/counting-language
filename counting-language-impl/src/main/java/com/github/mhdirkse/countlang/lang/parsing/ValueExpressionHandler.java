@@ -22,6 +22,7 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
+import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
@@ -48,11 +49,11 @@ class ValueExpressionHandler extends AbstractCountlangListenerHandler implements
             final TerminalNode node,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         if(node.getSymbol().getType() == CountlangLexer.BOOL) {
-            expression = new ValueExpression(line, column, Boolean.valueOf(node.getText()));
+            expression = new ValueExpression(line, column, Boolean.valueOf(node.getText()), CountlangType.BOOL);
             return true;
         } else if(node.getSymbol().getType() == CountlangLexer.INT) {
             try {
-                expression = new ValueExpression(line, column, Integer.valueOf(node.getText()));
+                expression = new ValueExpression(line, column, Integer.valueOf(node.getText()), CountlangType.INT);
             } catch(NumberFormatException e) {
                 throw new ProgramException(line, column, "Integer value is too big to store: " + node.getText());
             }
