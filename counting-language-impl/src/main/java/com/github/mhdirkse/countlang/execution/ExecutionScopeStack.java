@@ -23,32 +23,32 @@ import com.github.mhdirkse.countlang.algorithm.ScopeStack;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 
 public class ExecutionScopeStack {
-    private final ScopeStack<ExecutionScope> frameStack;
+    private final ScopeStack<ExecutionScope> scopeStack;
 
     public ExecutionScopeStack() {
-        frameStack = new ScopeStack<>();
+        scopeStack = new ScopeStack<>();
     }
 
     public ExecutionScopeStack(ExecutionScopeStack orig) {
         final ScopeStack<ExecutionScope> copied = new ScopeStack<>();
-        orig.frameStack.forEach(f -> copied.push(new ExecutionScope(f)));
-        frameStack = copied;
+        orig.scopeStack.forEach(f -> copied.push(new ExecutionScope(f)));
+        scopeStack = copied;
     }
 
     public final void push(ScopeAccess scopeAccess) {
-        frameStack.push(create(scopeAccess));
+        scopeStack.push(create(scopeAccess));
     }
 
     public final void pop() {
-        frameStack.pop();
+        scopeStack.pop();
     }
 
     public final Object read(String name, int line, int column) {
-        return frameStack.findFrame(name).read(name, line, column);
+        return scopeStack.findScope(name).read(name, line, column);
     }
 
     public final void write(String name, Object value, int line, int column) {
-        frameStack.findFrame(name).write(name, value, line, column);
+        scopeStack.findScope(name).write(name, value, line, column);
     }
 
     ExecutionScope create(ScopeAccess access) {

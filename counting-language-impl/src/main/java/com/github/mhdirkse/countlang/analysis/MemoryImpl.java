@@ -42,7 +42,7 @@ class MemoryImpl implements Memory {
 
     @Override
     public CountlangType read(String name, int line, int column, CodeBlock codeBlock) {
-        AnalysisScope analysisScope = analysisScopes.findFrame(name);
+        AnalysisScope analysisScope = analysisScopes.findScope(name);
         if(analysisScope.has(name)) {
             return analysisScope.read(name, line, column, codeBlock);
         } else {
@@ -53,7 +53,7 @@ class MemoryImpl implements Memory {
 
     @Override
     public void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
-        VariableErrorEvent optionalTypeMismatch = analysisScopes.findFrame(name).write(name, line, column, countlangType, codeBlock);
+        VariableErrorEvent optionalTypeMismatch = analysisScopes.findScope(name).write(name, line, column, countlangType, codeBlock);
         if(optionalTypeMismatch != null) {
             variableErrorEvents.add(optionalTypeMismatch);
         }
@@ -61,7 +61,7 @@ class MemoryImpl implements Memory {
 
     @Override
     public void addParameter(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
-        AnalysisScope analysisScope = analysisScopes.findFrame(name);
+        AnalysisScope analysisScope = analysisScopes.findScope(name);
         if(analysisScope.has(name)) {
             variableErrorEvents.add(new VariableErrorEvent(VariableErrorEvent.Kind.DUPLICATE_PARAMETER, name, line, column));
         } else {

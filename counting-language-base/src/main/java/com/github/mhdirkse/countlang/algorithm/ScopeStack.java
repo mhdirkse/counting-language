@@ -34,17 +34,17 @@ public class ScopeStack<T extends Scope> {
         return stack.topToBottomIterator();
     }
 
-    public T findFrame(String name) {
-        List<T> accessibleFrames = getAccessibleScopes();
-        if(accessibleFrames.isEmpty()) {
-            throw new IllegalStateException("No symbol frames to search for symbol: " + name);
+    public T findScope(String symbol) {
+        List<T> accessibleScopes = getAccessibleScopes();
+        if(accessibleScopes.isEmpty()) {
+            throw new IllegalStateException("No symbol frames to search for symbol: " + symbol);
         }
-        for(T s: accessibleFrames) {
-            if(s.has(name)) {
+        for(T s: accessibleScopes) {
+            if(s.has(symbol)) {
                 return s;
             }
         }
-        return accessibleFrames.get(0);
+        return accessibleScopes.get(0);
     }
 
     private List<T> getAccessibleScopes() {

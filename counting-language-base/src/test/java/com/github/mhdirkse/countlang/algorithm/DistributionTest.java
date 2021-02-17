@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.types;
+package com.github.mhdirkse.countlang.algorithm;
 
 import java.util.Arrays;
 import java.util.List;

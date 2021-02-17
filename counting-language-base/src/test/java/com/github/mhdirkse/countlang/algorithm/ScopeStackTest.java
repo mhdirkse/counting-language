@@ -15,46 +15,46 @@ public class ScopeStackTest {
 
     @Test(expected = IllegalStateException.class)
     public void whenEmptyStackQueriedThenError() {
-        instance.findFrame("someName");
+        instance.findScope("someName");
     }
 
     @Test
-    public void whenMultipleItemsHaveSymbolThenTopmostChosen() {
+    public void whenMultipleScopesHaveSymbolThenTopmostChosen() {
         ScopeImpl bottom = new ScopeImpl(ScopeAccess.SHOW_PARENT, "someName");
         ScopeImpl top = new ScopeImpl(ScopeAccess.SHOW_PARENT, "someName");
         instance.push(bottom);
         instance.push(top);
-        ScopeImpl actual = instance.findFrame("someName");
+        ScopeImpl actual = instance.findScope("someName");
         assertSame(top, actual);
     }
 
     @Test
-    public void whenTopFrameDoesNotHaveSymbolThenFrameHavingSymbolReturned() {
+    public void whenTopScopeDoesNotHaveSymbolThenScopeHavingSymbolReturned() {
         ScopeImpl bottom = new ScopeImpl(ScopeAccess.SHOW_PARENT, "someName");
         ScopeImpl top = new ScopeImpl(ScopeAccess.SHOW_PARENT);
         instance.push(bottom);
         instance.push(top);
-        ScopeImpl actual = instance.findFrame("someName");
+        ScopeImpl actual = instance.findScope("someName");
         assertSame(bottom, actual);        
     }
 
     @Test
-    public void whenNoFrameHasSymbolThenTopReturned() {
+    public void whenNoScopeHasSymbolThenTopReturned() {
         ScopeImpl bottom = new ScopeImpl(ScopeAccess.SHOW_PARENT);
         ScopeImpl top = new ScopeImpl(ScopeAccess.SHOW_PARENT);
         instance.push(bottom);
         instance.push(top);
-        ScopeImpl actual = instance.findFrame("someName");
+        ScopeImpl actual = instance.findScope("someName");
         assertSame(top, actual);        
     }
 
     @Test
-    public void whenFrameHidesParentThenFramesBelowAreIgnored() {
+    public void whenScopeHidesParentThenScopesBelowAreIgnored() {
         ScopeImpl bottom = new ScopeImpl(ScopeAccess.SHOW_PARENT, "someName");
         ScopeImpl top = new ScopeImpl(ScopeAccess.HIDE_PARENT);
         instance.push(bottom);
         instance.push(top);
-        ScopeImpl actual = instance.findFrame("someName");
+        ScopeImpl actual = instance.findScope("someName");
         assertSame(top, actual);                
     }
 }
