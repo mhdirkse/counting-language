@@ -19,24 +19,24 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.algorithm.CountlangStackItem;
+import com.github.mhdirkse.countlang.algorithm.Scope;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
-class SymbolFrame implements CountlangStackItem {
+class ExecutionScope implements Scope {
     private final Map<String, Object> symbols;
 
-    private final StackFrameAccess access;
+    private final ScopeAccess access;
 
-    public SymbolFrame(StackFrameAccess access) {
+    public ExecutionScope(ScopeAccess access) {
         symbols = new HashMap<>();
         this.access = access;
     }
 
-    SymbolFrame(SymbolFrame orig) {
+    ExecutionScope(ExecutionScope orig) {
         Map<String, Object> theSymbols = new HashMap<>();
         theSymbols.putAll(orig.symbols);
         this.symbols = theSymbols;
@@ -44,7 +44,7 @@ class SymbolFrame implements CountlangStackItem {
     }
 
     @Override
-    public StackFrameAccess getAccess() {
+    public ScopeAccess getAccess() {
         return access;
     }
 

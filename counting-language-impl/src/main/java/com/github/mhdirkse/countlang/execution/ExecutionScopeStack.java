@@ -19,27 +19,27 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.algorithm.CountlangStack;
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeStack;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 
-public class SymbolFrameStack {
-    private final CountlangStack<SymbolFrame> frameStack;
+public class ExecutionScopeStack {
+    private final ScopeStack<ExecutionScope> frameStack;
 
-    public SymbolFrameStack() {
-        frameStack = new CountlangStack<>();
+    public ExecutionScopeStack() {
+        frameStack = new ScopeStack<>();
     }
 
-    public SymbolFrameStack(SymbolFrameStack orig) {
-        final CountlangStack<SymbolFrame> copied = new CountlangStack<>();
-        orig.frameStack.forEach(f -> copied.push(new SymbolFrame(f)));
+    public ExecutionScopeStack(ExecutionScopeStack orig) {
+        final ScopeStack<ExecutionScope> copied = new ScopeStack<>();
+        orig.frameStack.forEach(f -> copied.push(new ExecutionScope(f)));
         frameStack = copied;
     }
 
-    public final void pushFrame(StackFrameAccess stackFrameAccess) {
-        frameStack.push(create(stackFrameAccess));
+    public final void push(ScopeAccess scopeAccess) {
+        frameStack.push(create(scopeAccess));
     }
 
-    public final void popFrame() {
+    public final void pop() {
         frameStack.pop();
     }
 
@@ -51,7 +51,7 @@ public class SymbolFrameStack {
         frameStack.findFrame(name).write(name, value, line, column);
     }
 
-    SymbolFrame create(StackFrameAccess access) {
-        return new SymbolFrame(access);
+    ExecutionScope create(ScopeAccess access) {
+        return new ExecutionScope(access);
     }
 }

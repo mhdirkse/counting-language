@@ -4,21 +4,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.github.mhdirkse.countlang.algorithm.CountlangStackItem;
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.Scope;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 
-class Scope implements BlockListener, CountlangStackItem {
-    private final StackFrameAccess access;
+class AnalysisScope implements BlockListener, Scope {
+    private final ScopeAccess access;
 
     private Map<String, Variable> variables = new HashMap<>();
 
-    Scope(StackFrameAccess access) {
+    AnalysisScope(ScopeAccess access) {
         this.access = access;
     }
 
     @Override
-    public StackFrameAccess getAccess() {
+    public ScopeAccess getAccess() {
         return access;
     }
 

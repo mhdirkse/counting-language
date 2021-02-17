@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.analysis;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
@@ -68,7 +68,7 @@ public class Analysis {
 
         @Override
         public void visitStatementGroup(StatementGroup statementGroup) {
-            codeBlocks.pushScope(new Scope(StackFrameAccess.SHOW_PARENT));
+            codeBlocks.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
             for(AstNode statement: statementGroup.getChildren()) {
                 codeBlocks.handleStatement(statement.getLine(), statement.getColumn());
                 statement.accept(this);
@@ -126,7 +126,7 @@ public class Analysis {
         private void analyzeFunction(FunctionDefinitionStatementBase statement, Runnable blockCreator) {
             analyzedFunction = statement;
             blockCreator.run();
-            codeBlocks.pushScope(new Scope(StackFrameAccess.HIDE_PARENT));
+            codeBlocks.pushScope(new AnalysisScope(ScopeAccess.HIDE_PARENT));
             for(FormalParameter p: statement.getFormalParameters().getFormalParameters()) {
                 codeBlocks.addParameter(p.getName(), p.getLine(), p.getColumn(), p.getCountlangType());
             }

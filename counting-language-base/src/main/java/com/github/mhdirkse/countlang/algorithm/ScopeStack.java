@@ -7,10 +7,10 @@ import java.util.function.Consumer;
 
 import com.github.mhdirkse.countlang.utils.Stack;
 
-public class CountlangStack<T extends CountlangStackItem> {
+public class ScopeStack<T extends Scope> {
     private final Stack<T> stack;
 
-    public CountlangStack() {
+    public ScopeStack() {
         stack = new Stack<T>();
     }
 
@@ -35,7 +35,7 @@ public class CountlangStack<T extends CountlangStackItem> {
     }
 
     public T findFrame(String name) {
-        List<T> accessibleFrames = getAccessibleFrames();
+        List<T> accessibleFrames = getAccessibleScopes();
         if(accessibleFrames.isEmpty()) {
             throw new IllegalStateException("No symbol frames to search for symbol: " + name);
         }
@@ -47,13 +47,13 @@ public class CountlangStack<T extends CountlangStackItem> {
         return accessibleFrames.get(0);
     }
 
-    private List<T> getAccessibleFrames() {
+    private List<T> getAccessibleScopes() {
         List<T> result = new ArrayList<>();
         Iterator<T> it = stack.topToBottomIterator();
         while(it.hasNext()) {
             T current = it.next();
             result.add(current);
-            if(current.getAccess() == StackFrameAccess.HIDE_PARENT) {
+            if(current.getAccess() == ScopeAccess.HIDE_PARENT) {
                 break;
             }
         }

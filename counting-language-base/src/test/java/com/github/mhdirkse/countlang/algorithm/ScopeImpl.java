@@ -1,21 +1,21 @@
 package com.github.mhdirkse.countlang.algorithm;
 
-class CountlangStackItemImpl implements CountlangStackItem {
-    private final StackFrameAccess access;
+class ScopeImpl implements Scope {
+    private final ScopeAccess access;
     private final String symbol;
 
-    CountlangStackItemImpl(StackFrameAccess access) {
+    ScopeImpl(ScopeAccess access) {
         this.access = access;
         symbol = null;
     }
 
-    CountlangStackItemImpl(StackFrameAccess access, String symbol) {
+    ScopeImpl(ScopeAccess access, String symbol) {
         this.access = access;
         this.symbol = symbol;
     }
 
     @Override
-    public StackFrameAccess getAccess() {
+    public ScopeAccess getAccess() {
         return access;
     }
 

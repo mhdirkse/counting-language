@@ -99,12 +99,12 @@ public class CodeBlockTest implements Memory {
     }
 
     @Override
-    public void pushScope(Scope scope) {
+    public void pushScope(AnalysisScope analysisScope) {
         fail("Should not be used by CodeBlocks, except in its decorator role");
     }
 
     @Override
-    public Scope popScope() {
+    public AnalysisScope popScope() {
         fail("Should not be used by CodeBlocks, except in its decorator role");
         return null;
     }

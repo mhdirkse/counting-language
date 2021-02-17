@@ -26,7 +26,7 @@ import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.RUNN
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 
@@ -66,7 +66,7 @@ final class StatementGroupCalculation implements AstNodeExecution, NeedsExplicit
             return null;
         }
         if(state == BEFORE) {
-            context.pushVariableFrame(StackFrameAccess.SHOW_PARENT);
+            context.pushVariableFrame(ScopeAccess.SHOW_PARENT);
         }
         state = RUNNING;
         if(!stopRequested && childIndex < children.size()) {

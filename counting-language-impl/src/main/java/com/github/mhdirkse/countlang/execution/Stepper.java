@@ -45,11 +45,11 @@ public interface Stepper {
 
     public static Stepper getInstance(
             final AstNode target, final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFunctions) {
-        SymbolFrameStack symbolFrameStack = new SymbolFrameStack();
+        ExecutionScopeStack executionScopeStack = new ExecutionScopeStack();
         FunctionDefinitions funDefs = new FunctionDefinitions();
         predefinedFunctions.forEach(f -> funDefs.putFunction(f));
         AstNodeExecutionFactory factory = new AstNodeExecutionFactoryCalculate();
-        ExecutionContextCalculate context = new ExecutionContextCalculate(symbolFrameStack, funDefs, outputStrategy);
+        ExecutionContextCalculate context = new ExecutionContextCalculate(executionScopeStack, funDefs, outputStrategy);
         StepperImpl result = new StepperImpl(target, context, factory);
         context.setStepperCallback(result);
         return result;

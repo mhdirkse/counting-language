@@ -23,19 +23,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
-import com.github.mhdirkse.countlang.execution.SymbolFrame;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
+import com.github.mhdirkse.countlang.execution.ExecutionScope;
 
-public class SymbolFrameExecuteTest {
-    private static final StackFrameAccess DUMMY_ACCESS = StackFrameAccess.SHOW_PARENT;
+public class ExecutionScopeTest {
+    private static final ScopeAccess DUMMY_ACCESS = ScopeAccess.SHOW_PARENT;
     private static final String SYMBOL = "x";
     private static final Integer VALUE = Integer.valueOf(10);
 
-    private SymbolFrame instance;
+    private ExecutionScope instance;
 
     @Before
     public void setUp() {
-        instance = new SymbolFrame(DUMMY_ACCESS);
+        instance = new ExecutionScope(DUMMY_ACCESS);
     }
 
     @Test

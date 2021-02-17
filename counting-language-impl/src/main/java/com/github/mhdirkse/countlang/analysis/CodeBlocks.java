@@ -109,11 +109,11 @@ class CodeBlocks {
         rootBlock.report(reporter);
     }
 
-    void pushScope(Scope scope) {
-        memory.pushScope(scope);
+    void pushScope(AnalysisScope analysisScope) {
+        memory.pushScope(analysisScope);
     }
 
-    Scope popScope() {
+    AnalysisScope popScope() {
         return memory.popScope();
     }
 

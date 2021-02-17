@@ -28,7 +28,7 @@ import java.util.List;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
@@ -96,7 +96,7 @@ implements SampleContextBase {
         } else {
             statementsHandler = new StatementsHandlerFunction();
         }
-        context.pushVariableFrame(StackFrameAccess.HIDE_PARENT);
+        context.pushVariableFrame(ScopeAccess.HIDE_PARENT);
         List<Object> subExpressionResults = subExpressionStepper.getSubExpressionResults();
         for(int i = 0; i < fun.getFormalParameters().size(); i++) {
             String parameterName = fun.getFormalParameters().getFormalParameter(i).getName();

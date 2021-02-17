@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 
 public class VariableTest {
@@ -23,7 +23,7 @@ public class VariableTest {
         codeBlocks = new CodeBlocks(new MemoryImpl());
         codeBlocks.start();
         main = codeBlocks.getLastAddedBlock();
-        codeBlocks.pushScope(new Scope(StackFrameAccess.SHOW_PARENT));
+        codeBlocks.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
     }
 
     private void stop() {

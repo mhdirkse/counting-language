@@ -19,7 +19,7 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
-public enum StackFrameAccess {
+public enum ScopeAccess {
     SHOW_PARENT,
     HIDE_PARENT
 }

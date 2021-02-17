@@ -19,14 +19,14 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 
 interface ExecutionContext extends StepperCallback {
     Object readSymbol(String symbol, AstNode node);
     void writeSymbol(String symbol, Object value, AstNode node);
-    void pushVariableFrame(StackFrameAccess access);
+    void pushVariableFrame(ScopeAccess access);
     void popVariableFrame();
     boolean hasFunction(String name);
     void defineFunction(FunctionDefinitionStatementBase functionDefinitionStatement);

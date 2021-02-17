@@ -21,20 +21,20 @@ package com.github.mhdirkse.countlang.execution;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
-import com.github.mhdirkse.countlang.algorithm.StackFrameAccess;
+import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
 
 class ExecutionContextCalculate implements ExecutionContext {
-    private final SymbolFrameStack symbolFrame;
+    private final ExecutionScopeStack symbolFrame;
     private StepperCallback stepperCallback;
     private final FunctionDefinitions funDefs;
     private final OutputStrategy outputStrategy;
 
     ExecutionContextCalculate(
-            final SymbolFrameStack symbolFrame,
+            final ExecutionScopeStack symbolFrame,
             final FunctionDefinitions funDefs,
             final OutputStrategy outputStrategy) {
         this.symbolFrame = symbolFrame;
@@ -43,7 +43,7 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     ExecutionContextCalculate(ExecutionContextCalculate orig) {
-        this.symbolFrame = new SymbolFrameStack(orig.symbolFrame);
+        this.symbolFrame = new ExecutionScopeStack(orig.symbolFrame);
         this.stepperCallback = orig.stepperCallback;
         this.funDefs = orig.funDefs;
         this.outputStrategy = orig.outputStrategy;
@@ -75,13 +75,13 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public void pushVariableFrame(final StackFrameAccess access) {
-        symbolFrame.pushFrame(access);
+    public void pushVariableFrame(final ScopeAccess access) {
+        symbolFrame.push(access);
     }
 
     @Override
     public void popVariableFrame() {
-        symbolFrame.popFrame();
+        symbolFrame.pop();
     }
 
     @Override
