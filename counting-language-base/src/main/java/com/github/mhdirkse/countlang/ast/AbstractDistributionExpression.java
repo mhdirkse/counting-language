@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractDistributionExpression extends ExpressionNode implements CompositeNode {
+    private CountlangType countlangType = CountlangType.unknown();
     private List<AbstractDistributionItem> scoredValues = new ArrayList<>();
 
     public AbstractDistributionExpression(int line, int column) {
@@ -31,11 +32,24 @@ public abstract class AbstractDistributionExpression extends ExpressionNode impl
 
     @Override
     public CountlangType getCountlangType() {
-        return CountlangType.DISTRIBUTION;
+        return countlangType;
+    }
+
+    // TODO: Call during type checking
+    public void setCountlangType(CountlangType countlangType) {
+        this.countlangType = countlangType;
     }
 
     public void addScoredValue(final AbstractDistributionItem expression) {
         scoredValues.add(expression);
+    }
+
+    public List<AbstractDistributionItem> getScoredValues() {
+        return scoredValues;
+    }
+
+    public int getNumScoredValues() {
+        return scoredValues.size();
     }
 
     @Override

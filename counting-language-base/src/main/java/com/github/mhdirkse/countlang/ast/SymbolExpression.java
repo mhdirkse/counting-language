@@ -27,7 +27,7 @@ public final class SymbolExpression extends ExpressionNode {
 
     @Getter
     @Setter
-    private CountlangType countlangType = CountlangType.UNKNOWN;
+    private CountlangType countlangType = CountlangType.unknown();
 
     public SymbolExpression(final int line, final int column, String symbol) {
         super(line, column);

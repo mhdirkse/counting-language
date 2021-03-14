@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
+import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
@@ -109,10 +110,10 @@ public class Analysis {
             }
             statement.getSampledDistribution().accept(this);
             CountlangType actualType = statement.getSampledDistribution().getCountlangType();
-            if(actualType != CountlangType.DISTRIBUTION) {
+            if(!actualType.isDistribution()) {
                 reporter.report(StatusCode.SAMPLED_FROM_NON_DISTRIBUTION, statement.getLine(), statement.getColumn(), actualType.toString());
             }
-            codeBlocks.write(statement.getSymbol(), statement.getLine(), statement.getColumn(), CountlangType.INT);
+            codeBlocks.write(statement.getSymbol(), statement.getLine(), statement.getColumn(), actualType.getSubType());
         }
 
         @Override
@@ -165,21 +166,23 @@ public class Analysis {
             statement.getExpression().accept(this);
             CountlangType newReturnType = statement.getExpression().getCountlangType();
             codeBlocks.handleReturn(statement.getLine(), statement.getColumn());
-            if(newReturnType == CountlangType.UNKNOWN) {
+            if(newReturnType == CountlangType.unknown()) {
                 // UNKNOWN should appear here because of earlier errors, no need to report something.
                 return;
             }
             if(analyzedFunction instanceof FunctionDefinitionStatement) {
                 FunctionDefinitionStatement f = (FunctionDefinitionStatement) analyzedFunction;
-                if(f.getReturnType() == CountlangType.UNKNOWN) {
+                if(f.getReturnType() == CountlangType.unknown()) {
                     f.setReturnType(newReturnType);
                 } else if(newReturnType != f.getReturnType()) {
                     reporter.report(StatusCode.FUNCTION_RETURN_TYPE_MISMATCH, f.getLine(), f.getColumn(), newReturnType.toString(), f.getReturnType().toString());
                 }
-            }
-            if(analyzedFunction instanceof ExperimentDefinitionStatement) {
-                if(newReturnType != CountlangType.INT) {
-                    reporter.report(StatusCode.EXPERIMENT_SCORE_NOT_INT, statement.getLine(), statement.getColumn(), analyzedFunction.getName());
+            } else if(analyzedFunction instanceof ExperimentDefinitionStatement) {
+                ExperimentDefinitionStatement f = (ExperimentDefinitionStatement) analyzedFunction;
+                if(f.getReturnType() == CountlangType.unknown()) {
+                    f.setReturnType(CountlangType.distributionOf(newReturnType));
+                } else if(newReturnType != f.getReturnType().getSubType()) {
+                    reporter.report(StatusCode.DISTRIBUTION_RETURN_TYPE_MISMATCH, f.getLine(), f.getColumn(), newReturnType.toString(), f.getReturnType().toString());
                 }
             }
         }
@@ -187,7 +190,7 @@ public class Analysis {
         @Override
         public void visitIfStatement(IfStatement ifStatement) {
             ifStatement.getSelector().accept(this);
-            if(ifStatement.getSelector().getCountlangType() != CountlangType.BOOL) {
+            if(ifStatement.getSelector().getCountlangType() != CountlangType.bool()) {
                 reporter.report(StatusCode.IF_SELECT_NOT_BOOLEAN, ifStatement.getLine(), ifStatement.getColumn(), ifStatement.getSelector().getCountlangType().toString());
             }
             codeBlocks.startSwitch();
@@ -206,7 +209,7 @@ public class Analysis {
         public void visitWhileStatement(WhileStatement whileStatement) {
             codeBlocks.startRepetition();
             whileStatement.getTestExpr().accept(this);
-            if(whileStatement.getTestExpr().getCountlangType() != CountlangType.BOOL) {
+            if(whileStatement.getTestExpr().getCountlangType() != CountlangType.bool()) {
                 reporter.report(StatusCode.WHILE_TEST_NOT_BOOLEAN, whileStatement.getLine(), whileStatement.getColumn(), whileStatement.getTestExpr().getCountlangType().toString());
             }
             whileStatement.getStatement().accept(this);
@@ -216,7 +219,7 @@ public class Analysis {
         @Override
         public void visitCompositeExpression(CompositeExpression expression) {
             expression.getSubExpressions().forEach(ex -> ex.accept(this));
-            expression.setCountlangType(CountlangType.UNKNOWN);
+            expression.setCountlangType(CountlangType.unknown());
             List<CountlangType> types = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
             if(types.size() != expression.getOperator().getNumArguments()) {
                 reporter.report(StatusCode.OPERATOR_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(),
@@ -231,7 +234,7 @@ public class Analysis {
 
         @Override
         public void visitFunctionCallExpression(FunctionCallExpression expression) {
-            expression.setCountlangType(CountlangType.UNKNOWN);
+            expression.setCountlangType(CountlangType.unknown());
             expression.getSubExpressions().forEach(ex -> ex.accept(this));
             if(! funDefs.hasFunction(expression.getFunctionName())) {
                 reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getFunctionName());
@@ -281,8 +284,16 @@ public class Analysis {
         }
 
         private void genericHandleDistributionExpression(AbstractDistributionExpression expr) {
-            for(distributionItemIndex = 0; distributionItemIndex < expr.getNumSubExpressions(); distributionItemIndex++) {
-                expr.getChildren().get(distributionItemIndex).accept(this);
+            for(distributionItemIndex = 0; distributionItemIndex < expr.getNumScoredValues(); distributionItemIndex++) {
+                AbstractDistributionItem subExpression = expr.getScoredValues().get(distributionItemIndex);
+                subExpression.accept(this);
+                CountlangType subExpressionType = subExpression.getItem().getCountlangType();
+                if(expr.getCountlangType() == CountlangType.unknown()) {
+                    expr.setCountlangType(CountlangType.distributionOf(subExpressionType));
+                } else if(subExpressionType != expr.getCountlangType().getSubType()) {
+                    reporter.report(StatusCode.DISTRIBUTION_SCORED_VALUE_TYPE_MISMATCH, subExpression.getLine(), subExpression.getColumn(),
+                            new Integer(distributionItemIndex + 1).toString(), subExpressionType.toString(), expr.getCountlangType().getSubType().toString());
+                }
             }
         }
 
@@ -294,7 +305,7 @@ public class Analysis {
         }
 
         void checkExtraValue(ExpressionNode extra) {
-            if(extra.getCountlangType() != CountlangType.INT) {
+            if(extra.getCountlangType() != CountlangType.integer()) {
                 reporter.report(StatusCode.DISTRIBUTION_AMOUNT_NOT_INT, extra.getLine(), extra.getColumn());
             }
         }
@@ -309,22 +320,14 @@ public class Analysis {
         @Override
         public void visitDistributionItemItem(DistributionItemItem item) {
             item.getChildren().forEach(c -> c.accept(this));
-            CountlangType actual = item.getItem().getCountlangType();
-            if(actual != CountlangType.INT) {
-                reporter.report(StatusCode.DISTRIBUTION_SCORED_VALUE_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
-            }
         }
 
         @Override
         public void visitDistributionItemCount(DistributionItemCount item) {
             item.getChildren().forEach(c -> c.accept(this));
             CountlangType actual = item.getCount().getCountlangType();
-            if(actual != CountlangType.INT) {
+            if(actual != CountlangType.integer()) {
                 reporter.report(StatusCode.DISTRIBUTION_SCORED_COUNT_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
-            }
-            actual = item.getItem().getCountlangType();
-            if(item.getItem().getCountlangType() != CountlangType.INT) {
-                reporter.report(StatusCode.DISTRIBUTION_SCORED_VALUE_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
             }
         }        
     }

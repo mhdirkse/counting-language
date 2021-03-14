@@ -37,7 +37,9 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
     @Setter
     private StatementGroup statements;
 
-    public abstract CountlangType getReturnType();
+    @Getter
+    @Setter
+    private CountlangType returnType = CountlangType.unknown();
 
     public FunctionDefinitionStatementBase(final int line, final int column) {
         super(line, column);

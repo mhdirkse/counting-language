@@ -25,11 +25,6 @@ public class ExperimentDefinitionStatement extends FunctionDefinitionStatementBa
     }
 
     @Override
-    public CountlangType getReturnType() {
-        return CountlangType.DISTRIBUTION;
-    }
-
-    @Override
     public void accept(Visitor v) {
         v.visitExperimentDefinitionStatement(this);
     }

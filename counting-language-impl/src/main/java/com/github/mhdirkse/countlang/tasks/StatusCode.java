@@ -36,6 +36,7 @@ public enum StatusCode implements AbstractStatusCode {
     FUNCTION_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch calling {3}. Expected {4}, got {5}."),
     FUNCTION_TYPE_MISMATCH("({1}, {2}): Type mismatch calling function {3}, formal parameter {4}."),
     FUNCTION_RETURN_TYPE_MISMATCH("({1}, {2}): Type of return value {3} does not match return type {4}."),
+    DISTRIBUTION_RETURN_TYPE_MISMATCH("({1}, {2}): Type of return value {3} does not match return type of experiment: {4}."),
     
     OPERATOR_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch for operator {3}. Expected {4}, got {5}."),
     OPERATOR_TYPE_MISMATCH("({1}, {2}): Type mismatch using operator {3}."),
@@ -47,9 +48,8 @@ public enum StatusCode implements AbstractStatusCode {
     IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be BOOL, but was {3}."),
     WHILE_TEST_NOT_BOOLEAN("({1}, {2}): Test expression of while statement must be BOOL, but was {3}."),
 
-    EXPERIMENT_SCORE_NOT_INT("({1}, {2}): Experiment can only score INT: {3}."),
+    DISTRIBUTION_SCORED_VALUE_TYPE_MISMATCH("({1}, {2}): Element number {3} in distribution is {4}, should be {5}."),
     DISTRIBUTION_SCORED_COUNT_NOT_INT("({1}, {2}): Element number {3}, the count, in distribution is {4}, should be INT."),
-    DISTRIBUTION_SCORED_VALUE_NOT_INT("({1}, {2}): Element number {3}, the value, in distribution is {4}, should be INT."),
     DISTRIBUTION_AMOUNT_NOT_INT("({1}, {2}): The amount or unknown clause of a distribution should be INT."),
     SAMPLING_OUTSIDE_EXPERIMENT("({1}, {2}): Sampling is only allowed within an experiment."),
     SAMPLED_FROM_NON_DISTRIBUTION("({1}, {2}): The value you sample from is a {3}, but should be DISTRIBUTION.");

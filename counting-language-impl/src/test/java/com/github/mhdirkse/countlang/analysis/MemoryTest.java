@@ -44,15 +44,15 @@ public class MemoryTest {
     @Test
     public void whenVariableWrittenThenWriteAvailableInCodeBlock() {
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        memory.write("x", 1, 2, CountlangType.INT, block);
+        memory.write("x", 1, 2, CountlangType.integer(), block);
         memory.popScope();
         assertEquals(1, block.getVariableWrites().size());
         VariableWrite write = block.getVariableWrites().get(0);
         assertEquals("x", write.getVariable().getName());
-        assertEquals(CountlangType.INT, write.getVariable().getCountlangType());
+        assertEquals(CountlangType.integer(), write.getVariable().getCountlangType());
         assertEquals(1, write.getLine());
         assertEquals(2, write.getColumn());
-        assertEquals(CountlangType.INT, write.getCountlangType());
+        assertEquals(CountlangType.integer(), write.getCountlangType());
         assertEquals(VariableWriteKind.ASSIGNMENT, write.getVariableWriteKind());
         assertEquals(block, write.getCodeBlock());
         assertTrue(write.isInitial());
@@ -63,9 +63,9 @@ public class MemoryTest {
     @Test
     public void whenSameNameWrittenInTwoScopesThenDifferentVariablesWritten() {
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        memory.write("x", 1, 2, CountlangType.INT, block);
+        memory.write("x", 1, 2, CountlangType.integer(), block);
         memory.pushScope(new AnalysisScope(ScopeAccess.HIDE_PARENT));
-        memory.write("x", 2, 2, CountlangType.INT, block);
+        memory.write("x", 2, 2, CountlangType.integer(), block);
         memory.popScope();
         memory.popScope();
         assertEquals(2, block.getVariableWrites().size());
@@ -84,8 +84,8 @@ public class MemoryTest {
     @Test
     public void whenSameNameWrittenInSameScopeThenSameVariableWritten() {
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        memory.write("x", 1, 2, CountlangType.INT, block);
-        memory.write("x", 2, 2, CountlangType.INT, block);
+        memory.write("x", 1, 2, CountlangType.integer(), block);
+        memory.write("x", 2, 2, CountlangType.integer(), block);
         memory.popScope();
         checkSameVariableWritten();
     }
@@ -103,9 +103,9 @@ public class MemoryTest {
     @Test
     public void whenNewScopeShowingParentThenNameResolvesToParentScope() {
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        memory.write("x", 1, 2, CountlangType.INT, block);
+        memory.write("x", 1, 2, CountlangType.integer(), block);
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        memory.write("x", 2, 2, CountlangType.INT, block);
+        memory.write("x", 2, 2, CountlangType.integer(), block);
         memory.popScope();
         memory.popScope();
         checkSameVariableWritten();        
@@ -115,16 +115,16 @@ public class MemoryTest {
     public void whenParameterWrittenThenWriteKindParameter() {
         AnalysisScope analysisScope = new AnalysisScope(ScopeAccess.SHOW_PARENT);
         memory.pushScope(analysisScope);
-        memory.addParameter("x", 1, 2, CountlangType.BOOL, block);
+        memory.addParameter("x", 1, 2, CountlangType.bool(), block);
         assertTrue(analysisScope.has("x"));
         memory.popScope();
         assertEquals(1, block.getVariableWrites().size());
         VariableWrite write = block.getVariableWrites().get(0);
         assertEquals("x", write.getVariable().getName());
-        assertEquals(CountlangType.BOOL, write.getVariable().getCountlangType());
+        assertEquals(CountlangType.bool(), write.getVariable().getCountlangType());
         assertEquals(1, write.getLine());
         assertEquals(2, write.getColumn());
-        assertEquals(CountlangType.BOOL, write.getCountlangType());
+        assertEquals(CountlangType.bool(), write.getCountlangType());
         assertEquals(VariableWriteKind.PARAMETER, write.getVariableWriteKind());
         assertEquals(block, write.getCodeBlock());
         assertTrue(write.isInitial());        
@@ -133,8 +133,8 @@ public class MemoryTest {
     @Test
     public void whenParameterClashesWithExistingVariableThenErrorEventSaved() {
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        memory.write("x", 1, 2, CountlangType.INT, block);
-        memory.addParameter("x", 2, 3, CountlangType.INT, block);
+        memory.write("x", 1, 2, CountlangType.integer(), block);
+        memory.addParameter("x", 2, 3, CountlangType.integer(), block);
         memory.popScope();
         assertEquals(1, memory.getVariableErrorEvents().size());
         VariableErrorEvent ev = memory.getVariableErrorEvents().get(0);
@@ -147,8 +147,8 @@ public class MemoryTest {
     @Test
     public void whenVariableReadThenInitialWriteIsRead() {
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        memory.write("x", 1, 2, CountlangType.BOOL, block);
-        assertEquals(CountlangType.BOOL, memory.read("x", 2, 3, block));
+        memory.write("x", 1, 2, CountlangType.bool(), block);
+        assertEquals(CountlangType.bool(), memory.read("x", 2, 3, block));
         memory.popScope();
         assertEquals(1, block.getVariableWrites().size());
         VariableWrite write = block.getVariableWrites().get(0);
@@ -159,7 +159,7 @@ public class MemoryTest {
     @Test
     public void whenNonExistentSymbolReadThenErrorEventSaved() {
         memory.pushScope(new AnalysisScope(ScopeAccess.SHOW_PARENT));
-        assertEquals(CountlangType.UNKNOWN, memory.read("x", 1, 2, block));
+        assertEquals(CountlangType.unknown(), memory.read("x", 1, 2, block));
         memory.popScope();
         assertEquals(1, memory.getVariableErrorEvents().size());
         VariableErrorEvent ev = memory.getVariableErrorEvents().get(0);

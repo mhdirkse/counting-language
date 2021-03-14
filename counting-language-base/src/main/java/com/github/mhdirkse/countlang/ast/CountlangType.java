@@ -19,9 +19,80 @@
 
 package com.github.mhdirkse.countlang.ast;
 
-public enum CountlangType {
-    UNKNOWN,
-    INT,
-    BOOL,
-    DISTRIBUTION;    
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public final class CountlangType {
+    private enum Kind {
+        UNKNOWN,
+        INT,
+        BOOL,
+        DISTRIBUTION;
+    }
+
+    private static final Set<Kind> PRIMITIVES = EnumSet.of(Kind.INT, Kind.BOOL);
+
+    private static final Map<CountlangType, CountlangType> repository = new HashMap<>();
+
+    private final Kind kind;
+    private final CountlangType subType;
+
+    private CountlangType(final Kind kind, final CountlangType subType) {
+        this.kind = kind;
+        this.subType = subType;
+    }
+
+    public static CountlangType unknown() {
+        return primitive(Kind.UNKNOWN);
+    }
+
+    private static CountlangType primitive(Kind kind) {
+        CountlangType key = new CountlangType(kind, null);
+        if(! repository.containsKey(key)) {
+            repository.put(key, key);
+        }
+        return repository.get(key);
+    }
+
+    public static CountlangType integer() {
+        return primitive(Kind.INT);
+    }
+
+    public static CountlangType bool() {
+        return primitive(Kind.BOOL);
+    }
+
+    public static CountlangType distributionOf(CountlangType subType) {
+        CountlangType key = new CountlangType(Kind.DISTRIBUTION, subType);
+        if(! repository.containsKey(key)) {
+            repository.put(key, key);
+        }
+        return repository.get(key);
+    }
+
+    public boolean isDistribution() {
+        return kind == Kind.DISTRIBUTION;
+    }
+
+    public boolean isPrimitive() {
+        return PRIMITIVES.contains(kind);
+    }
+
+    public CountlangType getSubType() {
+        return subType;
+    }
+
+    @Override
+    public String toString() {
+        if(isPrimitive()) {
+            return kind.name().toLowerCase();
+        } else {
+            return String.format("%s<%s>", kind.name().toLowerCase(), getSubType().toString());
+        }
+    }
 }

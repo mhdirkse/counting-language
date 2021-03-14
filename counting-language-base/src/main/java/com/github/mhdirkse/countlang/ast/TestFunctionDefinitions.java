@@ -52,7 +52,7 @@ public final class TestFunctionDefinitions {
         abstract void handleParameter();
 
         void addTheParameter() {
-            instance.addFormalParameter(FORMAL_PARAMETER, CountlangType.INT);
+            instance.addFormalParameter(FORMAL_PARAMETER, CountlangType.integer());
         }
 
         abstract Statement getStatement();
@@ -72,7 +72,7 @@ public final class TestFunctionDefinitions {
         }
 
         CompositeExpression getStatementExpression() {
-            ValueExpression ex11 = new ValueExpression(1, 1, ADDED_VALUE, CountlangType.INT);
+            ValueExpression ex11 = new ValueExpression(1, 1, ADDED_VALUE, CountlangType.integer());
             SymbolExpression ex12 = new SymbolExpression(1, 1, FORMAL_PARAMETER);
             CompositeExpression ex1 = new CompositeExpression(1, 1);
             ex1.setOperator(new OperatorAdd(1, 1));
@@ -82,7 +82,7 @@ public final class TestFunctionDefinitions {
         }
 
         ExpressionNode getActualParameter() {
-            ValueExpression result = new ValueExpression(1, 1, VALUE_OF_X_AS_VALUE, CountlangType.INT);
+            ValueExpression result = new ValueExpression(1, 1, VALUE_OF_X_AS_VALUE, CountlangType.integer());
             return result;
         }
 
@@ -121,7 +121,7 @@ public final class TestFunctionDefinitions {
 
         @Override
         void handleReturnType() {
-            instance.setReturnType(CountlangType.INT);
+            instance.setReturnType(CountlangType.integer());
         }
     }
 }

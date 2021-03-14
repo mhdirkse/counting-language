@@ -49,11 +49,11 @@ class ValueExpressionHandler extends AbstractCountlangListenerHandler implements
             final TerminalNode node,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         if(node.getSymbol().getType() == CountlangLexer.BOOL) {
-            expression = new ValueExpression(line, column, Boolean.valueOf(node.getText()), CountlangType.BOOL);
+            expression = new ValueExpression(line, column, Boolean.valueOf(node.getText()), CountlangType.bool());
             return true;
         } else if(node.getSymbol().getType() == CountlangLexer.INT) {
             try {
-                expression = new ValueExpression(line, column, Integer.valueOf(node.getText()), CountlangType.INT);
+                expression = new ValueExpression(line, column, Integer.valueOf(node.getText()), CountlangType.integer());
             } catch(NumberFormatException e) {
                 throw new ProgramException(line, column, "Integer value is too big to store: " + node.getText());
             }

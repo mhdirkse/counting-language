@@ -66,7 +66,7 @@ class MemoryImpl implements Memory {
             return analysisScope.read(name, line, column, codeBlock);
         } else {
             variableErrorEvents.add(new VariableErrorEvent(VariableErrorEvent.Kind.DOES_NOT_EXIST, name, line, column));
-            return CountlangType.UNKNOWN;
+            return CountlangType.unknown();
         }
     }
 

@@ -19,22 +19,14 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
-
 final class Symbol {
     private String name;
-    private CountlangType countlangType;
 
     public Symbol(String name) {
         this.name = name;
-        this.countlangType = CountlangType.UNKNOWN;
     }
 
     public String getName() {
         return name;
-    }
-
-    public CountlangType getCountlangType() {
-        return countlangType;
     }
 }

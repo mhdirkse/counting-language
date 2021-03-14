@@ -58,7 +58,7 @@ class VarDeclsHandler extends AbstractCountlangListenerHandler {
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         line = antlrCtx.start.getLine();
         column = antlrCtx.start.getCharPositionInLine();
-        countlangType = CountlangType.UNKNOWN;
+        countlangType = CountlangType.unknown();
         id = "";
         return true;
     }
@@ -89,11 +89,12 @@ class VarDeclsHandler extends AbstractCountlangListenerHandler {
     private void handleType(TerminalNode antlrCtx) {
         int antlrType = antlrCtx.getSymbol().getType();
         if(antlrType == CountlangLexer.BOOLTYPE) {
-            countlangType = CountlangType.BOOL;
+            countlangType = CountlangType.bool();
         } else if(antlrType == CountlangLexer.INTTYPE) {
-            countlangType = CountlangType.INT;
+            countlangType = CountlangType.integer();
         } else if(antlrType == CountlangLexer.DISTRIBUTIONTYPE) {
-            countlangType = CountlangType.DISTRIBUTION;
+            // TODO: Allow distributions of anything, not only int.
+            countlangType = CountlangType.distributionOf(CountlangType.integer());
         } else {
             throw new IllegalArgumentException("Unknown type");
         }

@@ -88,13 +88,13 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {DECREMENT_OF_MIN_INT_PLUS_ONE, MIN_INT}, // No underflow.
             
             // Test literal distributions
+            // TODO: Test empty distribution
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
             {"print distribution 1 total 3", getDistributionWithUnknown().format()},
             {"print distribution 1 unknown 2", getDistributionWithUnknown().format()},
             {"function fun() {return distribution 1, 1, 3}; print fun()", getSimpleDistribution().format()},
             {"d = distribution 1, 1, 3;\nfunction fun(distribution arg) {print arg; return 0};\nx = fun(d); print x",
                 getSimpleDistribution().format()},
-            {"d = distribution; print d", (new Distribution.Builder().build().format())},
             {"print distribution 1, 2 - 1, 5 - 2", getSimpleDistribution().format()},
             {"print distribution 2 of 3;", getDistribution(3, 3)},
             {"print distribution 2 of 3, 4;", getDistribution(3, 3, 4)},
@@ -103,7 +103,6 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution 4, 2 of 3 unknown 12", getDistributionWithUnknown(3, 3, 4, 12)},
             {"print distribution 2 of -1", getDistribution(-1, -1)},
             {"print known of distribution 1, 2 total 5", getDistribution(1, 2)},
-            {"print known of distribution total 1", getDistribution()},
             
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},

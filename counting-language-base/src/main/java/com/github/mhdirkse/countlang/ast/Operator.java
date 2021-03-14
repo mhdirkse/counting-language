@@ -91,12 +91,12 @@ public abstract class Operator extends AstNode {
 
     	@Override
     	public final boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
-    	    return argumentTypes.get(0) == CountlangType.INT;
+    	    return argumentTypes.get(0) == CountlangType.integer();
     	}
 
     	@Override
     	public final CountlangType getResultType() {
-    	    return CountlangType.INT;
+    	    return CountlangType.integer();
     	}
     }
 
@@ -119,13 +119,13 @@ public abstract class Operator extends AstNode {
 
     	@Override
     	public final boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
-    	    return (argumentTypes.get(0) == CountlangType.INT)
-    	            && (argumentTypes.get(1) == CountlangType.INT);
+    	    return (argumentTypes.get(0) == CountlangType.integer())
+    	            && (argumentTypes.get(1) == CountlangType.integer());
     	}
 
     	@Override
     	public final CountlangType getResultType() {
-    	    return CountlangType.INT;
+    	    return CountlangType.integer();
     	}
 
         abstract long executeUnchecked(long firstArg, long secondArg);
@@ -223,7 +223,7 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final CountlangType getResultType() {
-            return CountlangType.BOOL;
+            return CountlangType.bool();
         }
 
         @Override
@@ -233,7 +233,7 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            return argumentTypes.get(0) == CountlangType.BOOL;
+            return argumentTypes.get(0) == CountlangType.bool();
         }
 
         @Override
@@ -250,7 +250,7 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final CountlangType getResultType() {
-            return CountlangType.BOOL;
+            return CountlangType.bool();
         }
 
         @Override
@@ -260,8 +260,8 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            return (argumentTypes.get(0) == CountlangType.BOOL)
-                    && (argumentTypes.get(1) == CountlangType.BOOL);
+            return (argumentTypes.get(0) == CountlangType.bool())
+                    && (argumentTypes.get(1) == CountlangType.bool());
         }        
     }
 
@@ -313,13 +313,13 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            return (argumentTypes.get(0) == CountlangType.INT)
-                    && (argumentTypes.get(1) == CountlangType.INT);
+            return (argumentTypes.get(0) == CountlangType.integer())
+                    && (argumentTypes.get(1) == CountlangType.integer());
         }
 
         @Override
         public final CountlangType getResultType() {
-            return CountlangType.BOOL;
+            return CountlangType.bool();
         }
 
         @Override
@@ -397,7 +397,7 @@ public abstract class Operator extends AstNode {
     }
 
     public static abstract class MultiTypeRelOp extends Operator {
-        CountlangType argType = CountlangType.UNKNOWN;
+        CountlangType argType = CountlangType.unknown();
 
         MultiTypeRelOp(final int line, final int column) {
             super(line, column);
@@ -410,8 +410,7 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            boolean result = (argumentTypes.get(0) == argumentTypes.get(1))
-                    && (!argumentTypes.get(0).equals(CountlangType.DISTRIBUTION));
+            boolean result = (argumentTypes.get(0) == argumentTypes.get(1)) && argumentTypes.get(0).isPrimitive();
             if(result) {
                 argType = argumentTypes.get(0);
             }
@@ -420,25 +419,21 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final CountlangType getResultType() {
-            return CountlangType.BOOL;
+            return CountlangType.bool();
         }
 
         @Override
         public final Object execute(List<Object> arguments) {
             boolean result = false; 
-            switch(argType) {
-            case BOOL:
+            if(argType == CountlangType.bool()) {
                 boolean b1 = (Boolean) arguments.get(0);
                 boolean b2 = (Boolean) arguments.get(1);
                 result = applyBool(b1, b2);
-                break;
-            case INT:
+            } else if(argType == CountlangType.integer()) {
                 int i1 = (Integer) arguments.get(0);
                 int i2 = (Integer) arguments.get(1);
                 result = applyInt(i1, i2);
-                break;
-            case UNKNOWN:
-            case DISTRIBUTION:
+            } else {
                 throw new IllegalStateException("Cannot execute when type checking failed");
             }
             return Boolean.valueOf(result);
@@ -491,6 +486,8 @@ public abstract class Operator extends AstNode {
     }
 
     public static class OperatorKnown extends Operator {
+        private CountlangType resultType;
+
         public OperatorKnown(final int line, final int column) {
             super(line, column);
         }
@@ -512,12 +509,13 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
-            return argumentTypes.get(0) == CountlangType.DISTRIBUTION;
+            resultType = argumentTypes.get(0);
+            return argumentTypes.get(0).isDistribution();
         }
 
         @Override
         public final CountlangType getResultType() {
-            return CountlangType.DISTRIBUTION;
+            return resultType;
         }
     }
 }
