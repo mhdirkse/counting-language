@@ -20,28 +20,13 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
-import com.github.mhdirkse.countlang.lang.CountlangLexer;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class VarDeclsHandler extends AbstractCountlangListenerHandler {
-    private static final Set<Integer> TYPE_TOKENS = new HashSet<>(Arrays.asList(
-            CountlangLexer.BOOLTYPE, CountlangLexer.INTTYPE, CountlangLexer.DISTRIBUTIONTYPE));
-
-    private int line;
-    private int column;
-    private CountlangType countlangType;
-    private String id;
-
     VarDeclsHandler() {
         super(false);
     }
@@ -56,10 +41,9 @@ class VarDeclsHandler extends AbstractCountlangListenerHandler {
     public boolean enterVarDecl(
             CountlangParser.VarDeclContext antlrCtx,
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        line = antlrCtx.start.getLine();
-        column = antlrCtx.start.getCharPositionInLine();
-        countlangType = CountlangType.unknown();
-        id = "";
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new VarDeclHandler(line, column));
         return true;
     }
 
@@ -67,40 +51,13 @@ class VarDeclsHandler extends AbstractCountlangListenerHandler {
     public boolean exitVarDecl(
             CountlangParser.VarDeclContext antlrCtx,
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        formalParameters.add(new FormalParameter(line, column, id, countlangType));
-        return true;
-    }
-
-    @Override
-    public boolean visitTerminal(
-            TerminalNode antlrCtx,
-            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        if(antlrCtx.getSymbol().getType() == CountlangLexer.ID) {
-            handleId(antlrCtx);
-            return true;
-        } else if(TYPE_TOKENS.contains(antlrCtx.getSymbol().getType())) {
-            handleType(antlrCtx);
-            return true;
-        } else {
+        if(delegationCtx.isFirst()) {
             return false;
-        }
-    }
-
-    private void handleType(TerminalNode antlrCtx) {
-        int antlrType = antlrCtx.getSymbol().getType();
-        if(antlrType == CountlangLexer.BOOLTYPE) {
-            countlangType = CountlangType.bool();
-        } else if(antlrType == CountlangLexer.INTTYPE) {
-            countlangType = CountlangType.integer();
-        } else if(antlrType == CountlangLexer.DISTRIBUTIONTYPE) {
-            // TODO: Allow distributions of anything, not only int.
-            countlangType = CountlangType.distributionOf(CountlangType.integer());
         } else {
-            throw new IllegalArgumentException("Unknown type");
+            VarDeclHandler handler = ((VarDeclHandler) delegationCtx.getPreviousHandler());
+            formalParameters.add(new FormalParameter(handler.getLine(), handler.getColumn(), handler.getId(), handler.getCountlangType()));
+            delegationCtx.removeAllPreceeding();
+            return true;
         }
-    }
-
-    private void handleId(TerminalNode antlrCtx) {
-        id = antlrCtx.getText();
     }
 }

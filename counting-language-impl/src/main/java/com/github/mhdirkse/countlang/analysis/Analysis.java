@@ -33,6 +33,7 @@ import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
+import com.github.mhdirkse.countlang.ast.EmptyCollectionExpression;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
@@ -264,6 +265,13 @@ public class Analysis {
 
         @Override
         public void visitValueExpression(ValueExpression expression) {
+        }
+
+        @Override
+        public void visitEmptyCollectionExpression(EmptyCollectionExpression expression) {
+            if(expression.getCountlangType().isPrimitive()) {
+                reporter.report(StatusCode.EMPTY_COLLECTION_IS_PRIMITIVE, expression.getLine(), expression.getColumn());
+            }
         }
 
         @Override

@@ -138,11 +138,17 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
         delegationCtx.addFirst(new DistributionKnownExpressionHandler(line, column));
         return true;
     }
-    
-    
-    
-    
-    
+
+    @Override
+    public boolean enterEmptyValueExpression(
+            final CountlangParser.EmptyValueExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new TypeIdHandler(line, column));
+        return true;        
+    }
+
     @Override
     public boolean exitFunctionCallExpression(
             CountlangParser.FunctionCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
@@ -234,6 +240,12 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
     public boolean exitDistributionKnownExpression(
             final CountlangParser.DistributionKnownExpressionContext ctx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleExpressionExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitEmptyValueExpression(
+            CountlangParser.EmptyValueExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleExpressionExit(delegationCtx);
     }
 

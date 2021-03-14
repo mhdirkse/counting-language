@@ -42,4 +42,5 @@ public interface Visitor {
     public void visitDistributionExpressionWithUnknown(final DistributionExpressionWithUnknown expr);
     public void visitDistributionItemItem(DistributionItemItem item);
     public void visitDistributionItemCount(DistributionItemCount item);
+    public void visitEmptyCollectionExpression(EmptyCollectionExpression item);
 }

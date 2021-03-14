@@ -21,7 +21,10 @@ varDecls : varDecl (',' varDecl)* ;
 
 varDecl : typeId ID ;
 
-typeId : INTTYPE | BOOLTYPE | DISTRIBUTIONTYPE;
+typeId : 
+    (INTTYPE | BOOLTYPE) # simpleType
+    | (DISTRIBUTIONTYPE '<' typeId '>') # distributionType
+    ;
 
 expr
   : '(' expr ')' # bracketExpression
@@ -36,6 +39,7 @@ expr
   | 'distribution' (distItem ( ',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression 
   | 'known of' expr # distributionKnownExpression
   | ID # symbolReferenceExpression
+  | 'empty' typeId # emptyValueExpression
   | (INT | BOOL ) # valueExpression
   ;
 

@@ -32,7 +32,7 @@ import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class IgnoredMethodsHandler extends AbstractCountlangListenerHandler {
     private final Set<Integer> RELEVANT_TOKENS = new HashSet<>(
-            Arrays.asList(CountlangParser.ID, CountlangParser.INT));
+            Arrays.asList(CountlangParser.ID, CountlangParser.INT, CountlangParser.BOOL));
 
     IgnoredMethodsHandler() {
         super(false);
@@ -61,20 +61,6 @@ class IgnoredMethodsHandler extends AbstractCountlangListenerHandler {
     @Override
     public boolean exitBracketExpression(
             final @NotNull CountlangParser.BracketExpressionContext antlrCtx,
-            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return true;
-    }
-
-    @Override
-    public boolean enterTypeId(
-            final @NotNull CountlangParser.TypeIdContext antlrCtx,
-            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return true;
-    }
-
-    @Override
-    public boolean exitTypeId(
-            final @NotNull CountlangParser.TypeIdContext antlrCtx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return true;
     }
