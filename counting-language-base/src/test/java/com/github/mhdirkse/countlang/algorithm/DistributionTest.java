@@ -234,4 +234,33 @@ public class DistributionTest {
         String expected = expectedItems.stream().collect(Collectors.joining("\n"));
         Assert.assertEquals(expected, actual);
     }
+
+    @Test
+    public void whenEmptyDistributionNormalizedThenEmptyDistributionReturned() {
+        Distribution empty = new Distribution.Builder().build();
+        Assert.assertEquals(empty, empty.normalize());
+    }
+
+    @Test
+    public void whenDistributionHasOnlyUnknownThenUnknownCountBecomesOne() {
+        Distribution.Builder inputBuilder = new Distribution.Builder();
+        inputBuilder.addUnknown(3);
+        Distribution input = inputBuilder.build();
+        Distribution normalized = input.normalize();
+        Assert.assertTrue(! normalized.getItemIterator().hasNext());
+        Assert.assertEquals(1, normalized.getCountUnknown());
+    }
+
+    @Test
+    public void whenDistributionHasGcdThenNormalized() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(10, 2);
+        b.add(11, 4);
+        b.addUnknown(6);
+        Distribution normalized = b.build().normalize();
+        Assert.assertEquals(1, normalized.getCountOf(10));
+        Assert.assertEquals(2, normalized.getCountOf(11));
+        Assert.assertEquals(3, normalized.getCountUnknown());
+        Assert.assertEquals(6, normalized.getTotal());
+    }
 }

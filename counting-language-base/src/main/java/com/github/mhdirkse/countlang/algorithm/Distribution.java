@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -124,6 +126,28 @@ public final class Distribution implements Comparable<Distribution> {
 
     public Iterator<Object> getItemIterator() {
         return items.keySet().iterator();
+    }
+
+    public Distribution normalize() {
+        if(total == 0) {
+            return new Distribution.Builder().build();
+        }
+        List<BigInteger> gcdInput = Stream.concat(items.values().stream(), Arrays.asList(unknown).stream())
+                .filter(v -> v != 0)
+                .map(b -> BigInteger.valueOf(b))
+                .collect(Collectors.toList());
+        int gcd = getGcd(gcdInput);
+        Distribution.Builder b = new Distribution.Builder();
+        for(Object item: items.keySet()) {
+            b.add(item, items.get(item) / gcd);
+        }
+        b.addUnknown(unknown / gcd);
+        return b.build();
+    }
+
+    private static int getGcd(List<BigInteger> values) {
+        Optional<BigInteger> gcd = values.stream().collect(Collectors.reducing((b1, b2) -> b1.gcd(b2)));
+        return gcd.get().intValue();
     }
 
     public String format() {
