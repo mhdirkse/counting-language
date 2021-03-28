@@ -126,7 +126,9 @@ Apart from the probability theory features, counting-language supports the follo
 * You can manage the order of expression evaluation with brackets.
 * Logical and, or, not.
 * Relational operators <, >, <=, >=, ==, !=.
-* You can define variables of type int, boolean or distribution.
+* You can define variables of type int, boolean or some distribution.
+* Distribution types are defined like `distribution<int>`, `distribution<bool>` or `distribution<distribution<...>>` where the dots have to be replaced by any type.
+* Values of type distribution are defined like `distribution 1, 2, 3` for a non-empty `distribution<int>` or just `distribution<int>` for the empty distribution containing integers.
 * Variables defined between `{` and `}` go out of scope when the statement block ends.
 * You can define functions that are required to return a value (contrary to experiments).
 * There is an ``if``-statement.
