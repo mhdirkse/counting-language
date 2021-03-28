@@ -91,6 +91,8 @@ public final class CountlangType {
     public String toString() {
         if(isPrimitive()) {
             return kind.name().toLowerCase();
+        } else if(kind.equals(Kind.UNKNOWN)) {
+            return "unknown";
         } else {
             return String.format("%s<%s>", kind.name().toLowerCase(), getSubType().toString());
         }

@@ -189,7 +189,7 @@ implements SampleContextBase {
         @Override
         void acceptChildResultDoingStatements(Object value, ExecutionContext context) {
             context.stopFunctionCall(expression);
-            sampleContext.score(((Integer) value).intValue());
+            sampleContext.score(value);
         }
 
         @Override

@@ -36,7 +36,7 @@ class DistributionItemCountCalculation extends ExpressionResultsCollector {
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         int count = (Integer) subExpressionResults.get(0);
-        int item = (Integer) subExpressionResults.get(1);
+        Object item = subExpressionResults.get(1);
         if(count < 0) {
             throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(),
                     String.format("Item is added to distribution with negative count %d", count));

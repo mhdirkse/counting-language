@@ -198,8 +198,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     private static String getProgramAboutDiseaseExpectedResult() {
         // I did this with a Spreadsheet.
         Distribution.Builder b = new Distribution.Builder();
-        b.add(0, 9999);
-        b.add(1, 99);
+        b.add(false, 9999);
+        b.add(true, 99);
         b.addUnknown(989902);
         return b.build().format();
     }

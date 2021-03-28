@@ -32,7 +32,7 @@ class SampleStatementCalculation implements AstNodeExecution {
     final SampleStatement statement;
     Distribution distribution;
     boolean isSamplingStarted = false;
-    int value;
+    Object value;
 
     SampleStatementCalculation(SampleStatement statement) {
         this.statement = statement;
@@ -57,8 +57,7 @@ class SampleStatementCalculation implements AstNodeExecution {
             isSamplingStarted = true;
         }
         if(context.hasNextValue()) {
-            // TODO: Make this for generic distribution subtype
-            value = (Integer) context.nextValue();
+            value = context.nextValue();
             context.forkExecutor();
             return null;
         }
