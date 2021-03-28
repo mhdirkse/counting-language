@@ -129,6 +129,11 @@ Apart from the probability theory features, counting-language supports the follo
 * You can define variables of type int, boolean or some distribution.
 * Distribution types are defined like `distribution<int>`, `distribution<bool>` or `distribution<distribution<...>>` where the dots have to be replaced by any type.
 * Values of type distribution are defined like `distribution 1, 2, 3` for a non-empty `distribution<int>` or just `distribution<int>` for the empty distribution containing integers.
+* There are short-hand notations for distribution literals according to the following rules:
+    * For values of type `distribution<bool>` you do not have to summarize both true and false. You can for example say `distribution 3 of false total 10` for a Bernoulli distribution with 30% chance of failure.
+    * You can write literal values for incomplete distributions like `distribution 1 unknown 2`.
+    * You can do the same by making the total explicit: `distribution 1 total 3`.
+    * For values of type `distribution<bool>`, you can do `distribution false, true total 3` to make your distribution incomplete.
 * Variables defined between `{` and `}` go out of scope when the statement block ends.
 * You can define functions that are required to return a value (contrary to experiments).
 * There is an ``if``-statement.
