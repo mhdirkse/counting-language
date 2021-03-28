@@ -22,9 +22,11 @@ package com.github.mhdirkse.countlang.algorithm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -74,6 +76,10 @@ public final class Distribution implements Comparable<Distribution> {
 
         public int getTotal() {
             return total;
+        }
+
+        public Set<Object> getItems() {
+            return new HashSet<>(items.keySet());
         }
 
         public Distribution build() {

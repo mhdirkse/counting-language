@@ -86,6 +86,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print distribution;", "Distribution should define its subtype"},
             {"print distribution<int> true", "Element number"},
             {"print distribution 1, true;", "Element number"},
+            {"print distribution<bool> total 2", "Ambiguous"},
 
             // Functions
             

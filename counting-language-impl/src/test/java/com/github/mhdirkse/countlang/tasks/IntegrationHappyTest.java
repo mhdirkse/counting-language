@@ -105,6 +105,9 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution false, true", getDistribution(false, true)},
             {"print distribution 2 of false, 3 of true", getDistribution(false, false, true, true, true)},
             {"print distribution<int>;", getDistribution(new int[] {})},
+            {"print distribution true total 2", getDistribution(false, true)},
+            {"print distribution false total 3", getDistribution(false, true, true)},
+            {"print distribution false, true total 4", getDistributionWithUnknown(2, false, true)},
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
             {"print testFunction(testFunction(4))", "14"},
@@ -181,9 +184,9 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
 
     private static String getProgramAboutDisease() {
         return Arrays.asList("experiment sick() {",
-            "distSick = distribution 9999 of false, 1 of true;",
-            "distDiagnosedIfSick = distribution 1 of false, 99 of true;",
-            "distDiagnosedIfNotSick = distribution 99 of false, 1 of true;",
+            "distSick = distribution 1 of true total 10000;",
+            "distDiagnosedIfSick = distribution 1 of false total 100;",
+            "distDiagnosedIfNotSick = distribution 1 of true total 100;",
             "diagnosed = false;",
             "sample sick from distSick;",
             "if(sick) {",
@@ -277,6 +280,15 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             }
         }
         return b.build().format();
+    }
+
+    private static String getDistributionWithUnknown(int unknown, boolean ...values) {
+        Distribution.Builder b = new Distribution.Builder();
+        for(int i = 0; i < values.length; i++) {
+            b.add(values[i]);
+        }
+        b.addUnknown(unknown);
+        return b.build().format();        
     }
 
     @Parameter(0)

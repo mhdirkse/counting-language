@@ -21,6 +21,7 @@ package com.github.mhdirkse.countlang.execution;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
+import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ProgramException;
@@ -42,22 +43,38 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
         finalValue = (Integer) value;
     }
 
-    @Override
-    public void finishBuilder() {
-        Distribution.Builder builder = ((Distribution.Builder) getContext());
-        int totalScored = builder.getTotal();
-        builder.addUnknown(getUnknown(finalValue, totalScored));        
-    }
-
-    abstract int getUnknown(int extraSubExpressionResult, int totalScored);
-
     static final class WithTotal extends SpecialDistributionExpressionCalculation {
         WithTotal(DistributionExpressionWithTotal expression) {
             super(expression);
         }
 
         @Override
-        int getUnknown(int total, int totalScored) {
+        public void finishBuilder() {
+            Distribution.Builder builder = ((Distribution.Builder) getContext());
+            int totalScored = builder.getTotal();
+            int deficit = getDeficit(finalValue, totalScored);
+            boolean isBooleanDistribution = expression.getCountlangType() == CountlangType.distributionOf(CountlangType.bool());
+            if(isBooleanDistribution) {
+                addDeficitToBooleanDistribution(deficit, builder);
+            } else {
+                builder.addUnknown(deficit);
+            }
+        }
+
+        private void addDeficitToBooleanDistribution(int deficit, Distribution.Builder builder) {
+            int numExplicitValues = builder.getItems().size();
+            if(numExplicitValues == 2) {
+                builder.addUnknown(deficit);
+            } else if(numExplicitValues == 1) {
+                boolean givenValue = (Boolean) builder.getItems().iterator().next();
+                boolean implicitValue = ! givenValue;
+                builder.add(implicitValue, deficit);
+            } else {
+                throw new ProgramException(expression.getLine(), expression.getColumn(), "Ambiguous implicit boolean value in distribution literal, you may want to use \"unknown\" instead of \"total\"");                    
+            }
+        }
+
+        int getDeficit(int total, int totalScored) {
             if(totalScored > total) {
                 throw new ProgramException(
                         getAstNode().getLine(),
@@ -76,6 +93,12 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
         }
 
         @Override
+        public void finishBuilder() {
+            Distribution.Builder builder = ((Distribution.Builder) getContext());
+            int totalScored = builder.getTotal();
+            builder.addUnknown(getUnknown(finalValue, totalScored));        
+        }
+
         int getUnknown(int unknown, int totalScored) {
             if(unknown < 0) {
                 throw new ProgramException(

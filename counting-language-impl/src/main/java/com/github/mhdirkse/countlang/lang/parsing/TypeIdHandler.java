@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-p
 package com.github.mhdirkse.countlang.lang.parsing;
 
 import java.util.function.Consumer;
