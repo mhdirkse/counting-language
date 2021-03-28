@@ -51,6 +51,7 @@ public enum StatusCode implements AbstractStatusCode {
     DISTRIBUTION_SCORED_VALUE_TYPE_MISMATCH("({1}, {2}): Element number {3} in distribution is {4}, should be {5}."),
     DISTRIBUTION_SCORED_COUNT_NOT_INT("({1}, {2}): Element number {3}, the count, in distribution is {4}, should be int."),
     DISTRIBUTION_AMOUNT_NOT_INT("({1}, {2}): The amount or unknown clause of a distribution should be int."),
+    UNTYPED_DISTRIBUTION("({1}, {2}): Distribution should define its subtype."),
     SAMPLING_OUTSIDE_EXPERIMENT("({1}, {2}): Sampling is only allowed within an experiment."),
     SAMPLED_FROM_NON_DISTRIBUTION("({1}, {2}): The value you sample from is a {3}, but should be DISTRIBUTION."),
     EMPTY_COLLECTION_IS_PRIMITIVE("({1}, {2}): Cannot build an empty collection from a primitive type id.");

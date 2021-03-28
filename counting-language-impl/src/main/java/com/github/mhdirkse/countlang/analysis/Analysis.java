@@ -33,7 +33,6 @@ import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
-import com.github.mhdirkse.countlang.ast.EmptyCollectionExpression;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
@@ -268,13 +267,6 @@ public class Analysis {
         }
 
         @Override
-        public void visitEmptyCollectionExpression(EmptyCollectionExpression expression) {
-            if(expression.getCountlangType().isPrimitive()) {
-                reporter.report(StatusCode.EMPTY_COLLECTION_IS_PRIMITIVE, expression.getLine(), expression.getColumn());
-            }
-        }
-
-        @Override
         public void visitOperator(Operator operator) {
         }
 
@@ -302,6 +294,9 @@ public class Analysis {
                     reporter.report(StatusCode.DISTRIBUTION_SCORED_VALUE_TYPE_MISMATCH, subExpression.getLine(), subExpression.getColumn(),
                             new Integer(distributionItemIndex + 1).toString(), subExpressionType.toString(), expr.getCountlangType().getSubType().toString());
                 }
+            }
+            if((expr.getNumScoredValues() == 0) && (expr.getCountlangType() == CountlangType.unknown())) {
+                reporter.report(StatusCode.UNTYPED_DISTRIBUTION, expr.getLine(), expr.getColumn());
             }
         }
 

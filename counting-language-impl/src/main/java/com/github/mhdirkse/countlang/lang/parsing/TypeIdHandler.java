@@ -6,7 +6,7 @@ import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-public class TypeIdHandler extends AbstractTypeHandler implements ExpressionSource {
+public class TypeIdHandler extends AbstractTypeHandler {
     private CountlangType countlangType = CountlangType.unknown();
     
     TypeIdHandler(int line, int column) {

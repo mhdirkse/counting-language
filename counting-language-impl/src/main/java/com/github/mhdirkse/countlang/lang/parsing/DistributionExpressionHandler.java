@@ -27,6 +27,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
+import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
@@ -50,11 +51,13 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
     private List<AbstractDistributionItem> scoredExpressions = new ArrayList<>();
     private ExpressionNode extraExpression;
     private AbstractDistributionItem item;
+    private TypeIdHandler typeIdHandler;
 
     public DistributionExpressionHandler(final int line, final int column) {
         this.line = line;
         this.column = column;
         this.item = null;
+        typeIdHandler = new TypeIdHandler(line, column);
     }
 
     @Override
@@ -109,6 +112,34 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
     }
 
     @Override
+    public boolean enterSimpleType(
+            CountlangParser.SimpleTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.enterSimpleType(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean enterDistributionType(
+            CountlangParser.DistributionTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.enterDistributionType(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean exitSimpleType(
+            CountlangParser.SimpleTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.exitSimpleType(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean exitDistributionType(
+            CountlangParser.DistributionTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.exitDistributionType(antlrCtx, delegationCtx);
+    }
+
+    @Override
     void addExpression(ExpressionNode expression) {
         switch(kind) {
         case DEFAULT:
@@ -157,6 +188,10 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
         }
         for(AbstractDistributionItem se: scoredExpressions) {
             distributionExpression.addScoredValue(se);
+        }
+        CountlangType countlangType = typeIdHandler.getCountlangType();
+        if(countlangType != CountlangType.unknown()) {
+            distributionExpression.setCountlangType(CountlangType.distributionOf(countlangType));
         }
         return distributionExpression;
     }

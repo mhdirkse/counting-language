@@ -36,10 +36,9 @@ expr
   | 'not' expr # notExpression
   | expr 'and' expr # andExpression
   | expr 'or' expr # orExpression
-  | 'distribution' (distItem ( ',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression 
+  | 'distribution' ( '<' typeId '>' )? (distItem (',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression 
   | 'known of' expr # distributionKnownExpression
   | ID # symbolReferenceExpression
-  | 'empty' typeId # emptyValueExpression
   | (INT | BOOL ) # valueExpression
   ;
 

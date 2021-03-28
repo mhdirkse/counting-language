@@ -1,10 +1,8 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
-import com.github.mhdirkse.countlang.ast.EmptyCollectionExpression;
-import com.github.mhdirkse.countlang.ast.ExpressionNode;
 
-abstract class AbstractTypeHandler extends AbstractCountlangListenerHandler implements ExpressionSource {
+abstract class AbstractTypeHandler extends AbstractCountlangListenerHandler {
     final int line;
     final int column;
 
@@ -23,9 +21,4 @@ abstract class AbstractTypeHandler extends AbstractCountlangListenerHandler impl
     }
 
     abstract CountlangType getCountlangType();
-
-    @Override
-    public ExpressionNode getExpression() {
-        return new EmptyCollectionExpression(line, column, getCountlangType());
-    }
 }

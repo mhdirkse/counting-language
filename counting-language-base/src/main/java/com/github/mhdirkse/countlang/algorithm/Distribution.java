@@ -32,6 +32,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public final class Distribution implements Comparable<Distribution> {
     public static class Builder {
         private Map<Object, Integer> items = new HashMap<>();

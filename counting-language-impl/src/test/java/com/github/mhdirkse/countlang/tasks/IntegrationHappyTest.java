@@ -88,7 +88,6 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {DECREMENT_OF_MIN_INT_PLUS_ONE, MIN_INT}, // No underflow.
             
             // Test literal distributions
-            // TODO: Test empty distribution
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
             {"print distribution 1 total 3", getDistributionWithUnknown().format()},
             {"print distribution 1 unknown 2", getDistributionWithUnknown().format()},
@@ -103,7 +102,9 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution 4, 2 of 3 unknown 12", getDistributionWithUnknown(3, 3, 4, 12)},
             {"print distribution 2 of -1", getDistribution(-1, -1)},
             {"print known of distribution 1, 2 total 5", getDistribution(1, 2)},
-            
+            {"print distribution false, true", getDistribution(false, true)},
+            {"print distribution 2 of false, 3 of true", getDistribution(false, false, true, true, true)},
+            {"print distribution<int>;", getDistribution(new int[] {})},
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
             {"print testFunction(testFunction(4))", "14"},
@@ -151,6 +152,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print exp();", getDistributionWithUnknown(3, 1)},
             {getProgramAboutDisease(), getProgramAboutDiseaseExpectedResult()},
             {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print known of exp();", getDistribution(3)},
+            {getProgramTwoCoins(), getTwoCoinsExpectedValue()},
+            {getProgramThatForksWhile(), getDistribution(false, false, false, true)}
         });
     }
 
@@ -204,6 +207,50 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
         return b.build().format();
     }
 
+    private static String getProgramTwoCoins() {
+        List<String> lines = new ArrayList<>();
+        lines.add("experiment twoCoins() {");
+        lines.add("    coinDistribution = distribution false, true;");
+        lines.add("    sample c1 from coinDistribution;");
+        lines.add("    sample c2 from coinDistribution;");
+        lines.add("    return distribution c1, c2;");
+        lines.add("};");
+        lines.add("");
+        lines.add("print twoCoins();");
+        return lines.stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getTwoCoinsExpectedValue() {
+        Distribution.Builder b = new Distribution.Builder();
+        Distribution.Builder v = new Distribution.Builder();
+        v.add(false, 2);
+        b.add(v.build());
+        v = new Distribution.Builder();
+        v.add(false);
+        v.add(true);
+        b.add(v.build(), 2);
+        v = new Distribution.Builder();
+        v.add(true, 2);
+        b.add(v.build());
+        return b.build().format();
+    }
+
+    private static String getProgramThatForksWhile() {
+        return Arrays.asList(
+                "experiment exp() {",
+                "  result = true;",
+                "  i = 2;",
+                "  while(i > 0) {",
+                "    sample b from distribution false, true;",
+                "    result = result and b;",
+                "    i = i - 1",
+                "  };",
+                "  return result;",
+                "};",
+                "print exp()")
+                .stream().collect(Collectors.joining("\n"));
+    };
+
     private static String getDistribution(int ...values) {
         Distribution.Builder b = new Distribution.Builder();
         for(int v: values) {
@@ -212,6 +259,14 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
         return b.build().format();
     }
 
+    private static String getDistribution(boolean ...values) {
+        Distribution.Builder b = new Distribution.Builder();
+        for(boolean v: values) {
+            b.add(v);
+        }
+        return b.build().format();
+    }
+    
     private static String getDistributionWithUnknown(int ...values) {
         Distribution.Builder b = new Distribution.Builder();
         for(int i = 0; i < values.length; i++) {

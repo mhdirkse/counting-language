@@ -33,6 +33,6 @@ class DistributionItemItemCalculation extends ExpressionResultsCollector {
 
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        builder.add((Integer) subExpressionResults.get(0));
+        builder.add(subExpressionResults.get(0));
     }
 }

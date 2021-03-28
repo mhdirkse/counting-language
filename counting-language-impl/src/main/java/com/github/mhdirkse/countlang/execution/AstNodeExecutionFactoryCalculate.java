@@ -26,7 +26,6 @@ import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
-import com.github.mhdirkse.countlang.ast.EmptyCollectionExpression;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -100,11 +99,6 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitValueExpression(ValueExpression expression) {
         result = new ValueExpressionCalculation(expression);
-    }
-
-    @Override
-    public void visitEmptyCollectionExpression(EmptyCollectionExpression expression) {
-        result = new EmptyCollectionExpressionCalculation(expression);
     }
 
     @Override

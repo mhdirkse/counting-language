@@ -72,7 +72,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print true and 5", "Type mismatch using operator"},
             {"print 5 + true", "Type mismatch using operator"},
             {"print 3 == true", "Type mismatch using operator"},
-            {"print 3 + distribution", "Type mismatch using operator"},
+            {"print 3 + distribution<int>", "Type mismatch using operator"},
             {"function fun(int x) {return x}; print fun(true)", "Type mismatch calling function"},
             {"x = true; print x; x = 5; print x;", "Cannot change type of variable"},
             {"print distribution total false", "The amount or unknown clause of a distribution should be int"},
@@ -83,7 +83,10 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print distribution 1 unknown true", "The amount or unknown clause of a distribution should be int."},
             {"print distribution -1 of 1;", "Item is added to distribution with negative count"},
             {"print distribution 2 of 3 total 1", "The scored items in the distribution make count 2, which is more than 1"},
-            
+            {"print distribution;", "Distribution should define its subtype"},
+            {"print distribution<int> true", "Element number"},
+            {"print distribution 1, true;", "Element number"},
+
             // Functions
             
             {"function fun(int x, int y) {return x + y}; print fun(5)", "Argument count mismatch"},
@@ -114,9 +117,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
             // experiments and sampling
 
             {"sample x from distribution 1, 2; print x", "Sampling is only allowed within an experiment."},
-            {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a int"}
-            // TODO: Uncomment this.
-            //{"experiment exp() {sample x from distribution; return x}; print exp();", "Cannot sample from empty distribution"}
+            {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a int"},
+            {"experiment exp() {sample x from distribution<int>; return x}; print exp();", "Cannot sample from empty distribution"}
         });
     }
 

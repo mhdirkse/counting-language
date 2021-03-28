@@ -35,7 +35,6 @@ public abstract class AbstractDistributionExpression extends ExpressionNode impl
         return countlangType;
     }
 
-    // TODO: Call during type checking
     public void setCountlangType(CountlangType countlangType) {
         this.countlangType = countlangType;
     }
