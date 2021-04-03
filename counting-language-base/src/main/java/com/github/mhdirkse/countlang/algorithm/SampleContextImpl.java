@@ -68,6 +68,7 @@ class SampleContextImpl implements SampleContext {
 
     private final Stack<SampledDistributionContext> sampleContexts = new Stack<>();
     private boolean isScored = false;
+    private boolean isFinished = false;
 
     @Override
     public void startSampledVariable(final Distribution sampledDistribution) {
@@ -164,7 +165,17 @@ class SampleContextImpl implements SampleContext {
         if(!sampleContexts.isEmpty()) {
             throw new IllegalStateException("Cannot get result distribution because sampling is not finished");
         }
-        return distributionBuilder.build();
+        Distribution result = distributionBuilder.build();
+        if(! isFinished) {
+            isFinished = true;
+            return finishResult(result);
+        } else {
+            return result;
+        }
+    }
+
+    private Distribution finishResult(Distribution raw) {
+        return raw.normalize();
     }
 
     @Override

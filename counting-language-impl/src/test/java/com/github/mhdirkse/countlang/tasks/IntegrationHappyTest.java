@@ -132,6 +132,11 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print true and 3 < 5", "true"}, // Operator precedence, comparison before boolop
             {"print 3 == 5 or 5 == 5", "true"}, // Operator precedence, equality before boolop
 
+            // Result of experiment is normalized
+            {"experiment exp() {sample x from distribution 2 of 10, 4 of 11; return x}; print exp();", getDistribution(10, 11, 11)},
+            // Distribution literal is not normalized
+            {"print distribution 2 of 10, 4 of 11;", getDistribution(10, 10, 11, 11, 11, 11)},
+
             // Compound statements
             {"{print 3}", "3"}, // Program can be compound statement
             {"x = 3; markUsed x; {x = 5;}; print x", "5"}, // When global exists, you access it
