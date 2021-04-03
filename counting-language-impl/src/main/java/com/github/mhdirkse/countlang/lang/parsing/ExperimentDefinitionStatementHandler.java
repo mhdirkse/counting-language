@@ -19,10 +19,15 @@
 
 package com.github.mhdirkse.countlang.lang.parsing;
 
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.TerminalNode;
+
+import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class ExperimentDefinitionStatementHandler extends FunctionDefinitionStatementHandlerBase
 implements StatementSource {
@@ -36,6 +41,18 @@ implements StatementSource {
     @Override
     void addStatementGroup(StatementGroup statements) {
         statement.setStatements(statements);
+    }
+
+    @Override
+    public boolean visitTerminal(
+            @NotNull TerminalNode node,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        if(delegationCtx.isFirst() && node.getSymbol().getType() == CountlangParser.COUNTING) {
+            statement.setPossibilityCounting(true);
+            return true;
+        } else {
+            return super.visitTerminal(node, delegationCtx);
+        }
     }
 
     @Override

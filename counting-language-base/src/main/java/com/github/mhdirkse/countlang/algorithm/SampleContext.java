@@ -89,7 +89,11 @@ public interface SampleContext extends SampleContextBase {
     public Distribution getResult();
     public boolean isScored();
 
-    public static SampleContext getInstance() {
-        return new SampleContextImpl();
+    public static SampleContext getInstance(boolean isPossibilityCounting) {
+        if(isPossibilityCounting) {
+            return new SampleContextImpl(new PossibilityCountingValidityStrategy.CountingPossibilities());
+        } else {
+            return new SampleContextImpl(new PossibilityCountingValidityStrategy.NotCountingPossibilities());
+        }
     }
 }

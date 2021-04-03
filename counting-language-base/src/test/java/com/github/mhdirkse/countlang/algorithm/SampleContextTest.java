@@ -31,7 +31,7 @@ public class SampleContextTest {
 
     @Before
     public void setUp() {
-        instance = new SampleContextImpl();
+        instance = (SampleContextImpl) SampleContext.getInstance(false);
     }
 
     @Test

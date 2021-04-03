@@ -7,7 +7,7 @@ statements : statement (';' statement)* ';'? ;
 statement
   : ID '=' expr # assignmentStatement
   | 'function' ID '(' varDecls? ')' '{' statements '}' # functionDefinitionStatement
-  | 'experiment' ID '(' varDecls? ')' '{' statements '}' # experimentDefinitionStatement
+  | COUNTING? 'experiment' ID '(' varDecls? ')' '{' statements '}' # experimentDefinitionStatement
   | 'print' expr # printStatement
   | 'return' expr # returnStatement
   | 'markUsed' expr # markUsedStatement
@@ -50,6 +50,7 @@ distItem
 BOOLTYPE: 'bool' ;
 INTTYPE: 'int' ;
 DISTRIBUTIONTYPE: 'distribution' ;
+COUNTING: 'possibility' WS+ 'counting' ; 
 
 TOTAL: 'total' ;
 UNKNOWN: 'unknown' ;

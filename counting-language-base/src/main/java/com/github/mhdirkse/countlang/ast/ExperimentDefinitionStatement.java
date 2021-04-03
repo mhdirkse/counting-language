@@ -19,7 +19,12 @@
 
 package com.github.mhdirkse.countlang.ast;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ExperimentDefinitionStatement extends FunctionDefinitionStatementBase {
+    private @Getter @Setter boolean possibilityCounting = false;
+
     public ExperimentDefinitionStatement(int line, int column) {
         super(line, column);
     }

@@ -92,7 +92,7 @@ implements SampleContextBase {
         setState(DOING_STATEMENTS);
         fun = context.getFunction(expression.getFunctionName());
         if(fun instanceof ExperimentDefinitionStatement) {
-            statementsHandler = new StatementsHandlerExperiment();
+            statementsHandler = new StatementsHandlerExperiment(((ExperimentDefinitionStatement) fun).isPossibilityCounting());
         } else {
             statementsHandler = new StatementsHandlerFunction();
         }
@@ -146,8 +146,8 @@ implements SampleContextBase {
     private class StatementsHandlerExperiment extends StatementsHandler {
         SampleContext sampleContext;
 
-        StatementsHandlerExperiment() {
-            sampleContext = SampleContext.getInstance();
+        StatementsHandlerExperiment(boolean isPossibilityCounting) {
+            sampleContext = SampleContext.getInstance(isPossibilityCounting);
         }
 
         void forkIfNeeded(ExecutionContext context) {

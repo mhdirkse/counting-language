@@ -25,8 +25,6 @@ import java.util.Iterator;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class SampleContextImpl implements SampleContext {
-    private final Distribution.Builder distributionBuilder = new Distribution.Builder();
-
     private static class SampledDistributionContext {
         final private Distribution sampledDistribution;
         final private Iterator<Object> sampledValues;
@@ -66,13 +64,20 @@ class SampleContextImpl implements SampleContext {
         }
     }
 
+    private final Distribution.Builder distributionBuilder = new Distribution.Builder();
+    private final PossibilityCountingValidityStrategy possibilityCountingValidityStrategy;
     private final Stack<SampledDistributionContext> sampleContexts = new Stack<>();
     private boolean isScored = false;
     private boolean isFinished = false;
 
+    SampleContextImpl(PossibilityCountingValidityStrategy possibilityCountingValidityStrategy) {
+        this.possibilityCountingValidityStrategy = possibilityCountingValidityStrategy;
+    }
+
     @Override
     public void startSampledVariable(final Distribution sampledDistribution) {
         checkScoreOnce();
+        possibilityCountingValidityStrategy.startSampledVariable(sampledDistribution);
         int weight = 1;
         int refineFactor = 1;
         if(!sampleContexts.isEmpty()) {
@@ -105,6 +110,7 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void stopSampledVariable() {
         checkScoringNotForgotten();
+        possibilityCountingValidityStrategy.stopSampledVariable();
         if(sampleContexts.isEmpty()) {
             throw new IllegalStateException("No sampled variables left");
         }
@@ -137,6 +143,7 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void score(Object value) {
         checkScoreOnce();
+        possibilityCountingValidityStrategy.score();
         distributionBuilder.add(value, getScoreCount());
     }
 
@@ -157,6 +164,7 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void scoreUnknown() {
         checkScoreOnce();
+        possibilityCountingValidityStrategy.scoreUnknown();
         distributionBuilder.addUnknown(getScoreCount());
     }
 
@@ -168,14 +176,10 @@ class SampleContextImpl implements SampleContext {
         Distribution result = distributionBuilder.build();
         if(! isFinished) {
             isFinished = true;
-            return finishResult(result);
+            return possibilityCountingValidityStrategy.finishResult(result);
         } else {
             return result;
         }
-    }
-
-    private Distribution finishResult(Distribution raw) {
-        return raw.normalize();
     }
 
     @Override
