@@ -124,8 +124,8 @@ class Executor implements SampleContextBase {
     }
 
     @Override
-    public void startSampledVariable(Distribution sampledDistribution) {
-        findExperiment().startSampledVariable(sampledDistribution);
+    public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
+        findExperiment().startSampledVariable(line, column, sampledDistribution);
     }
 
     private FunctionCallExpressionCalculation findExperiment() {

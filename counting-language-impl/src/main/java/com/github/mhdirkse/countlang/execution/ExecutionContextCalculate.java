@@ -115,8 +115,8 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public void startSampledVariable(Distribution sampledDistribution) {
-        stepperCallback.startSampledVariable(sampledDistribution);
+    public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
+        stepperCallback.startSampledVariable(line, column, sampledDistribution);
     }
 
     @Override

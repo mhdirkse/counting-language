@@ -41,10 +41,10 @@ public class SampleContextTest {
     }
 
     private void sampleTwice(Distribution d1, Distribution d2) {
-        instance.startSampledVariable(d1);
+        instance.startSampledVariable(0, 0, d1);
         while(instance.hasNextValue()) {
             int i1 = (Integer) instance.nextValue();
-            instance.startSampledVariable(d2);
+            instance.startSampledVariable(0, 0, d2);
             while(instance.hasNextValue()) {
                 int i2 = (Integer) instance.nextValue();
                 instance.score(i1 + i2);
@@ -67,11 +67,11 @@ public class SampleContextTest {
     @Test
     public void testCorrectDistributionWeighing() {
         Distribution binomial = getBinomialDistribution();
-        instance.startSampledVariable(binomial);
+        instance.startSampledVariable(0, 0, binomial);
         while(instance.hasNextValue()) {
             int choice = (Integer) instance.nextValue();
             if(choice == 1) {
-                instance.startSampledVariable(binomial);
+                instance.startSampledVariable(0, 0, binomial);
                 while(instance.hasNextValue()) {
                     instance.score(instance.nextValue());
                 }
@@ -79,7 +79,7 @@ public class SampleContextTest {
             }
             else {
                 Distribution uniform1To4 = getUniform1To4();
-                instance.startSampledVariable(uniform1To4);
+                instance.startSampledVariable(0, 0, uniform1To4);
                 while(instance.hasNextValue()) {
                     instance.score(instance.nextValue());
                 }
@@ -92,7 +92,7 @@ public class SampleContextTest {
 
     @Test
     public void testScoringUnknown() {
-        instance.startSampledVariable(getBinomialDistribution());
+        instance.startSampledVariable(0, 0, getBinomialDistribution());
         while(instance.hasNextValue()) {
             int choice = (Integer) instance.nextValue();
             if(choice == 1) {

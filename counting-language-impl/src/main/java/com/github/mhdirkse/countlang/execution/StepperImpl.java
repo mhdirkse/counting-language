@@ -73,8 +73,8 @@ class StepperImpl implements Stepper, StepperCallback {
     }
 
     @Override
-    public void startSampledVariable(Distribution sampledDistribution) {
-        executors.peek().startSampledVariable(sampledDistribution);
+    public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
+        executors.peek().startSampledVariable(line, column, sampledDistribution);
     }
 
     @Override

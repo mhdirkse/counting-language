@@ -20,7 +20,7 @@
 package com.github.mhdirkse.countlang.algorithm;
 
 public interface SampleContextBase {
-    public void startSampledVariable(final Distribution sampledDistribution);
+    public void startSampledVariable(final int line, final int column, final Distribution sampledDistribution);
     public void stopSampledVariable();
     public boolean hasNextValue();
     public Object nextValue();

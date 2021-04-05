@@ -201,8 +201,8 @@ implements SampleContextBase {
         }
 
         @Override
-        public void startSampledVariable(Distribution sampledDistribution) {
-            sampleContext.startSampledVariable(sampledDistribution);
+        public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
+            sampleContext.startSampledVariable(line, column, sampledDistribution);
         }
 
         @Override
@@ -253,8 +253,8 @@ implements SampleContextBase {
     }
 
     @Override
-    public void startSampledVariable(Distribution sampledDistribution) {
-        ((StatementsHandlerExperimentForked) statementsHandler).startSampledVariable(sampledDistribution);
+    public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
+        ((StatementsHandlerExperimentForked) statementsHandler).startSampledVariable(line, column, sampledDistribution);
     }
 
     @Override

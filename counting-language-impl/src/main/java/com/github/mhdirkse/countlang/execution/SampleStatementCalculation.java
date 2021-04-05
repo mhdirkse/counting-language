@@ -53,7 +53,7 @@ class SampleStatementCalculation implements AstNodeExecution {
             throw new ProgramException(statement.getLine(), statement.getColumn(), "Cannot sample from empty distribution.");
         }
         if(! isSamplingStarted) {
-            context.startSampledVariable(distribution);
+            context.startSampledVariable(statement.getLine(), statement.getColumn(), distribution);
             isSamplingStarted = true;
         }
         if(context.hasNextValue()) {

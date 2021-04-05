@@ -75,9 +75,9 @@ class SampleContextImpl implements SampleContext {
     }
 
     @Override
-    public void startSampledVariable(final Distribution sampledDistribution) {
+    public void startSampledVariable(int line, int column, final Distribution sampledDistribution) {
         checkScoreOnce();
-        possibilityCountingValidityStrategy.startSampledVariable(sampledDistribution);
+        possibilityCountingValidityStrategy.startSampledVariable(line, column, sampledDistribution);
         int weight = 1;
         int refineFactor = 1;
         if(!sampleContexts.isEmpty()) {
