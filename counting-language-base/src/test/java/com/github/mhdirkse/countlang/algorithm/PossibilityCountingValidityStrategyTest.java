@@ -9,7 +9,7 @@ public class PossibilityCountingValidityStrategyTest {
     private PossibilityCountingValidityStrategy instance;
     private Distribution distributionOne;
     private Distribution distributionTwo;
-
+    private Distribution distributionThree;
     @Before
     public void setUp() {
         instance = new PossibilityCountingValidityStrategy.CountingPossibilities();
@@ -18,6 +18,8 @@ public class PossibilityCountingValidityStrategyTest {
         distributionOne = b.build();
         b.add(2);
         distributionTwo = b.build();
+        b.add(3);
+        distributionThree = b.build();
     }
 
     @Test
@@ -38,5 +40,16 @@ public class PossibilityCountingValidityStrategyTest {
         instance.startSampledVariable(distributionTwo);
         instance.stopSampledVariable();
         instance.startSampledVariable(distributionOne);
+    }
+
+    @Test
+    public void whenCountMeaningfulThenNoError() {
+        instance.startSampledVariable(distributionOne);
+        instance.startSampledVariable(distributionTwo);
+        instance.startSampledVariable(distributionThree);
+        instance.stopSampledVariable();
+        instance.stopSampledVariable();
+        instance.startSampledVariable(distributionTwo);
+        instance.startSampledVariable(distributionThree);
     }
 }
