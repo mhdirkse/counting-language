@@ -138,7 +138,7 @@ The output is:
     total  4
 
 You see that counting-language has reduced the fractions to lowest terms. For each dice, each
-possibility has probability 3/6 = 1/2. Each combination (sequence important) thus has probability
+possiblie value has probability 3/6 = 1/2. Each combination (sequence important) thus has probability
 (1/2) * (1/2) = 1/4. This may not be what you want. A unique possibility arises as the combination
 of two specific sides of the dice. If you want to take this into account, you can change the first
 line to be `possibility counting experiment exp() {`. The program becomes:
@@ -153,6 +153,47 @@ line to be `possibility counting experiment exp() {`. The program becomes:
 
 The output becomes:
 
+        2   9
+        3  18
+        4   9
+    ---------
+    total  36
+
+Now we are counting combinations of dice sides, totalling 6 * 6 = 36 possibilities.
+
+There is a caveat here. Consider the following counting-language program:
+
+    possibility counting experiment exp() {
+        labeledDice = distribution 1, 1, 1, 2, 2, 2;
+        coin = distribution 1, 2;
+        sample d1 from labeledDice;
+        d2 = 0;
+        if(d1 == 1) {
+            sample d2 from coin;
+        } else {
+            sample d2 from labeledDice;
+        };
+        return d1 + d2;
+    };
+    print exp();
+
+Literally counting possibilities would be an erroneous application of probability theory.
+For every possibility of throwing the first dice, there are two possibilities to throw a
+coin and six possibilities to throw a second dice. You cannot compare these. Counting
+possibilities here does not make sense. You should manipulate conditional probabilities,
+which are all 1/2. counting-language can identify this error. It produces the following
+message:
+
+    ERROR: (9, 8): Tried to sample from 6 possibilities, but only 2 possibilities are allowed, because from that amount was sampled at (7, 7)
+
+The program works again when you replace the first line by the following:
+`experiment exp() {`. Now no error is produced and the output again is:
+
+        2  1
+        3  2
+        4  1
+    --------
+    total  4
 
 ## Other features of the language
 
