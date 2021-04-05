@@ -143,7 +143,6 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void score(Object value) {
         checkScoreOnce();
-        possibilityCountingValidityStrategy.score();
         distributionBuilder.add(value, getScoreCount());
     }
 
@@ -164,7 +163,6 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void scoreUnknown() {
         checkScoreOnce();
-        possibilityCountingValidityStrategy.scoreUnknown();
         distributionBuilder.addUnknown(getScoreCount());
     }
 

@@ -8,8 +8,6 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
 abstract class PossibilityCountingValidityStrategy {
     abstract void startSampledVariable(Distribution sampledDistribution);
     abstract void stopSampledVariable();
-    abstract void score();
-    abstract void scoreUnknown();
     abstract Distribution finishResult(Distribution raw);
 
     static class CountingPossibilities extends PossibilityCountingValidityStrategy {
@@ -37,22 +35,6 @@ abstract class PossibilityCountingValidityStrategy {
         }
 
         @Override
-        void score() {
-            checkScoringEvent();
-        }
-
-        private void checkScoringEvent() {
-            if(currentDepth < fixedPossibilityCountsPerDepth.size()) {
-                throw new ProgramException(0, 0, "Scoring a value or unknown now violates counting possibilities, expected more variables to be samples");
-            }
-        }
-
-        @Override
-        void scoreUnknown() {
-            checkScoringEvent();
-        }
-
-        @Override
         Distribution finishResult(Distribution raw) {
             return raw;
         }
@@ -65,14 +47,6 @@ abstract class PossibilityCountingValidityStrategy {
 
         @Override
         void stopSampledVariable() {
-        }
-
-        @Override
-        void score() {
-        }
-
-        @Override
-        void scoreUnknown() {
         }
 
         @Override
