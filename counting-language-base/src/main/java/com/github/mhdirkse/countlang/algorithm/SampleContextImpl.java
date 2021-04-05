@@ -19,13 +19,12 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
-import java.math.BigInteger;
 import java.util.Iterator;
 
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class SampleContextImpl implements SampleContext {
-    private static class SampledDistributionContext {
+    static class SampledDistributionContext {
         final private Distribution sampledDistribution;
         final private Iterator<Object> sampledValues;
         private int weight;
@@ -52,7 +51,11 @@ class SampleContextImpl implements SampleContext {
             if(!hasCurrentValue) {
                 throw new IllegalStateException("Cannot score a result before a value was sampled");
             }
-            return weight * sampledDistribution.getCountOf(currentValue);
+            return weight * getCountOfCurrentValue();
+        }
+
+        int getCountOfCurrentValue() {
+            return sampledDistribution.getCountOf(currentValue);
         }
 
         int getCountUnknown() {
@@ -61,6 +64,16 @@ class SampleContextImpl implements SampleContext {
 
         void refine(int factor) {
             weight *= factor;
+        }
+    }
+
+    static class SampledVariableInfo {
+        int refineFactor;
+        int weight;
+
+        SampledVariableInfo(int refineFactor, int weight) {
+            this.refineFactor = refineFactor;
+            this.weight = weight;
         }
     }
 
@@ -77,34 +90,13 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void startSampledVariable(int line, int column, final Distribution sampledDistribution) {
         checkScoreOnce();
-        possibilityCountingValidityStrategy.startSampledVariable(line, column, sampledDistribution);
-        int weight = 1;
-        int refineFactor = 1;
-        if(!sampleContexts.isEmpty()) {
-            int availableShare = sampleContexts.peek().getCountOfCurrent();
-            int shareUpdate = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
-            refineFactor = shareUpdate / availableShare;
-            weight = shareUpdate / sampledDistribution.getTotal();
-        }
-        if(refineFactor > 1) {
-            final int fixed = refineFactor;
+        SampledVariableInfo info = possibilityCountingValidityStrategy.startSampledVariable(line, column, sampleContexts, sampledDistribution);
+        if(info.refineFactor > 1) {
+            final int fixed = info.refineFactor;
             sampleContexts.forEach(sc -> sc.refine(fixed));
-            distributionBuilder.refine(refineFactor);
+            distributionBuilder.refine(info.refineFactor);
         }
-        sampleContexts.push(new SampledDistributionContext(sampledDistribution, weight));
-    }
-
-    private int leastCommonMultiplier(final int i1, final int i2) {
-        BigInteger bi1 = BigInteger.valueOf(i1);
-        BigInteger bi2 = BigInteger.valueOf(i2);
-        BigInteger gcd = bi1.gcd(bi2);
-        BigInteger result = bi1.divide(gcd).multiply(bi2);
-        if(result.compareTo(BigInteger.valueOf(Integer.MAX_VALUE)) > 0) {
-            throw new ArithmeticException(
-                    String.format("Least common multiplier overflow, for %d and %d",
-                            i1, i2));
-        }
-        return result.intValue();
+        sampleContexts.push(new SampledDistributionContext(sampledDistribution, info.weight));
     }
 
     @Override

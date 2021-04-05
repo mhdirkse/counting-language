@@ -166,7 +166,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {getProgramAboutDisease(), getProgramAboutDiseaseExpectedResult()},
             {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print known of exp();", getDistribution(3)},
             {getProgramTwoCoins(), getTwoCoinsExpectedValue()},
-            {getProgramThatForksWhile(), getDistribution(false, false, false, true)}
+            {getProgramThatForksWhile(), getDistribution(false, false, false, true)},
+            {getProgramThatCountsPossibilities(), getProgramThatCountsPossibilitiesExpectedValue()}
         });
     }
 
@@ -263,6 +264,26 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
                 "print exp()")
                 .stream().collect(Collectors.joining("\n"));
     };
+
+    private static String getProgramThatCountsPossibilities() {
+        return Arrays.asList(
+                "possibility counting experiment exp() {",
+                "labeledDice = distribution 1, 1, 1, 2, 2, 2;",
+                "sample d1 from labeledDice;",
+                "sample d2 from labeledDice;",
+                "return d1 + d2;",
+                "};",
+                "print exp();")
+                .stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getProgramThatCountsPossibilitiesExpectedValue() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(2, 9);
+        b.add(3, 18);
+        b.add(4, 9);
+        return b.build().format();
+    }
 
     private static String getDistribution(int ...values) {
         Distribution.Builder b = new Distribution.Builder();

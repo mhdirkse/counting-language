@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.SampleContextImpl;
 
-public class SampleContextTest {
+public class SampleContextNonPossibilityCountingTest {
     private SampleContextImpl instance;
 
     @Before

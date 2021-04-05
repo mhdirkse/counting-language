@@ -116,6 +116,43 @@ Now the unknown event is omitted. The result is:
     --------
     total  2
 
+### Counting possibilities
+
+If you are teaching mathematics, you may want to tell your students that probability
+is about counting possibilities. Please consider the following counting-language program:
+
+    experiment exp() {
+        labeledDice = distribution 1, 1, 1, 2, 2, 2;
+        sample d1 from labeledDice;
+        sample d2 from labeledDice;
+        return d1 + d2;
+    };
+    print exp();
+
+The output is:
+
+        2  1
+        3  2
+        4  1
+    --------
+    total  4
+
+You see that counting-language has reduced the fractions to lowest terms. For each dice, each
+possibility has probability 3/6 = 1/2. Each combination (sequence important) thus has probability
+(1/2) * (1/2) = 1/4. This may not be what you want. A unique possibility arises as the combination
+of two specific sides of the dice. If you want to take this into account, you can change the first
+line to be `possibility counting experiment exp() {`. The program becomes:
+
+    possibility counting experiment exp() {
+        labeledDice = distribution 1, 1, 1, 2, 2, 2;
+        sample d1 from labeledDice;
+        sample d2 from labeledDice;
+        return d1 + d2;
+    };
+    print exp();
+
+The output becomes:
+
 
 ## Other features of the language
 
