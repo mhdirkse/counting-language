@@ -20,7 +20,7 @@
 package com.github.mhdirkse.countlang.algorithm;
 
 /**
- * This class does the calculations behind sampling variables from distributions and
+ * This interface does the calculations behind sampling variables from distributions and
  * scoring values in a result distribution. This way, counting-language statements
  * expressing a probability experiment are evaluated, the result being a
  * {@link Distribution}. A {@link Distribution} is like a multi-set, the count of
@@ -29,6 +29,84 @@ package com.github.mhdirkse.countlang.algorithm;
  * distribution is <code>n</code>, then this encodes that the probability
  * of <code>v</code> is the rational number <code>c / n</code>.
  * <p>
+ * Counting-language experiments can also be defined like <code>possibility counting experiment ...</code>
+ * For distributions returned from such experiments, the numerators <code>c</code> are
+ * meaningful: they can be interpreted as a number of possibilities.
+ * <p>
+ * This interface has a static factory method that can create two kinds of instances, one
+ * kind producing meaningful possibility counts (for experiments like <code>possibility counting experiment ...</code>)
+ * and the other kind normalizing to arrive at the lowest possible denominator
+ * (for just just <code>experiment ...</code>).
+ * <p>
+ * The algorithmn implemented here is explained in three steps. First, it is explained
+ * how possibility counts are calculated. Second, it is explained how the experiment
+ * result is managed. Third, experiments without meaningful possibility counts are
+ * treated.
+ * 
+ * <h2>Counting meaningful possibilities</h2>
+ * 
+ * As an example, consider a simple game. We have a dice that has two faces with the number
+ * 10, three faces with the number 20 and one face with the number 30. And we have a roulette
+ * wheel with five equally-sized slots, two of them having the number 10 and the remaining
+ * three having the number 20. We throw the dice once. If we got 10 or 20, then we draw the wheel.
+ * Otherwise, the wheel is not drawn. 
+ * For each combination of (one or two) obtained number, what is the number of possibilities?
+ * <p>
+ * To clarify the question, lets consider the possible outcome (10, 10). To count the number of
+ * possibilities, we can label the dice faces like <code>a</code>, ..., <code>f</code> and the
+ * roulette wheel slots <code>p</code>, ..., <code>t</code>. Dice faces <code>a</code> and <code>b</code>
+ * have the number 10 and wheel slots <code>p</code> and <code>q</code> have the number 10. The
+ * possibilities we have to count are <code>ap</code>, <code>aq</code>, <code>bp</code> and
+ * <code>bq</code>, which are 2 * 2 = 4.
+ * <p>
+ * To count possibilities, we start from two distributions:
+ * <ul>
+ * <li>2 of 10, 3 of 20, 1 of 30
+ * <li>2 of 10, 3 of 20
+ * </ul>
+ * <p>
+ * First, we consider the first distribution, resulting in the probability tree shown below:
+ * <p>
+ * <img src="./doc-files/countingPossibilities.jpg" alt="Image countingPossibilities.jpg does not show, sorry" >
+ * <p>
+ * At this point, each counted possibility corresponds to one of the dice faces <code>a</code>, ... <code>f</code>.
+ * For each outcome on the faces, the weight corresponds to the number of faces having that outcome.
+ * <p>
+ * Next, we add the second distribution. The meaning of a possibility changes. One possibility
+ * is now the combination of a face <code>a</code>, ... <code>f</code> and a slot
+ * <code>p</code>, ..., <code>t</code>. The weight of each node has to be multiplied by 5. The
+ * outcome 30 now has five possibilities: we need a specific face but any outcome of
+ * the roulette wheel suffices (1 * 5 = 5).
+ * <p>
+ * We add a second row of nodes for drawing the wheel, as shown in the following figure:
+ * <p>
+ * <img src="./doc-files/countingPossibilities_2.jpg" alt="Image countingPossibilities_2.jpg does not show, sorry" >
+ * <p>
+ * Each node at the bottom row shows how many possibilities there are for the path leading to the node. To the
+ * bottom-left, we see again that the outcome (10, 10) has 4 possibilities. The weight is calculated by
+ * dividing the (new) weight of the parent node by the new distribution's size (resulting in the weight of the previous diagram)
+ * and multiplied that with the count of the value within the wheel distribution.
+ * <p>
+ * Possibilities counts are only meaningful for experiments that
+ * consist of a series of sub-experiments. The distribution sizes of these sub-experiments
+ * may be different, but these sizes may not depend on the sampled values. If this rule would
+ * be violated, one would have to work with conditional probabilities that can not be interpreted
+ * anymore as possibility counts. The only exception is that sub-experiments may be omitted depending
+ * on the values sampled from earlier sub-experiments. The interpretation is then that the omitted
+ * sub experiment is done, but that the outcome does not influence the result of the experiment.
+ * <p>
+ * From the example, we see that the nodes of the probability tree have to be managed as follows.
+ * <ul>
+ * <li>Each sampled distribution corresponds to a row in the probability tree.
+ * <li>Each node in a row corresponds to a value within the distribution.
+ * <li>When a new distribution (row) is added, all existing nodes in the tree are multiplied by the size of the new distribution.
+ * <li>The weight of each new node equals the count of the node's value within the new distribution.
+ * </ul>
+ * 
+ * <h2>Scoring results</h2>
+ * 
+ * <h2>Experiments without meaningful possibility counts</h2>
+ *
  * To calculate the result distribution, probability trees are used as shown in
  * the following picture:
  * <p>
