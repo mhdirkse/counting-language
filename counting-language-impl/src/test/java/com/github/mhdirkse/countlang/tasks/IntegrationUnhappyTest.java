@@ -119,8 +119,19 @@ public class IntegrationUnhappyTest implements OutputStrategy
 
             {"sample x from distribution 1, 2; print x", "Sampling is only allowed within an experiment."},
             {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a int"},
-            {"experiment exp() {sample x from distribution<int>; return x}; print exp();", "Cannot sample from empty distribution"}
+            {"experiment exp() {sample x from distribution<int>; return x}; print exp();", "Cannot sample from empty distribution"},
+            {getProgramCausingOverflow(), "Integer overflow when calculating a common denominator"}
         });
+    }
+
+    private static String getProgramCausingOverflow() {
+        return  "experiment overflow() {\n" + 
+                "    big = distribution 1 of true total 1000000;\n" + 
+                "    sample x from big;\n" + 
+                "    sample y from big;\n" + 
+                "    return x and y;\n" + 
+                "};\n" + 
+                "print overflow();";
     }
 
     @Parameter(0)

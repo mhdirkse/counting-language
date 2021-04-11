@@ -7,7 +7,7 @@ import java.util.List;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.utils.Stack;
 
-abstract class PossibilityCountingValidityStrategy {
+abstract class RefinementStrategy {
     static class CountNode {
         final int line;
         final int column;
@@ -24,32 +24,30 @@ abstract class PossibilityCountingValidityStrategy {
     abstract void stopSampledVariable();
     abstract Distribution finishResult(Distribution raw);
 
-    private static class SampledVariableInfoCalculation {
-        private final int depth;
-        private int index = 0;
-        private int weight = 1;
-
-        SampledVariableInfoCalculation(int depth) {
-            this.depth = depth;
-        }
-
-        void nextContext(SampleContextImpl.SampledDistributionContext context) {
-            if(index < (depth - 1)) {
-                weight *= context.getCountOfCurrentValue();
-            }
-        }
-
-        int getWeight() {
-            return weight;
-        }
-    }
-
-    static class CountingPossibilities extends PossibilityCountingValidityStrategy {
+    static class CountingPossibilities extends RefinementStrategy {
         private final List<CountNode> fixedPossibilityCountsPerDepth = new ArrayList<>();
         private int currentDepth = 0;
 
         @Override
         SampleContextImpl.SampledVariableInfo startSampledVariable(int line, int column, Stack<SampleContextImpl.SampledDistributionContext> sampleContexts, Distribution sampledDistribution) {
+            int refineFactor = checkFixedPossibilityCounts(line, column, sampledDistribution);
+            // Do not confuse the sample contexts with the fixed weight context.
+            // A sample context is popped when sampling a variable stops. We can
+            // work here with all sample context we have; limiting by the current
+            // depth is confusing two different things.
+            //
+            // We cannot use the last SampledDistributionContext's getCumulativeCount()
+            // method, because doing so would confuse the weight before refinement and the
+            // weight after refinement. We recalculate here the amount of possibilities
+            // for arriving at the parent node, without considering the sub-experiment of
+            // the child.
+            int weight = sampleContexts.applyToAll(SampleContextImpl.SampledDistributionContext::getCountOfCurrentValue)
+                    .reduce(1, (a, b) -> a * b);
+            currentDepth++;
+            return new SampleContextImpl.SampledVariableInfo(refineFactor, weight);
+        }
+
+        private int checkFixedPossibilityCounts(int line, int column, Distribution sampledDistribution) {
             int refineFactor = 1;
             if(currentDepth >= fixedPossibilityCountsPerDepth.size()) {
                 fixedPossibilityCountsPerDepth.add(new CountNode(line, column, sampledDistribution.getTotal()));
@@ -62,10 +60,7 @@ abstract class PossibilityCountingValidityStrategy {
                             sampledDistribution.getTotal(), fixedCountNode.count, fixedCountNode.line, fixedCountNode.column));
                 }
             }
-            currentDepth++;
-            SampledVariableInfoCalculation calc = new SampledVariableInfoCalculation(currentDepth);
-            sampleContexts.forEach(calc::nextContext);
-            return new SampleContextImpl.SampledVariableInfo(refineFactor, calc.getWeight());
+            return refineFactor;
         }
 
         @Override
@@ -79,16 +74,21 @@ abstract class PossibilityCountingValidityStrategy {
         }
     }
 
-    static class NotCountingPossibilities extends PossibilityCountingValidityStrategy {
+    static class NotCountingPossibilities extends RefinementStrategy {
         @Override
         SampleContextImpl.SampledVariableInfo startSampledVariable(int line, int column, Stack<SampleContextImpl.SampledDistributionContext> sampleContexts, Distribution sampledDistribution) {
             int weight = 1;
             int refineFactor = 1;
             if(!sampleContexts.isEmpty()) {
-                int availableShare = sampleContexts.peek().getCountOfCurrent();
-                int shareUpdate = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
-                refineFactor = shareUpdate / availableShare;
-                weight = shareUpdate / sampledDistribution.getTotal();
+                int availableShare = sampleContexts.peek().getCumulativeCount();
+                int updatedShare = 1;
+                try {
+                    updatedShare = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
+                } catch(ArithmeticException e) {
+                    throw new ProgramException(line, column, "Integer overflow when calculating a common denominator for the result distribution. You can fix this by using distributions with smaller totals or by using distributions whose totals have a large common factor (e.g. 10000 and 100)");
+                }
+                refineFactor = updatedShare / availableShare;
+                weight = updatedShare / sampledDistribution.getTotal();
             }
             return new SampleContextImpl.SampledVariableInfo(refineFactor, weight);
         }

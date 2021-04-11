@@ -47,7 +47,7 @@ class SampleContextImpl implements SampleContext {
             return currentValue;
         }
 
-        int getCountOfCurrent() {
+        int getCumulativeCount() {
             if(!hasCurrentValue) {
                 throw new IllegalStateException("Cannot score a result before a value was sampled");
             }
@@ -78,19 +78,19 @@ class SampleContextImpl implements SampleContext {
     }
 
     private final Distribution.Builder distributionBuilder = new Distribution.Builder();
-    private final PossibilityCountingValidityStrategy possibilityCountingValidityStrategy;
+    private final RefinementStrategy refinementStrategy;
     private final Stack<SampledDistributionContext> sampleContexts = new Stack<>();
     private boolean isScored = false;
     private boolean isFinished = false;
 
-    SampleContextImpl(PossibilityCountingValidityStrategy possibilityCountingValidityStrategy) {
-        this.possibilityCountingValidityStrategy = possibilityCountingValidityStrategy;
+    SampleContextImpl(RefinementStrategy refinementStrategy) {
+        this.refinementStrategy = refinementStrategy;
     }
 
     @Override
     public void startSampledVariable(int line, int column, final Distribution sampledDistribution) {
         checkScoreOnce();
-        SampledVariableInfo info = possibilityCountingValidityStrategy.startSampledVariable(line, column, sampleContexts, sampledDistribution);
+        SampledVariableInfo info = refinementStrategy.startSampledVariable(line, column, sampleContexts, sampledDistribution);
         if(info.refineFactor > 1) {
             final int fixed = info.refineFactor;
             sampleContexts.forEach(sc -> sc.refine(fixed));
@@ -102,7 +102,7 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void stopSampledVariable() {
         checkScoringNotForgotten();
-        possibilityCountingValidityStrategy.stopSampledVariable();
+        refinementStrategy.stopSampledVariable();
         if(sampleContexts.isEmpty()) {
             throw new IllegalStateException("No sampled variables left");
         }
@@ -142,7 +142,7 @@ class SampleContextImpl implements SampleContext {
         if(sampleContexts.size() == 0) {
             return 1;
         }
-        return sampleContexts.peek().getCountOfCurrent();
+        return sampleContexts.peek().getCumulativeCount();
     }
 
     private void checkScoreOnce() {
@@ -166,7 +166,7 @@ class SampleContextImpl implements SampleContext {
         Distribution result = distributionBuilder.build();
         if(! isFinished) {
             isFinished = true;
-            return possibilityCountingValidityStrategy.finishResult(result);
+            return refinementStrategy.finishResult(result);
         } else {
             return result;
         }

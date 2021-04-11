@@ -85,4 +85,39 @@ public class SampleContextPossibilityCountingTest {
         instance.nextValue();
         instance.startSampledVariable(9, 10, fourth);
     }
+
+    @Test
+    public void whenNotSampledOnlyScoredThenOnePossibility() {
+        instance.score(1);
+        Distribution actualResult = instance.getResult();
+        Distribution.Builder expected = new Distribution.Builder();
+        expected.add(1);
+        assertEquals(expected.build().format(), actualResult.format());
+    }
+
+    @Test
+    public void whenSampledDistributionsHaveUnknownThenUnknownHandledCorrectly() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(1);
+        b.addUnknown(1);
+        Distribution firstInput = b.build();
+        b.addUnknown(1);
+        Distribution secondInput = b.build();
+        instance.startSampledVariable(0, 0, firstInput);
+        while(instance.hasNextValue()) {
+            instance.nextValue();
+            instance.startSampledVariable(0, 0, secondInput);
+            while(instance.hasNextValue()) {
+                instance.nextValue();
+                instance.score(1);
+            }
+            instance.stopSampledVariable();
+        }
+        instance.stopSampledVariable();
+        Distribution actualResult = instance.getResult();
+        Distribution.Builder expected = new Distribution.Builder();
+        expected.add(1);
+        expected.addUnknown(5);
+        assertEquals(expected.build().format(), actualResult.format());
+    }
 }

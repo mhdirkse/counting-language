@@ -259,9 +259,9 @@ public interface SampleContext extends SampleContextBase {
 
     public static SampleContext getInstance(boolean isPossibilityCounting) {
         if(isPossibilityCounting) {
-            return new SampleContextImpl(new PossibilityCountingValidityStrategy.CountingPossibilities());
+            return new SampleContextImpl(new RefinementStrategy.CountingPossibilities());
         } else {
-            return new SampleContextImpl(new PossibilityCountingValidityStrategy.NotCountingPossibilities());
+            return new SampleContextImpl(new RefinementStrategy.NotCountingPossibilities());
         }
     }
 }
