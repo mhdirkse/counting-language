@@ -41,10 +41,14 @@ abstract class RefinementStrategy {
             // weight after refinement. We recalculate here the amount of possibilities
             // for arriving at the parent node, without considering the sub-experiment of
             // the child.
-            int weight = sampleContexts.applyToAll(SampleContextImpl.SampledDistributionContext::getCountOfCurrentValue)
-                    .reduce(1, (a, b) -> a * b);
+            long weight = sampleContexts.applyToAll(SampleContextImpl.SampledDistributionContext::getCountOfCurrentValue)
+                    .map(v -> (long) v)
+                    .reduce(1L, (a, b) -> a * b);
+            if(weight > Integer.MAX_VALUE) {
+                throw new ProgramException(line, column, "Integer overflow when calculating the total number of possibilities");
+            }
             currentDepth++;
-            return new SampleContextImpl.SampledVariableInfo(refineFactor, weight);
+            return new SampleContextImpl.SampledVariableInfo(refineFactor, (int) weight);
         }
 
         private int checkFixedPossibilityCounts(int line, int column, Distribution sampledDistribution) {
