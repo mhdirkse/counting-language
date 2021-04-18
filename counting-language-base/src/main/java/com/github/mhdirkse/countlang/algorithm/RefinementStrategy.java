@@ -44,7 +44,7 @@ abstract class RefinementStrategy {
             int weight = sampleContexts.applyToAll(SampleContextImpl.SampledDistributionContext::getCountOfCurrentValue)
                     .reduce(1, (a, b) -> a * b);
             currentDepth++;
-            return new SampleContextImpl.SampledVariableInfo(refineFactor, (int) weight);
+            return new SampleContextImpl.SampledVariableInfo(refineFactor, weight);
         }
 
         private int checkFixedPossibilityCounts(int line, int column, Distribution sampledDistribution) {
