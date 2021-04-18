@@ -41,12 +41,8 @@ abstract class RefinementStrategy {
             // weight after refinement. We recalculate here the amount of possibilities
             // for arriving at the parent node, without considering the sub-experiment of
             // the child.
-            long weight = sampleContexts.applyToAll(SampleContextImpl.SampledDistributionContext::getCountOfCurrentValue)
-                    .map(v -> (long) v)
-                    .reduce(1L, (a, b) -> a * b);
-            if(weight > Integer.MAX_VALUE) {
-                throw new ProgramException(line, column, "Integer overflow when calculating the total number of possibilities");
-            }
+            int weight = sampleContexts.applyToAll(SampleContextImpl.SampledDistributionContext::getCountOfCurrentValue)
+                    .reduce(1, (a, b) -> a * b);
             currentDepth++;
             return new SampleContextImpl.SampledVariableInfo(refineFactor, (int) weight);
         }
@@ -55,6 +51,7 @@ abstract class RefinementStrategy {
             int refineFactor = 1;
             if(currentDepth >= fixedPossibilityCountsPerDepth.size()) {
                 fixedPossibilityCountsPerDepth.add(new CountNode(line, column, sampledDistribution.getTotal()));
+                checkForTotalPossibilityCountOverflow(line, column);
                 refineFactor = sampledDistribution.getTotal();
             } else {
                 CountNode fixedCountNode = fixedPossibilityCountsPerDepth.get(currentDepth);
@@ -65,6 +62,15 @@ abstract class RefinementStrategy {
                 }
             }
             return refineFactor;
+        }
+
+        private void checkForTotalPossibilityCountOverflow(int line, int column) {
+            long totalNumberOfPossibilities = fixedPossibilityCountsPerDepth.stream()
+                    .map(cn -> (long) cn.count)
+                    .reduce(1L, (a, b) -> a*b);
+            if(totalNumberOfPossibilities >= Integer.MAX_VALUE) {
+                throw new ProgramException(line, column, "Integer overflow when calculating the total number of possibilities");
+            }
         }
 
         @Override
