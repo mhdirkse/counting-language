@@ -124,6 +124,14 @@ public final class Distribution implements Comparable<Distribution> {
         return unknown;
     }
 
+    public int getCountOf(ProbabilityTreeValue value) {
+        if(value.isUnknown()) {
+            return getCountUnknown();
+        } else {
+            return getCountOf(value.getValue());
+        }
+    }
+
     public Iterator<Object> getItemIterator() {
         return items.keySet().iterator();
     }
