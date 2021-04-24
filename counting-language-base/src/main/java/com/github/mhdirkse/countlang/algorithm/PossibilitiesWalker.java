@@ -6,17 +6,21 @@ package com.github.mhdirkse.countlang.algorithm;
  *
  */
 class PossibilitiesWalker {
+    boolean atStart = true;
     private int total = 1;
+    private Edge edge = null;
 
     PossibilitiesWalker() {
     }
 
-    boolean isAtRoot() {
-        return true;
+    boolean isAtStart() {
+        return atStart;
     }
 
     boolean isAtNewLeaf() {
-        return true;
+        return atStart || (
+                (edge != null)
+                && (edge.hasValue()));
     }
 
     void down(Distribution distribution) throws PossibilitiesWalkerException {
@@ -26,34 +30,45 @@ class PossibilitiesWalker {
         if((total % distribution.getTotal()) != 0) {
             throw new PossibilitiesWalkerException.NewDistributionDoesNotFitParentCount(distribution.getTotal(), total);
         }
+        atStart = false;
+        edge = new Edge(distribution, total / distribution.getTotal());
     }
 
     void up() {
-        // TODO: Implement.
+        edge = null;
     }
 
     boolean hasNext() {
-        return false;
+        return (edge != null) && edge.hasNext();
     }
 
     ProbabilityTreeValue next() {
-        // TODO: Implement
-        return null;
+        return edge.next();
     }
 
-    int getCount() {
-        return 1;
+    int getCount() throws PossibilitiesWalkerException {
+        if(isAtStart()) {
+            return 1;
+        } else {
+            return edge.getCount();
+        }
     }
 
     int getTotal() {
-        return 1;
+        return total;
     }
 
-    int getNumEdges() {
-        return 0;
+    int getNumEdges() throws PossibilitiesWalkerException {
+        if(edge == null) {
+            return 0;
+        } else if(edge.hasValue()) {
+            return 1;
+        } else {
+            throw new PossibilitiesWalkerException("Cannot give number of edges because there is an edge that does not have its value yet");
+        }
     }
 
     void refine(int factor) throws PossibilitiesWalkerException {
-        // TODO: Implement
+        total *= factor;
     }
 }
