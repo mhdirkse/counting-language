@@ -19,6 +19,14 @@ public class PossibilitiesWalkerTest {
         return d;
     }
 
+    private static Distribution getAddedDistributionWithUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(1, 2);
+        b.addUnknown(3);
+        Distribution d = b.build();
+        return d;        
+    }
+
     @Test
     public void whenAtStartThenAtStartTrueAndCountOne() throws Exception {
         PossibilitiesWalker instance = new PossibilitiesWalker();
@@ -54,25 +62,22 @@ public class PossibilitiesWalkerTest {
 
     @Test
     public void whenRefineAndThenDownWithFittingDistributionThenNoError() throws PossibilitiesWalkerException {
-        PossibilitiesWalker instance = goDown();
+        PossibilitiesWalker instance = goDown(getAddedDistribution());
         assertTrue(instance.hasNext());
-        ProbabilityTreeValue v = instance.next();
+        Object v = instance.next();
         assertEquals(1, instance.getNumEdges());
-        assertFalse(v.isUnknown());
-        assertEquals(1, v.getValue());
+        assertEquals(1, v);
         assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertTrue(instance.hasNext());
         v = instance.next();
-        assertFalse(v.isUnknown());
-        assertEquals(2, v.getValue());
+        assertEquals(2, v);
         assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
         instance.up();
         assertFalse(instance.hasNext());
     }
 
-    private PossibilitiesWalker goDown() throws PossibilitiesWalkerException {
-        Distribution d = getAddedDistribution();
+    private PossibilitiesWalker goDown(Distribution d) throws PossibilitiesWalkerException {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         instance.refine(EXPECTED_TOTAL);
         assertEquals(EXPECTED_TOTAL, instance.getTotal());
@@ -82,13 +87,24 @@ public class PossibilitiesWalkerTest {
 
     @Test(expected = PossibilitiesWalkerException.class)
     public void whenBeforeFirstDistributionValueThenAskingCountProducesError() throws Exception {
-        PossibilitiesWalker instance = goDown();
+        PossibilitiesWalker instance = goDown(getAddedDistribution());
         instance.getCount();
     }
 
     @Test
     public void whenBeforeFirstDistributionValueThenNumEdgesDoesNotCountNewAddedDistribution() throws Exception {
-        PossibilitiesWalker instance = goDown();
+        PossibilitiesWalker instance = goDown(getAddedDistribution());
         assertEquals(0, instance.getNumEdges());
+    }
+
+    @Test
+    public void whenAddedDistributionHasUnknownThenUnknownCovered() throws Exception {
+        PossibilitiesWalker instance = goDown(getAddedDistributionWithUnknown());
+        assertTrue(instance.hasNext());
+        Object v = instance.next();
+        assertEquals(1, v);
+        assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertFalse(instance.hasNext());
+        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCountUnknown());
     }
 }

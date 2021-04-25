@@ -32,7 +32,7 @@ class PossibilitiesWalker {
         return (edge != null) && edge.hasNext();
     }
 
-    ProbabilityTreeValue next() {
+    Object next() {
         return edge.next();
     }
 
@@ -42,6 +42,10 @@ class PossibilitiesWalker {
         } else {
             return edge.getCount();
         }
+    }
+
+    int getCountUnknown() {
+        return edge.getCountUnknown();
     }
 
     int getTotal() {
