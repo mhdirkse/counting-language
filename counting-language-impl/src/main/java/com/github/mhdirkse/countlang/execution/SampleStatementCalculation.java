@@ -24,6 +24,7 @@ import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.RUNN
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
+import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
@@ -31,13 +32,15 @@ import com.github.mhdirkse.countlang.ast.SampleStatement;
 class SampleStatementCalculation implements AstNodeExecution {
     SubExpressionStepper delegate;
     final SampleStatement statement;
+    private SampleContext sampleContext;
     Distribution distribution;
     boolean isSamplingStarted = false;
     Object value;
 
-    SampleStatementCalculation(SampleStatement statement) {
+    SampleStatementCalculation(SampleStatement statement, SampleContext sampleContext) {
         this.statement = statement;
         this.delegate = new SubExpressionStepper(statement.getSubExpressions());
+        this.sampleContext = sampleContext;
     }
 
     @Override
@@ -54,20 +57,23 @@ class SampleStatementCalculation implements AstNodeExecution {
             throw new ProgramException(statement.getLine(), statement.getColumn(), "Cannot sample from empty distribution.");
         }
         if(! isSamplingStarted) {
-            context.startSampledVariable(statement.getLine(), statement.getColumn(), distribution);
+            sampleContext.startSampledVariable(statement.getLine(), statement.getColumn(), distribution);
             isSamplingStarted = true;
         }
-        if(context.hasNextValue()) {
-            ProbabilityTreeValue item = context.nextValue();
+        if(sampleContext.hasNextValue()) {
+            ProbabilityTreeValue item = sampleContext.nextValue();
             if(item.isUnknown()) {
-                context.scoreUnknown();
+                sampleContext.scoreUnknown();
                 return null;
             }
             value = item.getValue();
             context.forkExecutor();
             return null;
         }
-        context.stopSampledVariable();
+        sampleContext.stopSampledVariable();
+        // Removes the executor that was triggering this object's step method.
+        // This object will be removed, even though the state never advances
+        // to AFTER.
         context.stopExecutor();
         return null;
     }

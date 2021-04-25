@@ -29,13 +29,13 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
-import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
+import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.ast.SampleStatement;
 
-class Executor implements SampleContextBase {
+class Executor {
     private final Deque<AstNodeExecution> callStack;
     private final ExecutionContext context;
     private final AstNodeExecutionFactory factory;
@@ -92,15 +92,38 @@ class Executor implements SampleContextBase {
 
     private Object getContext(AstNode child) {
         Object context = null;
+        context = getContextForDistributionItem(child);
+        if(context == null) {
+            context = getContextForSampleStatement(child);
+        }
+        return context;
+    }
+
+    private Object getContextForDistributionItem(AstNode child) {
+        Distribution.Builder result = null;
         if(child instanceof AbstractDistributionItem) {
             AstNodeExecution rawParent = callStack.getLast();
             if(! (rawParent instanceof SimpleDistributionExpressionCalculation)) {
                 throw new IllegalStateException("Distribution items can only occur in distribution literals");
             }
             SimpleDistributionExpressionCalculation parent = (SimpleDistributionExpressionCalculation) rawParent;
-            context = parent.getDistributionBuilder();
+            result = parent.getDistributionBuilder();
         }
-        return context;
+        return result;
+    }
+
+    private SampleContext getContextForSampleStatement(AstNode child) {
+        if(child instanceof SampleStatement) {
+            Iterator<AstNodeExecution> it = callStack.descendingIterator();
+            while(it.hasNext()) {
+                AstNodeExecution calculation = it.next();
+                if(calculation.getAstNode() instanceof FunctionCallExpression) {
+                    return ((FunctionCallExpressionCalculation) calculation).getSampleContext();
+                }
+            }
+            throw new IllegalStateException("Sample statement encountered outside experiment");
+        }
+        return null;
     }
 
     Object onResult(Object value) {
@@ -136,41 +159,5 @@ class Executor implements SampleContextBase {
         List<ExecutionPointNode> nodes = new ArrayList<>();
         callStack.forEach(node -> nodes.add(node.getExecutionPointNode()));
         return new ExecutionPointImpl(nodes);
-    }
-
-    @Override
-    public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
-        findExperiment().startSampledVariable(line, column, sampledDistribution);
-    }
-
-    private FunctionCallExpressionCalculation findExperiment() {
-        Iterator<AstNodeExecution> it = callStack.descendingIterator();
-        while(it.hasNext()) {
-            AstNodeExecution candidate = it.next();
-            if(candidate instanceof FunctionCallExpressionCalculation) {
-                return (FunctionCallExpressionCalculation) candidate;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void stopSampledVariable() {
-        findExperiment().stopSampledVariable();
-    }
-
-    @Override
-    public boolean hasNextValue() {
-        return findExperiment().hasNextValue();
-    }
-
-    @Override
-    public ProbabilityTreeValue nextValue() {
-        return findExperiment().nextValue();
-    }
-
-    @Override
-    public void scoreUnknown() {
-        findExperiment().scoreUnknown();
     }
 }

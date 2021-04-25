@@ -19,8 +19,6 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.utils.Stack;
@@ -71,30 +69,5 @@ class StepperImpl implements Stepper, StepperCallback {
     @Override
     public void stopExecutor() {
         executors.pop();
-    }
-
-    @Override
-    public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
-        executors.peek().startSampledVariable(line, column, sampledDistribution);
-    }
-
-    @Override
-    public void stopSampledVariable() {
-        executors.peek().stopSampledVariable();
-    }
-
-    @Override
-    public boolean hasNextValue() {
-        return executors.peek().hasNextValue();
-    }
-
-    @Override
-    public ProbabilityTreeValue nextValue() {
-        return executors.peek().nextValue();
-    }
-
-    @Override
-    public void scoreUnknown() {
-        executors.peek().scoreUnknown();
     }
 }

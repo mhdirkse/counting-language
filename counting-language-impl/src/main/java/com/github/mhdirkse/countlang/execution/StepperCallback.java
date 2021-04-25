@@ -19,10 +19,9 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 
-interface StepperCallback extends SampleContextBase {
+interface StepperCallback {
     Object onResult(Object value);
     void stopFunctionCall(FunctionCallExpression functionCallExpression);
     void forkExecutor();

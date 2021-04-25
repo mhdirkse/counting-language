@@ -25,10 +25,7 @@ import static com.github.mhdirkse.countlang.execution.ExpressionsAndStatementsCo
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
-import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
@@ -36,9 +33,7 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
-final class FunctionCallExpressionCalculation
-extends ExpressionsAndStatementsCombinationHandler
-implements SampleContextBase {
+final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler {
     private final FunctionCallExpression expression;
     private final SubExpressionStepper subExpressionStepper;
     private FunctionDefinitionStatementBase fun;
@@ -108,11 +103,22 @@ implements SampleContextBase {
         return null;
     }
 
+    /**
+     * Used by Stepper to give the {@link SampleContext} to {@link SampleStatementCalculation) instances.
+     */
+    SampleContext getSampleContext() {
+        if(statementsHandler == null) {
+            throw new IllegalStateException("There is no SampleContext before the statement of the called function is executed");
+        }
+        return statementsHandler.getSampleContext();
+    }
+
     private abstract class StatementsHandler {
         abstract void forkIfNeeded(ExecutionContext context);
         abstract AstNode start();
         abstract void acceptChildResultDoingStatements(Object value, ExecutionContext context);
         abstract void after(ExecutionContext context);
+        abstract SampleContext getSampleContext();
     }
 
     private class StatementsHandlerFunction extends StatementsHandler {
@@ -142,6 +148,11 @@ implements SampleContextBase {
             }
             context.onResult(functionResult);
         }
+
+        @Override
+        SampleContext getSampleContext() {
+            throw new IllegalStateException("StatementsHandlerFunction does not have a SampleContext");
+        }
     }
 
     private class StatementsHandlerExperiment extends StatementsHandler {
@@ -169,10 +180,15 @@ implements SampleContextBase {
         void after(ExecutionContext context) {
             context.onResult(sampleContext.getResult());
         }
+
+        @Override
+        SampleContext getSampleContext() {
+            return sampleContext;
+        }
     }
 
     private class StatementsHandlerExperimentForked
-    extends StatementsHandler implements SampleContextBase {
+    extends StatementsHandler {
         private SampleContext sampleContext;
 
         StatementsHandlerExperimentForked(SampleContext sampleContext) {
@@ -202,32 +218,11 @@ implements SampleContextBase {
         }
 
         @Override
-        public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
-            sampleContext.startSampledVariable(line, column, sampledDistribution);
-        }
-
-        @Override
-        public void stopSampledVariable() {
-            sampleContext.stopSampledVariable();
-        }
-
-        @Override
-        public boolean hasNextValue() {
-            return sampleContext.hasNextValue();
-        }
-
-        @Override
-        public ProbabilityTreeValue nextValue() {
-            return sampleContext.nextValue();
-        }
-
-        @Override
-        public void scoreUnknown() {
-            sampleContext.scoreUnknown();
+        SampleContext getSampleContext() {
+            return sampleContext;
         }
     }
 
-    
     @Override
     boolean isAcceptingChildResultsDoingStatements() {
         return true;
@@ -256,30 +251,5 @@ implements SampleContextBase {
             throw new IllegalStateException("Calling a function is not expected on the call stack when running an experiment is started");
         }
         return new FunctionCallExpressionCalculation(this);
-    }
-
-    @Override
-    public void startSampledVariable(int line, int column, Distribution sampledDistribution) {
-        ((StatementsHandlerExperimentForked) statementsHandler).startSampledVariable(line, column, sampledDistribution);
-    }
-
-    @Override
-    public void stopSampledVariable() {
-        ((StatementsHandlerExperimentForked) statementsHandler).stopSampledVariable();
-    }
-
-    @Override
-    public boolean hasNextValue() {
-        return ((StatementsHandlerExperimentForked) statementsHandler).hasNextValue();
-    }
-
-    @Override
-    public ProbabilityTreeValue nextValue() {
-        return ((StatementsHandlerExperimentForked) statementsHandler).nextValue();
-    }
-
-    @Override
-    public void scoreUnknown() {
-        ((StatementsHandlerExperimentForked) statementsHandler).scoreUnknown();
     }
 }

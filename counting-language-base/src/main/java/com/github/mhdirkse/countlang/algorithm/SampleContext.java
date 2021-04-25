@@ -251,7 +251,12 @@ package com.github.mhdirkse.countlang.algorithm;
  * @author martijn
  *
  */
-public interface SampleContext extends SampleContextBase {
+public interface SampleContext {
+    public void startSampledVariable(final int line, final int column, final Distribution sampledDistribution);
+    public void scoreUnknown();
+    public void stopSampledVariable();
+    public boolean hasNextValue();
+    public ProbabilityTreeValue nextValue();
     public void score(Object value);
     public Distribution getResult();
     public boolean isScored();

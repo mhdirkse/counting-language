@@ -20,6 +20,7 @@
 package com.github.mhdirkse.countlang.execution;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
@@ -118,7 +119,7 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
 
     @Override
     public void visitSampleStatement(SampleStatement statement) {
-        result = new SampleStatementCalculation(statement);
+        result = new SampleStatementCalculation(statement, (SampleContext) context);
     }
 
     @Override
