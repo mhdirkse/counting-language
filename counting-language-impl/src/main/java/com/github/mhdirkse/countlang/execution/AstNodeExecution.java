@@ -42,12 +42,4 @@ interface AstNodeExecution {
     default AstNodeExecution fork() {
         throw new IllegalStateException("Fork only happens in sample statements or experiment definitions; this element should not be in the call stack then");
     }
-
-    /**
-     * Get a context for creating the next node on the call stack. By default, no
-     * context is needed so null is returned.
-     */
-    default Object getContext() {
-        return null;
-    }
 }

@@ -65,13 +65,7 @@ class SimpleDistributionExpressionCalculation implements AstNodeExecution {
     void finishBuilder() {
     }
 
-    /**
-     * This context is used by {@link DistributionItemItemCalculation} and {@link DistributionItemCountCalculation} to set
-     * the items of the distribution. The total and the unknown value are done in derived classes using the
-     * {@link AstNodeExecution#acceptChildResult(Object, ExecutionContext)}.
-     */
-    @Override
-    public Object getContext() {
+    public Distribution.Builder getDistributionBuilder() {
         return builder;
     }
 }

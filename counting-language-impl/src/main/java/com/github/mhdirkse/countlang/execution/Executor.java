@@ -31,6 +31,7 @@ import java.util.Optional;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
+import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 
@@ -83,10 +84,23 @@ class Executor implements SampleContextBase {
         if(!callStack.isEmpty()) {
             AstNode child = callStack.getLast().step(context);
             if(child != null) {
-                AstNodeExecution newNodeExecution = factory.create(child, callStack.getLast().getContext());
+                AstNodeExecution newNodeExecution = factory.create(child, getContext(child));
                 callStack.addLast(newNodeExecution);
             }
         }
+    }
+
+    private Object getContext(AstNode child) {
+        Object context = null;
+        if(child instanceof AbstractDistributionItem) {
+            AstNodeExecution rawParent = callStack.getLast();
+            if(! (rawParent instanceof SimpleDistributionExpressionCalculation)) {
+                throw new IllegalStateException("Distribution items can only occur in distribution literals");
+            }
+            SimpleDistributionExpressionCalculation parent = (SimpleDistributionExpressionCalculation) rawParent;
+            context = parent.getDistributionBuilder();
+        }
+        return context;
     }
 
     Object onResult(Object value) {

@@ -50,7 +50,7 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
 
         @Override
         public void finishBuilder() {
-            Distribution.Builder builder = ((Distribution.Builder) getContext());
+            Distribution.Builder builder = getDistributionBuilder();
             int totalScored = builder.getTotal();
             int deficit = getDeficit(finalValue, totalScored);
             boolean isBooleanDistribution = expression.getCountlangType() == CountlangType.distributionOf(CountlangType.bool());
@@ -94,7 +94,7 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
 
         @Override
         public void finishBuilder() {
-            Distribution.Builder builder = ((Distribution.Builder) getContext());
+            Distribution.Builder builder = getDistributionBuilder();
             int totalScored = builder.getTotal();
             builder.addUnknown(getUnknown(finalValue, totalScored));        
         }
