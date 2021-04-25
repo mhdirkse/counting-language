@@ -11,7 +11,7 @@ public class PossibilitiesWalkerTest {
     private static final int EXTRA_REFINEMENT_FACTOR = 4;
     private static final int EXPECTED_TOTAL = ADDED_DISTRIBUTION_TOTAL * EXTRA_REFINEMENT_FACTOR;
 
-    private static Distribution gedAddedDistribution() {
+    private static Distribution getAddedDistribution() {
         Distribution.Builder b = new Distribution.Builder();
         b.add(1, 2);
         b.add(2, 3);
@@ -72,7 +72,7 @@ public class PossibilitiesWalkerTest {
     }
 
     private PossibilitiesWalker goDown() throws PossibilitiesWalkerException {
-        Distribution d = gedAddedDistribution();
+        Distribution d = getAddedDistribution();
         PossibilitiesWalker instance = new PossibilitiesWalker();
         instance.refine(EXPECTED_TOTAL);
         assertEquals(EXPECTED_TOTAL, instance.getTotal());
