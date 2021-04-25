@@ -45,11 +45,19 @@ public class SampleContextNonPossibilityCountingTest {
     private void sampleTwice(Distribution d1, Distribution d2) {
         instance.startSampledVariable(0, 0, d1);
         while(instance.hasNextValue()) {
-            int i1 = (Integer) instance.nextValue();
+            ProbabilityTreeValue i1 = instance.nextValue();
+            if(i1.isUnknown()) {
+                instance.scoreUnknown();
+                continue;
+            }
             instance.startSampledVariable(0, 0, d2);
             while(instance.hasNextValue()) {
-                int i2 = (Integer) instance.nextValue();
-                instance.score(i1 + i2);
+                ProbabilityTreeValue i2 = instance.nextValue();
+                if(i2.isUnknown()) {
+                    instance.scoreUnknown();
+                    continue;
+                }
+                instance.score(((Integer) i1.getValue()) + ((Integer) i2.getValue()));
             }
             instance.stopSampledVariable();
         }
@@ -71,11 +79,11 @@ public class SampleContextNonPossibilityCountingTest {
         Distribution binomial = getBinomialDistribution();
         instance.startSampledVariable(0, 0, binomial);
         while(instance.hasNextValue()) {
-            int choice = (Integer) instance.nextValue();
+            int choice = (Integer) instance.nextValue().getValue();
             if(choice == 1) {
                 instance.startSampledVariable(0, 0, binomial);
                 while(instance.hasNextValue()) {
-                    instance.score(instance.nextValue());
+                    instance.score(instance.nextValue().getValue());
                 }
                 instance.stopSampledVariable();
             }
@@ -83,7 +91,7 @@ public class SampleContextNonPossibilityCountingTest {
                 Distribution uniform1To4 = getUniform1To4();
                 instance.startSampledVariable(0, 0, uniform1To4);
                 while(instance.hasNextValue()) {
-                    instance.score(instance.nextValue());
+                    instance.score(instance.nextValue().getValue());
                 }
                 instance.stopSampledVariable();
             }
@@ -96,7 +104,7 @@ public class SampleContextNonPossibilityCountingTest {
     public void testScoringUnknown() {
         instance.startSampledVariable(0, 0, getBinomialDistribution());
         while(instance.hasNextValue()) {
-            int choice = (Integer) instance.nextValue();
+            int choice = (Integer) instance.nextValue().getValue();
             if(choice == 1) {
                 instance.score(choice);
             }
@@ -167,10 +175,18 @@ public class SampleContextNonPossibilityCountingTest {
         Distribution secondInput = b.build();
         instance.startSampledVariable(0, 0, firstInput);
         while(instance.hasNextValue()) {
-            instance.nextValue();
+            ProbabilityTreeValue i1 = instance.nextValue();
+            if(i1.isUnknown()) {
+                instance.scoreUnknown();
+                continue;
+            }
             instance.startSampledVariable(0, 0, secondInput);
             while(instance.hasNextValue()) {
-                instance.nextValue();
+                ProbabilityTreeValue i2 = instance.nextValue();
+                if(i2.isUnknown()) {
+                    instance.scoreUnknown();
+                    continue;
+                }
                 instance.score(1);
             }
             instance.stopSampledVariable();

@@ -19,111 +19,58 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
-import java.util.Iterator;
-
-import com.github.mhdirkse.countlang.utils.Stack;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 
 class SampleContextImpl implements SampleContext {
-    static class SampledDistributionContext {
-        final private Distribution sampledDistribution;
-        final private Iterator<Object> sampledValues;
-        private int weight;
-        private boolean hasCurrentValue = false;
-        private Object currentValue;
-
-        SampledDistributionContext(final Distribution sampledDistribution, final int initialWeight) {
-            this.sampledDistribution = sampledDistribution;
-            this.sampledValues = sampledDistribution.getItemIterator();
-            this.weight = initialWeight;
-        }
-
-        boolean hasNextValue() {
-            return sampledValues.hasNext();
-        }
-
-        Object nextValue() {
-            hasCurrentValue = true;
-            currentValue = sampledValues.next();
-            return currentValue;
-        }
-
-        int getCumulativeCount() {
-            if(!hasCurrentValue) {
-                throw new IllegalStateException("Cannot score a result before a value was sampled");
-            }
-            return weight * getCountOfCurrentValue();
-        }
-
-        int getCountOfCurrentValue() {
-            return sampledDistribution.getCountOf(currentValue);
-        }
-
-        int getCountUnknown() {
-            return weight * sampledDistribution.getCountUnknown();
-        }
-
-        void refine(int factor) {
-            weight *= factor;
-        }
-    }
-
-    static class SampledVariableInfo {
-        int refineFactor;
-        int weight;
-
-        SampledVariableInfo(int refineFactor, int weight) {
-            this.refineFactor = refineFactor;
-            this.weight = weight;
-        }
-    }
+    PossibilitiesWalker walker = new PossibilitiesWalker();
 
     private final Distribution.Builder distributionBuilder = new Distribution.Builder();
     private final RefinementStrategy refinementStrategy;
-    private final Stack<SampledDistributionContext> sampleContexts = new Stack<>();
     private boolean isScored = false;
-    private boolean isFinished = false;
 
     SampleContextImpl(RefinementStrategy refinementStrategy) {
         this.refinementStrategy = refinementStrategy;
     }
 
     @Override
-    public void startSampledVariable(int line, int column, final Distribution sampledDistribution) {
+    public void startSampledVariable(int line, int column, final Distribution sampledDistribution) throws ProgramException {
         checkScoreOnce();
-        SampledVariableInfo info = refinementStrategy.startSampledVariable(line, column, sampleContexts, sampledDistribution);
-        if(info.refineFactor > 1) {
-            final int fixed = info.refineFactor;
-            sampleContexts.forEach(sc -> sc.refine(fixed));
-            distributionBuilder.refine(info.refineFactor);
+        int refineFactor = refinementStrategy.startSampledVariable(line, column, walker, sampledDistribution);
+        if(refineFactor > 1) {
+            try {
+                walker.refine(refineFactor);
+            } catch(PossibilitiesWalkerException e) {
+                throw new ProgramException(line, column, refinementStrategy.getOverflowMessage());
+            }
+            distributionBuilder.refine(refineFactor);
         }
-        sampleContexts.push(new SampledDistributionContext(sampledDistribution, info.weight));
+        walker.down(sampledDistribution);
     }
 
     @Override
     public void stopSampledVariable() {
         checkScoringNotForgotten();
         refinementStrategy.stopSampledVariable();
-        if(sampleContexts.isEmpty()) {
+        if(walker.getNumEdges() == 0) {
             throw new IllegalStateException("No sampled variables left");
         }
-        if(sampleContexts.peek().hasNextValue()) {
+        if(walker.hasNext()) {
             throw new IllegalStateException("Not all values have been sampled for this variable");
         }
-        SampledDistributionContext stoppedSampleContext = sampleContexts.pop();
-        distributionBuilder.addUnknown(stoppedSampleContext.getCountUnknown());
+        walker.up();
         isScored = true;
     }
 
     @Override
     public boolean hasNextValue() {
-        return sampleContexts.peek().hasNextValue();
+        return walker.hasNext();
     }
 
     @Override
-    public Object nextValue() {
+    public ProbabilityTreeValue nextValue() {
         checkScoringNotForgotten();
         isScored = false;
-        return sampleContexts.peek().nextValue();
+        return walker.next();
     }
 
     private void checkScoringNotForgotten() {
@@ -135,14 +82,7 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void score(Object value) {
         checkScoreOnce();
-        distributionBuilder.add(value, getScoreCount());
-    }
-
-    private int getScoreCount() {
-        if(sampleContexts.size() == 0) {
-            return 1;
-        }
-        return sampleContexts.peek().getCumulativeCount();
+        distributionBuilder.add(value, walker.getCount());
     }
 
     private void checkScoreOnce() {
@@ -155,21 +95,16 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void scoreUnknown() {
         checkScoreOnce();
-        distributionBuilder.addUnknown(getScoreCount());
+        distributionBuilder.addUnknown(walker.getCount());
     }
 
     @Override
     public Distribution getResult() {
-        if(!sampleContexts.isEmpty()) {
+        if(walker.getNumEdges() != 0) {
             throw new IllegalStateException("Cannot get result distribution because sampling is not finished");
         }
         Distribution result = distributionBuilder.build();
-        if(! isFinished) {
-            isFinished = true;
-            return refinementStrategy.finishResult(result);
-        } else {
-            return result;
-        }
+        return refinementStrategy.finishResult(result);
     }
 
     @Override

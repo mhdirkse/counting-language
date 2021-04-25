@@ -25,9 +25,9 @@ class Edge {
         return currentValue;
     }
 
-    int getCount() throws PossibilitiesWalkerException {
+    int getCount() {
         if(currentValue == null) {
-            throw new PossibilitiesWalkerException("Cannot give the count because no value has been selected");
+            throw new IllegalStateException("Cannot give the count because no value has been selected");
         }
         return weight * distribution.getCountOf(currentValue);
     }

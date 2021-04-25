@@ -21,6 +21,7 @@ package com.github.mhdirkse.countlang.execution;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
@@ -130,7 +131,12 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public Object nextValue() {
+    public ProbabilityTreeValue nextValue() {
         return stepperCallback.nextValue();
+    }
+
+    @Override
+    public void scoreUnknown() {
+        stepperCallback.scoreUnknown();
     }
 }

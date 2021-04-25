@@ -34,10 +34,10 @@ public class SampleContextPossibilityCountingTest {
         int v2 = 0;
         instance.startSampledVariable(0, 0, first);
         while(instance.hasNextValue()) {
-            v1 = (Integer) instance.nextValue();
+            v1 = (Integer) instance.nextValue().getValue();
             instance.startSampledVariable(0, 0, second);
             while(instance.hasNextValue()) {
-                v2 = (Integer) instance.nextValue();
+                v2 = (Integer) instance.nextValue().getValue();
                 instance.score(v1 + v2);
             }
             instance.stopSampledVariable();
@@ -105,10 +105,18 @@ public class SampleContextPossibilityCountingTest {
         Distribution secondInput = b.build();
         instance.startSampledVariable(0, 0, firstInput);
         while(instance.hasNextValue()) {
-            instance.nextValue();
+            ProbabilityTreeValue i1 = instance.nextValue();
+            if(i1.isUnknown()) {
+                instance.scoreUnknown();
+                continue;
+            }
             instance.startSampledVariable(0, 0, secondInput);
             while(instance.hasNextValue()) {
-                instance.nextValue();
+                ProbabilityTreeValue i2 = instance.nextValue();
+                if(i2.isUnknown()) {
+                    instance.scoreUnknown();
+                    continue;
+                }
                 instance.score(1);
             }
             instance.stopSampledVariable();

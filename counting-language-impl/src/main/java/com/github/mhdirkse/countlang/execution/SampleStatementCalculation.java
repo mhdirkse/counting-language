@@ -23,6 +23,7 @@ import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.AFTE
 import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.RUNNING;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
@@ -57,7 +58,12 @@ class SampleStatementCalculation implements AstNodeExecution {
             isSamplingStarted = true;
         }
         if(context.hasNextValue()) {
-            value = context.nextValue();
+            ProbabilityTreeValue item = context.nextValue();
+            if(item.isUnknown()) {
+                context.scoreUnknown();
+                return null;
+            }
+            value = item.getValue();
             context.forkExecutor();
             return null;
         }

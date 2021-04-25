@@ -253,7 +253,6 @@ package com.github.mhdirkse.countlang.algorithm;
  */
 public interface SampleContext extends SampleContextBase {
     public void score(Object value);
-    public void scoreUnknown();
     public Distribution getResult();
     public boolean isScored();
 

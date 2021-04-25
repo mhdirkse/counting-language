@@ -26,6 +26,7 @@ import static com.github.mhdirkse.countlang.execution.ExpressionsAndStatementsCo
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
@@ -216,8 +217,13 @@ implements SampleContextBase {
         }
 
         @Override
-        public Object nextValue() {
+        public ProbabilityTreeValue nextValue() {
             return sampleContext.nextValue();
+        }
+
+        @Override
+        public void scoreUnknown() {
+            sampleContext.scoreUnknown();
         }
     }
 
@@ -268,7 +274,12 @@ implements SampleContextBase {
     }
 
     @Override
-    public Object nextValue() {
+    public ProbabilityTreeValue nextValue() {
         return ((StatementsHandlerExperimentForked) statementsHandler).nextValue();
+    }
+
+    @Override
+    public void scoreUnknown() {
+        ((StatementsHandlerExperimentForked) statementsHandler).scoreUnknown();
     }
 }

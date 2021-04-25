@@ -14,12 +14,16 @@ class PossibilitiesWalker {
     PossibilitiesWalker() {
     }
 
-    void down(Distribution distribution) throws PossibilitiesWalkerException {
+    int getNumEdges() {
+        return edges.size();
+    }
+
+    void down(Distribution distribution) {
         if(distribution.getTotal() == 0) {
-            throw new PossibilitiesWalkerException("Cannot iterate over an empty distribution");
+            throw new IllegalArgumentException("Cannot iterate over an empty distribution");
         }
         if((getCount() % distribution.getTotal()) != 0) {
-            throw new PossibilitiesWalkerException.NewDistributionDoesNotFitParentCount(distribution.getTotal(), total);
+            throw new IllegalArgumentException(String.format("Cannot fit distribution with total %d in count %d", distribution.getTotal(), total));
         }
         edges.push(new Edge(distribution, getCount() / distribution.getTotal()));
     }
@@ -36,7 +40,7 @@ class PossibilitiesWalker {
         return edges.peek().next();
     }
 
-    int getCount() throws PossibilitiesWalkerException {
+    int getCount() {
         if(edges.isEmpty()) {
             return total;
         } else {
@@ -49,7 +53,11 @@ class PossibilitiesWalker {
     }
 
     void refine(int factor) throws PossibilitiesWalkerException {
-        total *= factor;
+        long newTotal = ((long) total) * factor;
+        if(newTotal > Integer.MAX_VALUE) {
+            throw new PossibilitiesWalkerException(String.format("Integer overflow when refining total %d with factor %d", total, factor));
+        }
+        total = (int) newTotal;
         edges.forEach(e -> e.refine(factor));
     }
 }

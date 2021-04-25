@@ -35,39 +35,29 @@ public class PossibilitiesWalkerTest {
     }
 
     @Test
-    public void whenAtStartThenCountOne() throws Exception {
+    public void whenAtStartThenCountOne() {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         assertFalse(instance.hasNext());
         assertEquals(1, instance.getCount());
         assertEquals(1, instance.getTotal());
     }
 
-    @Test(expected = PossibilitiesWalkerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void whenDownWithEmptyDistributionThenError() throws Exception {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         instance.down(new Distribution.Builder().build());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void whenDownWithDistributionWhoseWeightDoesNotFitThenError() {
-        boolean thrown = false;
-        try {
-            PossibilitiesWalker instance = new PossibilitiesWalker();
-            Distribution.Builder b = new Distribution.Builder();
-            b.add(1, 2);
-            instance.down(b.build());
-        } catch(PossibilitiesWalkerException e) {
-            assertTrue(e instanceof PossibilitiesWalkerException.NewDistributionDoesNotFitParentCount);
-            PossibilitiesWalkerException.NewDistributionDoesNotFitParentCount cast = (PossibilitiesWalkerException.NewDistributionDoesNotFitParentCount) e;
-            assertEquals(2, cast.getChildCount());
-            assertEquals(1, cast.getParentCount());
-            thrown = true;
-        }
-        assertTrue(thrown);
+        PossibilitiesWalker instance = new PossibilitiesWalker();
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(1, 2);
+        instance.down(b.build());
     }
 
     @Test
-    public void whenRefineAndThenDownWithFittingDistributionThenNoError() throws PossibilitiesWalkerException {
+    public void whenRefineAndThenDownWithFittingDistributionThenNoError() throws Exception {
         PossibilitiesWalker instance = goDown(getAddedDistribution());
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
@@ -92,7 +82,7 @@ public class PossibilitiesWalkerTest {
         return instance;
     }
 
-    @Test(expected = PossibilitiesWalkerException.class)
+    @Test(expected = IllegalStateException.class)
     public void whenBeforeFirstDistributionValueThenAskingCountProducesError() throws Exception {
         PossibilitiesWalker instance = goDown(getAddedDistribution());
         instance.getCount();
@@ -165,5 +155,12 @@ public class PossibilitiesWalkerTest {
         assertEquals(2, v.getValue());
         assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
+    }
+
+    @Test(expected = PossibilitiesWalkerException.class)
+    public void whenRefiningHasOverflowThenError() throws Exception {
+        PossibilitiesWalker instance = new PossibilitiesWalker();
+        instance.refine(1000000);
+        instance.refine(1000000);
     }
 }

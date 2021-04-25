@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.algorithm.SampleContextBase;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
@@ -150,7 +151,12 @@ class Executor implements SampleContextBase {
     }
 
     @Override
-    public Object nextValue() {
+    public ProbabilityTreeValue nextValue() {
         return findExperiment().nextValue();
+    }
+
+    @Override
+    public void scoreUnknown() {
+        findExperiment().scoreUnknown();
     }
 }

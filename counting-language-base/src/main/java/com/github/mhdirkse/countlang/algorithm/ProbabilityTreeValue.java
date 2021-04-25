@@ -2,7 +2,7 @@ package com.github.mhdirkse.countlang.algorithm;
 
 import lombok.Getter;
 
-class ProbabilityTreeValue {
+public class ProbabilityTreeValue {
     private final @Getter boolean unknown;
     private final Object value;
 
@@ -29,7 +29,7 @@ class ProbabilityTreeValue {
         return new ProbabilityTreeValue(value);
     }
 
-    Object getValue() {
+    public Object getValue() {
         if(unknown) {
             throw new IllegalStateException("The unknown ProbabilityTreeValue has no normal value");
         }

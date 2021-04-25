@@ -21,8 +21,8 @@ package com.github.mhdirkse.countlang.algorithm;
 
 public interface SampleContextBase {
     public void startSampledVariable(final int line, final int column, final Distribution sampledDistribution);
+    public void scoreUnknown();
     public void stopSampledVariable();
     public boolean hasNextValue();
-    public Object nextValue();
-
+    public ProbabilityTreeValue nextValue();
 }

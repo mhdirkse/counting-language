@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.ProgramException;
-import com.github.mhdirkse.countlang.utils.Stack;
 
 abstract class RefinementStrategy {
     static class CountNode {
@@ -20,38 +19,26 @@ abstract class RefinementStrategy {
         }
     }
 
-    abstract SampleContextImpl.SampledVariableInfo startSampledVariable(int line, int column, Stack<SampleContextImpl.SampledDistributionContext> sampleContexts, Distribution sampledDistribution);
+    abstract int startSampledVariable(int line, int column, PossibilitiesWalker walker, Distribution sampledDistribution);
     abstract void stopSampledVariable();
     abstract Distribution finishResult(Distribution raw);
+    abstract String getOverflowMessage();
 
     static class CountingPossibilities extends RefinementStrategy {
         private final List<CountNode> fixedPossibilityCountsPerDepth = new ArrayList<>();
         private int currentDepth = 0;
 
         @Override
-        SampleContextImpl.SampledVariableInfo startSampledVariable(int line, int column, Stack<SampleContextImpl.SampledDistributionContext> sampleContexts, Distribution sampledDistribution) {
-            int refineFactor = checkFixedPossibilityCounts(line, column, sampledDistribution);
-            // Do not confuse the sample contexts with the fixed weight context.
-            // A sample context is popped when sampling a variable stops. We can
-            // work here with all sample context we have; limiting by the current
-            // depth is confusing two different things.
-            //
-            // We cannot use the last SampledDistributionContext's getCumulativeCount()
-            // method, because doing so would confuse the weight before refinement and the
-            // weight after refinement. We recalculate here the amount of possibilities
-            // for arriving at the parent node, without considering the sub-experiment of
-            // the child.
-            int weight = sampleContexts.applyToAll(SampleContextImpl.SampledDistributionContext::getCountOfCurrentValue)
-                    .reduce(1, (a, b) -> a * b);
+        int startSampledVariable(int line, int column, PossibilitiesWalker walker, Distribution sampledDistribution) {
+            int result = checkFixedPossibilityCounts(line, column, sampledDistribution);
             currentDepth++;
-            return new SampleContextImpl.SampledVariableInfo(refineFactor, weight);
+            return result;
         }
 
         private int checkFixedPossibilityCounts(int line, int column, Distribution sampledDistribution) {
             int refineFactor = 1;
             if(currentDepth >= fixedPossibilityCountsPerDepth.size()) {
                 fixedPossibilityCountsPerDepth.add(new CountNode(line, column, sampledDistribution.getTotal()));
-                checkForTotalPossibilityCountOverflow(line, column);
                 refineFactor = sampledDistribution.getTotal();
             } else {
                 CountNode fixedCountNode = fixedPossibilityCountsPerDepth.get(currentDepth);
@@ -64,15 +51,6 @@ abstract class RefinementStrategy {
             return refineFactor;
         }
 
-        private void checkForTotalPossibilityCountOverflow(int line, int column) {
-            long totalNumberOfPossibilities = fixedPossibilityCountsPerDepth.stream()
-                    .map(cn -> (long) cn.count)
-                    .reduce(1L, (a, b) -> a*b);
-            if(totalNumberOfPossibilities >= Integer.MAX_VALUE) {
-                throw new ProgramException(line, column, "Integer overflow when calculating the total number of possibilities");
-            }
-        }
-
         @Override
         void stopSampledVariable() {
             currentDepth--;
@@ -82,25 +60,24 @@ abstract class RefinementStrategy {
         Distribution finishResult(Distribution raw) {
             return raw;
         }
+
+        @Override
+        String getOverflowMessage() {
+            return "Integer overflow when calculating the total number of possibilities";
+        }
     }
 
     static class NotCountingPossibilities extends RefinementStrategy {
         @Override
-        SampleContextImpl.SampledVariableInfo startSampledVariable(int line, int column, Stack<SampleContextImpl.SampledDistributionContext> sampleContexts, Distribution sampledDistribution) {
-            int weight = 1;
-            int refineFactor = 1;
-            if(!sampleContexts.isEmpty()) {
-                int availableShare = sampleContexts.peek().getCumulativeCount();
-                int updatedShare = 1;
-                try {
-                    updatedShare = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
-                } catch(ArithmeticException e) {
-                    throw new ProgramException(line, column, "Integer overflow when calculating a common denominator for the result distribution. You can fix this by using distributions with smaller totals or by using distributions whose totals have a large common factor (e.g. 10000 and 100)");
-                }
-                refineFactor = updatedShare / availableShare;
-                weight = updatedShare / sampledDistribution.getTotal();
+        int startSampledVariable(int line, int column, PossibilitiesWalker walker, Distribution sampledDistribution) {
+            int availableShare = walker.getCount();
+            int updatedShare = 1;
+            try {
+                updatedShare = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
+            } catch(ArithmeticException e) {
+                throw new ProgramException(line, column, "Integer overflow when calculating a common denominator for the result distribution. You can fix this by using distributions with smaller totals or by using distributions whose totals have a large common factor (e.g. 10000 and 100)");
             }
-            return new SampleContextImpl.SampledVariableInfo(refineFactor, weight);
+            return updatedShare / availableShare;
         }
 
         private int leastCommonMultiplier(final int i1, final int i2) {
@@ -123,6 +100,11 @@ abstract class RefinementStrategy {
         @Override
         Distribution finishResult(Distribution raw) {
             return raw.normalize();
+        }
+
+        @Override
+        String getOverflowMessage() {
+            return "Integer overflow when calculating a common denominator";
         }
     }
 }
