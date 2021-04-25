@@ -27,13 +27,19 @@ public class PossibilitiesWalkerTest {
         return d;        
     }
 
+    private static Distribution getNextAddedDistributionWithUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(10, 1);
+        b.addUnknown(3);
+        return b.build();
+    }
+
     @Test
-    public void whenAtStartThenAtStartTrueAndCountOne() throws Exception {
+    public void whenAtStartThenCountOne() throws Exception {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         assertFalse(instance.hasNext());
         assertEquals(1, instance.getCount());
         assertEquals(1, instance.getTotal());
-        assertEquals(0, instance.getNumEdges());
     }
 
     @Test(expected = PossibilitiesWalkerException.class)
@@ -64,13 +70,14 @@ public class PossibilitiesWalkerTest {
     public void whenRefineAndThenDownWithFittingDistributionThenNoError() throws PossibilitiesWalkerException {
         PossibilitiesWalker instance = goDown(getAddedDistribution());
         assertTrue(instance.hasNext());
-        Object v = instance.next();
-        assertEquals(1, instance.getNumEdges());
-        assertEquals(1, v);
+        ProbabilityTreeValue v = instance.next();
+        assertFalse(v.isUnknown());
+        assertEquals(1, v.getValue());
         assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertTrue(instance.hasNext());
         v = instance.next();
-        assertEquals(2, v);
+        assertFalse(v.isUnknown());
+        assertEquals(2, v.getValue());
         assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
         instance.up();
@@ -92,19 +99,71 @@ public class PossibilitiesWalkerTest {
     }
 
     @Test
-    public void whenBeforeFirstDistributionValueThenNumEdgesDoesNotCountNewAddedDistribution() throws Exception {
-        PossibilitiesWalker instance = goDown(getAddedDistribution());
-        assertEquals(0, instance.getNumEdges());
-    }
-
-    @Test
     public void whenAddedDistributionHasUnknownThenUnknownCovered() throws Exception {
         PossibilitiesWalker instance = goDown(getAddedDistributionWithUnknown());
         assertTrue(instance.hasNext());
-        Object v = instance.next();
-        assertEquals(1, v);
+        ProbabilityTreeValue v = instance.next();
+        assertFalse(v.isUnknown());
+        assertEquals(1, v.getValue());
         assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertTrue(instance.hasNext());
+        v = instance.next();
+        assertTrue(v.isUnknown());
+        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
-        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCountUnknown());
+    }
+
+    @Test
+    public void whenRefinementDuringIteratingThenCountsAndTotalAdjusted() throws Exception {
+        PossibilitiesWalker instance = new PossibilitiesWalker();
+        Distribution d = getAddedDistribution();
+        instance.refine(d.getTotal());
+        assertEquals(ADDED_DISTRIBUTION_TOTAL, instance.getTotal());
+        instance.down(d);
+        assertTrue(instance.hasNext());
+        ProbabilityTreeValue v = instance.next();
+        assertFalse(v.isUnknown());
+        assertEquals(1, v.getValue());
+        assertEquals(2, instance.getCount());
+        instance.refine(EXTRA_REFINEMENT_FACTOR);
+        assertEquals(EXPECTED_TOTAL, instance.getTotal());
+        assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertTrue(instance.hasNext());
+        v = instance.next();
+        assertEquals(2, v.getValue());
+        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertFalse(instance.hasNext());
+    }
+
+    @Test
+    public void whenProbabilityTreeHasManyLevelsThenRefiningAndCountingRemainsConsistent() throws Exception {
+        PossibilitiesWalker instance = new PossibilitiesWalker();
+        Distribution d1 = getAddedDistribution();
+        instance.refine(d1.getTotal());
+        assertEquals(ADDED_DISTRIBUTION_TOTAL, instance.getTotal());
+        instance.down(d1);
+        assertTrue(instance.hasNext());
+        instance.refine(EXTRA_REFINEMENT_FACTOR);
+        assertEquals(EXPECTED_TOTAL, instance.getTotal());
+        Distribution d2 = getNextAddedDistributionWithUnknown();
+        instance.next();
+        instance.down(d2);
+        assertTrue(instance.hasNext());
+        ProbabilityTreeValue v = instance.next();
+        assertEquals(10, v.getValue());
+        assertEquals(2, instance.getCount());
+        assertTrue(instance.hasNext());
+        v = instance.next();
+        assertTrue(v.isUnknown());
+        assertEquals(6, instance.getCount());
+        assertFalse(instance.hasNext());
+        instance.up();
+        assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertTrue(instance.hasNext());
+        v = instance.next();
+        assertFalse(v.isUnknown());
+        assertEquals(2, v.getValue());
+        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertFalse(instance.hasNext());
     }
 }

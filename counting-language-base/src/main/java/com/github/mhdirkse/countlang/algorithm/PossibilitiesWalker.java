@@ -1,14 +1,15 @@
 package com.github.mhdirkse.countlang.algorithm;
 
+import com.github.mhdirkse.countlang.utils.Stack;
+
 /**
  * Walks a probability tree as explained with {@link SampleContext}.
  * @author martijn
  *
  */
 class PossibilitiesWalker {
-    boolean atStart = true;
     private int total = 1;
-    private Edge edge = null;
+    private Stack<Edge> edges = new Stack<>();
 
     PossibilitiesWalker() {
     }
@@ -17,52 +18,38 @@ class PossibilitiesWalker {
         if(distribution.getTotal() == 0) {
             throw new PossibilitiesWalkerException("Cannot iterate over an empty distribution");
         }
-        if((total % distribution.getTotal()) != 0) {
+        if((getCount() % distribution.getTotal()) != 0) {
             throw new PossibilitiesWalkerException.NewDistributionDoesNotFitParentCount(distribution.getTotal(), total);
         }
-        atStart = false;
-        edge = new Edge(distribution, total / distribution.getTotal());
+        edges.push(new Edge(distribution, getCount() / distribution.getTotal()));
     }
 
     void up() {
-        edge = null;
+        edges.pop();
     }
 
     boolean hasNext() {
-        return (edge != null) && edge.hasNext();
+        return (edges.size() >= 1) && edges.peek().hasNext();
     }
 
-    Object next() {
-        return edge.next();
+    ProbabilityTreeValue next() {
+        return edges.peek().next();
     }
 
     int getCount() throws PossibilitiesWalkerException {
-        if(atStart) {
-            return 1;
+        if(edges.isEmpty()) {
+            return total;
         } else {
-            return edge.getCount();
+            return edges.peek().getCount();
         }
-    }
-
-    int getCountUnknown() {
-        return edge.getCountUnknown();
     }
 
     int getTotal() {
         return total;
     }
 
-    int getNumEdges() throws PossibilitiesWalkerException {
-        if(edge == null) {
-            return 0;
-        } else if(edge.hasValue()) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-
     void refine(int factor) throws PossibilitiesWalkerException {
         total *= factor;
+        edges.forEach(e -> e.refine(factor));
     }
 }

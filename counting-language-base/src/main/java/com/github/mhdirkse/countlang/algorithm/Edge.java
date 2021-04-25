@@ -1,17 +1,15 @@
 package com.github.mhdirkse.countlang.algorithm;
 
-import java.util.Iterator;
-
 class Edge {
     private Distribution distribution;
     private int weight;
-    private Iterator<Object> iterator;
-    private Object currentValue = null;
+    private PossibilityValueIterator iterator;
+    private ProbabilityTreeValue currentValue = null;
 
     Edge(Distribution distribution, int weight) {
         this.distribution = distribution;
         this.weight = weight;
-        this.iterator = distribution.getItemIterator();
+        this.iterator = new PossibilityValueIterator(distribution);
     }
 
     boolean hasValue() {
@@ -22,7 +20,7 @@ class Edge {
         return iterator.hasNext();
     }
 
-    Object next() {
+    ProbabilityTreeValue next() {
         currentValue = iterator.next();
         return currentValue;
     }
@@ -34,7 +32,7 @@ class Edge {
         return weight * distribution.getCountOf(currentValue);
     }
 
-    int getCountUnknown() {
-        return weight * distribution.getCountUnknown();
+    void refine(int factor) {
+        weight *= factor;
     }
 }
