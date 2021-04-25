@@ -22,8 +22,6 @@ public class PossibilitiesWalkerTest {
     @Test
     public void whenAtStartThenAtStartTrueAndCountOne() throws Exception {
         PossibilitiesWalker instance = new PossibilitiesWalker();
-        assertTrue(instance.isAtStart());
-        assertTrue(instance.isAtNewLeaf());
         assertFalse(instance.hasNext());
         assertEquals(1, instance.getCount());
         assertEquals(1, instance.getTotal());
@@ -57,12 +55,9 @@ public class PossibilitiesWalkerTest {
     @Test
     public void whenRefineAndThenDownWithFittingDistributionThenNoError() throws PossibilitiesWalkerException {
         PossibilitiesWalker instance = goDown();
-        assertFalse(instance.isAtStart());
-        assertFalse(instance.isAtNewLeaf());
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
         assertEquals(1, instance.getNumEdges());
-        assertTrue(instance.isAtNewLeaf());
         assertFalse(v.isUnknown());
         assertEquals(1, v.getValue());
         assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
@@ -73,8 +68,6 @@ public class PossibilitiesWalkerTest {
         assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
         instance.up();
-        assertFalse(instance.isAtNewLeaf());
-        assertFalse(instance.isAtStart());
         assertFalse(instance.hasNext());
     }
 
@@ -93,9 +86,9 @@ public class PossibilitiesWalkerTest {
         instance.getCount();
     }
 
-    @Test(expected = PossibilitiesWalkerException.class)
-    public void whenBeforeFirstDistributionValueThenAskingNumEdgesProducesError() throws Exception {
+    @Test
+    public void whenBeforeFirstDistributionValueThenNumEdgesDoesNotCountNewAddedDistribution() throws Exception {
         PossibilitiesWalker instance = goDown();
-        instance.getNumEdges();
+        assertEquals(0, instance.getNumEdges());
     }
 }

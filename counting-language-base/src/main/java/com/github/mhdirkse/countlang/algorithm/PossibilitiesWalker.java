@@ -13,16 +13,6 @@ class PossibilitiesWalker {
     PossibilitiesWalker() {
     }
 
-    boolean isAtStart() {
-        return atStart;
-    }
-
-    boolean isAtNewLeaf() {
-        return atStart || (
-                (edge != null)
-                && (edge.hasValue()));
-    }
-
     void down(Distribution distribution) throws PossibilitiesWalkerException {
         if(distribution.getTotal() == 0) {
             throw new PossibilitiesWalkerException("Cannot iterate over an empty distribution");
@@ -47,7 +37,7 @@ class PossibilitiesWalker {
     }
 
     int getCount() throws PossibilitiesWalkerException {
-        if(isAtStart()) {
+        if(atStart) {
             return 1;
         } else {
             return edge.getCount();
@@ -64,7 +54,7 @@ class PossibilitiesWalker {
         } else if(edge.hasValue()) {
             return 1;
         } else {
-            throw new PossibilitiesWalkerException("Cannot give number of edges because there is an edge that does not have its value yet");
+            return 0;
         }
     }
 
