@@ -104,7 +104,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
     }
 
     /**
-     * Used by Stepper to give the {@link SampleContext} to {@link SampleStatementCalculation) instances.
+     * Used by Stepper to give the {@link SampleContext} to {@link SampleStatementCalculation} instances.
      */
     SampleContext getSampleContext() {
         if(statementsHandler == null) {
