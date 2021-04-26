@@ -224,6 +224,19 @@ Here are a few things to take care of when programming:
 
 # Usage instructions
 
+## Installation
+
+For every release, an execuable .jar file is uploaded that can be executed with Java 8. To use it,
+please do the following:
+
+* Download the executable and put it in some directory, the work directory.
+* Change directory to the working directory.
+* Make a test input file, for `example.txt` in the work directory.
+* Fill `example.txt` with the test `print 5+3;`.
+* Run the following command: `java -jar &lt;name of executable&gt; example.txt`. This works both on Windows and on Linux, provided that the Java executable is on your path.
+
+## Building the source code
+
 * You need Java 8 and Maven 3.6.
 * Clone counting-language, codegen and utils.
 * Choose the version of counting-language that you want to build. I recommend using the latest tagged version.
@@ -267,3 +280,5 @@ Project `counting-language-impl` has the following packages:
 * `com.github.mhdirkse.countlang.lang.parsing`: Implements parsing source code written in the counting-language language.
 * `com.github.mhdirkse.countlang.tasks`: Tasks to be performed by the counting-language software, independent from the user interface applied to call them.
 * `com.github.mhdirkse.countlang.execution`: Executes counting-language programs.
+
+For details, see the [JavaDoc](/target/site/apidocs/index.html).
