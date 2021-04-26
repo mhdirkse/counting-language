@@ -281,4 +281,4 @@ Project `counting-language-impl` has the following packages:
 * `com.github.mhdirkse.countlang.tasks`: Tasks to be performed by the counting-language software, independent from the user interface applied to call them.
 * `com.github.mhdirkse.countlang.execution`: Executes counting-language programs.
 
-For details, see the [JavaDoc](/target/site/apidocs/index.html).
+For details, see the [JavaDoc](https://mhdirkse.github.io/counting-language/).
