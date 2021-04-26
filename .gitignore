@@ -1,4 +1,5 @@
 target/
+!target/site/apidocs # Include Javadocs
 .classpath
 .project
 .settings
