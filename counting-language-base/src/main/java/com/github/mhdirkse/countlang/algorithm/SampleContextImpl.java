@@ -22,8 +22,7 @@ package com.github.mhdirkse.countlang.algorithm;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 class SampleContextImpl implements SampleContext {
-    PossibilitiesWalker walker = new PossibilitiesWalker();
-
+    private final PossibilitiesWalker walker = new PossibilitiesWalker();
     private final Distribution.Builder distributionBuilder = new Distribution.Builder();
     private final RefinementStrategy refinementStrategy;
     private boolean isScored = false;

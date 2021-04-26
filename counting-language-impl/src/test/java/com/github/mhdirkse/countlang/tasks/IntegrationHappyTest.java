@@ -46,6 +46,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     @Parameters(name = "{0}, expect output {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
+            {"", "<no output>"},
             {"print 5 + 3", "8"},
             {"print 5 - 3", "2"},
             {"print 5 * 3", "15"},
@@ -167,7 +168,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"experiment exp() {sample x from distribution 1, 2; if(x == 1) {return 3;};}; print known of exp();", getDistribution(3)},
             {getProgramTwoCoins(), getTwoCoinsExpectedValue()},
             {getProgramThatForksWhile(), getDistribution(false, false, false, true)},
-            {getProgramThatCountsPossibilities(), getProgramThatCountsPossibilitiesExpectedValue()}
+            {getProgramThatCountsPossibilities(), getProgramThatCountsPossibilitiesExpectedValue()},
+            {"experiment exp() {}; print exp();", getDistributionOnceUnknown()}
         });
     }
 
@@ -322,6 +324,12 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
         return b.build().format();        
     }
 
+    private static String getDistributionOnceUnknown() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.addUnknown(1);
+        return b.build().format();
+    }
+
     @Parameter(0)
     public String input;
 
@@ -332,7 +340,11 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     public void testResult() {
         compileAndRun(input);
         Assert.assertEquals(getOutputStrategyErrors(), 0, outputStrategy.getNumErrors());
-        Assert.assertEquals(expectedResult, outputStrategy.getLine(0));
+        String actualResult = "<no output>";
+        if(outputStrategy.getNumLines() >= 1) {
+            actualResult = outputStrategy.getLine(0);
+        }
+        Assert.assertEquals(expectedResult, actualResult);
     }
 
     private String getOutputStrategyErrors() {
