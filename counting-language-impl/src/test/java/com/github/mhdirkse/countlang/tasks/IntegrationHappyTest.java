@@ -151,6 +151,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"if(false) {print 3}; print 5", "5"}, // Only then clause, not executed
             {"if(true) {print 3} else {print 5}", "3"}, // Then and else, execute then.
             {"if(false) {print 3} else {print 5}", "5"}, // Then and else, execute else
+            {"function fun() {if(true) {return 1} else {}; return 0}; print fun();", "1"}, // Allow empty else
+            {"function fun() {if(false) {} else {return 1}; return 0}; print fun();", "1"}, // Allow empty then
 
             // while statement
             {"i = 0; while(i < 2) {i = i + 1}; print i", "2"},

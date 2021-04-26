@@ -221,7 +221,6 @@ For details, see the [grammar](/counting-language-base/src/main/antlr4/com/githu
 
 Here are a few things to take care of when programming:
 * Between two statements, you always need a `;`, also if the first statement ends with `}`.
-* If you have an `else` clause in an `if`-statement, then it may not be empty. But if you have no need for `else`, you can omit it alltogether.
 
 # Usage instructions
 
