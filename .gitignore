@@ -1,5 +1,8 @@
-target/site/apidocs # Include Javadocs
-target/
+!target/site/apidocs # Include Javadocs
+*/target
+target/javadoc-bundle-options/
+target/maven-javadoc-plugin-stale-data*
+target/site/detaildocs/
 .classpath
 .project
 .settings
