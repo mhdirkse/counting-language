@@ -102,7 +102,7 @@
               <goal>aggregate</goal>
             </goals>
             <configuration>
-              <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
+              <reportOutputDirectory>${project.build.directory}/apidocs</reportOutputDirectory>
               <destDir>apidocs</destDir>
               <!-- Disable Javadoc strict errors -->
               <doclint>none</doclint>
@@ -116,7 +116,7 @@
             </goals>
             <configuration>
               <show>package</show>
-              <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
+              <reportOutputDirectory>${project.build.directory}/detaildocs</reportOutputDirectory>
               <destDir>detaildocs</destDir>
               <!-- Disable Javadoc strict errors -->
               <doclint>none</doclint>
