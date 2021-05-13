@@ -22,6 +22,8 @@ package com.github.mhdirkse.countlang.execution;
 import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.AFTER;
 import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.RUNNING;
 
+import java.math.BigInteger;
+
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
@@ -53,7 +55,7 @@ class SampleStatementCalculation implements AstNodeExecution {
         if(distribution == null) {
             return delegate.step(context);
         }
-        if(distribution.getTotal() == 0) {
+        if(distribution.getTotal().equals(BigInteger.ZERO)) {
             throw new ProgramException(statement.getLine(), statement.getColumn(), "Cannot sample from empty distribution.");
         }
         if(! isSamplingStarted) {

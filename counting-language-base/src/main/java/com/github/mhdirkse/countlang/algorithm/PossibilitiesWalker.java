@@ -1,5 +1,7 @@
 package com.github.mhdirkse.countlang.algorithm;
 
+import java.math.BigInteger;
+
 import com.github.mhdirkse.countlang.utils.Stack;
 
 /**
@@ -8,7 +10,7 @@ import com.github.mhdirkse.countlang.utils.Stack;
  *
  */
 class PossibilitiesWalker {
-    private int total = 1;
+    private BigInteger total = BigInteger.ONE;
     private Stack<Edge> edges = new Stack<>();
 
     PossibilitiesWalker() {
@@ -19,13 +21,13 @@ class PossibilitiesWalker {
     }
 
     void down(Distribution distribution) {
-        if(distribution.getTotal() == 0) {
+        if(distribution.getTotal().compareTo(BigInteger.ZERO) == 0) {
             throw new IllegalArgumentException("Cannot iterate over an empty distribution");
         }
-        if((getCount() % distribution.getTotal()) != 0) {
+        if(getCount().mod(distribution.getTotal()).compareTo(BigInteger.ZERO) != 0) {
             throw new IllegalArgumentException(String.format("Cannot fit distribution with total %d in count %d", distribution.getTotal(), total));
         }
-        edges.push(new Edge(distribution, getCount() / distribution.getTotal()));
+        edges.push(new Edge(distribution, getCount().divide(distribution.getTotal())));
     }
 
     void up() {
@@ -40,7 +42,7 @@ class PossibilitiesWalker {
         return edges.peek().next();
     }
 
-    int getCount() {
+    BigInteger getCount() {
         if(edges.isEmpty()) {
             return total;
         } else {
@@ -48,16 +50,16 @@ class PossibilitiesWalker {
         }
     }
 
-    int getTotal() {
+    BigInteger getTotal() {
         return total;
     }
 
-    void refine(int factor) throws PossibilitiesWalkerException {
-        long newTotal = ((long) total) * factor;
-        if(newTotal > Integer.MAX_VALUE) {
-            throw new PossibilitiesWalkerException(String.format("Integer overflow when refining total %d with factor %d", total, factor));
-        }
-        total = (int) newTotal;
-        edges.forEach(e -> e.refine(factor));
+    void refine(int factor) {
+        refine(new BigInteger(Integer.valueOf(factor).toString()));
+    }
+
+    void refine(BigInteger factor) {
+        total = total.multiply(factor);
+        edges.forEach(e -> e.refine(factor));        
     }
 }

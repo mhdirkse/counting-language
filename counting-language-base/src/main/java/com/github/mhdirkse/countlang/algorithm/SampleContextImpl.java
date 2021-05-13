@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
+import java.math.BigInteger;
+
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 class SampleContextImpl implements SampleContext {
@@ -34,13 +36,9 @@ class SampleContextImpl implements SampleContext {
     @Override
     public void startSampledVariable(int line, int column, final Distribution sampledDistribution) throws ProgramException {
         checkScoreOnce();
-        int refineFactor = refinementStrategy.startSampledVariable(line, column, walker, sampledDistribution);
-        if(refineFactor > 1) {
-            try {
-                walker.refine(refineFactor);
-            } catch(PossibilitiesWalkerException e) {
-                throw new ProgramException(line, column, refinementStrategy.getOverflowMessage());
-            }
+        BigInteger refineFactor = refinementStrategy.startSampledVariable(line, column, walker, sampledDistribution);
+        if(refineFactor.compareTo(BigInteger.ONE) > 0) {
+            walker.refine(refineFactor);
             distributionBuilder.refine(refineFactor);
         }
         walker.down(sampledDistribution);

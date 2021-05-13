@@ -1,8 +1,11 @@
 package com.github.mhdirkse.countlang.algorithm;
 
+import static com.github.mhdirkse.countlang.algorithm.TestUtils.assertEqualsConvertingInt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.math.BigInteger;
 
 import org.junit.Test;
 
@@ -38,8 +41,8 @@ public class PossibilitiesWalkerTest {
     public void whenAtStartThenCountOne() {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         assertFalse(instance.hasNext());
-        assertEquals(1, instance.getCount());
-        assertEquals(1, instance.getTotal());
+        assertEqualsConvertingInt(1, instance.getCount());
+        assertEqualsConvertingInt(1, instance.getTotal());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -62,13 +65,13 @@ public class PossibilitiesWalkerTest {
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
         assertFalse(v.isUnknown());
-        assertEquals(1, v.getValue());
-        assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(1, v.getValue());
+        assertEqualsConvertingInt(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertTrue(instance.hasNext());
         v = instance.next();
         assertFalse(v.isUnknown());
-        assertEquals(2, v.getValue());
-        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(2, v.getValue());
+        assertEqualsConvertingInt(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
         instance.up();
         assertFalse(instance.hasNext());
@@ -77,7 +80,7 @@ public class PossibilitiesWalkerTest {
     private PossibilitiesWalker goDown(Distribution d) throws PossibilitiesWalkerException {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         instance.refine(EXPECTED_TOTAL);
-        assertEquals(EXPECTED_TOTAL, instance.getTotal());
+        assertEqualsConvertingInt(EXPECTED_TOTAL, instance.getTotal());
         instance.down(d);
         return instance;
     }
@@ -94,12 +97,12 @@ public class PossibilitiesWalkerTest {
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
         assertFalse(v.isUnknown());
-        assertEquals(1, v.getValue());
-        assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(1, v.getValue());
+        assertEqualsConvertingInt(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertTrue(instance.hasNext());
         v = instance.next();
         assertTrue(v.isUnknown());
-        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
     }
 
@@ -108,20 +111,20 @@ public class PossibilitiesWalkerTest {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         Distribution d = getAddedDistribution();
         instance.refine(d.getTotal());
-        assertEquals(ADDED_DISTRIBUTION_TOTAL, instance.getTotal());
+        assertEqualsConvertingInt(ADDED_DISTRIBUTION_TOTAL, instance.getTotal());
         instance.down(d);
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
         assertFalse(v.isUnknown());
-        assertEquals(1, v.getValue());
-        assertEquals(2, instance.getCount());
+        assertEqualsConvertingInt(1, v.getValue());
+        assertEqualsConvertingInt(2, instance.getCount());
         instance.refine(EXTRA_REFINEMENT_FACTOR);
-        assertEquals(EXPECTED_TOTAL, instance.getTotal());
-        assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(EXPECTED_TOTAL, instance.getTotal());
+        assertEqualsConvertingInt(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertTrue(instance.hasNext());
         v = instance.next();
-        assertEquals(2, v.getValue());
-        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(2, v.getValue());
+        assertEqualsConvertingInt(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
     }
 
@@ -130,37 +133,37 @@ public class PossibilitiesWalkerTest {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         Distribution d1 = getAddedDistribution();
         instance.refine(d1.getTotal());
-        assertEquals(ADDED_DISTRIBUTION_TOTAL, instance.getTotal());
+        assertEqualsConvertingInt(ADDED_DISTRIBUTION_TOTAL, instance.getTotal());
         instance.down(d1);
         assertTrue(instance.hasNext());
         instance.refine(EXTRA_REFINEMENT_FACTOR);
-        assertEquals(EXPECTED_TOTAL, instance.getTotal());
+        assertEqualsConvertingInt(EXPECTED_TOTAL, instance.getTotal());
         Distribution d2 = getNextAddedDistributionWithUnknown();
         instance.next();
         instance.down(d2);
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
-        assertEquals(10, v.getValue());
-        assertEquals(2, instance.getCount());
+        assertEqualsConvertingInt(10, v.getValue());
+        assertEqualsConvertingInt(2, instance.getCount());
         assertTrue(instance.hasNext());
         v = instance.next();
         assertTrue(v.isUnknown());
-        assertEquals(6, instance.getCount());
+        assertEqualsConvertingInt(6, instance.getCount());
         assertFalse(instance.hasNext());
         instance.up();
-        assertEquals(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(2 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertTrue(instance.hasNext());
         v = instance.next();
         assertFalse(v.isUnknown());
-        assertEquals(2, v.getValue());
-        assertEquals(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
+        assertEqualsConvertingInt(2, v.getValue());
+        assertEqualsConvertingInt(3 * EXTRA_REFINEMENT_FACTOR, instance.getCount());
         assertFalse(instance.hasNext());
     }
 
-    @Test(expected = PossibilitiesWalkerException.class)
-    public void whenRefiningHasOverflowThenError() throws Exception {
+    public void whenRefiningOverflowsIntegerRangeThenNoError() throws Exception {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         instance.refine(1000000);
         instance.refine(1000000);
+        assertEquals(new BigInteger("1000000000000"), instance.getTotal());
     }
 }

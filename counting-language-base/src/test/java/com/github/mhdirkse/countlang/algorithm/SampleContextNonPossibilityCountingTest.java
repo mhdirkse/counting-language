@@ -21,12 +21,11 @@ package com.github.mhdirkse.countlang.algorithm;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigInteger;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.algorithm.SampleContextImpl;
 
 public class SampleContextNonPossibilityCountingTest {
     private SampleContextImpl instance;
@@ -57,7 +56,7 @@ public class SampleContextNonPossibilityCountingTest {
                     instance.scoreUnknown();
                     continue;
                 }
-                instance.score(((Integer) i1.getValue()) + ((Integer) i2.getValue()));
+                instance.score(((BigInteger) i1.getValue()).add((BigInteger) i2.getValue()));
             }
             instance.stopSampledVariable();
         }
@@ -79,8 +78,8 @@ public class SampleContextNonPossibilityCountingTest {
         Distribution binomial = getBinomialDistribution();
         instance.startSampledVariable(0, 0, binomial);
         while(instance.hasNextValue()) {
-            int choice = (Integer) instance.nextValue().getValue();
-            if(choice == 1) {
+            BigInteger choice = (BigInteger) instance.nextValue().getValue();
+            if(choice.equals(BigInteger.ONE)) {
                 instance.startSampledVariable(0, 0, binomial);
                 while(instance.hasNextValue()) {
                     instance.score(instance.nextValue().getValue());
@@ -104,8 +103,8 @@ public class SampleContextNonPossibilityCountingTest {
     public void testScoringUnknown() {
         instance.startSampledVariable(0, 0, getBinomialDistribution());
         while(instance.hasNextValue()) {
-            int choice = (Integer) instance.nextValue().getValue();
-            if(choice == 1) {
+            BigInteger choice = (BigInteger) instance.nextValue().getValue();
+            if(choice.equals(BigInteger.ONE)) {
                 instance.score(choice);
             }
             else {

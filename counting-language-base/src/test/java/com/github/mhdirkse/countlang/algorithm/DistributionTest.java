@@ -19,6 +19,10 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +34,7 @@ import org.junit.Test;
 
 public class DistributionTest {
     private static final String EMPTY = "empty";
-    private static final int FIRST_ITEM = 3;
+    private static final BigInteger FIRST_ITEM = new BigInteger("3");
     private static final int ITEM_LENGTH_2 = 52;
     private static final int COUNT_LENGTH_2 = 23;
 
@@ -68,9 +72,9 @@ public class DistributionTest {
     public void whenDistributionHasValueThenCountAndTotalStored() {
         Distribution.Builder b = new Distribution.Builder();
         b.add(FIRST_ITEM);
-        Assert.assertEquals(1, b.build().getCountOf(FIRST_ITEM));
-        Assert.assertEquals(0, b.build().getCountOf(FIRST_ITEM+1));
-        Assert.assertEquals(1, b.build().getTotal());
+        TestUtils.assertEqualsConvertingInt(1, b.build().getCountOf(FIRST_ITEM));
+        TestUtils.assertEqualsConvertingInt(0, b.build().getCountOf(FIRST_ITEM.add(BigInteger.ONE)));
+        TestUtils.assertEqualsConvertingInt(1, b.build().getTotal());
     }
 
     @Test
@@ -78,8 +82,8 @@ public class DistributionTest {
         Distribution.Builder b = new Distribution.Builder();
         b.add(FIRST_ITEM, 2);
         b.add(FIRST_ITEM, 5);
-        Assert.assertEquals(7, b.build().getCountOf(FIRST_ITEM));
-        Assert.assertEquals(7, b.build().getTotal());
+        TestUtils.assertEqualsConvertingInt(7, b.build().getCountOf(FIRST_ITEM));
+        TestUtils.assertEqualsConvertingInt(7, b.build().getTotal());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -143,9 +147,9 @@ public class DistributionTest {
         b.add(3);
         b.refine(2);
         Distribution d = b.build();
-        Assert.assertEquals(4, d.getCountOf(3));
-        Assert.assertEquals(4, d.getTotal());
-        Assert.assertEquals(0, d.getCountUnknown());
+        TestUtils.assertEqualsConvertingInt(4, d.getCountOf(new BigInteger("3")));
+        TestUtils.assertEqualsConvertingInt(4, d.getTotal());
+        TestUtils.assertEqualsConvertingInt(0, d.getCountUnknown());
     }
 
     @Test
@@ -154,8 +158,8 @@ public class DistributionTest {
         b.addUnknown(2);
         b.refine(3);
         Distribution d = b.build();
-        Assert.assertEquals(6, d.getCountUnknown());
-        Assert.assertEquals(6, d.getTotal());
+        TestUtils.assertEqualsConvertingInt(6, d.getCountUnknown());
+        TestUtils.assertEqualsConvertingInt(6, d.getTotal());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -177,10 +181,10 @@ public class DistributionTest {
         b.add(3, 4);
         b.addUnknown(5);
         Distribution result = b.build().getDistributionOfKnown();
-        Assert.assertEquals(5, result.getTotal());
-        Assert.assertEquals(0, result.getCountUnknown());
-        Assert.assertEquals(1, result.getCountOf(2));
-        Assert.assertEquals(4, result.getCountOf(3));
+        TestUtils.assertEqualsConvertingInt(5, result.getTotal());
+        TestUtils.assertEqualsConvertingInt(0, result.getCountUnknown());
+        TestUtils.assertEqualsConvertingInt(1, result.getCountOf(new BigInteger("2")));
+        TestUtils.assertEqualsConvertingInt(4, result.getCountOf(new BigInteger("3")));
     }
 
     @Test
@@ -248,7 +252,7 @@ public class DistributionTest {
         Distribution input = inputBuilder.build();
         Distribution normalized = input.normalize();
         Assert.assertTrue(! normalized.getItemIterator().hasNext());
-        Assert.assertEquals(1, normalized.getCountUnknown());
+        Assert.assertEquals(BigInteger.ONE, normalized.getCountUnknown());
     }
 
     @Test
@@ -258,9 +262,25 @@ public class DistributionTest {
         b.add(11, 4);
         b.addUnknown(6);
         Distribution normalized = b.build().normalize();
-        Assert.assertEquals(1, normalized.getCountOf(10));
-        Assert.assertEquals(2, normalized.getCountOf(11));
-        Assert.assertEquals(3, normalized.getCountUnknown());
-        Assert.assertEquals(6, normalized.getTotal());
+        TestUtils.assertEqualsConvertingInt(1, normalized.getCountOf(new BigInteger("10")));
+        TestUtils.assertEqualsConvertingInt(2, normalized.getCountOf(new BigInteger("11")));
+        TestUtils.assertEqualsConvertingInt(3, normalized.getCountUnknown());
+        TestUtils.assertEqualsConvertingInt(6, normalized.getTotal());
+    }
+
+    @Test
+    public void whenIntegerScoredThenStoredAsBigInteger() {
+        Distribution.Builder b = new Distribution.Builder();
+        Integer item = 5;
+        b.add(item);
+        Distribution d = b.build();
+        boolean notStoredAsOrdinaryInteger = false;
+        try {
+            d.getCountOf(item);
+        } catch(ClassCastException e) {
+            notStoredAsOrdinaryInteger = true;
+        }
+        assertTrue(notStoredAsOrdinaryInteger);
+        assertEquals(BigInteger.ONE, d.getCountOf(new BigInteger(item.toString())));
     }
 }

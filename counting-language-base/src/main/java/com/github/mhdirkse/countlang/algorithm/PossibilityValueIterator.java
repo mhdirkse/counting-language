@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.algorithm;
 
+import java.math.BigInteger;
 import java.util.Iterator;
 
 class PossibilityValueIterator implements Iterator<ProbabilityTreeValue> {
@@ -9,7 +10,7 @@ class PossibilityValueIterator implements Iterator<ProbabilityTreeValue> {
 
     PossibilityValueIterator(Distribution subject) {
         normalValueIterator = subject.getItemIterator();
-        distributionIncludesUnknown = subject.getCountUnknown() >= 1;
+        distributionIncludesUnknown = subject.getCountUnknown().compareTo(BigInteger.ZERO) > 0;
     }
 
     @Override

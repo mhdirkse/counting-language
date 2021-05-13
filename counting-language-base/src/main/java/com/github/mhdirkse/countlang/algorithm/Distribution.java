@@ -40,43 +40,83 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public final class Distribution implements Comparable<Distribution> {
+    private static final BigInteger MAX_INT_VALUE = new BigInteger(Integer.valueOf(Integer.MAX_VALUE).toString());
+
     public static class Builder {
-        private Map<Object, Integer> items = new HashMap<>();
-        private int total = 0;
+        private Map<Object, BigInteger> items = new HashMap<>();
+        private BigInteger total = BigInteger.ZERO;
+
+        public void add(int item) {
+            BigInteger bigItem = new BigInteger(Integer.valueOf(item).toString());
+            add(bigItem);
+        }
+
+        public void add(int item, int count) {
+            BigInteger bigItem = new BigInteger(Integer.valueOf(item).toString());
+            BigInteger bigCount = new BigInteger(Integer.valueOf(count).toString());
+            add(bigItem, bigCount);
+        }
 
         public void add(Object item) {
-            add(item, 1);
+            add(item, BigInteger.ONE);
         }
 
         public void add(Object item, int count) {
-            if(count < 0) {
+            BigInteger bigCount = new BigInteger(Integer.valueOf(count).toString());
+            add(item, bigCount);
+        }
+
+        public void add(Object item, BigInteger count) {
+            int comparedToZero = count.compareTo(BigInteger.ZERO);
+            if(comparedToZero < 0) {
                 throw new IllegalArgumentException("Cannot reduce the count of an item");
-            } else if(count == 0) {
+            } else if(comparedToZero == 0) {
                 return;
             }
-            items.merge(item, count, (c1, c2) -> c1 + c2);
-            total += count;
+            item = itemIntToBigint(item);
+            items.merge(item, count, (c1, c2) -> c1.add(c2));
+            total = total.add(count);
+        }
+
+        private Object itemIntToBigint(Object original) {
+            if(original instanceof Integer) {
+                return new BigInteger(((Integer) original).toString());
+            } else {
+                return original;
+            }
         }
 
         public void addUnknown(int countOfUnknown) {
-            if(countOfUnknown < 0) {
+            BigInteger bigCountOfUnknown = new BigInteger(Integer.valueOf(countOfUnknown).toString());
+            addUnknown(bigCountOfUnknown);
+        }
+
+        public void addUnknown(BigInteger countOfUnknown) {
+            int compareToZero = countOfUnknown.compareTo(BigInteger.ZERO);
+            if(compareToZero < 0) {
                 throw new IllegalArgumentException("Count of unknown cannot be negative");
             }
-            total += countOfUnknown;
+            total = total.add(countOfUnknown);
         }
 
         public void refine(int factor) {
-            if(factor <= 0) {
-                throw new IllegalArgumentException(
-                        "Refining with factor zero or a negative factor is not allowed, tried: " + Integer.toString(factor));
-            }
-            for(Object item: items.keySet()) {
-                items.put(item, factor * items.get(item));
-            }
-            total *= factor;
+            BigInteger bigFactor = new BigInteger(Integer.valueOf(factor).toString());
+            refine(bigFactor);
         }
 
-        public int getTotal() {
+        public void refine(BigInteger factor) {
+            int compareToZero = factor.compareTo(BigInteger.ZERO);
+            if(compareToZero <= 0) {
+                throw new IllegalArgumentException(
+                        "Refining with factor zero or a negative factor is not allowed, tried: " + factor.toString());
+            }
+            for(Object item: items.keySet()) {
+                items.put(item, factor.multiply(items.get(item)));
+            }
+            total = total.multiply(factor);
+        }
+
+        public BigInteger getTotal() {
             return total;
         }
 
@@ -89,17 +129,17 @@ public final class Distribution implements Comparable<Distribution> {
         }
     }
 
-    private final Map<Object, Integer> items;
-    private final int total;
-    private final int unknown;
+    private final Map<Object, BigInteger> items;
+    private final BigInteger total;
+    private final BigInteger unknown;
 
     private Distribution(final Builder builder) {
-        Map<Object, Integer> newItems = new TreeMap<>();
+        Map<Object, BigInteger> newItems = new TreeMap<>();
         newItems.putAll(builder.items);
         this.items = newItems;
         this.total = builder.total;
-        unknown = total - this.items.values().stream().reduce(0, (i1, i2) -> i1 + i2);
-        if(unknown < 0) {
+        unknown = total.subtract(this.items.values().stream().reduce(BigInteger.ZERO, (i1, i2) -> i1.add(i2)));
+        if(unknown.compareTo(BigInteger.ZERO) < 0) {
             throw new IllegalArgumentException("Count of unknown should be non-negative");
         }
     }
@@ -112,19 +152,19 @@ public final class Distribution implements Comparable<Distribution> {
         return b.build();
     }
 
-    public int getCountOf(Object value) {
-        return items.getOrDefault(value, 0);
+    public BigInteger getCountOf(Object value) {
+        return items.getOrDefault(value, BigInteger.ZERO);
     }
 
-    public int getTotal() {
+    public BigInteger getTotal() {
         return total;
     }
 
-    public int getCountUnknown() {
+    public BigInteger getCountUnknown() {
         return unknown;
     }
 
-    public int getCountOf(ProbabilityTreeValue value) {
+    public BigInteger getCountOf(ProbabilityTreeValue value) {
         if(value.isUnknown()) {
             return getCountUnknown();
         } else {
@@ -137,29 +177,28 @@ public final class Distribution implements Comparable<Distribution> {
     }
 
     public Distribution normalize() {
-        if(total == 0) {
+        if(total.equals(BigInteger.ZERO)) {
             return new Distribution.Builder().build();
         }
         List<BigInteger> gcdInput = Stream.concat(items.values().stream(), Arrays.asList(unknown).stream())
-                .filter(v -> v != 0)
-                .map(b -> BigInteger.valueOf(b))
+                .filter(v -> ! v.equals(BigInteger.ZERO))
                 .collect(Collectors.toList());
-        int gcd = getGcd(gcdInput);
+        BigInteger gcd = getGcd(gcdInput);
         Distribution.Builder b = new Distribution.Builder();
         for(Object item: items.keySet()) {
-            b.add(item, items.get(item) / gcd);
+            b.add(item, items.get(item).divide(gcd));
         }
-        b.addUnknown(unknown / gcd);
+        b.addUnknown(unknown.divide(gcd));
         return b.build();
     }
 
-    private static int getGcd(List<BigInteger> values) {
+    private static BigInteger getGcd(List<BigInteger> values) {
         Optional<BigInteger> gcd = values.stream().collect(Collectors.reducing((b1, b2) -> b1.gcd(b2)));
-        return gcd.get().intValue();
+        return gcd.get();
     }
 
     public String format() {
-        if(total == 0) {
+        if(total.equals(BigInteger.ZERO)) {
             return "empty";
         }
         List<List<String>> table = createTable();
@@ -175,13 +214,13 @@ public final class Distribution implements Comparable<Distribution> {
         List<List<String>> table = new ArrayList<>();
         for(Object item: items.keySet()) {
             String strItem = item.toString();
-            String strCount = Integer.toString(items.get(item));
+            String strCount = items.get(item).toString();
             table.add(Arrays.asList(strItem, strCount));
         }
-        if(unknown >= 1) {
-            table.add(Arrays.asList("unknown", Integer.toString(unknown)));
+        if(unknown.compareTo(BigInteger.ZERO) > 0) {
+            table.add(Arrays.asList("unknown", unknown.toString()));
         }
-        table.add(Arrays.<String>asList("total", Integer.toString(total)));
+        table.add(Arrays.<String>asList("total", total.toString()));
         return table;
     }
 
@@ -231,16 +270,21 @@ public final class Distribution implements Comparable<Distribution> {
         if(result != 0) {
             return result;
         }
-        result = Integer.compare(getTotal(), other.getTotal());
+        result = getTotal().compareTo(other.getTotal());
         return result;
     }
 
     private List<Comparable<Object>> writeOut() {
-        final List<Comparable<Object>> result = new ArrayList<>(getTotal() - getCountUnknown());
+        if(getTotal().compareTo(MAX_INT_VALUE) > 0) {
+            throw new IllegalStateException("Cannot compare distributions because they are too big");
+        }
+        BigInteger numItemsInResultRaw = getTotal().subtract(getCountUnknown());
+        int numItemsInResult = numItemsInResultRaw.intValue();
+        final List<Comparable<Object>> result = new ArrayList<>(numItemsInResult);
         for(Object item: items.keySet()) {
             @SuppressWarnings("unchecked")
             Comparable<Object> c = (Comparable<Object>) item;
-            IntStream.range(0, items.get(item)).forEach(i -> result.add(c));
+            IntStream.range(0, items.get(item).intValue()).forEach(i -> result.add(c));
         }
         return result;
     }
@@ -248,7 +292,7 @@ public final class Distribution implements Comparable<Distribution> {
     @Override
     public String toString() {        
         List<Comparable<Object>> items = writeOut();
-        String result = Stream.concat(items.stream().map(Object::toString), IntStream.range(0, unknown).mapToObj(i -> "unknown"))
+        String result = Stream.concat(items.stream().map(Object::toString), IntStream.range(0, unknown.intValue()).mapToObj(i -> "unknown"))
                 .collect(Collectors.joining(", "));
         return "(" + result + ")";
     }

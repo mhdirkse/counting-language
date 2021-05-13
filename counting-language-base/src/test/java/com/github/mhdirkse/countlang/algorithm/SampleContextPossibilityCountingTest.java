@@ -2,6 +2,8 @@ package com.github.mhdirkse.countlang.algorithm;
 
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigInteger;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,15 +32,15 @@ public class SampleContextPossibilityCountingTest {
         b.add(10, 3);
         b.add(11, 3);
         Distribution second = b.build();
-        int v1 = 0;
-        int v2 = 0;
+        BigInteger v1 = BigInteger.ZERO;
+        BigInteger v2 = BigInteger.ZERO;
         instance.startSampledVariable(0, 0, first);
         while(instance.hasNextValue()) {
-            v1 = (Integer) instance.nextValue().getValue();
+            v1 = (BigInteger) instance.nextValue().getValue();
             instance.startSampledVariable(0, 0, second);
             while(instance.hasNextValue()) {
-                v2 = (Integer) instance.nextValue().getValue();
-                instance.score(v1 + v2);
+                v2 = (BigInteger) instance.nextValue().getValue();
+                instance.score(v1.add(v2));
             }
             instance.stopSampledVariable();
         }
