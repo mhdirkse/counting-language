@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
+import java.util.stream.IntStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -40,8 +40,8 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public final class Distribution implements Comparable<Distribution> {
-    private static final BigInteger MAX_INT_VALUE = new BigInteger(Integer.valueOf(Integer.MAX_VALUE).toString());
-
+    private static final BigInteger MAX_IN_TO_STRING = new BigInteger("10");
+    
     public static class Builder {
         private Map<Object, BigInteger> items = new HashMap<>();
         private BigInteger total = BigInteger.ZERO;
@@ -256,44 +256,75 @@ public final class Distribution implements Comparable<Distribution> {
      */
     @Override
     public int compareTo(Distribution other) {
-        List<Comparable<Object>> itemsOfThis = writeOut();
-        List<Comparable<Object>> itemsOfOther = other.writeOut();
-        int numToCompare = Math.min(itemsOfThis.size(), itemsOfOther.size());
-        int result = 0;
-        for(int i = 0; i < numToCompare; i++) {
-            result = itemsOfThis.get(i).compareTo(itemsOfOther.get(i));
-            if(result != 0) {
-                return result;
+        if(this.getTotal().equals(BigInteger.ZERO)) {
+            if(other.getTotal().equals(BigInteger.ZERO)) {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else {
+            if(other.getTotal().equals(BigInteger.ZERO)) {
+                return 1;
+            } else {
+                return compareToUnchecked(other);
             }
         }
-        result = Integer.compare(itemsOfThis.size(), itemsOfOther.size());
-        if(result != 0) {
-            return result;
-        }
-        result = getTotal().compareTo(other.getTotal());
-        return result;
     }
 
-    private List<Comparable<Object>> writeOut() {
-        if(getTotal().compareTo(MAX_INT_VALUE) > 0) {
-            throw new IllegalStateException("Cannot compare distributions because they are too big");
+    private int compareToUnchecked(Distribution other) {
+        DistributionCompareHelper first = new DistributionCompareHelper(this);
+        DistributionCompareHelper second = new DistributionCompareHelper(other);
+        ProbabilityTreeValue firstValue = first.getCurrent();
+        ProbabilityTreeValue secondValue = second.getCurrent();
+        do {
+            int comparison = firstValue.compareTo(secondValue);
+            if(comparison != 0) {
+                return comparison;
+            }
+            BigInteger steps = first.getCountToNext().min(second.getCountToNext());
+            boolean firstDone = first.advance(steps);
+            boolean secondDone = second.advance(steps);
+            if(firstDone) {
+                if(secondDone) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            } else {
+                if(secondDone) {
+                    return 1;
+                }
+            }
         }
-        BigInteger numItemsInResultRaw = getTotal().subtract(getCountUnknown());
-        int numItemsInResult = numItemsInResultRaw.intValue();
-        final List<Comparable<Object>> result = new ArrayList<>(numItemsInResult);
-        for(Object item: items.keySet()) {
-            @SuppressWarnings("unchecked")
-            Comparable<Object> c = (Comparable<Object>) item;
-            IntStream.range(0, items.get(item).intValue()).forEach(i -> result.add(c));
-        }
-        return result;
+        while(true);
     }
 
     @Override
-    public String toString() {        
-        List<Comparable<Object>> items = writeOut();
-        String result = Stream.concat(items.stream().map(Object::toString), IntStream.range(0, unknown.intValue()).mapToObj(i -> "unknown"))
-                .collect(Collectors.joining(", "));
-        return "(" + result + ")";
+    public String toString() {
+        List<String> values = new ArrayList<>();
+        if(getTotal().compareTo(BigInteger.ZERO) != 0) {
+            BigInteger maxToAdd = MAX_IN_TO_STRING;
+            DistributionCompareHelper helper = new DistributionCompareHelper(this);
+            boolean haveMoreSteps = maxToAdd.compareTo(BigInteger.ZERO) > 0;
+            boolean haveMoreValues = helper.getCountToNext().compareTo(BigInteger.ZERO) > 0;
+            boolean haveAllValues = false;
+            while(haveMoreSteps && haveMoreValues) {
+                String value = helper.getCurrent().toString();
+                BigInteger countBig = helper.getCountToNext().min(maxToAdd);
+                int count = countBig.intValue();
+                IntStream.range(0, count).forEach(i -> values.add(value));
+                if(helper.advance(countBig)) {
+                    haveAllValues = true;
+                    break;
+                }
+                maxToAdd = maxToAdd.subtract(countBig);
+                haveMoreSteps = maxToAdd.compareTo(BigInteger.ZERO) > 0;
+                haveMoreValues = helper.getCountToNext().compareTo(BigInteger.ZERO) > 0;
+            }
+            if(! haveAllValues) {
+                values.add("...");
+            }
+        }
+        return "(" + values.stream().collect(Collectors.joining(", ")) + ")";
     }
 }

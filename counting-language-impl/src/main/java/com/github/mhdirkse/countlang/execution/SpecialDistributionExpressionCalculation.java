@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.execution;
 
+import java.math.BigInteger;
+
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
@@ -27,7 +29,7 @@ import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 abstract class SpecialDistributionExpressionCalculation extends SimpleDistributionExpressionCalculation {
-    Integer finalValue;
+    BigInteger finalValue;
 
     SpecialDistributionExpressionCalculation(final AbstractDistributionExpression expression) {
         super(expression);
@@ -40,7 +42,7 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
 
     @Override
     public void acceptChildResult(Object value, ExecutionContext context) {
-        finalValue = (Integer) value;
+        finalValue = (BigInteger) value;
     }
 
     static final class WithTotal extends SpecialDistributionExpressionCalculation {
@@ -51,9 +53,8 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
         @Override
         public void finishBuilder() {
             Distribution.Builder builder = getDistributionBuilder();
-            // TODO: Also convert this to bigint.
-            int totalScored = builder.getTotal().intValue();
-            int deficit = getDeficit(finalValue, totalScored);
+            BigInteger totalScored = builder.getTotal();
+            BigInteger deficit = getDeficit(finalValue, totalScored);
             boolean isBooleanDistribution = expression.getCountlangType() == CountlangType.distributionOf(CountlangType.bool());
             if(isBooleanDistribution) {
                 addDeficitToBooleanDistribution(deficit, builder);
@@ -62,7 +63,7 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
             }
         }
 
-        private void addDeficitToBooleanDistribution(int deficit, Distribution.Builder builder) {
+        private void addDeficitToBooleanDistribution(BigInteger deficit, Distribution.Builder builder) {
             int numExplicitValues = builder.getItems().size();
             if(numExplicitValues == 2) {
                 builder.addUnknown(deficit);
@@ -75,16 +76,16 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
             }
         }
 
-        int getDeficit(int total, int totalScored) {
-            if(totalScored > total) {
+        BigInteger getDeficit(BigInteger total, BigInteger totalScored) {
+            if(totalScored.compareTo(total) > 0) {
                 throw new ProgramException(
                         getAstNode().getLine(),
                         getAstNode().getColumn(),
                         String.format(
-                                "The scored items in the distribution make count %d, which is more than %d",
-                                totalScored, total));
+                                "The scored items in the distribution make count %s, which is more than %s",
+                                totalScored.toString(), total.toString()));
             }
-            return total - totalScored;
+            return total.subtract(totalScored);
         }
     }
 
@@ -96,13 +97,12 @@ abstract class SpecialDistributionExpressionCalculation extends SimpleDistributi
         @Override
         public void finishBuilder() {
             Distribution.Builder builder = getDistributionBuilder();
-            // TODO: Also convert this to BigInteger
-            int totalScored = builder.getTotal().intValue();
+            BigInteger totalScored = builder.getTotal();
             builder.addUnknown(getUnknown(finalValue, totalScored));        
         }
 
-        int getUnknown(int unknown, int totalScored) {
-            if(unknown < 0) {
+        BigInteger getUnknown(BigInteger unknown, BigInteger totalScored) {
+            if(unknown.compareTo(BigInteger.ZERO) < 0) {
                 throw new ProgramException(
                         getAstNode().getLine(),
                         getAstNode().getColumn(),

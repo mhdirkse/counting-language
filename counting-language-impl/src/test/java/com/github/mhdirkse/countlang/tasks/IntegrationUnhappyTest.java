@@ -19,9 +19,6 @@
 
 package com.github.mhdirkse.countlang.tasks;
 
-import static com.github.mhdirkse.countlang.tasks.Constants.DECREMENT_OF_MIN_INT;
-import static com.github.mhdirkse.countlang.tasks.Constants.INCREMENT_OF_MAX_INT;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -53,10 +50,6 @@ public class IntegrationUnhappyTest implements OutputStrategy
             // Calculating
             
             {"print 2 / 0", "Division by zero"},
-            {"print 12345678901234567890", "Integer value is too big to store"},
-            {INCREMENT_OF_MAX_INT, "Overflow or underflow"},
-            {DECREMENT_OF_MIN_INT, "Overflow or underflow"},
-            {"print 1000000 * 1000000", "Overflow or underflow"},
             {"print distribution 1 total 0", "The scored items in the distribution make count"},
             {"print distribution 1 unknown -1", "The unknown count in a distribution cannot be negative"},
 
@@ -120,19 +113,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"sample x from distribution 1, 2; print x", "Sampling is only allowed within an experiment."},
             {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a int"},
             {"experiment exp() {sample x from distribution<int>; return x}; print exp();", "Cannot sample from empty distribution"},
-            {getProgramCausingOverflow(), "Integer overflow when calculating a common denominator"},
-            {"possibility counting " + getProgramCausingOverflow(), "Integer overflow when calculating the total number of possibilities"}
         });
-    }
-
-    private static String getProgramCausingOverflow() {
-        return  "experiment overflow() {\n" + 
-                "    big = distribution 1 of true total 1000000;\n" + 
-                "    sample x from big;\n" + 
-                "    sample y from big;\n" + 
-                "    return x and y;\n" + 
-                "};\n" + 
-                "print overflow();";
     }
 
     @Parameter(0)

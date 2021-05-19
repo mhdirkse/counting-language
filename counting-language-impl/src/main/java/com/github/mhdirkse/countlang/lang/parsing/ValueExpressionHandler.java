@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.lang.parsing;
 
+import java.math.BigInteger;
+
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
@@ -53,7 +55,7 @@ class ValueExpressionHandler extends AbstractCountlangListenerHandler implements
             return true;
         } else if(node.getSymbol().getType() == CountlangLexer.INT) {
             try {
-                expression = new ValueExpression(line, column, Integer.valueOf(node.getText()), CountlangType.integer());
+                expression = new ValueExpression(line, column, new BigInteger(node.getText()), CountlangType.integer());
             } catch(NumberFormatException e) {
                 throw new ProgramException(line, column, "Integer value is too big to store: " + node.getText());
             }

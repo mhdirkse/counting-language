@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.execution;
 
+import java.math.BigInteger;
+
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.Operator;
@@ -27,7 +29,7 @@ import com.github.mhdirkse.countlang.ast.ValueExpression;
 
 class Target {
     static CompositeExpression getCompositeExpression() {
-        ValueExpression firstOperand = new ValueExpression(1, 1, 5, CountlangType.integer());
+        ValueExpression firstOperand = new ValueExpression(1, 1, new BigInteger("5"), CountlangType.integer());
         SymbolExpression secondOperand = new SymbolExpression(1, 3, "x");
         Operator operatorAdd = new Operator.OperatorAdd(1, 2);
         CompositeExpression target = new CompositeExpression(1, 1);

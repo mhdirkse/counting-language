@@ -23,6 +23,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.math.BigInteger;
+
 import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.Mock;
@@ -32,9 +34,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.execution.AstNodeExecutionFactoryCalculate;
-import com.github.mhdirkse.countlang.execution.ExecutionContext;
-import com.github.mhdirkse.countlang.execution.StepperImpl;
 
 @RunWith(EasyMockRunner.class)
 public class CompositeExpressionCalculationTest {
@@ -50,10 +49,10 @@ public class CompositeExpressionCalculationTest {
 
     @Test
     public void testCompositeExpressionCalculation() {
-        expect(context.onResult(5)).andDelegateTo(stepper);
-        expect(context.readSymbol(EasyMock.eq("x"), EasyMock.isA(AstNode.class))).andReturn(3);
-        expect(context.onResult(3)).andDelegateTo(stepper);
-        expect(context.onResult(8)).andDelegateTo(stepper);
+        expect(context.onResult(new BigInteger("5"))).andDelegateTo(stepper);
+        expect(context.readSymbol(EasyMock.eq("x"), EasyMock.isA(AstNode.class))).andReturn(new BigInteger("3"));
+        expect(context.onResult(new BigInteger("3"))).andDelegateTo(stepper);
+        expect(context.onResult(new BigInteger("8"))).andDelegateTo(stepper);
         replay(context);
         stepper.run();
         verify(context);

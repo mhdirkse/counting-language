@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.execution;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
@@ -35,9 +36,9 @@ class DistributionItemCountCalculation extends ExpressionResultsCollector {
 
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        int count = (Integer) subExpressionResults.get(0);
+        BigInteger count = (BigInteger) subExpressionResults.get(0);
         Object item = subExpressionResults.get(1);
-        if(count < 0) {
+        if(count.compareTo(BigInteger.ZERO) < 0) {
             throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(),
                     String.format("Item is added to distribution with negative count %d", count));
         }

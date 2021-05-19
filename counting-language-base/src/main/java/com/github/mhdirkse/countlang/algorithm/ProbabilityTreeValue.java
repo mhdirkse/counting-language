@@ -2,7 +2,7 @@ package com.github.mhdirkse.countlang.algorithm;
 
 import lombok.Getter;
 
-public class ProbabilityTreeValue {
+public class ProbabilityTreeValue implements Comparable<ProbabilityTreeValue> {
     private final @Getter boolean unknown;
     private final Object value;
 
@@ -34,5 +34,36 @@ public class ProbabilityTreeValue {
             throw new IllegalStateException("The unknown ProbabilityTreeValue has no normal value");
         }
         return value;
+    }
+
+    @Override
+    public int compareTo(ProbabilityTreeValue other) {
+        if(this.isUnknown()) {
+            if(other.isUnknown()) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } else {
+            if(other.isUnknown()) {
+                return -1;
+            } else {
+                return compareValue(other);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private int compareValue(ProbabilityTreeValue other) {
+        return ((Comparable<Object>) this.getValue()).compareTo(other.getValue());
+    }
+
+    @Override
+    public String toString() {
+        if(isUnknown()) {
+            return "unknown";
+        } else {
+            return getValue().toString();
+        }
     }
 }

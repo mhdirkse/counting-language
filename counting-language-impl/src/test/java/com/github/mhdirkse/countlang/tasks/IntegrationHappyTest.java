@@ -19,11 +19,14 @@
 
 package com.github.mhdirkse.countlang.tasks;
 
+import static com.github.mhdirkse.countlang.tasks.Constants.DECREMENT_OF_MIN_INT;
 import static com.github.mhdirkse.countlang.tasks.Constants.DECREMENT_OF_MIN_INT_PLUS_ONE;
+import static com.github.mhdirkse.countlang.tasks.Constants.INCREMENT_OF_MAX_INT;
 import static com.github.mhdirkse.countlang.tasks.Constants.INCREMENT_OF_MAX_INT_MINUS_ONE;
 import static com.github.mhdirkse.countlang.tasks.Constants.MAX_INT;
 import static com.github.mhdirkse.countlang.tasks.Constants.MIN_INT;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,10 +54,10 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print 5 - 3", "2"},
             {"print 5 * 3", "15"},
             {"print 15 / 3", "5"},
-            {"print 5 / 3", "1"}, // Round down.
-            {"print -5 / 3", "-2"}, // Round down.
-            {"print -5 / -3", "1"}, // Round down.
-            {"print 5 / -3", "-2"}, // Round down.
+            {"print 5 / 3", "1"}, // Round towards zero.
+            {"print -5 / 3", "-1"}, // Round towards zero.
+            {"print -5 / -3", "1"}, // Round towards zero.
+            {"print 5 / -3", "-1"}, // Round towards zero.
             {"print 0 / 3", "0"}, // Do not round unnecessarily.
             {"print 0 / -3", "0"}, // Do not round unnecessarily.
             {"print -5--3", "-2"},
@@ -87,7 +90,15 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print 5 != 3", "true"},
             {INCREMENT_OF_MAX_INT_MINUS_ONE, MAX_INT}, // No overflow.
             {DECREMENT_OF_MIN_INT_PLUS_ONE, MIN_INT}, // No underflow.
-            
+
+            // Bigint
+            {"print 12345678901234567890", "12345678901234567890"},
+            {INCREMENT_OF_MAX_INT, new Long(((long) Integer.MAX_VALUE) + 1).toString()},
+            {DECREMENT_OF_MIN_INT, new Long(((long) Integer.MIN_VALUE) - 1).toString()},
+            {"print 1000000 * 1000000", "1000000000000"},
+            {getProgramCausingOverflow(), getProgramCausingOverflowExpectedValue()},
+            {"possibility counting " + getProgramCausingOverflow(), getProgramCausingOverflowExpectedValue()},
+
             // Test literal distributions
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
             {"print distribution 1 total 3", getDistributionWithUnknown().format()},
@@ -286,6 +297,23 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
         b.add(2, 9);
         b.add(3, 18);
         b.add(4, 9);
+        return b.build().format();
+    }
+
+    private static String getProgramCausingOverflow() {
+        return  "experiment overflow() {\n" + 
+                "    big = distribution 1 of true total 1000000;\n" + 
+                "    sample x from big;\n" + 
+                "    sample y from big;\n" + 
+                "    return x and y;\n" + 
+                "};\n" + 
+                "print overflow();";
+    }
+
+    private static String getProgramCausingOverflowExpectedValue() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(true, BigInteger.ONE);
+        b.add(false, new BigInteger("999999999999"));
         return b.build().format();
     }
 

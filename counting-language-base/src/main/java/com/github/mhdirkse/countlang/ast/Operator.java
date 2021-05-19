@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.ast;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
@@ -49,26 +50,7 @@ public abstract class Operator extends AstNode {
         v.visitOperator(this);
     }
 
-    public static abstract class IntegerOperator extends Operator {
-        public IntegerOperator(final int line, final int column) {
-            super(line, column);
-        }
-
-        @Override
-        public final Object execute(final List<Object> arguments) {
-            long longResult = getLongResult(arguments);
-            if((longResult < Integer.MIN_VALUE) || (longResult > Integer.MAX_VALUE)) {
-                throw new ProgramException(getLine(), getColumn(), "Overflow or underflow");
-            }
-            else {
-                return Integer.valueOf((int) longResult);
-            }
-        }
-
-        abstract long getLongResult(final List<Object> arguments);        
-    }
-
-    public static final class OperatorUnaryMinus extends IntegerOperator {
+    public static final class OperatorUnaryMinus extends Operator {
     	public OperatorUnaryMinus(final int line, final int column) {
     		super(line, column);
     	}
@@ -79,9 +61,8 @@ public abstract class Operator extends AstNode {
     	}
 
     	@Override
-    	final long getLongResult(final List<Object> arguments) {
-    		long arg = (Integer) arguments.get(0);
-    		return -arg;
+    	public final Object execute(final List<Object> arguments) {
+    		return ((BigInteger) arguments.get(0)).negate();
     	}
 
     	@Override
@@ -100,15 +81,15 @@ public abstract class Operator extends AstNode {
     	}
     }
 
-    private static abstract class BinaryOperator extends IntegerOperator {
+    private static abstract class BinaryOperator extends Operator {
     	BinaryOperator(final int line, final int column) {
     		super(line, column);
     	}
 
     	@Override
-    	final long getLongResult(final List<Object> arguments) {
-    		long firstArg = (Integer) arguments.get(0);
-            long secondArg = (Integer) arguments.get(1);
+    	public final Object execute(final List<Object> arguments) {
+    		BigInteger firstArg = (BigInteger) arguments.get(0);
+            BigInteger secondArg = (BigInteger) arguments.get(1);
             return executeUnchecked(firstArg, secondArg);
     	}
 
@@ -128,7 +109,7 @@ public abstract class Operator extends AstNode {
     	    return CountlangType.integer();
     	}
 
-        abstract long executeUnchecked(long firstArg, long secondArg);
+        abstract BigInteger executeUnchecked(BigInteger firstArg, BigInteger secondArg);
     }
 
     public static final class OperatorAdd extends BinaryOperator {
@@ -142,8 +123,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final long executeUnchecked(final long first, final long second) {
-            return first + second;
+        final BigInteger executeUnchecked(final BigInteger first, final BigInteger second) {
+            return first.add(second);
         }
     }
 
@@ -158,8 +139,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final long executeUnchecked(final long first, final long second) {
-            return first - second;
+        final BigInteger executeUnchecked(final BigInteger first, final BigInteger second) {
+            return first.subtract(second);
         }
     }
 
@@ -174,11 +155,18 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final long executeUnchecked(final long first, final long second) {
-            return first * second;
+        final BigInteger executeUnchecked(final BigInteger first, final BigInteger second) {
+            return first.multiply(second);
         }
     }
 
+    /**
+     * This operator rounds towards zero like Java does. See
+     * https://stackoverflow.com/questions/37795248/integer-division-in-java
+     * 
+     * @author martijn
+     *
+     */
     public static final class OperatorDivide extends BinaryOperator {
         public OperatorDivide(final int line, final int column) {
             super(line, column);
@@ -190,24 +178,11 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final long executeUnchecked(final long first, final long second) {
-            if (second == 0) {
+        final BigInteger executeUnchecked(BigInteger first, BigInteger second) {
+            if (second.equals(BigInteger.ZERO)) {
                 throw new ProgramException(getLine(), getColumn(), "Division by zero");
             }
-            long result = first / second;
-            if ((first % second) != 0) {
-                result = correctForNonzeroRemainder(first, second, result);
-            }
-            return result;
-        }
-
-        private long correctForNonzeroRemainder(final long first, final long second, long result) {
-            if ((first >= 0) && (second < 0)) {
-                result -= 1;
-            } else if ((first < 0) && (second > 0)) {
-                result -= 1;
-            }
-            return result;
+            return first.divide(second);
         }
     }
 
@@ -324,12 +299,12 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final Object execute(List<Object> arguments) {
-            int i1 = (Integer) arguments.get(0);
-            int i2 = (Integer) arguments.get(1);
+            BigInteger i1 = (BigInteger) arguments.get(0);
+            BigInteger i2 = (BigInteger) arguments.get(1);
             return Boolean.valueOf(executeInt(i1, i2));
         }
 
-        abstract boolean executeInt(final int i1, final int i2);
+        abstract boolean executeInt(final BigInteger i1, final BigInteger i2);
     }
 
     public static final class OperatorLessThan extends RelOp {
@@ -343,8 +318,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final boolean executeInt(final int i1, final int i2) {
-            return i1 < i2;
+        final boolean executeInt(final BigInteger i1, final BigInteger i2) {
+            return i1.compareTo(i2) < 0;
         }
     }
 
@@ -359,8 +334,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final boolean executeInt(final int i1, final int i2) {
-            return i1 <= i2;
+        final boolean executeInt(final BigInteger i1, final BigInteger i2) {
+            return i1.compareTo(i2) <= 0;
         }
     }
 
@@ -375,8 +350,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final boolean executeInt(final int i1, final int i2) {
-            return i1 > i2;
+        final boolean executeInt(final BigInteger i1, final BigInteger i2) {
+            return i1.compareTo(i2) > 0;
         }
     }
 
@@ -391,8 +366,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final boolean executeInt(final int i1, final int i2) {
-            return i1 >= i2;
+        final boolean executeInt(final BigInteger i1, final BigInteger i2) {
+            return i1.compareTo(i2) >= 0;
         }
     }
 
@@ -430,8 +405,8 @@ public abstract class Operator extends AstNode {
                 boolean b2 = (Boolean) arguments.get(1);
                 result = applyBool(b1, b2);
             } else if(argType == CountlangType.integer()) {
-                int i1 = (Integer) arguments.get(0);
-                int i2 = (Integer) arguments.get(1);
+                BigInteger i1 = (BigInteger) arguments.get(0);
+                BigInteger i2 = (BigInteger) arguments.get(1);
                 result = applyInt(i1, i2);
             } else {
                 throw new IllegalStateException("Cannot execute when type checking failed");
@@ -439,7 +414,7 @@ public abstract class Operator extends AstNode {
             return Boolean.valueOf(result);
         }        
 
-        abstract boolean applyInt(final int i1, final int i2);
+        abstract boolean applyInt(final BigInteger i1, final BigInteger i2);
         abstract boolean applyBool(final boolean b1, final boolean b2);
     }
 
@@ -454,8 +429,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final boolean applyInt(final int i1, final int i2) {
-            return i1 == i2;
+        final boolean applyInt(final BigInteger i1, final BigInteger i2) {
+            return i1.equals(i2);
         }
 
         @Override
@@ -475,8 +450,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final boolean applyInt(final int i1, final int i2) {
-            return i1 != i2;
+        final boolean applyInt(final BigInteger i1, final BigInteger i2) {
+            return ! i1.equals(i2);
         }
 
         @Override
