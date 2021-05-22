@@ -9,9 +9,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 public class SampleContextPossibilityCountingTest {
+    private TestFactory tf;
     private SampleContext instance;
 
     @Rule
@@ -19,16 +21,17 @@ public class SampleContextPossibilityCountingTest {
 
     @Before
     public void setUp() {
+        tf = new TestFactory();
         instance = SampleContext.getInstance(true);
     }
 
     @Test
     public void whenDistributionHasCommonDenominatorThenNotSimplified() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(10, 2);
         b.add(11, 4);
         Distribution first = b.build();
-        b = new Distribution.Builder();
+        b = tf.distBuilder();
         b.add(10, 3);
         b.add(11, 3);
         Distribution second = b.build();
@@ -46,7 +49,7 @@ public class SampleContextPossibilityCountingTest {
         }
         instance.stopSampledVariable();
         Distribution result = instance.getResult();
-        b = new Distribution.Builder();
+        b = tf.distBuilder();
         b.add(20, 6);
         b.add(21, 6 + 12);
         b.add(22, 12);
@@ -57,7 +60,7 @@ public class SampleContextPossibilityCountingTest {
     public void whenDistributionCountMismatchThenError() {
         expectedException.expect(ProgramException.class);
         expectedException.expectMessage("(9, 10): Tried to sample from 5 possibilities, but only 4 possibilities are allowed, because from that amount was sampled at (5, 6)");
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1);
         b.add(2);
         Distribution first = b.build();
@@ -92,14 +95,14 @@ public class SampleContextPossibilityCountingTest {
     public void whenNotSampledOnlyScoredThenOnePossibility() {
         instance.score(1);
         Distribution actualResult = instance.getResult();
-        Distribution.Builder expected = new Distribution.Builder();
+        DistributionBuilderInt2Bigint expected = tf.distBuilder();
         expected.add(1);
         assertEquals(expected.build().format(), actualResult.format());
     }
 
     @Test
     public void whenSampledDistributionsHaveUnknownThenUnknownHandledCorrectly() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1);
         b.addUnknown(1);
         Distribution firstInput = b.build();
@@ -125,7 +128,7 @@ public class SampleContextPossibilityCountingTest {
         }
         instance.stopSampledVariable();
         Distribution actualResult = instance.getResult();
-        Distribution.Builder expected = new Distribution.Builder();
+        DistributionBuilderInt2Bigint expected = tf.distBuilder();
         expected.add(1);
         expected.addUnknown(5);
         assertEquals(expected.build().format(), actualResult.format());

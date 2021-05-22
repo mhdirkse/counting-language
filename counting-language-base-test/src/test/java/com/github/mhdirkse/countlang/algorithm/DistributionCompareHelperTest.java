@@ -23,9 +23,9 @@ public class DistributionCompareHelperTest {
 
     @Test
     public void whenDistributionOneElementThenOnceHaveCountOne() {
-        Distribution.Builder b = new Distribution.Builder();
-        b.add(someValue);
-        Distribution d = b.build();
+        Distribution d = new TestFactory().distBuilder()
+                .add(someValue)
+                .build();
         DistributionCompareHelper instance = new DistributionCompareHelper(d);
         assertEquals(BigInteger.ONE, instance.getCountToNext());
         assertFalse(instance.isDone());
@@ -38,9 +38,9 @@ public class DistributionCompareHelperTest {
 
     @Test
     public void whenDistributionOneElementTwiceThenCount2Count1() {
-        Distribution.Builder b = new Distribution.Builder();
-        b.add(someValue, TWO);
-        Distribution d = b.build();
+        Distribution d = new TestFactory().distBuilder()
+                .add(someValue, TWO)
+                .build();
         DistributionCompareHelper instance = new DistributionCompareHelper(d);
         assertEquals(TWO, instance.getCountToNext());
         assertEquals(someValue, instance.getCurrent().getValue());
@@ -54,10 +54,10 @@ public class DistributionCompareHelperTest {
 
     @Test
     public void whenTwoDifferentValuesThenCount1Count1() {
-        Distribution.Builder b = new Distribution.Builder();
-        b.add(someValue);
-        b.add(someOtherValue);
-        Distribution d = b.build();
+        Distribution d = new TestFactory().distBuilder()
+                .add(someValue)
+                .add(someOtherValue)
+                .build();
         DistributionCompareHelper instance = new DistributionCompareHelper(d);
         assertEquals(someValue, instance.getCurrent().getValue());
         assertEquals(BigInteger.ONE, instance.getCountToNext());

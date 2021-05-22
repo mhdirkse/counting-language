@@ -27,6 +27,12 @@
     </dependency>
     <dependency>
       <groupId>com.github.mhdirkse</groupId>
+      <artifactId>counting-language-base-testtools</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.mhdirkse</groupId>
       <artifactId>codegenRuntime</artifactId>
       <version>${codegenVersion}</version>
     </dependency>

@@ -27,11 +27,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
+
 public class SampleContextNonPossibilityCountingTest {
+    private TestFactory tf;
     private SampleContextImpl instance;
 
     @Before
     public void setUp() {
+        tf = new TestFactory();
         instance = (SampleContextImpl) SampleContext.getInstance(false);
     }
 
@@ -159,14 +163,14 @@ public class SampleContextNonPossibilityCountingTest {
     public void whenNotSampledOnlyScoredThenOnePossibility() {
         instance.score(1);
         Distribution actualResult = instance.getResult();
-        Distribution.Builder expected = new Distribution.Builder();
+        DistributionBuilderInt2Bigint expected = tf.distBuilder();
         expected.add(1);
         assertEquals(expected.build().format(), actualResult.format());
     }
 
     @Test
     public void whenSampledDistributionsHaveUnknownThenUnknownHandledCorrectly() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1);
         b.addUnknown(1);
         Distribution firstInput = b.build();
@@ -192,21 +196,21 @@ public class SampleContextNonPossibilityCountingTest {
         }
         instance.stopSampledVariable();
         Distribution actualResult = instance.getResult();
-        Distribution.Builder expected = new Distribution.Builder();
+        DistributionBuilderInt2Bigint expected = tf.distBuilder();
         expected.add(1);
         expected.addUnknown(5);
         assertEquals(expected.build().format(), actualResult.format());
     }
 
     private Distribution getBinomialDistribution() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1);
         b.add(2);
         return b.build();
     }
 
     private Distribution getSumOfTwoSamplesFromBinomial() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(2);
         b.add(3);
         b.add(3);
@@ -215,21 +219,21 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getDistributionWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1);
         b.addUnknown(1);
         return b.build();
     }
 
     private Distribution getSumOfTwoDistributionWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(2);
         b.addUnknown(3);
         return b.build();
     }
 
     private Distribution getUniform1To4() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         for(int i = 1; i <= 4; i++) {
             b.add(i);
         }
@@ -237,7 +241,7 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getSampleBinomialOrUniform1To4() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 3);
         b.add(2, 3);
         b.add(3);
@@ -246,19 +250,19 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getSingletonDistribution() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(3);
         return b.build();
     }
 
     private Distribution getSingletonDistributionWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(1);
         return b.build();
     }
 
     private Distribution getDistributionPlural() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 3);
         b.add(2, 2);
         b.add(3);
@@ -266,7 +270,7 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getDistributionSumOfTwoPlural() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(2, 9);
         b.add(3, 12);
         b.add(4, 10);
@@ -276,7 +280,7 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getDistributionPluralWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 3);
         b.add(2, 2);
         b.addUnknown(1);
@@ -284,7 +288,7 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getDistributionSumOfTwoPluralWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(2, 9);
         b.add(3, 12);
         b.add(4, 4);
@@ -293,7 +297,7 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getDistributionPluralMultipleUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(3);
         b.add(2, 2);
         b.add(3, 1);
@@ -301,7 +305,7 @@ public class SampleContextNonPossibilityCountingTest {
     }
 
     private Distribution getDistributionPluralWithUnknownPlusDistributionPluralMultipleUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(3, 6);
         b.add(4, 7);
         b.add(5, 2);

@@ -17,6 +17,8 @@
   <modules>
     <module>counting-language-impl</module>
     <module>counting-language-base</module>
+    <module>counting-language-base-testtools</module>
+    <module>counting-language-base-test</module>
     <module>counting-language-generator</module>
     <module>counting-language-generator-test-input</module>
     <module>counting-language-generator-test</module>

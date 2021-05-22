@@ -27,9 +27,13 @@ import org.junit.Before;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.TestFactory;
+import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
 import com.github.mhdirkse.countlang.algorithm.TestOutputStrategy;
 
 public class IntegrationHappyTestBase implements OutputStrategy {
+    private static final TestFactory tf = new TestFactory();
+
     TestOutputStrategy outputStrategy;
 
     @Before
@@ -54,7 +58,7 @@ public class IntegrationHappyTestBase implements OutputStrategy {
     }
 
     static Distribution getSimpleDistribution() {
-        Distribution.Builder builder = new Distribution.Builder();
+        DistributionBuilderInt2Bigint builder = tf.distBuilder();
         builder.add(1);
         builder.add(1);
         builder.add(3);
@@ -62,7 +66,7 @@ public class IntegrationHappyTestBase implements OutputStrategy {
     }
 
     static Distribution getDistributionWithUnknown() {
-        Distribution.Builder builder = new Distribution.Builder();
+        DistributionBuilderInt2Bigint builder = tf.distBuilder();
         builder.add(1);
         builder.addUnknown(2);
         return builder.build();

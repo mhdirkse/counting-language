@@ -30,13 +30,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
 
 public class DistributionTest {
     private static final String EMPTY = "empty";
     private static final BigInteger FIRST_ITEM = new BigInteger("3");
     private static final int ITEM_LENGTH_2 = 52;
     private static final int COUNT_LENGTH_2 = 23;
+
+    private TestFactory tf;
+
+    @Before
+    public void setUp() {
+        tf = new TestFactory();
+    }
 
     @Test
     public void whenDistributionEmptyThenFormattedAsEmpty() {
@@ -46,7 +56,7 @@ public class DistributionTest {
 
     @Test
     public void whenDistributionHasValueThenFormattedWithValueAndTotal() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(FIRST_ITEM);
         List<String> expected = Arrays.asList(
                 "    3  1",
@@ -57,7 +67,7 @@ public class DistributionTest {
 
     @Test
     public void whenDifferentFieldWithsThenAlignedRight() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(FIRST_ITEM);
         b.add(ITEM_LENGTH_2, COUNT_LENGTH_2);
         List<String> expected = Arrays.asList(
@@ -70,7 +80,7 @@ public class DistributionTest {
 
     @Test
     public void whenDistributionHasValueThenCountAndTotalStored() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(FIRST_ITEM);
         TestUtils.assertEqualsConvertingInt(1, b.build().getCountOf(FIRST_ITEM));
         TestUtils.assertEqualsConvertingInt(0, b.build().getCountOf(FIRST_ITEM.add(BigInteger.ONE)));
@@ -79,7 +89,7 @@ public class DistributionTest {
 
     @Test
     public void whenSameAddedMultipleTimesThenCountsAdded() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(FIRST_ITEM, 2);
         b.add(FIRST_ITEM, 5);
         TestUtils.assertEqualsConvertingInt(7, b.build().getCountOf(FIRST_ITEM));
@@ -88,20 +98,20 @@ public class DistributionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenCountIsNegativeThenError() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(FIRST_ITEM, -1);
     }
 
     @Test
     public void whenItemAddedWithCountZeroThenUnchanged() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(FIRST_ITEM, 0);
         Assert.assertEquals(EMPTY, b.build().format());
     }
 
     @Test
     public void whenItemAddedWithCountZeroThenUnchanged_2() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(ITEM_LENGTH_2);
         b.add(FIRST_ITEM, 0);
         List<String> expected = Arrays.asList(
@@ -113,7 +123,7 @@ public class DistributionTest {
 
     @Test
     public void whenUnknownScoredThenUnknownShown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(1);
         List<String> expected = Arrays.asList(
                 "unknown  1",
@@ -124,7 +134,7 @@ public class DistributionTest {
 
     @Test
     public void whenUnknownScoredMultipleTimesThenAdded() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(1);
         b.addUnknown(2);
         List<String> expected = Arrays.asList(
@@ -136,13 +146,13 @@ public class DistributionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenUnknownCountNegativeThenError() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(-1);
     }
 
     @Test
     public void testRefineWithoutUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(3);
         b.add(3);
         b.refine(2);
@@ -154,7 +164,7 @@ public class DistributionTest {
 
     @Test
     public void testRefineWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(2);
         b.refine(3);
         Distribution d = b.build();
@@ -164,19 +174,19 @@ public class DistributionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void whenRefineWithNegativeFactorThenError() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.refine(-1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void whenRefineWithFactorZeroThenError() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.refine(0);
     }
 
     @Test
     public void testGetDistributionOfKnown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(2, 1);
         b.add(3, 4);
         b.addUnknown(5);
@@ -189,13 +199,14 @@ public class DistributionTest {
 
     @Test
     public void testDistributionComparison() {
+        TestFactory tf = new TestFactory();
         List<Distribution> toSort = new ArrayList<>();
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1);
         toSort.add(b.build());
         b.add(1);
         toSort.add(b.build());
-        b = new Distribution.Builder();
+        b = tf.distBuilder();
         b.add(1);
         b.add(2);
         toSort.add(b.build());
@@ -211,7 +222,7 @@ public class DistributionTest {
 
     @Test
     public void testDistributionOfBoolean() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(false, 2);
         b.add(true, 3);
         Assert.assertEquals("(false, false, true, true, true)", b.build().toString());
@@ -219,14 +230,14 @@ public class DistributionTest {
 
     @Test
     public void testDistributionOfDistribution() {
-        Distribution.Builder childBuilder = new Distribution.Builder();
+        DistributionBuilderInt2Bigint childBuilder = tf.distBuilder();
         Distribution empty = childBuilder.build();
-        childBuilder = new Distribution.Builder();
+        childBuilder = tf.distBuilder();
         childBuilder.add(1);
         childBuilder.add(2);
         childBuilder.addUnknown(2);
         Distribution filled = childBuilder.build();
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(empty, 2);
         b.add(filled, 3);
         String actual = b.build().format();
@@ -247,7 +258,7 @@ public class DistributionTest {
 
     @Test
     public void whenDistributionHasOnlyUnknownThenUnknownCountBecomesOne() {
-        Distribution.Builder inputBuilder = new Distribution.Builder();
+        DistributionBuilderInt2Bigint inputBuilder = tf.distBuilder();
         inputBuilder.addUnknown(3);
         Distribution input = inputBuilder.build();
         Distribution normalized = input.normalize();
@@ -257,7 +268,7 @@ public class DistributionTest {
 
     @Test
     public void whenDistributionHasGcdThenNormalized() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(10, 2);
         b.add(11, 4);
         b.addUnknown(6);
@@ -270,7 +281,7 @@ public class DistributionTest {
 
     @Test
     public void whenIntegerScoredThenStoredAsBigInteger() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         Integer item = 5;
         b.add(item);
         Distribution d = b.build();
@@ -286,7 +297,7 @@ public class DistributionTest {
 
     @Test
     public void whenDistributionSmallThenSortedAndAllInToString() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(new BigInteger("3"));
         b.add(new BigInteger("2"), new BigInteger("2"));
         b.add(new BigInteger("4"));
@@ -296,7 +307,7 @@ public class DistributionTest {
 
     @Test
     public void whenDistributionBigThenSortedAndTruncated() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(new BigInteger("5"), new BigInteger("1000000"));
         b.add(new BigInteger("2"));
         b.add(new BigInteger("3"));

@@ -40,12 +40,15 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.TestFactory;
+import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
 import com.github.mhdirkse.countlang.execution.Stepper;
 
 @RunWith(Parameterized.class)
 public class IntegrationHappyTest extends IntegrationHappyTestBase
 {
+    private static final TestFactory tf = new TestFactory();
+
     @Parameters(name = "{0}, expect output {1}")
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -229,7 +232,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
 
     private static String getProgramAboutDiseaseExpectedResult() {
         // I did this with a Spreadsheet.
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(false, 9999);
         b.add(true, 99);
         b.addUnknown(989902);
@@ -250,15 +253,15 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     }
 
     private static String getTwoCoinsExpectedValue() {
-        Distribution.Builder b = new Distribution.Builder();
-        Distribution.Builder v = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
+        DistributionBuilderInt2Bigint v = tf.distBuilder();
         v.add(false, 2);
         b.add(v.build());
-        v = new Distribution.Builder();
+        v = tf.distBuilder();
         v.add(false);
         v.add(true);
         b.add(v.build(), 2);
-        v = new Distribution.Builder();
+        v = tf.distBuilder();
         v.add(true, 2);
         b.add(v.build());
         return b.build().format();
@@ -293,7 +296,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     }
 
     private static String getProgramThatCountsPossibilitiesExpectedValue() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(2, 9);
         b.add(3, 18);
         b.add(4, 9);
@@ -311,14 +314,14 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     }
 
     private static String getProgramCausingOverflowExpectedValue() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(true, BigInteger.ONE);
         b.add(false, new BigInteger("999999999999"));
         return b.build().format();
     }
 
     private static String getDistribution(int ...values) {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         for(int v: values) {
             b.add(v);
         }
@@ -326,7 +329,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     }
 
     private static String getDistribution(boolean ...values) {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         for(boolean v: values) {
             b.add(v);
         }
@@ -334,7 +337,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     }
     
     private static String getDistributionWithUnknown(int ...values) {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         for(int i = 0; i < values.length; i++) {
             if(i < (values.length - 1)) {
                 b.add(values[i]);
@@ -346,7 +349,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     }
 
     private static String getDistributionWithUnknown(int unknown, boolean ...values) {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         for(int i = 0; i < values.length; i++) {
             b.add(values[i]);
         }
@@ -355,7 +358,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     }
 
     private static String getDistributionOnceUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(1);
         return b.build().format();
     }

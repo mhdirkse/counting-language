@@ -7,31 +7,41 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigInteger;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
 
 public class PossibilitiesWalkerTest {
     private static final int ADDED_DISTRIBUTION_TOTAL = 5;
     private static final int EXTRA_REFINEMENT_FACTOR = 4;
     private static final int EXPECTED_TOTAL = ADDED_DISTRIBUTION_TOTAL * EXTRA_REFINEMENT_FACTOR;
 
-    private static Distribution getAddedDistribution() {
-        Distribution.Builder b = new Distribution.Builder();
+    private TestFactory tf;
+
+    @Before
+    public void setUp() {
+        tf = new TestFactory();
+    }
+
+    private Distribution getAddedDistribution() {
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 2);
         b.add(2, 3);
         Distribution d = b.build();
         return d;
     }
 
-    private static Distribution getAddedDistributionWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+    private Distribution getAddedDistributionWithUnknown() {
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 2);
         b.addUnknown(3);
         Distribution d = b.build();
         return d;        
     }
 
-    private static Distribution getNextAddedDistributionWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+    private Distribution getNextAddedDistributionWithUnknown() {
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(10, 1);
         b.addUnknown(3);
         return b.build();
@@ -54,7 +64,7 @@ public class PossibilitiesWalkerTest {
     @Test(expected = IllegalArgumentException.class)
     public void whenDownWithDistributionWhoseWeightDoesNotFitThenError() {
         PossibilitiesWalker instance = new PossibilitiesWalker();
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 2);
         instance.down(b.build());
     }

@@ -15,18 +15,6 @@
       <artifactId>antlr4</artifactId>
       <version>${antlrVersion}</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>3.5.1</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <build>
     <plugins>

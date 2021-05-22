@@ -4,12 +4,22 @@ import static com.github.mhdirkse.countlang.algorithm.TestUtils.assertEqualsConv
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
+
 public class PossibilityValueIteratorTest {
+    private TestFactory tf;
+
+    @Before
+    public void setUp() {
+        tf = new TestFactory();
+    }
+
     @Test
     public void testForDistributionWithoutUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 3);
         b.add(2, 4);
         Distribution d = b.build();
@@ -29,7 +39,7 @@ public class PossibilityValueIteratorTest {
 
     @Test
     public void testForDistributionWithUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.add(1, 3);
         b.addUnknown(4);
         Distribution d = b.build();
@@ -48,7 +58,7 @@ public class PossibilityValueIteratorTest {
 
     @Test
     public void testForDistributionWithOnlyUnknown() {
-        Distribution.Builder b = new Distribution.Builder();
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(2);
         Distribution d = b.build();
         PossibilityValueIterator instance = new PossibilityValueIterator(d);
