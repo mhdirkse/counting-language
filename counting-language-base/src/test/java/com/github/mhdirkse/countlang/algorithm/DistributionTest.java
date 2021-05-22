@@ -283,4 +283,24 @@ public class DistributionTest {
         assertTrue(notStoredAsOrdinaryInteger);
         assertEquals(BigInteger.ONE, d.getCountOf(new BigInteger(item.toString())));
     }
+
+    @Test
+    public void whenDistributionSmallThenSortedAndAllInToString() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(new BigInteger("3"));
+        b.add(new BigInteger("2"), new BigInteger("2"));
+        b.add(new BigInteger("4"));
+        b.add(new BigInteger("3"));
+        assertEquals("(2, 2, 3, 3, 4)", b.build().toString());
+    }
+
+    @Test
+    public void whenDistributionBigThenSortedAndTruncated() {
+        Distribution.Builder b = new Distribution.Builder();
+        b.add(new BigInteger("5"), new BigInteger("1000000"));
+        b.add(new BigInteger("2"));
+        b.add(new BigInteger("3"));
+        b.add(BigInteger.ONE);
+        assertEquals("(1, 2, 3, 5, 5, 5, 5, 5, 5, 5, ...)", b.build().toString());
+    }
 }

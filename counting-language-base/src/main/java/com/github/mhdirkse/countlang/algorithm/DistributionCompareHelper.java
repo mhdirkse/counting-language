@@ -4,17 +4,19 @@ import java.math.BigInteger;
 
 class DistributionCompareHelper {
     private final Distribution target;
-    private final PossibilityValueIterator it;
+    private PossibilityValueIterator it;
     private ProbabilityTreeValue current;
     private BigInteger countToNext;
+    private boolean isDone = false;
 
     DistributionCompareHelper(Distribution target) {
-        if(target.getTotal().equals(BigInteger.ZERO)) {
-            throw new IllegalArgumentException("DistributionCompareHelper does not support empty distributions");
-        }
         this.target = target;
-        this.it = new PossibilityValueIterator(target);
-        initNext();
+        if(target.getTotal().equals(BigInteger.ZERO)) {
+            isDone = true;
+        } else {
+            this.it = new PossibilityValueIterator(target);
+            initNext();
+        }
     }
 
     private void initNext() {
@@ -23,14 +25,27 @@ class DistributionCompareHelper {
     }
 
     ProbabilityTreeValue getCurrent() {
+        if(isDone) {
+            throw new IllegalArgumentException("All values have been visited, no current value");
+        }
         return current;
     }
 
     BigInteger getCountToNext() {
+        if(isDone) {
+            return BigInteger.ZERO;
+        }
         return countToNext;
     }
 
-    boolean advance(BigInteger steps) {
+    boolean isDone() {
+        return getCountToNext().equals(BigInteger.ZERO);
+    }
+
+    void advance(BigInteger steps) {
+        if(isDone) {
+            throw new IllegalStateException("Cannot advance, all values have been visited");
+        }
         int compareStepsToCountToNext = steps.compareTo(countToNext);
         if(compareStepsToCountToNext > 0) {
             throw new IllegalArgumentException("Cannot advance further than start of next value");
@@ -38,11 +53,10 @@ class DistributionCompareHelper {
             if(it.hasNext()) {
                 initNext();
             } else {
-                return true;
+                isDone = true;
             }
         } else {
             countToNext = countToNext.subtract(steps);
         }
-        return false;
     }
 }

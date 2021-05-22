@@ -249,81 +249,56 @@ public final class Distribution implements Comparable<Distribution> {
     }
 
     /**
-     * Distributions are sorted as follows. Every distribution being sorted is transformed
+     * Distributions are sorted as follows. Every distribution being sorted is logically transformed
      * into a list and then lexicographical sorting is applied. Example: (distribution 2 of 2, 3)
      * is sorted as if it were (distribution 2, 2, 3). And when (distribution 1, 2) and
      * (distribution 2, 2, 3) are compared, then the former goes first because 1 &lt; 2.
      */
     @Override
     public int compareTo(Distribution other) {
-        if(this.getTotal().equals(BigInteger.ZERO)) {
-            if(other.getTotal().equals(BigInteger.ZERO)) {
+        DistributionCompareHelper first = new DistributionCompareHelper(this);
+        DistributionCompareHelper second = new DistributionCompareHelper(other);
+        while(! (first.isDone() || second.isDone())) {
+            ProbabilityTreeValue firstValue = first.getCurrent();
+            ProbabilityTreeValue secondValue = second.getCurrent();
+            int compareResult = firstValue.compareTo(secondValue);
+            if(compareResult != 0) {
+                return compareResult;
+            }
+            BigInteger steps = first.getCountToNext().min(second.getCountToNext());
+            first.advance(steps);
+            second.advance(steps);
+        }
+        if(first.isDone()) {
+            if(second.isDone()) {
                 return 0;
             } else {
                 return -1;
             }
         } else {
-            if(other.getTotal().equals(BigInteger.ZERO)) {
+            if(second.isDone()) {
                 return 1;
             } else {
-                return compareToUnchecked(other);
+                throw new IllegalStateException("Cannot happen - all values should have been compared");
             }
         }
-    }
-
-    private int compareToUnchecked(Distribution other) {
-        DistributionCompareHelper first = new DistributionCompareHelper(this);
-        DistributionCompareHelper second = new DistributionCompareHelper(other);
-        ProbabilityTreeValue firstValue = first.getCurrent();
-        ProbabilityTreeValue secondValue = second.getCurrent();
-        do {
-            int comparison = firstValue.compareTo(secondValue);
-            if(comparison != 0) {
-                return comparison;
-            }
-            BigInteger steps = first.getCountToNext().min(second.getCountToNext());
-            boolean firstDone = first.advance(steps);
-            boolean secondDone = second.advance(steps);
-            if(firstDone) {
-                if(secondDone) {
-                    return 0;
-                } else {
-                    return -1;
-                }
-            } else {
-                if(secondDone) {
-                    return 1;
-                }
-            }
-        }
-        while(true);
     }
 
     @Override
     public String toString() {
         List<String> values = new ArrayList<>();
-        if(getTotal().compareTo(BigInteger.ZERO) != 0) {
-            BigInteger maxToAdd = MAX_IN_TO_STRING;
-            DistributionCompareHelper helper = new DistributionCompareHelper(this);
-            boolean haveMoreSteps = maxToAdd.compareTo(BigInteger.ZERO) > 0;
-            boolean haveMoreValues = helper.getCountToNext().compareTo(BigInteger.ZERO) > 0;
-            boolean haveAllValues = false;
-            while(haveMoreSteps && haveMoreValues) {
-                String value = helper.getCurrent().toString();
-                BigInteger countBig = helper.getCountToNext().min(maxToAdd);
-                int count = countBig.intValue();
-                IntStream.range(0, count).forEach(i -> values.add(value));
-                if(helper.advance(countBig)) {
-                    haveAllValues = true;
-                    break;
-                }
-                maxToAdd = maxToAdd.subtract(countBig);
-                haveMoreSteps = maxToAdd.compareTo(BigInteger.ZERO) > 0;
-                haveMoreValues = helper.getCountToNext().compareTo(BigInteger.ZERO) > 0;
-            }
-            if(! haveAllValues) {
-                values.add("...");
-            }
+        DistributionCompareHelper helper = new DistributionCompareHelper(this);
+        BigInteger maxToAdd = MAX_IN_TO_STRING;
+        while( (! maxToAdd.equals(BigInteger.ZERO) ) && (! helper.isDone())) {
+            String value = helper.getCurrent().toString();
+            BigInteger countBig = helper.getCountToNext().min(maxToAdd);
+            int count = countBig.intValue();
+            IntStream.range(0, count).forEach(i -> values.add(value));
+            helper.advance(countBig);
+            maxToAdd = maxToAdd.subtract(countBig);
+        }
+        if(! helper.isDone()) {
+            values.add("...");
         }
         return "(" + values.stream().collect(Collectors.joining(", ")) + ")";
     }
