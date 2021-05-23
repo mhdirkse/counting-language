@@ -65,8 +65,7 @@ abstract class RefinementStrategy {
         @Override
         BigInteger startSampledVariable(int line, int column, PossibilitiesWalker walker, Distribution sampledDistribution) {
             BigInteger availableShare = walker.getCount();
-            BigInteger updatedShare = BigInteger.ONE;
-            updatedShare = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
+            BigInteger updatedShare = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
             return updatedShare.divide(availableShare);
         }
 

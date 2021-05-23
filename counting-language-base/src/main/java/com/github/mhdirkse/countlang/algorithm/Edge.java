@@ -8,18 +8,10 @@ class Edge {
     private PossibilityValueIterator iterator;
     private ProbabilityTreeValue currentValue = null;
 
-    Edge(Distribution distribution, int weight) {
-        this(distribution, new BigInteger(Integer.valueOf(weight).toString()));
-    }
-
     Edge(Distribution distribution, BigInteger weight) {
         this.distribution = distribution;
         this.weight = weight;
         this.iterator = new PossibilityValueIterator(distribution);        
-    }
-
-    boolean hasValue() {
-        return currentValue != null;
     }
 
     boolean hasNext() {
@@ -36,11 +28,6 @@ class Edge {
             throw new IllegalStateException("Cannot give the count because no value has been selected");
         }
         return weight.multiply(distribution.getCountOf(currentValue));
-    }
-
-    void refine(int factor) {
-        BigInteger bigFactor = new BigInteger(Integer.valueOf(factor).toString());
-        refine(bigFactor);
     }
 
     void refine(BigInteger factor) {

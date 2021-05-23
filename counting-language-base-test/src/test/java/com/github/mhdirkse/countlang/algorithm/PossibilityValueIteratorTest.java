@@ -1,8 +1,13 @@
 package com.github.mhdirkse.countlang.algorithm;
 
-import static com.github.mhdirkse.countlang.algorithm.TestUtils.assertEqualsConvertingInt;
+import static com.github.mhdirkse.countlang.algorithm.testtools.TestConstants.FOUR;
+import static com.github.mhdirkse.countlang.algorithm.testtools.TestConstants.THREE;
+import static com.github.mhdirkse.countlang.algorithm.testtools.TestConstants.TWO;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.math.BigInteger;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,13 +33,13 @@ public class PossibilityValueIteratorTest {
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
         assertFalse(v.isUnknown());
-        assertEqualsConvertingInt(1, v.getValue());
-        assertEqualsConvertingInt(3, d.getCountOf(v));
+        assertEquals(BigInteger.ONE, v.getValue());
+        assertEquals(THREE, d.getCountOf(v));
         assertTrue(instance.hasNext());
         v = instance.next();
         assertFalse(v.isUnknown());
-        assertEqualsConvertingInt(2, v.getValue());
-        assertEqualsConvertingInt(4, d.getCountOf(v));
+        assertEquals(TWO, v.getValue());
+        assertEquals(FOUR, d.getCountOf(v));
         assertFalse(instance.hasNext());
     }
 
@@ -48,12 +53,12 @@ public class PossibilityValueIteratorTest {
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
         assertFalse(v.isUnknown());
-        assertEqualsConvertingInt(1, v.getValue());
-        assertEqualsConvertingInt(3, d.getCountOf(v));
+        assertEquals(BigInteger.ONE, v.getValue());
+        assertEquals(THREE, d.getCountOf(v));
         assertTrue(instance.hasNext());
         v = instance.next();
         assertTrue(v.isUnknown());
-        assertEqualsConvertingInt(4, d.getCountOf(v));
+        assertEquals(FOUR, d.getCountOf(v));
         assertFalse(instance.hasNext());
     }
 
@@ -66,7 +71,7 @@ public class PossibilityValueIteratorTest {
         assertTrue(instance.hasNext());
         ProbabilityTreeValue v = instance.next();
         assertTrue(v.isUnknown());
-        assertEqualsConvertingInt(2, d.getCountOf(v));
+        assertEquals(TWO, d.getCountOf(v));
         assertFalse(instance.hasNext());
     }
 

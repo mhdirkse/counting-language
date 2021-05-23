@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.algorithm;
 
+import static com.github.mhdirkse.countlang.algorithm.testtools.TestConstants.TWO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -11,7 +12,6 @@ import org.junit.Test;
 import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
 
 public class DistributionCompareHelperTest {
-    private static final BigInteger TWO = new BigInteger("2");
     private BigInteger someValue = new BigInteger("5");
     private BigInteger someOtherValue = new BigInteger("10");
 

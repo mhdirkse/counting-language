@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
+import static com.github.mhdirkse.countlang.algorithm.testtools.TestConstants.THREE;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
@@ -31,8 +32,6 @@ import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
 import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 
 public class SampleContextNonPossibilityCountingTest {
-    private static final BigInteger THREE = new BigInteger("3");
-
     private TestFactory tf;
     private SampleContextImpl instance;
 

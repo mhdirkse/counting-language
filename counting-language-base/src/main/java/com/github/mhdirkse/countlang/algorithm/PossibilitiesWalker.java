@@ -54,10 +54,6 @@ class PossibilitiesWalker {
         return total;
     }
 
-    void refine(int factor) {
-        refine(new BigInteger(Integer.valueOf(factor).toString()));
-    }
-
     void refine(BigInteger factor) {
         total = total.multiply(factor);
         edges.forEach(e -> e.refine(factor));        
