@@ -52,6 +52,9 @@ public final class Distribution implements Comparable<Distribution> {
         }
 
         public Distribution.Builder add(Object item, BigInteger count) {
+            if(item instanceof Integer) {
+                throw new IllegalArgumentException("counting-language stores integers in BigIntger, not Integer");
+            }
             int comparedToZero = count.compareTo(BigInteger.ZERO);
             if(comparedToZero < 0) {
                 throw new IllegalArgumentException("Cannot reduce the count of an item");

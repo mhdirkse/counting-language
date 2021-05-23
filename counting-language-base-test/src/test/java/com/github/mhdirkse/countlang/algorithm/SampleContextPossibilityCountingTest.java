@@ -14,6 +14,8 @@ import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.Distributio
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 public class SampleContextPossibilityCountingTest {
+    private static final BigInteger SOME_VALUE = new BigInteger("10");
+
     private TestFactory tf;
     private SampleContext instance;
 
@@ -94,10 +96,10 @@ public class SampleContextPossibilityCountingTest {
 
     @Test
     public void whenNotSampledOnlyScoredThenOnePossibility() {
-        instance.score(1);
+        instance.score(SOME_VALUE);
         Distribution actualResult = instance.getResult();
         DistributionBuilderInt2Bigint expected = tf.distBuilder();
-        expected.add(1);
+        expected.add(SOME_VALUE);
         assertEquals(expected.build().format(), actualResult.format());
     }
 
@@ -123,7 +125,7 @@ public class SampleContextPossibilityCountingTest {
                     instance.scoreUnknown();
                     continue;
                 }
-                instance.score(1);
+                instance.score(BigInteger.ONE);
             }
             instance.stopSampledVariable();
         }

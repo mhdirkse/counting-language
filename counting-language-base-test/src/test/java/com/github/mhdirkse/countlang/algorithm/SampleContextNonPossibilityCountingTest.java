@@ -31,6 +31,8 @@ import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
 import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 
 public class SampleContextNonPossibilityCountingTest {
+    private static final BigInteger THREE = new BigInteger("3");
+
     private TestFactory tf;
     private SampleContextImpl instance;
 
@@ -122,7 +124,7 @@ public class SampleContextNonPossibilityCountingTest {
 
     @Test
     public void whenScoredWithoutSamplingThenSingletonDistribution() {
-        instance.score(3);
+        instance.score(THREE);
         Assert.assertEquals(getSingletonDistribution().format(), instance.getResult().format());
     }
 
@@ -162,7 +164,7 @@ public class SampleContextNonPossibilityCountingTest {
 
     @Test
     public void whenNotSampledOnlyScoredThenOnePossibility() {
-        instance.score(1);
+        instance.score(BigInteger.ONE);
         Distribution actualResult = instance.getResult();
         DistributionBuilderInt2Bigint expected = tf.distBuilder();
         expected.add(1);
@@ -191,7 +193,7 @@ public class SampleContextNonPossibilityCountingTest {
                     instance.scoreUnknown();
                     continue;
                 }
-                instance.score(1);
+                instance.score(BigInteger.ONE);
             }
             instance.stopSampledVariable();
         }
