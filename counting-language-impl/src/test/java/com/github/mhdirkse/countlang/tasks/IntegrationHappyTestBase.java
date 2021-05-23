@@ -27,9 +27,9 @@ import org.junit.Before;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
-import com.github.mhdirkse.countlang.algorithm.TestFactory;
-import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
 import com.github.mhdirkse.countlang.algorithm.TestOutputStrategy;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 
 public class IntegrationHappyTestBase implements OutputStrategy {
     private static final TestFactory tf = new TestFactory();

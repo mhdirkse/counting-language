@@ -9,7 +9,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 public class SampleContextPossibilityCountingTest {

@@ -8,6 +8,8 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
+
 public class DistributionCompareHelperTest {
     private static final BigInteger TWO = new BigInteger("2");
     private BigInteger someValue = new BigInteger("5");

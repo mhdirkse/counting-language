@@ -10,7 +10,8 @@ import java.math.BigInteger;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 
 public class PossibilitiesWalkerTest {
     private static final int ADDED_DISTRIBUTION_TOTAL = 5;

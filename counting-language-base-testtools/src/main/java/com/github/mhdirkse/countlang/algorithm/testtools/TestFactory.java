@@ -1,8 +1,10 @@
-package com.github.mhdirkse.countlang.algorithm;
+package com.github.mhdirkse.countlang.algorithm.testtools;
 
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigInteger;
+
+import com.github.mhdirkse.countlang.algorithm.Distribution;
 
 public class TestFactory {
     public DistributionBuilderInt2Bigint distBuilder() {

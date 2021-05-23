@@ -7,7 +7,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 
 public class PossibilityValueIteratorTest {
     private TestFactory tf;

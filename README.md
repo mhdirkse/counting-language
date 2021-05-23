@@ -267,6 +267,8 @@ For the grammar, two plugins have to generate code. First, ANTLR 4 has to create
 * `counting-language-impl`: Implements parsing the language, sanity-checking the AST and doing the calculations.
 * `counting-language-generator`: Dependency required by `codegenPlugin`. This code is not packaged in the final .jar, but applied by `codegenPlugin` to produce the generated code.
 * `counting-language-generator-test`, `counting-language-generator-test-input`: Test code for counting-language-generator.
+* `counting-language-base-testtools`. Common test code, used for testing `counting-language-base` and `counting-language-impl`
+* `counting-language-base-test`. Holds the unit tests of `counting-language-base`. Both `counting-language-base-test` and `counting-language-impl` use dependency `counting-language-base-testtools` as a scope test dependency. `counting-language-base-testtools` uses dependency `counting-language-base`.
 
 Project `counting-language-base` has the following packages:
 * `com.github.mhdirkse.countlang.ast`: Holds the AST.

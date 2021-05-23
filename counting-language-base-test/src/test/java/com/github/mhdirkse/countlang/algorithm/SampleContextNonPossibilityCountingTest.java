@@ -27,7 +27,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.algorithm.TestFactory.DistributionBuilderInt2Bigint;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 
 public class SampleContextNonPossibilityCountingTest {
     private TestFactory tf;
