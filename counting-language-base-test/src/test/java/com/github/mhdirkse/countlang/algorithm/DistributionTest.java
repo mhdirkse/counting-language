@@ -321,4 +321,16 @@ public class DistributionTest {
         b.add(BigInteger.ONE);
         assertEquals("(1, 2, 3, 5, 5, 5, 5, 5, 5, 5, ...)", b.build().toString());
     }
+
+    @Test
+    public void testCompareUnequalDistributionSize() {
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
+        b.add(3);
+        Distribution smallest = b.build();
+        b.add(4);
+        Distribution largest = b.build();
+        assertEquals(0, smallest.compareTo(smallest));
+        assertEquals(-1, smallest.compareTo(largest));
+        assertEquals(1, largest.compareTo(smallest));
+    }
 }

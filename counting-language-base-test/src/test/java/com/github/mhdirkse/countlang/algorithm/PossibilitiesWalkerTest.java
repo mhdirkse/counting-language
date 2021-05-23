@@ -175,6 +175,7 @@ public class PossibilitiesWalkerTest {
         assertFalse(instance.hasNext());
     }
 
+    @Test
     public void whenRefiningOverflowsIntegerRangeThenNoError() throws Exception {
         PossibilitiesWalker instance = new PossibilitiesWalker();
         instance.refine(MILION);
