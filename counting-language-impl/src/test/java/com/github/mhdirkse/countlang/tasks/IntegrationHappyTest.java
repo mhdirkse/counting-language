@@ -40,6 +40,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.algorithm.testtools.TestConstants;
 import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory;
 import com.github.mhdirkse.countlang.algorithm.testtools.TestFactory.DistributionBuilderInt2Bigint;
 import com.github.mhdirkse.countlang.execution.Stepper;
@@ -101,6 +103,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print 1000000 * 1000000", "1000000000000"},
             {getProgramCausingOverflow(), getProgramCausingOverflowExpectedValue()},
             {"possibility counting " + getProgramCausingOverflow(), getProgramCausingOverflowExpectedValue()},
+            {getProgramThatBuildsBigintDistribution(), getProgramThatBuildsBigintDistributionExpected()},
 
             // Test literal distributions
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
@@ -325,6 +328,23 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
                 "    return x + y;",
                 "};",
                 "print exp();").stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getProgramThatBuildsBigintDistribution() {
+        return Arrays.asList(
+                "function fun(int x) {",
+                "  return distribution x of x, 2*x of 3*x total 8*x",
+                "};",
+                "print fun(1000000000000);").stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getProgramThatBuildsBigintDistributionExpected() {
+        Distribution.Builder b = new Distribution.Builder();
+        BigInteger TRILLION = new BigInteger("1000000000000");
+        b.add(TRILLION, TRILLION);
+        b.add(TRILLION.multiply(TestConstants.THREE), TRILLION.multiply(TestConstants.TWO));
+        b.addUnknown(TRILLION.multiply(TestConstants.FIVE));
+        return b.build().format();
     }
 
     private static String getProgramCoveringSampleStatementScoringUnknownExpected() {

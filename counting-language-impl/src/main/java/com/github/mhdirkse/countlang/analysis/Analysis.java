@@ -308,6 +308,7 @@ public class Analysis {
         }
 
         void checkExtraValue(ExpressionNode extra) {
+            extra.accept(this);
             if(extra.getCountlangType() != CountlangType.integer()) {
                 reporter.report(StatusCode.DISTRIBUTION_AMOUNT_NOT_INT, extra.getLine(), extra.getColumn());
             }
