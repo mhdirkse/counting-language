@@ -153,7 +153,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution 2 of 10, 4 of 11;", getDistribution(10, 10, 11, 11, 11, 11)},
             // Not normalized if counting possibilities
             {"possibility counting experiment exp() {sample x from distribution 2 of 10, 4 of 11; return x}; print exp()", getDistribution(10, 10, 11, 11, 11, 11)},
-
+            // Sample statement scores unknown when distribution has unknown
+            {getProgramCoveringSampleStatementScoringUnknown(), getProgramCoveringSampleStatementScoringUnknownExpected()},
             // Compound statements
             {"{print 3}", "3"}, // Program can be compound statement
             {"x = 3; markUsed x; {x = 5;}; print x", "5"}, // When global exists, you access it
@@ -311,6 +312,28 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
                 "    return x and y;\n" + 
                 "};\n" + 
                 "print overflow();";
+    }
+
+    private static String getProgramCoveringSampleStatementScoringUnknown() {
+        return Arrays.asList(
+                "experiment exp() {",
+                "    sample x from distribution 2 of 10, 3 of 11 total 10;",
+                "    y = 0;",
+                "    if(x == 10) {",
+                "        sample y from distribution 100, 2 of 200;",
+                "    };",
+                "    return x + y;",
+                "};",
+                "print exp();").stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getProgramCoveringSampleStatementScoringUnknownExpected() {
+        DistributionBuilderInt2Bigint b = tf.distBuilder();
+        b.add(11, 9);
+        b.add(110, 2);
+        b.add(210, 4);
+        b.addUnknown(15);
+        return b.build().format();
     }
 
     private static String getProgramCausingOverflowExpectedValue() {

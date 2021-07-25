@@ -199,7 +199,7 @@ The program works again when you replace the first line by the following:
 
 Apart from the probability theory features, counting-language supports the following:
 
-* Integer +, -, *, /, with / such that the remainder of the division would be positive.
+* Integer +, -, *, /, with / such that the result is rounded towards zero.
 * Unary - operator.
 * You can manage the order of expression evaluation with brackets.
 * Logical and, or, not.
@@ -221,6 +221,7 @@ For details, see the [grammar](/counting-language-base/src/main/antlr4/com/githu
 
 Here are a few things to take care of when programming:
 * Between two statements, you always need a `;`, also if the first statement ends with `}`.
+* When you subtract a literal positive number, precede that number by a space. For example, the statement `print 1-1;` wont work. The text `-1` is interpreted as a negative number and then there is no operator between the numbers `1` and `-1`. The expression `print 1 - 1;` works. 
 
 # Usage instructions
 

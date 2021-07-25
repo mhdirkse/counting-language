@@ -332,6 +332,6 @@ public class Analysis {
             if(actual != CountlangType.integer()) {
                 reporter.report(StatusCode.DISTRIBUTION_SCORED_COUNT_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
             }
-        }        
+        }
     }
 }

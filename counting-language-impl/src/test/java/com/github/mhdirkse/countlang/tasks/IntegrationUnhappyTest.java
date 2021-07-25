@@ -66,6 +66,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print 5 + true", "Type mismatch using operator"},
             {"print 3 == true", "Type mismatch using operator"},
             {"print 3 + distribution<int>", "Type mismatch using operator"},
+            {"x = 3", "is not used"},
+            {"x = 3; print x; x = 5;", "is not used"},
             {"function fun(int x) {return x}; print fun(true)", "Type mismatch calling function"},
             {"x = true; print x; x = 5; print x;", "Cannot change type of variable"},
             {"print distribution total false", "The amount or unknown clause of a distribution should be int"},
@@ -88,6 +90,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"function fun() {return 3}; function fun() {return 5}", "was already defined"},
             {"return 3", "Return statement outside function"},
             {"function fun() {return 3; return 5}; print fun()", "Statement in function"},
+            {"function fun() {return 3; print 5}", "Statement in function"},
+            {"function fun(bool b) {if(b) {return 3;} else {return 5;}; return 8}", "Statement in function"},
             {"function fun(int x) {return 3;\nprint 5;}", "Statement in function"},
             {"function fun() {return 3; print 5}; print fun()", "has no effect"},
             {"function fun() {print 3}; print fun()", "does not return a value"},
@@ -99,14 +103,18 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"function fun() {if(true) {return 3} else {print 5}}", "does not return"},
             {"function fun() {if(true) {return 3}}", "does not return"}, // Else counts as branch, also if omitted.
             {"print fun()", "Function fun does not exist"},
-            
+            {"function fun(bool b) {if(b) {return 3} else {return true};};", "Type of return value"},
+            {"experiment exp(bool b) {if(b) {return 3} else {return true};};", "Type of return value"},
+            {"function fun(int x, bool x) {return 3;}", "Cannot reuse parameter name"},
+
             // Compound
             
             {"{x = 3; markUsed x}; print x", "Undefined"}, // When variable does not exist, it becomes local and is lost
             
-            // if
+            // if and while
             
             {"if(1) {print 3}", "must be BOOL"},
+            {"while(1) {print 3}", "Test expression of while statement must be BOOL"},
 
             // experiments and sampling
 
