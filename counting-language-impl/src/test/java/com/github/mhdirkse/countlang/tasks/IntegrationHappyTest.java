@@ -129,6 +129,10 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution 2 of false total 3", getDistribution(false, false, true)},
             {"print distribution 1 unknown 2", getDistributionWithUnknown(1, 2)},
             {"print distribution 1 total 3", getDistributionWithUnknown(1, 2)},
+            // Check that all subexpressions within a literal distribution are type-checked
+            {"print distribution 1 * 2 of 1 * 3 total 1 * 4", getDistributionWithUnknown(3, 3, 2)},
+            {"print distribution 1 * 2 of 1 * 3 unknown 1 * 2", getDistributionWithUnknown(3, 3, 2)},
+
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},
             {"print testFunction(testFunction(4))", "14"},
