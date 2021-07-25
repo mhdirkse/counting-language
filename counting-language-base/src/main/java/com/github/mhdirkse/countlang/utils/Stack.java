@@ -26,9 +26,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Stack<T> {
     private final Deque<T> stack = new ArrayDeque<>();
@@ -66,10 +64,6 @@ public class Stack<T> {
 
     public void forEach(Consumer<T> consumer) {
         stack.forEach(consumer);
-    }
-
-    public <S> Stream<S> applyToAll(Function<T, S> fun) {
-        return stack.stream().map(fun);
     }
 
     public boolean isEmpty() {
