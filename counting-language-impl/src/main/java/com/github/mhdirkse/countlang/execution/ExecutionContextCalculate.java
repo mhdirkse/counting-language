@@ -23,6 +23,7 @@ import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
@@ -95,7 +96,7 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public FunctionDefinitionStatementBase getFunction(FunctionKey key) {
+    public FunctionDefinition getFunction(FunctionKey key) {
         return funDefs.getFunction(key);
     }
 

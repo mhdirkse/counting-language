@@ -38,6 +38,7 @@ import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
+import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
@@ -240,7 +241,7 @@ public class Analysis {
                 reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getKey().toString());
                 return;
             }
-            FunctionDefinitionStatementBase fun = funDefs.getFunction(expression.getKey());
+            FunctionDefinition fun = funDefs.getFunction(expression.getKey());
             expression.setCountlangType(fun.getReturnType());
             if(expression.getNumArguments() != fun.getNumParameters()) {
                 reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(),

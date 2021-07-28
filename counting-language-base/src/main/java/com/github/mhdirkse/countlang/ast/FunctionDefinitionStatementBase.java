@@ -25,8 +25,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class FunctionDefinitionStatementBase extends Statement implements CompositeNode {
-    @Getter
+public abstract class FunctionDefinitionStatementBase extends Statement implements CompositeNode, FunctionDefinition {
+    @Getter(onMethod = @__({@Override}))
     @Setter
     private FunctionKey key = null;
 
@@ -37,7 +37,7 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
     @Setter
     private StatementGroup statements;
 
-    @Getter
+    @Getter(onMethod = @__({@Override}))
     @Setter
     private CountlangType returnType = CountlangType.unknown();
 
@@ -46,6 +46,7 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
         formalParameters = new FormalParameters(line, column);
     }
 
+    @Override
     public int getNumParameters() {
         return formalParameters.size();
     }
@@ -54,6 +55,7 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
         return formalParameters.getFormalParameterName(i);
     }
 
+    @Override
     public CountlangType getFormalParameterType(int i) {
         return formalParameters.getFormalParameterType(i);
     }

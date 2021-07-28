@@ -30,6 +30,7 @@ import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
@@ -86,7 +87,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
             return subExpressionStepper.step(context);
         }
         setState(DOING_STATEMENTS);
-        fun = context.getFunction(expression.getKey());
+        getFunction(context);
         if(fun instanceof ExperimentDefinitionStatement) {
             statementsHandler = new StatementsHandlerExperiment(((ExperimentDefinitionStatement) fun).isPossibilityCounting());
         } else {
@@ -101,6 +102,14 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         }
         statementsHandler.forkIfNeeded(context);
         return null;
+    }
+
+    private void getFunction(ExecutionContext context) {
+        FunctionDefinition rawFun = context.getFunction(expression.getKey());
+        if(! (rawFun instanceof FunctionDefinitionStatementBase)) {
+            throw new IllegalArgumentException("FunctionCallExpressionCalculation can only execute functions that are FunctionDefinitionStatementBase, not other FunctionDefinition objects");
+        }
+        fun = (FunctionDefinitionStatementBase) rawFun;
     }
 
     /**
