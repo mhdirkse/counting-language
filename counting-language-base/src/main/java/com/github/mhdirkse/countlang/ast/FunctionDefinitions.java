@@ -23,17 +23,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FunctionDefinitions {
-    private Map<String, FunctionDefinitionStatementBase> functions = new HashMap<>();
+    private Map<FunctionKey, FunctionDefinitionStatementBase> functions = new HashMap<>();
 
-    public boolean hasFunction(final String name) {
-        return functions.containsKey(name);
+    public boolean hasFunction(final FunctionKey key) {
+        return functions.containsKey(key);
     }
 
-    public FunctionDefinitionStatementBase getFunction(final String name) {
-        return functions.get(name);
+    public FunctionDefinitionStatementBase getFunction(final FunctionKey key) {
+        return functions.get(key);
     }
 
     public void putFunction(final FunctionDefinitionStatementBase function) {
-        functions.put(function.getName(), function);
+        functions.put(function.getKey(), function);
     }
 }

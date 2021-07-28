@@ -25,6 +25,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class FunctionCallExpressionHandler extends AbstractExpressionHandler
@@ -61,6 +62,6 @@ implements ExpressionSource, TerminalFilterCallback {
 
     @Override
     public void setText(final String text) {
-        expression.setFunctionName(text);
+        expression.setKey(new FunctionKey(text));
     }
 }

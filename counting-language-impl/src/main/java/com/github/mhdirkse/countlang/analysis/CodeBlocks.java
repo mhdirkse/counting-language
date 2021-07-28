@@ -22,6 +22,7 @@ package com.github.mhdirkse.countlang.analysis;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 import com.github.mhdirkse.countlang.utils.Stack;
 
@@ -93,15 +94,15 @@ class CodeBlocks {
         memory.stopRepetition(commonStop());
     }
 
-    void startFunction(final int line, final int column, final String functionName) {
+    void startFunction(final int line, final int column, final FunctionKey functionKey) {
         statementHandler = new StatementHandler.Idle();
-        CodeBlock newBlock = codeBlocks.peek().createChildForFunction(line, column, functionName);
+        CodeBlock newBlock = codeBlocks.peek().createChildForFunction(line, column, functionKey);
         codeBlocks.push(newBlock);
     }
 
-    void startExperiment(final int line, final int column, final String functionName) {
+    void startExperiment(final int line, final int column, final FunctionKey functionKey) {
         statementHandler = new StatementHandler.Idle();
-        CodeBlock newBlock = codeBlocks.peek().createChildForExperiment(line, column, functionName);
+        CodeBlock newBlock = codeBlocks.peek().createChildForExperiment(line, column, functionKey);
         codeBlocks.push(newBlock);        
     }
 

@@ -22,6 +22,7 @@ package com.github.mhdirkse.countlang.analysis;
 import java.util.EnumSet;
 import java.util.stream.Stream;
 
+import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 
@@ -31,11 +32,11 @@ abstract class CodeBlockFunctionBase extends CodeBlockSerial {
     private static final EnumSet<ReturnStatus> MISSING_RETURN = EnumSet.<ReturnStatus>of(ReturnStatus.NONE_RETURN, ReturnStatus.SOME_RETURN);
     int line;
     int column;
-    final @Getter String functionName;
+    final @Getter FunctionKey functionKey;
 
-    CodeBlockFunctionBase(CodeBlock parent, int line, int column, final String functionName) {
+    CodeBlockFunctionBase(CodeBlock parent, int line, int column, final FunctionKey functionKey) {
         super(parent);
-        this.functionName = functionName;
+        this.functionKey = functionKey;
         this.line = line;
         this.column = column;
     }
@@ -47,28 +48,28 @@ abstract class CodeBlockFunctionBase extends CodeBlockSerial {
 
     void report(StatusReporter reporter) {
         Stream.concat(Stream.of(this), getDescendants().stream().filter(b -> ! b.isRootOrFunction()))
-            .forEach(b -> b.reportStatementHasNoEffect(reporter, functionName));
+            .forEach(b -> b.reportStatementHasNoEffect(reporter, functionKey));
         reportMissingReturn(reporter);
     }
 
     abstract void reportMissingReturn(StatusReporter reporter);
 
     static class Function extends CodeBlockFunctionBase {
-        Function(CodeBlock parent, int line, int column, final String functionName) {
-            super(parent, line, column, functionName);
+        Function(CodeBlock parent, int line, int column, final FunctionKey functionKey) {
+            super(parent, line, column, functionKey);
         }
 
         @Override
         void reportMissingReturn(StatusReporter reporter) {
             if(MISSING_RETURN.contains(getReturnStatus())) {
-                reporter.report(StatusCode.FUNCTION_DOES_NOT_RETURN, line, column, functionName);
+                reporter.report(StatusCode.FUNCTION_DOES_NOT_RETURN, line, column, functionKey.toString());
             }
         }
     }
 
     static class Experiment extends CodeBlockFunctionBase {
-        Experiment(CodeBlock parent, int line, int column, final String functionName) {
-            super(parent, line, column, functionName);
+        Experiment(CodeBlock parent, int line, int column, final FunctionKey functionKey) {
+            super(parent, line, column, functionKey);
         }
 
         @Override

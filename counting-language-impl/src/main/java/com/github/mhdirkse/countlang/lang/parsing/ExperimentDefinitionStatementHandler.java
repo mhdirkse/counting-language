@@ -25,6 +25,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
@@ -57,7 +58,7 @@ implements StatementSource {
 
     @Override
     public void setText(final String text) {
-        statement.setName(text);
+        statement.setKey(new FunctionKey(text));
     }
 
     ExperimentDefinitionStatementHandler(final int line, final int column) {

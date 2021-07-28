@@ -28,7 +28,7 @@ import lombok.Setter;
 public abstract class FunctionDefinitionStatementBase extends Statement implements CompositeNode {
     @Getter
     @Setter
-    private String name = null;
+    private FunctionKey key = null;
 
     @Getter
     private final FormalParameters formalParameters;

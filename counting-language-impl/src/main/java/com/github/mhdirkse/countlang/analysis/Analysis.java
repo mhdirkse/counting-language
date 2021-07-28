@@ -128,15 +128,15 @@ public class Analysis {
 
         @Override
         public void visitFunctionDefinitionStatement(FunctionDefinitionStatement statement) {
-            analyzeFunctionDefinitionBase(statement, () -> codeBlocks.startFunction(statement.getLine(), statement.getColumn(), statement.getName()));
+            analyzeFunctionDefinitionBase(statement, () -> codeBlocks.startFunction(statement.getLine(), statement.getColumn(), statement.getKey()));
         }
         
         private void analyzeFunctionDefinitionBase(FunctionDefinitionStatementBase statement, Runnable blockCreator) {
             if(! codeBlocks.isAtRootLevel()) {
                 reporter.report(StatusCode.FUNCTION_NESTED_NOT_ALLOWED, statement.getLine(), statement.getColumn());
             }
-            else if(funDefs.hasFunction(statement.getName())) {
-                reporter.report(StatusCode.FUNCTION_ALREADY_DEFINED, statement.getLine(), statement.getColumn(), statement.getName());
+            else if(funDefs.hasFunction(statement.getKey())) {
+                reporter.report(StatusCode.FUNCTION_ALREADY_DEFINED, statement.getLine(), statement.getColumn(), statement.getKey().toString());
             } else {
                 analyzeFunction(statement, blockCreator);
                 funDefs.putFunction(statement);
@@ -158,7 +158,7 @@ public class Analysis {
 
         @Override
         public void visitExperimentDefinitionStatement(ExperimentDefinitionStatement statement) {
-            analyzeFunctionDefinitionBase(statement, () -> codeBlocks.startExperiment(statement.getLine(), statement.getColumn(), statement.getName()));
+            analyzeFunctionDefinitionBase(statement, () -> codeBlocks.startExperiment(statement.getLine(), statement.getColumn(), statement.getKey()));
         }
 
         @Override
@@ -236,21 +236,21 @@ public class Analysis {
         public void visitFunctionCallExpression(FunctionCallExpression expression) {
             expression.setCountlangType(CountlangType.unknown());
             expression.getSubExpressions().forEach(ex -> ex.accept(this));
-            if(! funDefs.hasFunction(expression.getFunctionName())) {
-                reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getFunctionName());
+            if(! funDefs.hasFunction(expression.getKey())) {
+                reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getKey().toString());
                 return;
             }
-            FunctionDefinitionStatementBase fun = funDefs.getFunction(expression.getFunctionName());
+            FunctionDefinitionStatementBase fun = funDefs.getFunction(expression.getKey());
             expression.setCountlangType(fun.getReturnType());
             if(expression.getNumArguments() != fun.getNumParameters()) {
-                reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getFunctionName(),
+                reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(),
                         new Integer(fun.getNumParameters()).toString(), new Integer(expression.getNumArguments()).toString());
                 return;
             } else {
                 List<CountlangType> types = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
                 for(int i = 0; i < expression.getNumArguments(); i++) {
                     if(types.get(i) != fun.getFormalParameterType(i)) {
-                        reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getFunctionName(), new Integer(i).toString());
+                        reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(i).toString());
                         return;
                     }
                 }

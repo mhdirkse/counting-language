@@ -28,7 +28,7 @@ import lombok.Setter;
 public class FunctionCallExpression extends ExpressionNode implements CompositeNode {
     @Getter
     @Setter
-    private String functionName = null;
+    private FunctionKey key;
 
     @Getter
     @Setter

@@ -34,7 +34,7 @@ public final class TestFunctionDefinitions {
 
     public static FunctionDefinitionStatement createTestFunction() {
         FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
-        instance.setName("testFunction");
+        instance.setKey(new FunctionKey("testFunction"));
         instance.setStatements(new StatementGroup(1, 1));
         instance.addFormalParameter(FORMAL_PARAMETER, CountlangType.integer());
         instance.addStatement(getReturnStatement());

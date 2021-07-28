@@ -25,6 +25,7 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
+import com.github.mhdirkse.countlang.ast.FunctionKey;
 
 class ExecutionContextCalculate implements ExecutionContext {
     private final ExecutionScopeStack symbolFrame;
@@ -84,8 +85,8 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public boolean hasFunction(String name) {
-        return funDefs.hasFunction(name);
+    public boolean hasFunction(FunctionKey key) {
+        return funDefs.hasFunction(key);
     }
 
     @Override
@@ -94,8 +95,8 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public FunctionDefinitionStatementBase getFunction(String functionName) {
-        return funDefs.getFunction(functionName);
+    public FunctionDefinitionStatementBase getFunction(FunctionKey key) {
+        return funDefs.getFunction(key);
     }
 
     @Override

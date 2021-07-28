@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 
@@ -85,14 +86,14 @@ abstract class CodeBlock {
         return result;
     }
 
-    final CodeBlock createChildForFunction(final int line, final int column, final String functionName) {
-        CodeBlock result = new CodeBlockFunctionBase.Function(this, line, column, functionName);
+    final CodeBlock createChildForFunction(final int line, final int column, final FunctionKey functionKey) {
+        CodeBlock result = new CodeBlockFunctionBase.Function(this, line, column, functionKey);
         registerChild(result);
         return result;
     }
 
-    final CodeBlock createChildForExperiment(final int line, final int column, final String functionName) {
-        CodeBlock result = new CodeBlockFunctionBase.Experiment(this, line, column, functionName);
+    final CodeBlock createChildForExperiment(final int line, final int column, final FunctionKey functionKey) {
+        CodeBlock result = new CodeBlockFunctionBase.Experiment(this, line, column, functionKey);
         registerChild(result);
         return result;        
     }
@@ -150,12 +151,12 @@ abstract class CodeBlock {
         return result;
     }
 
-    void reportStatementHasNoEffect(final StatusReporter reporter, String functionName) {
+    void reportStatementHasNoEffect(final StatusReporter reporter, FunctionKey functionKey) {
         returnStatements.stream()
             .filter(ret -> ret.getAfter() != null)
-            .forEach(ret -> reporter.report(StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT, ret.getAfter().getLine(), ret.getAfter().getColumn(), functionName));
+            .forEach(ret -> reporter.report(StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT, ret.getAfter().getLine(), ret.getAfter().getColumn(), functionKey.toString()));
         if((getReturnStatus() == ReturnStatus.STRONG_ALL_RETURN) && (getStatementAfter() != null)) {
-            reporter.report(StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT, getStatementAfter().getLine(), getStatementAfter().getColumn(), functionName);
+            reporter.report(StatusCode.FUNCTION_STATEMENT_WITHOUT_EFFECT, getStatementAfter().getLine(), getStatementAfter().getColumn(), functionKey.toString());
         }
     }
 

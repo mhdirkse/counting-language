@@ -21,6 +21,7 @@ package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 
@@ -40,7 +41,7 @@ implements StatementSource {
 
     @Override
     public void setText(final String text) {
-        statement.setName(text);
+        statement.setKey(new FunctionKey(text));
     }
 
     FunctionDefinitionStatementHandler(final int line, final int column) {

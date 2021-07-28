@@ -86,7 +86,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
             return subExpressionStepper.step(context);
         }
         setState(DOING_STATEMENTS);
-        fun = context.getFunction(expression.getFunctionName());
+        fun = context.getFunction(expression.getKey());
         if(fun instanceof ExperimentDefinitionStatement) {
             statementsHandler = new StatementsHandlerExperiment(((ExperimentDefinitionStatement) fun).isPossibilityCounting());
         } else {
@@ -144,7 +144,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         @Override
         void after(ExecutionContext context) {
             if(functionResult == null) {
-                throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Function %s does not return a value", fun.getName()));
+                throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Function %s does not return a value", fun.getKey().toString()));
             }
             context.onResult(functionResult);
         }
