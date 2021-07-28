@@ -24,14 +24,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
-import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
-import com.github.mhdirkse.countlang.ast.FunctionKey;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class FunctionCallExpressionHandler extends AbstractExpressionHandler
 implements ExpressionSource, TerminalFilterCallback {
     private final TerminalFilter terminalFilter;
-    private FunctionCallExpression expression;
+    private FunctionCallExpressionNonMember expression;
 
     @Override
     public ExpressionNode getExpression() {
@@ -39,7 +38,7 @@ implements ExpressionSource, TerminalFilterCallback {
     }
 
     FunctionCallExpressionHandler(final int line, final int column) {
-        expression = new FunctionCallExpression(line, column);
+        expression = new FunctionCallExpressionNonMember(line, column);
         terminalFilter = new TerminalFilter(this);
     }
 
@@ -62,6 +61,6 @@ implements ExpressionSource, TerminalFilterCallback {
 
     @Override
     public void setText(final String text) {
-        expression.setKey(new FunctionKey(text));
+        expression.setName(text);
     }
 }

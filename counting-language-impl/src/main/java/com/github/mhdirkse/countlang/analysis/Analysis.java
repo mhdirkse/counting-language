@@ -37,7 +37,7 @@ import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
-import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
@@ -233,7 +233,7 @@ public class Analysis {
         }
 
         @Override
-        public void visitFunctionCallExpression(FunctionCallExpression expression) {
+        public void visitFunctionCallExpressionNonMember(FunctionCallExpressionNonMember expression) {
             expression.setCountlangType(CountlangType.unknown());
             expression.getSubExpressions().forEach(ex -> ex.accept(this));
             if(! funDefs.hasFunction(expression.getKey())) {

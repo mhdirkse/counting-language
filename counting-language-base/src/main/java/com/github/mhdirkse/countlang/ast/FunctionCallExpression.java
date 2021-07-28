@@ -25,11 +25,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-public class FunctionCallExpression extends ExpressionNode implements CompositeNode {
-    @Getter
-    @Setter
-    private FunctionKey key;
-
+public abstract class FunctionCallExpression extends ExpressionNode implements CompositeNode {
     @Getter
     @Setter
     private CountlangType countlangType;
@@ -39,6 +35,8 @@ public class FunctionCallExpression extends ExpressionNode implements CompositeN
     public FunctionCallExpression(final int line, final int column) {
         super(line, column);
     }
+
+    public abstract FunctionKey getKey();
 
     public int getNumArguments() {
         return arguments.size();
@@ -50,11 +48,6 @@ public class FunctionCallExpression extends ExpressionNode implements CompositeN
 
     public void addArgument(final ExpressionNode expression) {
         arguments.add(expression);
-    }
-
-    @Override
-    public void accept(final Visitor v) {
-        v.visitFunctionCallExpression(this);
     }
 
     @Override
