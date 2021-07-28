@@ -193,7 +193,13 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {getProgramTwoCoins(), getTwoCoinsExpectedValue()},
             {getProgramThatForksWhile(), getDistribution(false, false, false, true)},
             {getProgramThatCountsPossibilities(), getProgramThatCountsPossibilitiesExpectedValue()},
-            {"experiment exp() {}; print exp();", getDistributionOnceUnknown()}
+            {"experiment exp() {}; print exp();", getDistributionOnceUnknown()},
+
+            // Check that all AST nodes are type-checked (distributions literal done above already)
+            {"function fun(int x) {return x;}; x = 3; y = 5; print fun(-x + (2 * y))", "7"},
+            {"function fun(int x) {markUsed x; return x}; print fun(-3)", "-3"},
+            {"experiment exp(int x) {sample s from distribution 1, 2; return s * x}; print known of exp(3)", getDistribution(3, 6)},
+            {"x = 3; y = 5; {z = x + (2 * y); print z}", "13"}
         });
     }
 
