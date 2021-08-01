@@ -23,7 +23,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
 
 public interface Stepper {
@@ -44,7 +44,7 @@ public interface Stepper {
     }
 
     public static Stepper getInstance(
-            final AstNode target, final OutputStrategy outputStrategy, List<FunctionDefinitionStatement> predefinedFunctions) {
+            final AstNode target, final OutputStrategy outputStrategy, List<FunctionDefinition> predefinedFunctions) {
         ExecutionScopeStack executionScopeStack = new ExecutionScopeStack();
         FunctionDefinitions funDefs = new FunctionDefinitions();
         predefinedFunctions.forEach(f -> funDefs.putFunction(f));

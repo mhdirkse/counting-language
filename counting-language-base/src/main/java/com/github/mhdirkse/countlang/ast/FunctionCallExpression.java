@@ -22,10 +22,15 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 public abstract class FunctionCallExpression extends ExpressionNode implements CompositeNode {
+    @Getter(AccessLevel.PACKAGE)
+    @Setter
+    private String name;
+
     @Getter
     @Setter
     private CountlangType countlangType;

@@ -28,6 +28,7 @@ import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpressionMember;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
@@ -89,6 +90,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
 
     @Override
     public void visitFunctionCallExpressionNonMember(FunctionCallExpressionNonMember expression) {
+        result = new FunctionCallExpressionCalculation(expression);
+    }
+
+    @Override
+    public void visitFunctionCallExpressionMember(FunctionCallExpressionMember expression) {
         result = new FunctionCallExpressionCalculation(expression);
     }
 

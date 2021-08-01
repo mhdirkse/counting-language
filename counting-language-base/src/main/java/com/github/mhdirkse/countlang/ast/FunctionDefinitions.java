@@ -20,20 +20,35 @@
 package com.github.mhdirkse.countlang.ast;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FunctionDefinitions {
     private Map<FunctionKey, FunctionDefinition> functions = new HashMap<>();
 
     public boolean hasFunction(final FunctionKey key) {
-        return functions.containsKey(key);
+        return getFunction(key) != null;
     }
 
     public FunctionDefinition getFunction(final FunctionKey key) {
-        return functions.get(key);
+        FunctionDefinition result = functions.get(key);
+        if(result != null) {
+            return result;
+        }
+        if(key.getOwnerType() == null) {
+            return null;
+        }
+        List<CountlangType> generalizations = key.getOwnerType().getGeneralizations();
+        for(CountlangType gen: generalizations) {
+            FunctionKey genKey = new FunctionKey(key.getName(), gen);
+            if(functions.containsKey(genKey)) {
+                return functions.get(genKey);
+            }
+        }
+        return null;
     }
 
-    public void putFunction(final FunctionDefinitionStatementBase function) {
+    public void putFunction(final FunctionDefinition function) {
         functions.put(function.getKey(), function);
     }
 }

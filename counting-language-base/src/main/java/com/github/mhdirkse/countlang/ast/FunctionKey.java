@@ -1,10 +1,14 @@
 package com.github.mhdirkse.countlang.ast;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 @EqualsAndHashCode
 public final class FunctionKey {
+    @Getter
     private final String name;
+
+    @Getter
     private final CountlangType ownerType;
 
     /**

@@ -28,6 +28,7 @@ typeId :
 
 expr
   : '(' expr ')' # bracketExpression
+  | expr '.' ID '(' (expr (',' expr)*)? ')' # memberCallExpression
   | ID '(' (expr (',' expr)*)? ')' # functionCallExpression
   | '-' expr # unaryMinusExpression
   | expr ( '*' | '/' ) expr # multDifExpression

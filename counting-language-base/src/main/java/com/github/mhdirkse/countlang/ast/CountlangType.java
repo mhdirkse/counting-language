@@ -19,8 +19,10 @@
 
 package com.github.mhdirkse.countlang.ast;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +32,7 @@ import lombok.EqualsAndHashCode;
 public final class CountlangType {
     private enum Kind {
         UNKNOWN,
+        ANY,
         INT,
         BOOL,
         DISTRIBUTION;
@@ -67,12 +70,20 @@ public final class CountlangType {
         return primitive(Kind.BOOL);
     }
 
+    public static CountlangType any() {
+        return primitive(Kind.ANY);
+    }
+
     public static CountlangType distributionOf(CountlangType subType) {
         CountlangType key = new CountlangType(Kind.DISTRIBUTION, subType);
         if(! repository.containsKey(key)) {
             repository.put(key, key);
         }
         return repository.get(key);
+    }
+
+    public static CountlangType distributionOfAny() {
+        return distributionOf(any());
     }
 
     public boolean isDistribution() {
@@ -87,8 +98,25 @@ public final class CountlangType {
         return subType;
     }
 
+    public List<CountlangType> getGeneralizations() {
+        List<CountlangType> result = new ArrayList<>();
+        if(isPrimitive()) {
+            if(this != any()) {
+                result.add(any());
+            }
+        } else if(isDistribution()) {
+            for(CountlangType subTypeGeneralization: getSubType().getGeneralizations()) {
+                result.add(distributionOf(subTypeGeneralization));
+            }
+        }
+        return result;
+    }
+
     @Override
     public String toString() {
+        if(kind.equals(Kind.ANY)) {
+            return "?";
+        }
         if(isPrimitive()) {
             return kind.name().toLowerCase();
         } else if(kind.equals(Kind.UNKNOWN)) {

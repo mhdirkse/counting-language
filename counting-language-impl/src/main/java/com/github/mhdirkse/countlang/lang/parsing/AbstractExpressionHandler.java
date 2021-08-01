@@ -23,6 +23,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpressionMember;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 import com.github.mhdirkse.countlang.lang.CountlangParser.UnaryMinusExpressionContext;
 
@@ -36,7 +38,16 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
             CountlangParser.FunctionCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
-        delegationCtx.addFirst(new FunctionCallExpressionHandler(line, column));
+        delegationCtx.addFirst(new FunctionCallExpressionHandler(new FunctionCallExpressionNonMember(line, column)));
+        return true;
+    }
+
+    @Override
+    public boolean enterMemberCallExpression(
+            CountlangParser.MemberCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new FunctionCallExpressionHandler(new FunctionCallExpressionMember(line, column)));
         return true;
     }
 
@@ -142,6 +153,12 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
     @Override
     public boolean exitFunctionCallExpression(
             CountlangParser.FunctionCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleExpressionExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitMemberCallExpression(
+            CountlangParser.MemberCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleExpressionExit(delegationCtx);
     }
 

@@ -120,6 +120,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution 4, 2 of 3 unknown 12", getDistributionWithUnknown(3, 3, 4, 12)},
             {"print distribution 2 of -1", getDistribution(-1, -1)},
             {"print known of distribution 1, 2 total 5", getDistribution(1, 2)},
+            {"print (distribution 1, 2 total 5).known()", getDistribution(1, 2)},
             {"print distribution false, true", getDistribution(false, true)},
             {"print distribution 2 of false, 3 of true", getDistribution(false, false, true, true, true)},
             {"print distribution<int>;", getDistribution(new int[] {})},

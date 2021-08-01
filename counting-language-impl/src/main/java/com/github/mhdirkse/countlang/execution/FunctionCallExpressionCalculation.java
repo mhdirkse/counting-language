@@ -31,13 +31,15 @@ import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinition;
+import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
+import com.github.mhdirkse.countlang.ast.PredefinedOneArgFunction;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler {
     private final FunctionCallExpression expression;
     private final SubExpressionStepper subExpressionStepper;
-    private FunctionDefinitionStatementBase fun;
+    private FunctionDefinitionStatementBase funWithStatement;
     private StatementsHandler statementsHandler;
     private boolean isStartedAfterFork = false;
 
@@ -50,7 +52,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         super(orig);
         this.expression = orig.expression;
         this.subExpressionStepper = new SubExpressionStepper(orig.subExpressionStepper);
-        this.fun = orig.fun;
+        this.funWithStatement = orig.funWithStatement;
         this.isStartedAfterFork = orig.isStartedAfterFork;
         this.statementsHandler = this.createStatementsHandlerFrom(orig);
     }
@@ -86,30 +88,37 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         if(!subExpressionStepper.isDone()) {
             return subExpressionStepper.step(context);
         }
-        setState(DOING_STATEMENTS);
-        getFunction(context);
+        List<Object> subExpressionResults = subExpressionStepper.getSubExpressionResults();
+        FunctionDefinition fun = context.getFunction(expression.getKey());
         if(fun instanceof ExperimentDefinitionStatement) {
             statementsHandler = new StatementsHandlerExperiment(((ExperimentDefinitionStatement) fun).isPossibilityCounting());
-        } else {
+        } else if(fun instanceof FunctionDefinitionStatement) {
             statementsHandler = new StatementsHandlerFunction();
+        } else if(fun instanceof PredefinedOneArgFunction) {
+            return runPredefinedFunction(context, subExpressionResults.get(0), (PredefinedOneArgFunction) fun);
+        } else {
+            throw new IllegalArgumentException("Unknown implementation of FunctionDefinition encountered");
         }
+        setState(DOING_STATEMENTS);
+        funWithStatement = (FunctionDefinitionStatementBase) fun;
         context.pushVariableFrame(ScopeAccess.HIDE_PARENT);
-        List<Object> subExpressionResults = subExpressionStepper.getSubExpressionResults();
-        for(int i = 0; i < fun.getFormalParameters().size(); i++) {
-            String parameterName = fun.getFormalParameters().getFormalParameter(i).getName();
+        for(int i = 0; i < funWithStatement.getFormalParameters().size(); i++) {
+            String parameterName = funWithStatement.getFormalParameters().getFormalParameter(i).getName();
             Object value = subExpressionResults.get(i);
-            context.writeSymbol(parameterName, value, fun.getFormalParameters().getFormalParameter(i));
+            context.writeSymbol(parameterName, value, funWithStatement.getFormalParameters().getFormalParameter(i));
         }
         statementsHandler.forkIfNeeded(context);
         return null;
     }
 
-    private void getFunction(ExecutionContext context) {
-        FunctionDefinition rawFun = context.getFunction(expression.getKey());
-        if(! (rawFun instanceof FunctionDefinitionStatementBase)) {
-            throw new IllegalArgumentException("FunctionCallExpressionCalculation can only execute functions that are FunctionDefinitionStatementBase, not other FunctionDefinition objects");
+    private AstNode runPredefinedFunction(ExecutionContext context, Object arg, PredefinedOneArgFunction fun) {
+        Object result = fun.run(arg);
+        if(result == null) {
+            throw new IllegalStateException(String.format("Predefined function %s returned null on argument %s", fun.getKey().toString(), arg.toString()));
         }
-        fun = (FunctionDefinitionStatementBase) rawFun;
+        context.onResult(result);
+        setState(DONE);
+        return null;
     }
 
     /**
@@ -141,7 +150,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
 
         @Override
         AstNode start() {
-            return fun.getSubStatements().get(0);
+            return funWithStatement.getSubStatements().get(0);
         }
 
         @Override
@@ -153,7 +162,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         @Override
         void after(ExecutionContext context) {
             if(functionResult == null) {
-                throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Function %s does not return a value", fun.getKey().toString()));
+                throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Function %s does not return a value", funWithStatement.getKey().toString()));
             }
             context.onResult(functionResult);
         }
@@ -209,7 +218,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
 
         @Override
         AstNode start() {
-            return fun.getSubStatements().get(0);
+            return funWithStatement.getSubStatements().get(0);
         }
 
         @Override

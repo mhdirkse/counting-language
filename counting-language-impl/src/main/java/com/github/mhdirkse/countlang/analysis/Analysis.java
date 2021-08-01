@@ -38,6 +38,8 @@ import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpressionMember;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -65,7 +67,7 @@ public class Analysis {
     private FunctionDefinitionStatementBase analyzedFunction = null;
     int distributionItemIndex = -1;
 
-    public Analysis(List<FunctionDefinitionStatement> funDefs) {
+    public Analysis(List<FunctionDefinition> funDefs) {
         this.funDefs = new FunctionDefinitions();
         funDefs.forEach(fds -> this.funDefs.putFunction(fds));
         codeBlocks = new CodeBlocks(new MemoryImpl());
@@ -236,6 +238,15 @@ public class Analysis {
 
         @Override
         public void visitFunctionCallExpressionNonMember(FunctionCallExpressionNonMember expression) {
+            analyzeFunctionCallExpression(expression, new FunctionCallErrorHandlerNonMember(expression));
+        }
+
+        @Override
+        public void visitFunctionCallExpressionMember(FunctionCallExpressionMember expression) {
+            analyzeFunctionCallExpression(expression, new FunctionCallErrorHandlerMember(expression));
+        }
+
+        private void analyzeFunctionCallExpression(FunctionCallExpression expression, FunctionCallErrorHandler errorHandler) {
             expression.setCountlangType(CountlangType.unknown());
             expression.getSubExpressions().forEach(ex -> ex.accept(this));
             if(! funDefs.hasFunction(expression.getKey())) {
@@ -244,21 +255,53 @@ public class Analysis {
             }
             FunctionDefinition fun = funDefs.getFunction(expression.getKey());
             List<CountlangType> arguments = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
-            CountlangType returnType = fun.checkCallAndGetReturnType(arguments, new FunctionCallErrorHandler() {
-                @Override
-                public void handleParameterCountMismatch(int numExpected, int numActual) {
-                    reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(),
-                            new Integer(numExpected).toString(), new Integer(numActual).toString());                    
-                }
-
-                @Override
-                public void handleParameterTypeMismatch(int parameterNumber, CountlangType expectedType, CountlangType actualType) {
-                    reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(parameterNumber).toString());
-                }              
-            });
+            CountlangType returnType = fun.checkCallAndGetReturnType(arguments, errorHandler);
             if(returnType != null) {
                 expression.setCountlangType(returnType);
+            }            
+        }
+
+        private class FunctionCallErrorHandlerNonMember implements FunctionCallErrorHandler {
+            private FunctionCallExpression expression;
+
+            FunctionCallErrorHandlerNonMember(FunctionCallExpression expression) {
+                this.expression = expression;
             }
+
+            @Override
+            public void handleParameterCountMismatch(int numExpected, int numActual) {
+                reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(),
+                        new Integer(numExpected).toString(), new Integer(numActual).toString());                    
+            }
+
+            @Override
+            public void handleParameterTypeMismatch(int parameterNumber, CountlangType expectedType, CountlangType actualType) {
+                reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(parameterNumber + 1).toString());
+            }                          
+        }
+
+        private class FunctionCallErrorHandlerMember implements FunctionCallErrorHandler {
+            private FunctionCallExpression expression;
+
+            FunctionCallErrorHandlerMember(FunctionCallExpression expression) {
+                this.expression = expression;
+            }
+
+            @Override
+            public void handleParameterCountMismatch(int numExpected, int numActual) {
+                // In the error message, do not count the this argument.
+                //
+                // The this argument will never have a type mismatch, because the this arguments's type
+                // is used to find the function.
+                reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(),
+                        new Integer(numExpected - 1).toString(), new Integer(numActual - 1).toString());                    
+            }
+
+            @Override
+            public void handleParameterTypeMismatch(int parameterNumber, CountlangType expectedType, CountlangType actualType) {
+                // Do not count the this argument to index the parameter.
+                reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(parameterNumber).toString());
+            }                          
         }
 
         @Override

@@ -29,12 +29,13 @@ import java.util.function.Supplier;
 
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.analysis.Analysis;
-import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.Stepper;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
+import com.github.mhdirkse.countlang.predef.Known;
 import com.github.mhdirkse.utils.Imperative;
 
 public class ProgramExecutor {
@@ -75,8 +76,8 @@ public class ProgramExecutor {
         return ! reporter.hasErrors();
     }
 
-    private List<FunctionDefinitionStatement> getPredefinedFunctions() {
-        return Arrays.asList(TestFunctionDefinitions.createTestFunction());
+    private List<FunctionDefinition> getPredefinedFunctions() {
+        return Arrays.asList(new Known(), TestFunctionDefinitions.createTestFunction());
     }
 
     private void runProgram(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {

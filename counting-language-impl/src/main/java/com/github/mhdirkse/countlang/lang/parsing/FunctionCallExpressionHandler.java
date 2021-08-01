@@ -24,21 +24,21 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
-import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
+import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class FunctionCallExpressionHandler extends AbstractExpressionHandler
 implements ExpressionSource, TerminalFilterCallback {
     private final TerminalFilter terminalFilter;
-    private FunctionCallExpressionNonMember expression;
+    private FunctionCallExpression expression;
 
     @Override
     public ExpressionNode getExpression() {
         return expression;
     }
 
-    FunctionCallExpressionHandler(final int line, final int column) {
-        expression = new FunctionCallExpressionNonMember(line, column);
+    FunctionCallExpressionHandler(FunctionCallExpression target) {
+        expression = target;
         terminalFilter = new TerminalFilter(this);
     }
 
