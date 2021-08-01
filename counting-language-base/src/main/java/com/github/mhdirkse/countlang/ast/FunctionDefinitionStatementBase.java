@@ -37,7 +37,7 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
     @Setter
     private StatementGroup statements;
 
-    @Getter(onMethod = @__({@Override}))
+    @Getter
     @Setter
     private CountlangType returnType = CountlangType.unknown();
 
@@ -47,17 +47,19 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
     }
 
     @Override
-    public int getNumParameters() {
-        return formalParameters.size();
-    }
-
-    public String getFormalParameterName(int i) {
-        return formalParameters.getFormalParameterName(i);
-    }
-
-    @Override
-    public CountlangType getFormalParameterType(int i) {
-        return formalParameters.getFormalParameterType(i);
+    public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
+        if(arguments.size() != formalParameters.size()) {
+            errorHandler.handleParameterCountMismatch(formalParameters.size(), arguments.size());
+            return null;
+        } else {
+            for(int i = 0; i < arguments.size(); i++) {
+                if(arguments.get(i) != formalParameters.getFormalParameterType(i)) {
+                    errorHandler.handleParameterTypeMismatch(i, formalParameters.getFormalParameterType(i), arguments.get(i));
+                    return null;
+                }
+            }
+        }
+        return returnType;
     }
 
     public void addFormalParameter(final String parameterName, final CountlangType countlangType) {

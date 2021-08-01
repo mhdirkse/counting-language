@@ -37,6 +37,7 @@ import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
+import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -242,19 +243,21 @@ public class Analysis {
                 return;
             }
             FunctionDefinition fun = funDefs.getFunction(expression.getKey());
-            expression.setCountlangType(fun.getReturnType());
-            if(expression.getNumArguments() != fun.getNumParameters()) {
-                reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(),
-                        new Integer(fun.getNumParameters()).toString(), new Integer(expression.getNumArguments()).toString());
-                return;
-            } else {
-                List<CountlangType> types = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
-                for(int i = 0; i < expression.getNumArguments(); i++) {
-                    if(types.get(i) != fun.getFormalParameterType(i)) {
-                        reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(i).toString());
-                        return;
-                    }
+            List<CountlangType> arguments = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
+            CountlangType returnType = fun.checkCallAndGetReturnType(arguments, new FunctionCallErrorHandler() {
+                @Override
+                public void handleParameterCountMismatch(int numExpected, int numActual) {
+                    reporter.report(StatusCode.FUNCTION_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(),
+                            new Integer(numExpected).toString(), new Integer(numActual).toString());                    
                 }
+
+                @Override
+                public void handleParameterTypeMismatch(int parameterNumber, CountlangType expectedType, CountlangType actualType) {
+                    reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(parameterNumber).toString());
+                }              
+            });
+            if(returnType != null) {
+                expression.setCountlangType(returnType);
             }
         }
 
