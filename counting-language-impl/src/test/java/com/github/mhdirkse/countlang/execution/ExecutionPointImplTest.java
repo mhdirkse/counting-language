@@ -30,11 +30,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.execution.AstNodeExecutionState;
-import com.github.mhdirkse.countlang.execution.ExecutionPoint;
-import com.github.mhdirkse.countlang.execution.ExecutionPointImpl;
-import com.github.mhdirkse.countlang.execution.ExecutionPointNode;
-
 public class ExecutionPointImplTest {
     @Test
     public void whenExecutionPointEmptyThenValid() {

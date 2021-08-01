@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
-import com.github.mhdirkse.countlang.execution.ExecutionScope;
 
 public class ExecutionScopeTest {
     private static final ScopeAccess DUMMY_ACCESS = ScopeAccess.SHOW_PARENT;
