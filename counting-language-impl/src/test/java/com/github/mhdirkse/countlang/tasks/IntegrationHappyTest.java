@@ -58,13 +58,13 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print 5 + 3", "8"},
             {"print 5 - 3", "2"},
             {"print 5 * 3", "15"},
-            {"print 15 / 3", "5"},
-            {"print 5 / 3", "1"}, // Round towards zero.
-            {"print -5 / 3", "-1"}, // Round towards zero.
-            {"print -5 / -3", "1"}, // Round towards zero.
-            {"print 5 / -3", "-1"}, // Round towards zero.
-            {"print 0 / 3", "0"}, // Do not round unnecessarily.
-            {"print 0 / -3", "0"}, // Do not round unnecessarily.
+            {"print 15 div 3", "5"},
+            {"print 5 div 3", "1"}, // Round towards zero.
+            {"print -5 div 3", "-1"}, // Round towards zero.
+            {"print -5 div -3", "1"}, // Round towards zero.
+            {"print 5 div -3", "-1"}, // Round towards zero.
+            {"print 0 div 3", "0"}, // Do not round unnecessarily.
+            {"print 0 div -3", "0"}, // Do not round unnecessarily.
             {"print -5--3", "-2"},
             {"print true", "true"}, // Boolean operator tests
             {"print false", "false"},

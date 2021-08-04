@@ -31,7 +31,7 @@ expr
   | expr '.' ID '(' (expr (',' expr)*)? ')' # memberCallExpression
   | ID '(' (expr (',' expr)*)? ')' # functionCallExpression
   | '-' expr # unaryMinusExpression
-  | expr ( '*' | '/' ) expr # multDifExpression
+  | expr ( '*' | 'div' ) expr # multDifExpression
   | expr ( '+' | '-' ) expr # plusMinusExpression
   | expr ( '<' | '<=' | '>' | '>=' | '==' | '!=' ) expr # compExpression
   | 'not' expr # notExpression

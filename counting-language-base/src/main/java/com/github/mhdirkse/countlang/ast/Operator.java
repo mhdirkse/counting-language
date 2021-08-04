@@ -174,7 +174,7 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final String getName() {
-            return "/";
+            return "div";
         }
 
         @Override

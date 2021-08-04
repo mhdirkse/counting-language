@@ -74,7 +74,7 @@ implements ExpressionSource, TerminalFilterCallback {
     public void setText(final String text) {
         if (text.equals("*")) {
             expression.setOperator(new OperatorMultiply(expression.getLine(), expression.getColumn()));
-        } else if (text.equals("/")) {
+        } else if (text.equals("div")) {
             expression.setOperator(new OperatorDivide(expression.getLine(), expression.getColumn()));
         } else if (text.equals("+")) {
             expression.setOperator(new OperatorAdd(expression.getLine(), expression.getColumn()));

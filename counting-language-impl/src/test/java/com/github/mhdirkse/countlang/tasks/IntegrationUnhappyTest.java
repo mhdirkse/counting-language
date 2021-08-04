@@ -49,7 +49,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
 
             // Calculating
             
-            {"print 2 / 0", "Division by zero"},
+            {"print 2 div 0", "Division by zero"},
             {"print distribution 1 total 0", "The scored items in the distribution make count"},
             {"print distribution 1 unknown -1", "The unknown count in a distribution cannot be negative"},
 
