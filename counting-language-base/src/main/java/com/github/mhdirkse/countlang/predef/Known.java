@@ -6,9 +6,9 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
-import com.github.mhdirkse.countlang.ast.PredefinedOneArgFunction;
+import com.github.mhdirkse.countlang.ast.PredefinedFunction;
 
-public class Known implements PredefinedOneArgFunction {
+public class Known implements PredefinedFunction {
     @Override
     public FunctionKey getKey() {
         return new FunctionKey("known", CountlangType.distributionOfAny());
@@ -29,7 +29,7 @@ public class Known implements PredefinedOneArgFunction {
     }
 
     @Override
-    public Object run(Object arg) {
-        return ((Distribution) arg).getDistributionOfKnown();
+    public Object run(List<Object> args) {
+        return ((Distribution) args.get(0)).getDistributionOfKnown();
     }
 }

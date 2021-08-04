@@ -24,6 +24,7 @@ import static com.github.mhdirkse.countlang.execution.ExpressionsAndStatementsCo
 import static com.github.mhdirkse.countlang.execution.ExpressionsAndStatementsCombinationHandler.State.DONE;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
@@ -33,7 +34,7 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
-import com.github.mhdirkse.countlang.ast.PredefinedOneArgFunction;
+import com.github.mhdirkse.countlang.ast.PredefinedFunction;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler {
@@ -94,8 +95,8 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
             statementsHandler = new StatementsHandlerExperiment(((ExperimentDefinitionStatement) fun).isPossibilityCounting());
         } else if(fun instanceof FunctionDefinitionStatement) {
             statementsHandler = new StatementsHandlerFunction();
-        } else if(fun instanceof PredefinedOneArgFunction) {
-            return runPredefinedFunction(context, subExpressionResults.get(0), (PredefinedOneArgFunction) fun);
+        } else if(fun instanceof PredefinedFunction) {
+            return runPredefinedFunction(context, subExpressionResults, (PredefinedFunction) fun);
         } else {
             throw new IllegalArgumentException("Unknown implementation of FunctionDefinition encountered");
         }
@@ -111,10 +112,11 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
         return null;
     }
 
-    private AstNode runPredefinedFunction(ExecutionContext context, Object arg, PredefinedOneArgFunction fun) {
-        Object result = fun.run(arg);
+    private AstNode runPredefinedFunction(ExecutionContext context, List<Object> args, PredefinedFunction fun) {
+        Object result = fun.run(args);
         if(result == null) {
-            throw new IllegalStateException(String.format("Predefined function %s returned null on argument %s", fun.getKey().toString(), arg.toString()));
+            String argsStr = args.stream().map(Object::toString).collect(Collectors.joining(", "));
+        	throw new IllegalStateException(String.format("Predefined function %s returned null on arguments %s", fun.getKey().toString(), argsStr));
         }
         context.onResult(result);
         setState(DONE);
