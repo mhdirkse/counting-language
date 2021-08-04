@@ -130,7 +130,12 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print (distribution 1).known(1)", "Argument count mismatch"},
             {"x = 1; print x.countOf(3)", "does not exist"},
             {"print (distribution 1).countOf()", "Argument count mismatch"},
-            {"print (distribution true).countOf(1)", "Type mismatch calling function"}
+            {"print (distribution true).countOf(1)", "Type mismatch calling function"},
+            // Member distribution<int>.sum() requires that distribution does not have unknown
+            {"print (distribution 1 total 3).sum()", "unknown"},
+            {"print (distribution 1).sum(1)", "Argument count mismatch"},
+            {"x = 1; print x.sum()", "does not exist"},
+            {"print (distribution true).sum()", "does not exist"},
         });
     }
 

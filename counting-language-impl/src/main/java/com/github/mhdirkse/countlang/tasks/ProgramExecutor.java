@@ -36,6 +36,7 @@ import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.Stepper;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.countlang.predef.DistributionCountOf;
+import com.github.mhdirkse.countlang.predef.DistributionIntSum;
 import com.github.mhdirkse.countlang.predef.DistributionKnown;
 import com.github.mhdirkse.utils.Imperative;
 
@@ -79,7 +80,7 @@ public class ProgramExecutor {
 
     private List<FunctionDefinition> getPredefinedFunctions() {
         return Arrays.asList(new DistributionKnown(), new DistributionCountOf(),
-        		TestFunctionDefinitions.createTestFunction());
+        		new DistributionIntSum(), TestFunctionDefinitions.createTestFunction());
     }
 
     private void runProgram(final StatementGroup statementGroup, final OutputStrategy outputStrategy) {

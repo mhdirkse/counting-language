@@ -113,7 +113,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
     }
 
     private AstNode runPredefinedFunction(ExecutionContext context, List<Object> args, PredefinedFunction fun) {
-        Object result = fun.run(args);
+        Object result = fun.run(expression.getLine(), expression.getColumn(), args);
         if(result == null) {
             String argsStr = args.stream().map(Object::toString).collect(Collectors.joining(", "));
         	throw new IllegalStateException(String.format("Predefined function %s returned null on arguments %s", fun.getKey().toString(), argsStr));

@@ -208,7 +208,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print (distribution 1, 1, 2).countOf(1) + 3", "5"},
             // Test that dot takes precedence over +.
             {"print 3 + (distribution 1, 1, 2).countOf(1)", "5"},
-            {"print (distribution 1, 1, 2 total 5).known().countOf(1)", "2"}
+            {"print (distribution 1, 1, 2 total 5).known().countOf(1)", "2"},
+            {"print (distribution 3, 3, 5).sum() + 100", "111"},
         });
     }
 

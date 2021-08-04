@@ -35,7 +35,7 @@ public class DistributionCountOf implements PredefinedFunction {
 	}
 
 	@Override
-	public Object run(List<Object> args) {
+	public Object run(int line, int column, List<Object> args) {
 		Distribution d = (Distribution) args.get(0);
 		return d.getCountOf(args.get(1));
 	}

@@ -29,7 +29,7 @@ public class DistributionKnown implements PredefinedFunction {
     }
 
     @Override
-    public Object run(List<Object> args) {
+    public Object run(int line, int column, List<Object> args) {
         return ((Distribution) args.get(0)).getDistributionOfKnown();
     }
 }
