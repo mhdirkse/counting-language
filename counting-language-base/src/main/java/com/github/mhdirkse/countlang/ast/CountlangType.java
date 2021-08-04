@@ -33,12 +33,13 @@ public final class CountlangType {
     private enum Kind {
         UNKNOWN,
         ANY,
+        FRACTION,
         INT,
         BOOL,
         DISTRIBUTION;
     }
 
-    private static final Set<Kind> PRIMITIVES = EnumSet.of(Kind.INT, Kind.BOOL);
+    private static final Set<Kind> PRIMITIVES = EnumSet.of(Kind.FRACTION, Kind.INT, Kind.BOOL);
 
     private static final Map<CountlangType, CountlangType> repository = new HashMap<>();
 
@@ -60,6 +61,10 @@ public final class CountlangType {
             repository.put(key, key);
         }
         return repository.get(key);
+    }
+
+    public static CountlangType fraction() {
+    	return primitive(Kind.FRACTION);
     }
 
     public static CountlangType integer() {
@@ -92,6 +97,13 @@ public final class CountlangType {
 
     public boolean isPrimitive() {
         return PRIMITIVES.contains(kind);
+    }
+
+    public boolean isPrimitiveNumeric() {
+    	if( (kind == Kind.INT) || (kind == Kind.FRACTION)) {
+    		return true;
+    	}
+    	return false;
     }
 
     public CountlangType getSubType() {

@@ -1,7 +1,9 @@
 package com.github.mhdirkse.countlang.ast;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -12,6 +14,10 @@ public class CountlangTypeTest {
     public void primitiveTypeHasGeneralizationAny() {
         CountlangType t = CountlangType.integer();
         List<CountlangType> gen = t.getGeneralizations();
+        assertEquals(1, gen.size());
+        assertSame(CountlangType.any(), gen.get(0));
+        t = CountlangType.fraction();
+        gen = t.getGeneralizations();
         assertEquals(1, gen.size());
         assertSame(CountlangType.any(), gen.get(0));
     }
@@ -27,5 +33,13 @@ public class CountlangTypeTest {
         List<CountlangType> gen = t.getGeneralizations();
         assertEquals(1, gen.size());
         assertSame(CountlangType.distributionOfAny(), gen.get(0));
+    }
+
+    @Test
+    public void testIsPrimitiveNumeric() {
+    	assertTrue(CountlangType.fraction().isPrimitiveNumeric());
+    	assertTrue(CountlangType.integer().isPrimitiveNumeric());
+    	assertFalse(CountlangType.bool().isPrimitiveNumeric());
+    	assertFalse(CountlangType.distributionOf(CountlangType.integer()).isPrimitiveNumeric());
     }
 }
