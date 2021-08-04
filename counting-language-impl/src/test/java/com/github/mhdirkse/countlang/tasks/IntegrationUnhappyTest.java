@@ -121,6 +121,16 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"sample x from distribution 1, 2; print x", "Sampling is only allowed within an experiment."},
             {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a int"},
             {"experiment exp() {sample x from distribution<int>; return x}; print exp();", "Cannot sample from empty distribution"},
+
+            // Member functions
+
+            // Function is a member function of distribution. x is not a distribution, and
+            // there is no function with search key ("known", int).
+            {"x = 1; print x.known()", "does not exist"},
+            {"print (distribution 1).known(1)", "Argument count mismatch"},
+            {"x = 1; print x.countOf(3)", "does not exist"},
+            {"print (distribution 1).countOf()", "Argument count mismatch"},
+            {"print (distribution true).countOf(1)", "Type mismatch calling function"}
         });
     }
 

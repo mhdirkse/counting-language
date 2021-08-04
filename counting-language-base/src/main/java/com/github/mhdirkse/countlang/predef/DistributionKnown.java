@@ -8,7 +8,7 @@ import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.PredefinedFunction;
 
-public class Known implements PredefinedFunction {
+public class DistributionKnown implements PredefinedFunction {
     @Override
     public FunctionKey getKey() {
         return new FunctionKey("known", CountlangType.distributionOfAny());

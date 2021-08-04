@@ -200,7 +200,15 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"function fun(int x) {return x;}; x = 3; y = 5; print fun(-x + (2 * y))", "7"},
             {"function fun(int x) {markUsed x; return x}; print fun(-3)", "-3"},
             {"experiment exp(int x) {sample s from distribution 1, 2; return s * x}; print known of exp(3)", getDistribution(3, 6)},
-            {"x = 3; y = 5; {z = x + (2 * y); print z}", "13"}
+            {"x = 3; y = 5; {z = x + (2 * y); print z}", "13"},
+
+            // Members
+
+            {"print (distribution 1, 2, 2, 2 total 9).countOf(2)", "3"},
+            {"print (distribution 1, 1, 2).countOf(1) + 3", "5"},
+            // Test that dot takes precedence over +.
+            {"print 3 + (distribution 1, 1, 2).countOf(1)", "5"},
+            {"print (distribution 1, 1, 2 total 5).known().countOf(1)", "2"}
         });
     }
 
