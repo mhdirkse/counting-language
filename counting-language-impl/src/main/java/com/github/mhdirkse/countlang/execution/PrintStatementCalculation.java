@@ -19,7 +19,10 @@
 
 package com.github.mhdirkse.countlang.execution;
 
+import java.math.BigInteger;
 import java.util.List;
+
+import org.apache.commons.math3.fraction.BigFraction;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
@@ -33,9 +36,36 @@ final class PrintStatementCalculation extends ExpressionResultsCollector {
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         Object value = subExpressionResults.get(0);
         String output = value.toString();
+        if(value instanceof BigFraction) {
+            output = formatBigFraction((BigFraction) value);
+        }
         if(value instanceof Distribution) {
             output = ((Distribution) value).format();
         }
         context.output(output);
+    }
+
+    private static String formatBigFraction(BigFraction b) {
+        if(b.compareTo(BigFraction.ZERO) == 0) {
+            return "0";
+        }
+        BigFraction v = b;
+        String firstSign = "";
+        String secondSign = "+";
+        if(b.compareTo(BigFraction.ZERO) < 0) {
+            v = b.negate();
+            firstSign = "-";
+            secondSign = "-";
+        }
+        BigInteger[] divAndRem = v.getNumerator().divideAndRemainder(v.getDenominator());
+        BigInteger div = divAndRem[0];
+        BigInteger rem = divAndRem[1];
+        if(div.compareTo(BigInteger.ZERO) == 0) {
+            return String.format("%s%s / %s", firstSign, rem.toString(), v.getDenominator().toString());
+        } else if(rem.compareTo(BigInteger.ZERO) == 0) {
+            return String.format("%s%s", firstSign, div.toString());
+        } else {
+            return String.format("%s%s %s %s / %s", firstSign, div.toString(), secondSign, rem.toString(), v.getDenominator().toString());
+        }
     }
 }

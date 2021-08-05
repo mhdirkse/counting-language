@@ -20,6 +20,7 @@
 package com.github.mhdirkse.countlang.ast;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
 
@@ -53,9 +54,14 @@ public final class TestFunctionDefinitions {
         ValueExpression ex11 = new ValueExpression(1, 1, ADDED_VALUE, CountlangType.integer());
         SymbolExpression ex12 = new SymbolExpression(1, 1, FORMAL_PARAMETER);
         CompositeExpression ex1 = new CompositeExpression(1, 1);
-        ex1.setOperator(new OperatorAdd(1, 1));
+        OperatorAdd operator = new OperatorAdd(1, 1);
+        ex1.setOperator(operator);
         ex1.addSubExpression(ex11);
         ex1.addSubExpression(ex12);
+        boolean typeCheckOk = operator.checkAndEstablishTypes(Arrays.asList(CountlangType.integer(), CountlangType.integer()));
+        if(! typeCheckOk) {
+            throw new IllegalStateException("Type check failed for TestFunction");
+        }
         return ex1;
     }
 }

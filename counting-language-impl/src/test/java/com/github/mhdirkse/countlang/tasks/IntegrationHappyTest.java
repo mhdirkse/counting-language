@@ -105,6 +105,15 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"possibility counting " + getProgramCausingOverflow(), getProgramCausingOverflowExpectedValue()},
             {getProgramThatBuildsBigintDistribution(), getProgramThatBuildsBigintDistributionExpected()},
 
+            // Fraction
+            {"print -13 / 5", "-2 - 3 / 5"},
+            {"print -10 / 5", "-2"},
+            {"print -3 / 5", "-3 / 5"},
+            {"print 0 / 5", "0"},
+            {"print 3 / 5", "3 / 5"},
+            {"print 10 / 5", "2"},
+            {"print 13 / 5", "2 + 3 / 5"},
+
             // Test literal distributions
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
             {"print distribution 1 total 3", getDistributionWithUnknown().format()},

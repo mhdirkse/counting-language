@@ -21,6 +21,7 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.math3.fraction.BigFraction;
 
@@ -53,8 +54,6 @@ public abstract class Operator extends AstNode {
     }
 
     public static final class OperatorUnaryMinus extends Operator {
-    	private CountlangType argType = CountlangType.integer();
-
     	public OperatorUnaryMinus(final int line, final int column) {
     		super(line, column);
     	}
@@ -66,23 +65,7 @@ public abstract class Operator extends AstNode {
 
     	@Override
     	public final Object execute(final List<Object> arguments) {
-    		if(argType == CountlangType.integer()) {
-    			BigInteger arg = (BigInteger) arguments.get(0);
-    			return executeInt(arg);
-    		} else if(argType == CountlangType.fraction()) {
-    			BigFraction arg = (BigFraction) arguments.get(0);
-    			return executeFrac(arg);
-    		} else {
-    			throw new IllegalArgumentException(String.format("Type is not supported: ", argType.toString()));
-    		}
-    	}
-
-    	private final Object executeInt(BigInteger arg) {
-    		return arg.negate();
-    	}
-
-    	private final Object executeFrac(BigFraction arg) {
-    		return arg.negate();
+    		return ((BigInteger) arguments.get(0)).negate();
     	}
 
     	@Override
@@ -92,99 +75,48 @@ public abstract class Operator extends AstNode {
 
     	@Override
     	public final boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
-    	    argType = argumentTypes.get(0);
-    	    if((argType == CountlangType.integer()) || (argType == CountlangType.fraction())) {
-    	    	return true;
-    	    } else {
-    	    	return false;
-    	    }
+    	    return argumentTypes.get(0) == CountlangType.integer();
     	}
 
     	@Override
     	public final CountlangType getResultType() {
-    	    return argType;
+    	    return CountlangType.integer();
     	}
     }
 
-    /**
-     * This operator rounds towards zero like Java does. See
-     * https://stackoverflow.com/questions/37795248/integer-division-in-java
-     * 
-     * @author martijn
-     *
-     */
-    public static final class OperatorDivide extends Operator {
-        public OperatorDivide(final int line, final int column) {
-            super(line, column);
-        }
-
-        @Override
-        public final String getName() {
-            return "div";
-        }
-
-		@Override
-		public Object execute(List<Object> arguments) {
-            BigInteger first = (BigInteger) arguments.get(0);
-            BigInteger second = (BigInteger) arguments.get(1);
-			if (second.equals(BigInteger.ZERO)) {
-                throw new ProgramException(getLine(), getColumn(), "Division by zero");
-            }
-            return first.divide(second);
-		}
-
-		@Override
-		public int getNumArguments() {
-			return 2;
-		}
-
-		@Override
-		public boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-			return (argumentTypes.get(0) == CountlangType.integer()) && (argumentTypes.get(1) == CountlangType.integer());
-		}
-
-		@Override
-		public CountlangType getResultType() {
-			return CountlangType.integer();
-		}
-    }
-
     private static abstract class BinaryOperator extends Operator {
-    	CountlangType resultType = null;
+        CountlangType resultType;
+        CountlangType inputType;
+    	boolean mustCastFirstToFrac = false;
+    	boolean mustCastSecondToFrac = false;
 
-    	BinaryOperator(final int line, final int column) {
+        BinaryOperator(final int line, final int column) {
     		super(line, column);
     	}
 
     	@Override
-    	public Object execute(final List<Object> arguments) {
-    		Object arg0 = arguments.get(0);
-    		Object arg1 = arguments.get(1);
-    		if(arg0 instanceof BigInteger) {
-    			if(arg1 instanceof BigInteger) {
-    	    		BigInteger firstArg = (BigInteger) arg0;
-    	            BigInteger secondArg = (BigInteger) arg1;
-    	            return executeIntUnchecked(firstArg, secondArg);    				
-    			} else if(arg1 instanceof BigFraction) {
-    				BigFraction firstArg = new BigFraction((BigInteger) arg0);
-    				BigFraction secondArg = (BigFraction) arg1;
-    				return executeFracUnchecked(firstArg, secondArg);
-    			} else {
-    				throw new IllegalArgumentException("Unsupported type for second argument: " + arg1.getClass().getName());
-    			}
-    		} else if(arg0 instanceof BigFraction) {
-    			if(arg1 instanceof BigInteger) {
-    				BigFraction firstArg = (BigFraction) arg0;
-    				BigFraction secondArg = new BigFraction((BigInteger) arg1);
-    				return executeFracUnchecked(firstArg, secondArg);
-    			} else if(arg1 instanceof BigFraction) {
-    				return executeFracUnchecked((BigFraction) arg0, (BigFraction) arg1);
-    			} else {
-    				throw new IllegalArgumentException("Unsupported type for second argument: " + arg1.getClass().getName());
-    			}
-    		} else {
-    			throw new IllegalArgumentException("Unsupported type for first argument: " + arg0.getClass().getName());
-    		}
+    	public final Object execute(final List<Object> arguments) {
+    	    if(inputType == CountlangType.bool()) {
+    	        return executeBoolUnchecked((Boolean) arguments.get(0), (Boolean) arguments.get(1));
+    	    } else if(inputType == CountlangType.integer()) {
+    	        return executeIntUnchecked((BigInteger) arguments.get(0), (BigInteger) arguments.get(1));
+    	    } else if(inputType == CountlangType.fraction()) {
+    	        BigFraction firstArg = null;
+    	        BigFraction secondArg = null;
+    	        if(mustCastFirstToFrac) {
+    	            firstArg = new BigFraction((BigInteger) arguments.get(0));
+    	        } else {
+    	            firstArg = (BigFraction) arguments.get(0);
+    	        }
+    	        if(mustCastSecondToFrac) {
+    	            secondArg = new BigFraction((BigInteger) arguments.get(1));
+    	        } else {
+    	            secondArg = (BigFraction) arguments.get(1);
+    	        }
+    	        return executeFracUnchecked(firstArg, secondArg);
+    	    }
+    	    throw new IllegalArgumentException(String.format("Type mismatch executing operator %s with arguments %s",
+    	            getName(), arguments.stream().map(Object::toString).collect(Collectors.joining(", "))));
     	}
 
     	@Override
@@ -193,14 +125,25 @@ public abstract class Operator extends AstNode {
     	}
 
     	@Override
-    	public boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
-    	    boolean result = argumentTypes.stream().allMatch(CountlangType::isPrimitiveNumeric);
-    	    if(! result) {
-    	    	return false;
+    	public final boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
+    	    if(argumentTypes.stream().allMatch(t -> t.equals(CountlangType.bool()))) {
+    	        inputType = CountlangType.bool();
+    	    } else if(argumentTypes.stream().allMatch(CountlangType::isPrimitiveNumeric)) {
+    	        if(argumentTypes.stream().allMatch(t -> t.equals(CountlangType.integer()))) {
+    	            inputType = CountlangType.integer();
+    	        } else {
+    	            inputType = CountlangType.fraction();
+    	            if(argumentTypes.get(0).equals(CountlangType.integer())) {
+    	                mustCastFirstToFrac = true;
+    	            }
+    	            if(argumentTypes.get(1).equals(CountlangType.integer())) {
+    	                mustCastSecondToFrac = true;
+    	            }
+    	        }
+    	    } else {
+    	        return false;
     	    }
-    	    boolean receivesFrac = argumentTypes.stream().anyMatch(t -> t.equals(CountlangType.fraction()));
-    	    setResultType(receivesFrac);
-    	    return true;
+    	    return checkAndEstablishTypes();
     	}
 
     	@Override
@@ -208,26 +151,32 @@ public abstract class Operator extends AstNode {
     	    return resultType;
     	}
 
-    	abstract void setResultType(boolean receivesFrac);
-        abstract Object executeIntUnchecked(BigInteger firstArg, BigInteger secondArg);
-        abstract Object executeFracUnchecked(BigFraction firstArg, BigFraction secondArg);
+    	abstract boolean checkAndEstablishTypes();
+    	abstract Object executeBoolUnchecked(Boolean firstArg, Boolean secondArg);
+    	abstract Object executeIntUnchecked(BigInteger firstArg, BigInteger secondArg);
+    	abstract Object executeFracUnchecked(BigFraction firstArg, BigFraction secondArg);
     }
 
     private static abstract class BinaryNumericOperator extends BinaryOperator {
-    	BinaryNumericOperator(final int line, final int column) {
-    		super(line, column);
-    	}
-
-    	@Override
-    	void setResultType(boolean receivesFrac) {
-    	    resultType = CountlangType.integer();
-    	    if(receivesFrac) {
-    	    	resultType = CountlangType.fraction();
-    	    }
-    	}
+        BinaryNumericOperator(int line, int column) {
+            super(line, column);
+        }
 
         @Override
-    	abstract BigInteger executeIntUnchecked(BigInteger firstArg, BigInteger secondArg);
+        final boolean checkAndEstablishTypes() {
+            if(inputType == CountlangType.bool()) {
+                return false;
+            }
+            resultType = inputType;
+            return true;
+        }
+
+        final Object executeBoolUnchecked(Boolean firstArg, Boolean secondArg) {
+            throw new IllegalArgumentException(String.format("Operator %s does not support Boolean arguments", getName()));
+        }
+
+        @Override
+        abstract BigInteger executeIntUnchecked(BigInteger firstArg, BigInteger secondArg);
 
         @Override
         abstract BigFraction executeFracUnchecked(BigFraction firstArg, BigFraction secondArg);
@@ -296,6 +245,92 @@ public abstract class Operator extends AstNode {
         }
     }
 
+    /**
+     * This operator rounds towards zero like Java does. See
+     * https://stackoverflow.com/questions/37795248/integer-division-in-java
+     * 
+     * @author martijn
+     *
+     */
+    public static final class OperatorDivide extends BinaryOperator {
+        public OperatorDivide(final int line, final int column) {
+            super(line, column);
+        }
+
+        @Override
+        public final String getName() {
+            return "div";
+        }
+
+        @Override
+        boolean checkAndEstablishTypes() {
+            if(inputType == CountlangType.integer()) {
+                resultType = CountlangType.integer();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        Object executeBoolUnchecked(Boolean firstArg, Boolean secondArg) {
+            throw new IllegalArgumentException("Input type Boolean not supported");
+        }
+
+        @Override
+        Object executeIntUnchecked(BigInteger firstArg, BigInteger secondArg) {
+            if (secondArg.equals(BigInteger.ZERO)) {
+                throw new ProgramException(getLine(), getColumn(), "Division by zero");
+            }
+            return firstArg.divide(secondArg);
+        }
+
+        @Override
+        Object executeFracUnchecked(BigFraction firstArg, BigFraction secondArg) {
+            throw new IllegalArgumentException("Input type Fraction not supported");
+        }
+    }
+
+    public static class OperatorFrac extends BinaryOperator {
+        public OperatorFrac(int line, int column) {
+            super(line, column);
+        }
+
+        @Override
+        boolean checkAndEstablishTypes() {
+            if(inputType == CountlangType.bool()) {
+                return false;
+            }
+            resultType = CountlangType.fraction();
+            return true;
+        }
+
+        @Override
+        Object executeBoolUnchecked(Boolean firstArg, Boolean secondArg) {
+            throw new IllegalArgumentException("Input type Boolean not supported");
+        }
+
+        @Override
+        BigFraction executeIntUnchecked(BigInteger firstArg, BigInteger secondArg) {
+            if(secondArg.compareTo(BigInteger.ZERO) == 0) {
+                throw new ProgramException(getLine(), getColumn(), "Division by zero");
+            }
+            return new BigFraction(firstArg, secondArg);
+        }
+
+        @Override
+        BigFraction executeFracUnchecked(BigFraction firstArg, BigFraction secondArg) {
+            if(secondArg.compareTo(BigFraction.ZERO) == 0) {
+                throw new ProgramException(getLine(), getColumn(), "Division by zero");
+            }
+            return firstArg.divide(secondArg);
+        }
+
+        @Override
+        public String getName() {
+            return "/";
+        }
+    }
+
     public static class OperatorNot extends Operator {
         public OperatorNot(int line, int column) {
             super(line, column);
@@ -328,26 +363,32 @@ public abstract class Operator extends AstNode {
         }
     }
 
-    public static abstract class BinBoolOperator extends Operator {
+    public static abstract class BinBoolOperator extends BinaryOperator {
         BinBoolOperator(final int line, final int column) {
             super(line, column);
         }
 
         @Override
-        public final CountlangType getResultType() {
-            return CountlangType.bool();
+        final boolean checkAndEstablishTypes() {
+            if(inputType == CountlangType.bool()) {
+                resultType = CountlangType.bool();
+                return true;
+            }
+            return false;
         }
 
         @Override
-        public final int getNumArguments() {
-            return 2;
-        }
+        abstract Boolean executeBoolUnchecked(Boolean arg0, Boolean arg1);
 
         @Override
-        public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            return (argumentTypes.get(0) == CountlangType.bool())
-                    && (argumentTypes.get(1) == CountlangType.bool());
-        }        
+        final Boolean executeIntUnchecked(BigInteger arg0, BigInteger arg1) {
+            throw new IllegalArgumentException("Input type integer not supported");
+        }
+        
+        @Override
+        final Boolean executeFracUnchecked(BigFraction arg0, BigFraction arg1) {
+            throw new IllegalArgumentException("Input type fraction not supported");
+        }
     }
 
     public static final class OperatorAnd extends BinBoolOperator {
@@ -361,10 +402,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        public final Object execute(List<Object> arguments) {
-            boolean i1 = (Boolean) arguments.get(0);
-            boolean i2 = (Boolean) arguments.get(1);
-            return Boolean.valueOf(i1 && i2);
+        public final Boolean executeBoolUnchecked(Boolean arg0, Boolean arg1) {
+            return Boolean.logicalAnd(arg0, arg1);
         }
     }
 
@@ -379,10 +418,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        public final Object execute(List<Object> arguments) {
-            boolean i1 = (Boolean) arguments.get(0);
-            boolean i2 = (Boolean) arguments.get(1);
-            return Boolean.valueOf(i1 || i2);
+        public final Boolean executeBoolUnchecked(Boolean arg0, Boolean arg1) {
+            return Boolean.logicalOr(arg0, arg1);
         }
     }
 
@@ -392,15 +429,26 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        public final void setResultType(boolean receivesFrac) {
+        final boolean checkAndEstablishTypes() {
+            if(inputType == CountlangType.bool()) {
+                return false;
+            }
+            if(mustCastFirstToFrac || mustCastSecondToFrac) {
+                return false;
+            }
             resultType = CountlangType.bool();
+            return true;
+        }
+
+        final Boolean executeBoolUnchecked(final Boolean arg0, final Boolean arg1) {
+            throw new IllegalArgumentException("Input type Boolean not supported");
         }
 
         @Override
-        abstract Boolean executeIntUnchecked(BigInteger firstArg, BigInteger secondArg);
+        abstract Boolean executeIntUnchecked(final BigInteger i1, final BigInteger i2);
 
         @Override
-        abstract Boolean executeFracUnchecked(BigFraction firstFrac, BigFraction secondFrac);
+        abstract Boolean executeFracUnchecked(final BigFraction f1, final BigFraction f2);
     }
 
     public static final class OperatorLessThan extends RelOp {
@@ -419,8 +467,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final Boolean executeFracUnchecked(final BigFraction i1, final BigFraction i2) {
-            return i1.compareTo(i2) < 0;
+        final Boolean executeFracUnchecked(final BigFraction f1, final BigFraction f2) {
+            return f1.compareTo(f2) < 0;
         }
     }
 
@@ -440,8 +488,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final Boolean executeFracUnchecked(final BigFraction i1, final BigFraction i2) {
-            return i1.compareTo(i2) <= 0;
+        final Boolean executeFracUnchecked(final BigFraction f1, final BigFraction f2) {
+            return f1.compareTo(f2) <= 0;
         }
     }
 
@@ -461,8 +509,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final Boolean executeFracUnchecked(final BigFraction i1, final BigFraction i2) {
-            return i1.compareTo(i2) > 0;
+        final Boolean executeFracUnchecked(final BigFraction f1, final BigFraction f2) {
+            return f1.compareTo(f2) > 0;
         }
     }
 
@@ -482,80 +530,36 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final Boolean executeFracUnchecked(final BigFraction i1, final BigFraction i2) {
-            return i1.compareTo(i2) >= 0;
+        final Boolean executeFracUnchecked(final BigFraction f1, final BigFraction f2) {
+            return f1.compareTo(f2) >= 0;
         }
     }
 
-    public static abstract class MultiTypeRelOp extends BinaryOperator {
-        private CountlangType inputType = null;
+    public static abstract class MultiTypeRelOp extends Operator {
+        CountlangType argType = CountlangType.unknown();
 
-    	MultiTypeRelOp(final int line, final int column) {
+        MultiTypeRelOp(final int line, final int column) {
             super(line, column);
         }
 
         @Override
+        public final int getNumArguments() {
+            return 2;
+        }
+
+        @Override
         public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            boolean result = super.checkAndEstablishTypes(argumentTypes);
-            if(! result) {
-            	boolean isBool = argumentTypes.stream().allMatch(t -> t.equals(CountlangType.bool()));
-            	if(isBool) {
-            		inputType = CountlangType.bool();
-            		resultType = CountlangType.bool();
-            		result = true;
-            	}
+            boolean result = (argumentTypes.get(0) == argumentTypes.get(1)) && argumentTypes.get(0).isPrimitive();
+            if(result) {
+                argType = argumentTypes.get(0);
             }
             return result;
         }
 
         @Override
-        void setResultType(boolean receivesFrac) {
-        	if(receivesFrac) {
-        		inputType = CountlangType.fraction();
-        	} else {
-        		inputType = CountlangType.integer();
-        	}
-        	resultType = CountlangType.bool();
+        public final CountlangType getResultType() {
+            return CountlangType.bool();
         }
-
-        @Override
-        public final Object execute(List<Object> arguments) {
-            boolean result = false;
-            if(inputType == CountlangType.bool()) {
-                boolean b1 = (Boolean) arguments.get(0);
-                boolean b2 = (Boolean) arguments.get(1);
-                result = executeBoolUnchecked(b1, b2);
-            } else if(inputType == CountlangType.integer()) {
-                BigInteger i1 = (BigInteger) arguments.get(0);
-                BigInteger i2 = (BigInteger) arguments.get(1);
-                result = executeIntUnchecked(i1, i2);
-            } else if(inputType == CountlangType.fraction()) {
-            	BigFraction f1 = null;
-            	BigFraction f2 = null;
-            	if(arguments.get(0) instanceof BigInteger) {
-            		f1 = new BigFraction((BigInteger) arguments.get(0));
-            	} else {
-            		f1 = (BigFraction) arguments.get(0);
-            	}
-            	if(arguments.get(1) instanceof BigInteger) {
-            		f2 = new BigFraction((BigInteger) arguments.get(1));
-            	} else {
-            		f2 = (BigFraction) arguments.get(1);
-            	}
-            	result = executeFracUnchecked(f1, f2);
-            } else {
-                throw new IllegalStateException("Cannot execute when type checking failed");
-            }
-            return Boolean.valueOf(result);
-        }        
-
-        @Override
-        abstract Boolean executeFracUnchecked(final BigFraction f1, final BigFraction f2);
-
-        @Override
-        abstract Boolean executeIntUnchecked(final BigInteger i1, final BigInteger i2);
-        
-        abstract boolean executeBoolUnchecked(final boolean b1, final boolean b2);
     }
 
     public static final class OperatorEquals extends MultiTypeRelOp {
@@ -569,18 +573,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final Boolean executeFracUnchecked(final BigFraction f1, final BigFraction f2) {
-        	return f1.equals(f2);
-        }
-
-        @Override
-        final Boolean executeIntUnchecked(final BigInteger i1, final BigInteger i2) {
-            return i1.equals(i2);
-        }
-
-        @Override
-        final boolean executeBoolUnchecked(final boolean b1, final boolean b2) {
-            return b1 == b2;
+        public Object execute(List<Object> args) {
+            return args.get(0).equals(args.get(1));
         }
     }
 
@@ -595,18 +589,8 @@ public abstract class Operator extends AstNode {
         }
 
         @Override
-        final Boolean executeFracUnchecked(BigFraction f1, final BigFraction f2) {
-        	return ! f1.equals(f2);
-        }
-
-        @Override
-        final Boolean executeIntUnchecked(final BigInteger i1, final BigInteger i2) {
-            return ! i1.equals(i2);
-        }
-
-        @Override
-        final boolean executeBoolUnchecked(final boolean b1, final boolean b2) {
-            return b1 != b2;
+        public Object execute(List<Object> args) {
+            return ! args.get(0).equals(args.get(1));
         }
     }
 

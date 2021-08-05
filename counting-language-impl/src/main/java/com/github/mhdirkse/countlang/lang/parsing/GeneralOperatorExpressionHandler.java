@@ -25,18 +25,19 @@ import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorDivide;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorMultiply;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorSubtract;
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAnd;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorOr;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorNot;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorDivide;
 import com.github.mhdirkse.countlang.ast.Operator.OperatorEquals;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorNotEquals;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorLessThan;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorLessEqual;
-import com.github.mhdirkse.countlang.ast.Operator.OperatorGreaterThan;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorFrac;
 import com.github.mhdirkse.countlang.ast.Operator.OperatorGreaterEqual;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorGreaterThan;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorLessEqual;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorLessThan;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorMultiply;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorNot;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorNotEquals;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorOr;
+import com.github.mhdirkse.countlang.ast.Operator.OperatorSubtract;
 
 class GeneralOperatorExpressionHandler extends AbstractExpressionHandler
 implements ExpressionSource, TerminalFilterCallback {
@@ -76,6 +77,8 @@ implements ExpressionSource, TerminalFilterCallback {
             expression.setOperator(new OperatorMultiply(expression.getLine(), expression.getColumn()));
         } else if (text.equals("div")) {
             expression.setOperator(new OperatorDivide(expression.getLine(), expression.getColumn()));
+        } else if (text.equals("/")) {
+            expression.setOperator(new OperatorFrac(expression.getLine(), expression.getColumn()));
         } else if (text.equals("+")) {
             expression.setOperator(new OperatorAdd(expression.getLine(), expression.getColumn()));
         } else if (text.equals("-")) {
