@@ -50,8 +50,21 @@ public class IntegrationUnhappyTest implements OutputStrategy
             // Calculating
             
             {"print 2 div 0", "Division by zero"},
+            {"print 2 / 0", "Division by zero"},
+            {"print (2 / 1) / 0", "Division by zero"},
             {"print distribution 1 total 0", "The scored items in the distribution make count"},
             {"print distribution 1 unknown -1", "The unknown count in a distribution cannot be negative"},
+            // No implicit promotion to fraction with relational operators
+            {"print (3 / 1) <= 3", "Type mismatch using operator"},
+            {"print (3 / 1) == 3", "Type mismatch using operator"},
+            {"print true + false", "Type mismatch using operator"},
+            // Type checks
+            {"print (3 / 1) div 2", "Type mismatch using operator"},
+            {"print (3 / 1) div (2 / 1)", "Type mismatch using operator"},
+            {"print true / true", "Type mismatch using operator"},
+            {"print not 1", "Type mismatch using operator"},
+            {"print 1 and 2", "Type mismatch using operator"},
+            {"print false <= true", "Type mismatch using operator"},
 
             // Syntax
             

@@ -106,6 +106,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {getProgramThatBuildsBigintDistribution(), getProgramThatBuildsBigintDistributionExpected()},
 
             // Fraction
+
+            // Cover all output formats for a fraction.
             {"print -13 / 5", "-2 - 3 / 5"},
             {"print -10 / 5", "-2"},
             {"print -3 / 5", "-3 / 5"},
@@ -113,6 +115,37 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print 3 / 5", "3 / 5"},
             {"print 10 / 5", "2"},
             {"print 13 / 5", "2 + 3 / 5"},
+            // Implicitly promote integer to fractions
+            {"print 1 / 3 + 5 / 3", "2"},
+            {"print 1 + 2 / 3", "1 + 2 / 3"},
+            {"print 2 / 3 + 1", "1 + 2 / 3"},
+            // Cover subtraction
+            {"print 5 / 3 - 2 / 3", "1"},
+            {"print 5 / 3 - 2", "-1 / 3"},
+            // Cover multiplication
+            {"print 5 * 6 / 2 / 3", "5"},
+            {"print (3 / 2) * (2 / 3)", "1"},
+            // Apply relational operators to fractions
+            {"print 3/1 < 5/1", "true"},
+            {"print 5/1 < 5/1", "false"},
+            {"print 7/1 < 5/1", "false"},
+            {"print 3/1 <= 5/1", "true"},
+            {"print 5/1 <= 5/1", "true"},
+            {"print 7/1 <= 5/1", "false"},
+            {"print 3/1 > 5/1", "false"},
+            {"print 5/1 > 5/1", "false"},
+            {"print 7/1 > 5/1", "true"},
+            {"print 3/1 >= 5/1", "false"},
+            {"print 5/1 >= 5/1", "true"},
+            {"print 7/1 >= 5/1", "true"},
+            // Apply == and != to fractions
+            {"print 3/1 == 3/1", "true"},
+            {"print 3/1 == 5/1", "false"},
+            {"print 3 != 3", "false"},
+            {"print 3 != 5", "true"},
+            // Unary minus
+            {"print - (5 / 3)", "-1 - 2 / 3"},
+            {"print --5/3", "1 + 2 / 3"},
 
             // Test literal distributions
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
@@ -142,6 +175,13 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             // Check that all subexpressions within a literal distribution are type-checked
             {"print distribution 1 * 2 of 1 * 3 total 1 * 4", getDistributionWithUnknown(3, 3, 2)},
             {"print distribution 1 * 2 of 1 * 3 unknown 1 * 2", getDistributionWithUnknown(3, 3, 2)},
+            // Compare distributions
+            {"print distribution<int> == distribution<int>", "true"},
+            {"print (distribution<int> unknown 1) == (distribution<int> unknown 1)", "true"},
+            {"print (distribution<int> total 1) == (distribution<int> unknown 1)", "true"},
+            {"print (distribution false, true) == (distribution true, false)", "true"},
+            {"print (distribution false, true) != (distribution true, false)", "false"},
+            {"print (distribution false, true, true) != (distribution true, false)", "true"},
 
             {"print testFunction(4)", "9"},
             {"print 2 + testFunction(4)", "11"},

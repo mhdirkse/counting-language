@@ -54,7 +54,9 @@ public abstract class Operator extends AstNode {
     }
 
     public static final class OperatorUnaryMinus extends Operator {
-    	public OperatorUnaryMinus(final int line, final int column) {
+    	private CountlangType resultType;
+
+        public OperatorUnaryMinus(final int line, final int column) {
     		super(line, column);
     	}
 
@@ -65,7 +67,13 @@ public abstract class Operator extends AstNode {
 
     	@Override
     	public final Object execute(final List<Object> arguments) {
-    		return ((BigInteger) arguments.get(0)).negate();
+    		Object arg = arguments.get(0);
+    		if(arg instanceof BigInteger) {
+    		    return ((BigInteger) arg).negate();    		    
+    		} else if(arg instanceof BigFraction) {
+    		    return ((BigFraction) arg).negate();
+    		}
+    	    throw new IllegalArgumentException("Argument type not supported");
     	}
 
     	@Override
@@ -75,12 +83,13 @@ public abstract class Operator extends AstNode {
 
     	@Override
     	public final boolean checkAndEstablishTypes(final List<CountlangType> argumentTypes) {
-    	    return argumentTypes.get(0) == CountlangType.integer();
+    	    resultType = argumentTypes.get(0);
+    	    return argumentTypes.get(0).isPrimitiveNumeric();
     	}
 
     	@Override
     	public final CountlangType getResultType() {
-    	    return CountlangType.integer();
+    	    return resultType;
     	}
     }
 
@@ -549,7 +558,7 @@ public abstract class Operator extends AstNode {
 
         @Override
         public final boolean checkAndEstablishTypes(List<CountlangType> argumentTypes) {
-            boolean result = (argumentTypes.get(0) == argumentTypes.get(1)) && argumentTypes.get(0).isPrimitive();
+            boolean result = (argumentTypes.get(0) == argumentTypes.get(1));
             if(result) {
                 argType = argumentTypes.get(0);
             }
