@@ -22,7 +22,7 @@ varDecls : varDecl (',' varDecl)* ;
 varDecl : typeId ID ;
 
 typeId : 
-    (INTTYPE | BOOLTYPE) # simpleType
+    (INTTYPE | BOOLTYPE | FRACTYPE ) # simpleType
     | (DISTRIBUTIONTYPE '<' typeId '>') # distributionType
     ;
 
@@ -50,6 +50,7 @@ distItem
 
 BOOLTYPE: 'bool' ;
 INTTYPE: 'int' ;
+FRACTYPE: 'fraction';
 DISTRIBUTIONTYPE: 'distribution' ;
 COUNTING: 'possibility' WS+ 'counting' ; 
 

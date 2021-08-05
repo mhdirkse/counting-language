@@ -149,6 +149,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print (distribution 1).sum(1)", "Argument count mismatch"},
             {"x = 1; print x.sum()", "does not exist"},
             {"print (distribution true).sum()", "does not exist"},
+            {"print distribution<int>.E()", "Division by zero"},
+            {"print distribution<fraction>.E()", "Division by zero"}
         });
     }
 

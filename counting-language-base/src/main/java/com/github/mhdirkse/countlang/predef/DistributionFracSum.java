@@ -21,24 +21,26 @@ package com.github.mhdirkse.countlang.predef;
 
 import java.math.BigInteger;
 
+import org.apache.commons.math3.fraction.BigFraction;
+
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.CountlangType;
 
-public class DistributionIntSum extends DistributionAggregator {
-    public DistributionIntSum() {
-        super("sum", CountlangType.distributionOf(CountlangType.integer()), CountlangType.integer());
+public class DistributionFracSum extends DistributionAggregator {
+    public DistributionFracSum() {
+        super("sum", CountlangType.distributionOf(CountlangType.fraction()), CountlangType.fraction());
     }
 
     @Override
     Object getInitialResult() {
-        return BigInteger.ZERO;
+        return BigFraction.ZERO;
     }
 
     @Override
     Object applyNext(Object rawOriginal, Object rawItem, BigInteger count) {
-        BigInteger original = (BigInteger) rawOriginal;
-        BigInteger item = (BigInteger) rawItem;
-        BigInteger toAdd = item.multiply(count);
+        BigFraction original = (BigFraction) rawOriginal;
+        BigFraction item = (BigFraction) rawItem;
+        BigFraction toAdd = item.multiply(count);
         return original.add(toAdd);
     }
 

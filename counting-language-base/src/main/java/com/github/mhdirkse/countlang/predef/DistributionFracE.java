@@ -21,29 +21,35 @@ package com.github.mhdirkse.countlang.predef;
 
 import java.math.BigInteger;
 
+import org.apache.commons.math3.fraction.BigFraction;
+
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.ProgramException;
 
-public class DistributionIntSum extends DistributionAggregator {
-    public DistributionIntSum() {
-        super("sum", CountlangType.distributionOf(CountlangType.integer()), CountlangType.integer());
+public class DistributionFracE extends DistributionAggregator {
+    private final DistributionFracSum delegate = new DistributionFracSum();
+
+    public DistributionFracE() {
+        super("E", CountlangType.distributionOf(CountlangType.fraction()), CountlangType.fraction());
     }
 
     @Override
     Object getInitialResult() {
-        return BigInteger.ZERO;
+        return delegate.getInitialResult();
     }
 
     @Override
-    Object applyNext(Object rawOriginal, Object rawItem, BigInteger count) {
-        BigInteger original = (BigInteger) rawOriginal;
-        BigInteger item = (BigInteger) rawItem;
-        BigInteger toAdd = item.multiply(count);
-        return original.add(toAdd);
+    Object applyNext(Object original, Object item, BigInteger count) {
+        return delegate.applyNext(original, item, count);
     }
 
     @Override
-    Object finish(int line, int column, Distribution input, Object aggregate) {
-        return aggregate;
+    Object finish(int line, int column, Distribution input, Object rawAggregate) {
+        if(input.getTotal().compareTo(BigInteger.ZERO) == 0) {
+            throw new ProgramException(line, column, "Division by zero");
+        }
+        BigFraction aggregate = (BigFraction) rawAggregate;
+        return aggregate.divide(new BigFraction(input.getTotal()));
     }
 }

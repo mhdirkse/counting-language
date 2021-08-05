@@ -259,6 +259,9 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print 3 + (distribution 1, 1, 2).countOf(1)", "5"},
             {"print (distribution 1, 1, 2 total 5).known().countOf(1)", "2"},
             {"print (distribution 3, 3, 5).sum() + 100", "111"},
+            {"print (distribution 2 of 2/3, 5/3).sum()", "3"},
+            {"print (distribution 3, 3, 5).E()", "3 + 2 / 3"},
+            {"print (distribution 2 of 2/3, 5/3).E()", "1"}
         });
     }
 

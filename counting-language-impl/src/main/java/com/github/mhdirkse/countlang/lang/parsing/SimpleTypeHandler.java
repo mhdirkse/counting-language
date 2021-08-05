@@ -46,6 +46,8 @@ class SimpleTypeHandler extends AbstractTypeHandler {
             countlangType = CountlangType.bool();
         } else if(antlrType == CountlangLexer.INTTYPE) {
             countlangType = CountlangType.integer();
+        } else if(antlrType == CountlangLexer.FRACTYPE) {
+            countlangType = CountlangType.fraction();
         } else {
             throw new IllegalArgumentException("Unknown type");
         }
