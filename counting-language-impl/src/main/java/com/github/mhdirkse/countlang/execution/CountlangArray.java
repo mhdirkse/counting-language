@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.github.mhdirkse.countlang.utils.ListComparator;
+import com.github.mhdirkse.countlang.utils.Utils;
 
 class CountlangArray implements Comparable<CountlangArray> {
     private final List<Object> items;
@@ -27,6 +28,6 @@ class CountlangArray implements Comparable<CountlangArray> {
 
     @Override
     public String toString() {
-        return "[" + items.stream().map(v -> v.toString()).collect(Collectors.joining(", ")) + "]";
+        return "[" + items.stream().map(v -> Utils.genericFormat(v)).collect(Collectors.joining(", ")) + "]";
     }
 }

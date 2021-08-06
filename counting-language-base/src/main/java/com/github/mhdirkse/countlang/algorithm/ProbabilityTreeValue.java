@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
+import com.github.mhdirkse.countlang.utils.Utils;
+
 import lombok.Getter;
 
 public class ProbabilityTreeValue implements Comparable<ProbabilityTreeValue> {
@@ -82,7 +84,7 @@ public class ProbabilityTreeValue implements Comparable<ProbabilityTreeValue> {
         if(isUnknown()) {
             return "unknown";
         } else {
-            return getValue().toString();
+            return Utils.genericFormat(getValue());
         }
     }
 }

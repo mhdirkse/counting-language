@@ -270,16 +270,30 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"x = [3, 6, 10]; print x[3]", "10"},
             {"print int[]", "[]"},
             {"print fraction[]", "[]"},
-            {"print distribution 3/2", Arrays.asList(
+
+            // Formatting complex types
+
+            {"print distribution 3/2, 5/3", Arrays.asList(
                     "1 + 1 / 2  1",
+                    "1 + 2 / 3  1",
                     "------------",
-                    "    total  1").stream().collect(Collectors.joining("\n"))
+                    "    total  2").stream().collect(Collectors.joining("\n"))
             },
-            {"print distribution [3, 2, 5]", Arrays.asList(
+            {"print distribution [3, 2, 5], [3, 2]", Arrays.asList(
+                    "   [3, 2]  1",
                     "[3, 2, 5]  1",
                     "------------",
-                    "    total  1").stream().collect(Collectors.joining("\n"))
-            }
+                    "    total  2").stream().collect(Collectors.joining("\n"))
+            },
+            {"print distribution (distribution 2), (distribution 1)", Arrays.asList(
+                    "  (1)  1",
+                    "  (2)  1",
+                    "--------",
+                    "total  2").stream().collect(Collectors.joining("\n"))
+            },
+            {"print [distribution 3/2]", "[(1 + 1 / 2)]"},
+            {"print [3 / 2]", "[1 + 1 / 2]"},
+            {"print [[2, 3], int[]]", "[[2, 3], []]"}
         });
     }
 
