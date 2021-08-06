@@ -151,6 +151,36 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
     }
 
     @Override
+    public boolean enterDereferenceExpression(
+            final CountlangParser.DereferenceExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new DereferenceExpressionHandler(line, column));
+        return true;
+    }
+
+    @Override
+    public boolean enterArrayExpression(
+            final CountlangParser.ArrayExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new ArrayExpressionHandler(line, column));
+        return true;
+    }
+
+    @Override
+    public boolean enterEmptyArrayExpression(
+            final CountlangParser.EmptyArrayExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new EmptyArrayExpressionHandler(line, column));
+        return true;
+    }
+
+    @Override
     public boolean exitFunctionCallExpression(
             CountlangParser.FunctionCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleExpressionExit(delegationCtx);
@@ -246,6 +276,26 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
     @Override
     public boolean exitDistributionKnownExpression(
             final CountlangParser.DistributionKnownExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleExpressionExit(delegationCtx);
+    }
+
+    public boolean exitDereferenceExpression(
+            final CountlangParser.DereferenceExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleExpressionExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitArrayExpression(
+            final CountlangParser.ArrayExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleExpressionExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitEmptyArrayExpression(
+            final CountlangParser.EmptyArrayExpressionContext ctx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleExpressionExit(delegationCtx);
     }

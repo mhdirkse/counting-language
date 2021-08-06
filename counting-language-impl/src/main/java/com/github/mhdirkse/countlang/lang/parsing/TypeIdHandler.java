@@ -81,4 +81,21 @@ public class TypeIdHandler extends AbstractTypeHandler {
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleTypeExit(delegationCtx, subType -> countlangType = CountlangType.distributionOf(subType));
     }
+
+    @Override
+    public boolean enterArrayType(
+            CountlangParser.ArrayTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new TypeIdHandler(line, column));
+        return true;
+    }
+
+    @Override
+    public boolean exitArrayType(
+            CountlangParser.ArrayTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleTypeExit(delegationCtx, subType -> countlangType = CountlangType.arrayOf(subType));
+    }
 }

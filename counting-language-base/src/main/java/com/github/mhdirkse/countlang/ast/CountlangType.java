@@ -36,7 +36,8 @@ public final class CountlangType {
         FRACTION,
         INT,
         BOOL,
-        DISTRIBUTION;
+        DISTRIBUTION,
+        ARRAY;
     }
 
     private static final Set<Kind> PRIMITIVES = EnumSet.of(Kind.FRACTION, Kind.INT, Kind.BOOL);
@@ -80,19 +81,35 @@ public final class CountlangType {
     }
 
     public static CountlangType distributionOf(CountlangType subType) {
-        CountlangType key = new CountlangType(Kind.DISTRIBUTION, subType);
+        return compositeOf(Kind.DISTRIBUTION, subType);
+    }
+
+    private static CountlangType compositeOf(Kind compositeKind, CountlangType subType) {
+        CountlangType key = new CountlangType(compositeKind, subType);
         if(! repository.containsKey(key)) {
             repository.put(key, key);
         }
-        return repository.get(key);
+        return repository.get(key);        
     }
 
     public static CountlangType distributionOfAny() {
         return distributionOf(any());
     }
 
+    public static CountlangType arrayOf(CountlangType subType) {
+        return compositeOf(Kind.ARRAY, subType);
+    }
+
+    public static CountlangType arrayOfAny() {
+        return arrayOf(any());
+    }
+
     public boolean isDistribution() {
         return kind == Kind.DISTRIBUTION;
+    }
+
+    public boolean isArray() {
+        return kind == Kind.ARRAY;
     }
 
     public boolean isPrimitive() {

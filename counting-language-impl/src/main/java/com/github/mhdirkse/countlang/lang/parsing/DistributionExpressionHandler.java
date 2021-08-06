@@ -140,6 +140,20 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
     }
 
     @Override
+    public boolean enterArrayType(
+            CountlangParser.ArrayTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.enterArrayType(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean exitArrayType(
+            CountlangParser.ArrayTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.exitArrayType(antlrCtx, delegationCtx);
+    }
+
+    @Override
     void addExpression(ExpressionNode expression) {
         switch(kind) {
         case DEFAULT:

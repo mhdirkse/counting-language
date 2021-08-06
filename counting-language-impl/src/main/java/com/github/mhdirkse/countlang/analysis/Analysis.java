@@ -25,10 +25,12 @@ import java.util.stream.Collectors;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
+import com.github.mhdirkse.countlang.ast.ArrayExpression;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.ast.DereferenceExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
@@ -380,6 +382,45 @@ public class Analysis {
             if(actual != CountlangType.integer()) {
                 reporter.report(StatusCode.DISTRIBUTION_SCORED_COUNT_NOT_INT, item.getLine(), item.getColumn(), new Integer(distributionItemIndex + 1).toString(), actual.toString());
             }
+        }
+
+        @Override
+        public void visitArrayExpression(ArrayExpression expr) {
+            List<AstNode> children = expr.getChildren();
+            children.forEach(c -> c.accept(this));
+            if(children.isEmpty()) {
+                CountlangType countlangType = expr.getCountlangType();
+                if(countlangType == CountlangType.unknown()) {
+                    // The grammar should make this impossible
+                    throw new IllegalStateException("The grammar should only allow an empty array with explicit type");
+                } else if(! countlangType.isArray()) {
+                    // The grammar should make this impossible
+                    throw new IllegalStateException("The grammar should force array expressions to be of array type");
+                }
+            } else {
+                // The grammar should prohibit an explicit type with a non-empty array
+                CountlangType childType = ((ExpressionNode) children.get(0)).getCountlangType();
+                for(int i = 1; i < children.size(); ++i) {
+                    ExpressionNode currentChild = (ExpressionNode) children.get(i);
+                    if(currentChild.getCountlangType() != childType) {
+                        reporter.report(StatusCode.ARRAY_ELEMENT_TYPE_MISMATCH, expr.getLine(), expr.getColumn(),
+                                Integer.valueOf(i+1).toString(), currentChild.getCountlangType().toString(), childType.toString());
+                    }
+                }
+                expr.setCountlangType(CountlangType.arrayOf(childType));
+            }
+        }
+
+        @Override
+        public void visitDereferenceExpression(DereferenceExpression expr) {
+            expr.getChildren().forEach(c -> c.accept(this));
+            if(! expr.getContainer().getCountlangType().isArray()) {
+                reporter.report(StatusCode.MEMBER_OF_NON_ARRAY, expr.getLine(), expr.getColumn());
+            }
+            if(expr.getReference().getCountlangType() != CountlangType.integer()) {
+                reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn());
+            }
+            expr.setCountlangType(expr.getContainer().getCountlangType().getSubType());
         }
     }
 }

@@ -24,6 +24,7 @@ varDecl : typeId ID ;
 typeId : 
     (INTTYPE | BOOLTYPE | FRACTYPE ) # simpleType
     | (DISTRIBUTIONTYPE '<' typeId '>') # distributionType
+    | (ARRAYTYPE '<' typeId '>' ) # arrayType
     ;
 
 expr
@@ -37,7 +38,10 @@ expr
   | 'not' expr # notExpression
   | expr 'and' expr # andExpression
   | expr 'or' expr # orExpression
-  | 'distribution' ( '<' typeId '>' )? (distItem (',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression 
+  | 'distribution' ( '<' typeId '>' )? (distItem (',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression
+  | expr '[' expr ']' # dereferenceExpression
+  | '[' expr ( ',' expr )* ']' # arrayExpression
+  | typeId '[' ']' # emptyArrayExpression
   | 'known of' expr # distributionKnownExpression
   | ID # symbolReferenceExpression
   | (INT | BOOL ) # valueExpression
@@ -52,6 +56,7 @@ BOOLTYPE: 'bool' ;
 INTTYPE: 'int' ;
 FRACTYPE: 'fraction';
 DISTRIBUTIONTYPE: 'distribution' ;
+ARRAYTYPE: 'array' ;
 COUNTING: 'possibility' WS+ 'counting' ; 
 
 TOTAL: 'total' ;

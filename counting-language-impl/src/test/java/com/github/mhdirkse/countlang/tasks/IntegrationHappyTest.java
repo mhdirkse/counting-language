@@ -261,7 +261,25 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print (distribution 3, 3, 5).sum() + 100", "111"},
             {"print (distribution 2 of 2/3, 5/3).sum()", "3"},
             {"print (distribution 3, 3, 5).E()", "3 + 2 / 3"},
-            {"print (distribution 2 of 2/3, 5/3).E()", "1"}
+            {"print (distribution 2 of 2/3, 5/3).E()", "1"},
+
+            // Arrays
+
+            {"print [3, 6, 10]", "[3, 6, 10]"},
+            {"x = [3, 6, 10]; print x[1]", "3"},
+            {"x = [3, 6, 10]; print x[3]", "10"},
+            {"print int[]", "[]"},
+            {"print fraction[]", "[]"},
+            {"print distribution 3/2", Arrays.asList(
+                    "1 + 1 / 2  1",
+                    "------------",
+                    "    total  1").stream().collect(Collectors.joining("\n"))
+            },
+            {"print distribution [3, 2, 5]", Arrays.asList(
+                    "[3, 2, 5]  1",
+                    "------------",
+                    "    total  1").stream().collect(Collectors.joining("\n"))
+            }
         });
     }
 

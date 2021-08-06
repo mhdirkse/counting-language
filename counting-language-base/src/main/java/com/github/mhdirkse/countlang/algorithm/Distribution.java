@@ -36,6 +36,8 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.mhdirkse.countlang.utils.Utils;
+
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
@@ -185,7 +187,7 @@ public final class Distribution implements Comparable<Distribution> {
     private List<List<String>> createTable() {
         List<List<String>> table = new ArrayList<>();
         for(Object item: items.keySet()) {
-            String strItem = item.toString();
+            String strItem = Utils.genericFormat(item);
             String strCount = items.get(item).toString();
             table.add(Arrays.asList(strItem, strCount));
         }

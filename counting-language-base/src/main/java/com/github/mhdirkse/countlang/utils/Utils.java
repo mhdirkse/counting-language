@@ -19,6 +19,10 @@
 
 package com.github.mhdirkse.countlang.utils;
 
+import java.math.BigInteger;
+
+import org.apache.commons.math3.fraction.BigFraction;
+
 public class Utils {
     private Utils() {
     }
@@ -26,5 +30,37 @@ public class Utils {
     public static String formatLineColumnMessage(
             final int line, final int charPositionInLine, String msg) {
         return String.format("(%d, %d): ", line, charPositionInLine) + msg;
+    }
+
+    public static String genericFormat(Object value) {
+        if(value instanceof BigFraction) {
+            return formatBigFraction((BigFraction) value);
+        } else {
+            return value.toString();
+        }
+    }
+
+    private static String formatBigFraction(BigFraction b) {
+        if(b.compareTo(BigFraction.ZERO) == 0) {
+            return "0";
+        }
+        BigFraction v = b;
+        String firstSign = "";
+        String secondSign = "+";
+        if(b.compareTo(BigFraction.ZERO) < 0) {
+            v = b.negate();
+            firstSign = "-";
+            secondSign = "-";
+        }
+        BigInteger[] divAndRem = v.getNumerator().divideAndRemainder(v.getDenominator());
+        BigInteger div = divAndRem[0];
+        BigInteger rem = divAndRem[1];
+        if(div.compareTo(BigInteger.ZERO) == 0) {
+            return String.format("%s%s / %s", firstSign, rem.toString(), v.getDenominator().toString());
+        } else if(rem.compareTo(BigInteger.ZERO) == 0) {
+            return String.format("%s%s", firstSign, div.toString());
+        } else {
+            return String.format("%s%s %s %s / %s", firstSign, div.toString(), secondSign, rem.toString(), v.getDenominator().toString());
+        }
     }
 }
