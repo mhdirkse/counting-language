@@ -270,6 +270,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"x = [3, 6, 10]; print x[3]", "10"},
             {"print int[]", "[]"},
             {"print fraction[]", "[]"},
+            {"function fun(fraction x) {return x + 1}; print fun(1 / 2)", "1 + 1 / 2"},
+            {"function fun(array<int> x) {return x[1]}; print fun([3, 4])", "3"},
 
             // Formatting complex types
 
