@@ -22,10 +22,10 @@ package com.github.mhdirkse.countlang.execution;
 import java.math.BigInteger;
 
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 class Target {
     static CompositeExpression getCompositeExpression() {

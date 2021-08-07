@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public abstract class DistributionAggregator extends DistributionMemberNoArguments {
     DistributionAggregator(String name, CountlangType ownerType, CountlangType returnType) {

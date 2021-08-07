@@ -21,7 +21,7 @@ package com.github.mhdirkse.countlang.analysis;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 interface Memory extends BlockListener {
     List<VariableErrorEvent> getVariableErrorEvents();

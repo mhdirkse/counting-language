@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.ast;
+package com.github.mhdirkse.countlang.type;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -28,16 +28,25 @@ import java.util.Set;
 
 import lombok.EqualsAndHashCode;
 
+/**
+ * Entry point of creating counting-language types. Class {@link TupleType} can only be
+ * constructed through the static factory method in this class.
+ * @author martijn
+ *
+ */
+// Tested in package com.github.mhdirkse.countlang.ast. Then we
+// have no access to package-private stuff of package com.github.mhdirkse.countlang.type.
 @EqualsAndHashCode
-public final class CountlangType {
-    private enum Kind {
+public class CountlangType {
+    enum Kind {
         UNKNOWN,
         ANY,
         FRACTION,
         INT,
         BOOL,
         DISTRIBUTION,
-        ARRAY;
+        ARRAY,
+        TUPLE;
     }
 
     private static final Set<Kind> PRIMITIVES = EnumSet.of(Kind.FRACTION, Kind.INT, Kind.BOOL);
@@ -46,10 +55,18 @@ public final class CountlangType {
 
     private final Kind kind;
     private final CountlangType subType;
+    private final CountlangType secondSubType;
 
     private CountlangType(final Kind kind, final CountlangType subType) {
         this.kind = kind;
         this.subType = subType;
+        this.secondSubType = null;
+    }
+
+    CountlangType(final Kind kind, final CountlangType subType, CountlangType secondSubType) {
+        this.kind = kind;
+        this.subType = subType;
+        this.secondSubType = secondSubType;
     }
 
     public static CountlangType unknown() {
@@ -104,6 +121,35 @@ public final class CountlangType {
         return arrayOf(any());
     }
 
+    public static TupleType tupleOf(List<CountlangType> rawSubTypes) {
+        List<CountlangType> subTypes = new ArrayList<>();
+        for(CountlangType rawSubType: rawSubTypes) {
+            if(rawSubType.isTuple()) {
+                TupleType theTuple = (TupleType) rawSubType;
+                subTypes.addAll(theTuple.getTupleSubTypes());
+            } else {
+                subTypes.add(rawSubType);
+            }
+        }
+        if(subTypes.size() <= 1) {
+            throw new IllegalArgumentException("Tuples should hold at least two members");
+        }
+        if(subTypes.size() == 2) {
+            CountlangType key = new TupleType(subTypes.get(0), subTypes.get(1));
+            if(! repository.containsKey(key)) {
+                repository.put(key, key);
+            }
+            return (TupleType) repository.get(key);
+        } else {
+            CountlangType tail = tupleOf(subTypes.subList(1, subTypes.size()));
+            CountlangType key = new TupleType(subTypes.get(0), tail);
+            if(! repository.containsKey(key)) {
+                repository.put(key, key);
+            }
+            return (TupleType) repository.get(key);
+        }
+    }
+
     public boolean isDistribution() {
         return kind == Kind.DISTRIBUTION;
     }
@@ -123,6 +169,13 @@ public final class CountlangType {
     	return false;
     }
 
+    public boolean isTuple() {
+        return kind == Kind.TUPLE;
+    }
+
+    /**
+     * Do not use for tuples.
+     */
     public CountlangType getSubType() {
         return subType;
     }
@@ -138,6 +191,7 @@ public final class CountlangType {
                 result.add(distributionOf(subTypeGeneralization));
             }
         }
+        // TODO: Do the same for arrays.
         return result;
     }
 
@@ -153,5 +207,6 @@ public final class CountlangType {
         } else {
             return String.format("%s<%s>", kind.name().toLowerCase(), getSubType().toString());
         }
+        // We do not have to do tuples here, happens by TupleType.toString.
     }
 }

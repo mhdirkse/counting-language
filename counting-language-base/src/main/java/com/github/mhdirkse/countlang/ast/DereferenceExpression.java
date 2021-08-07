@@ -3,6 +3,8 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public class DereferenceExpression extends ExpressionNode implements CompositeNode {
     private CountlangType countlangType = CountlangType.unknown();
     private ExpressionNode container;

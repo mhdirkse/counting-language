@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 import lombok.Getter;
 import lombok.Setter;
 

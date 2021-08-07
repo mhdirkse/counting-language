@@ -21,9 +21,9 @@ package com.github.mhdirkse.countlang.analysis;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
+import com.github.mhdirkse.countlang.type.CountlangType;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class CodeBlocks {

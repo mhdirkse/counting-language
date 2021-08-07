@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public class FormalParameters extends AstNode implements CompositeNode {
     private List<FormalParameter> formalParameters = new ArrayList<>();
 

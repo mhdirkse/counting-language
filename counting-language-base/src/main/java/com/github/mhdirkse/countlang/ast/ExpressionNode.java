@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public abstract class ExpressionNode extends AstNode {
     public ExpressionNode(final int line, final int column) {
         super(line, column);

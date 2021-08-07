@@ -5,9 +5,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+
+import com.github.mhdirkse.countlang.type.CountlangType;
+import com.github.mhdirkse.countlang.type.TupleType;
 
 public class CountlangTypeTest {
     @Test
@@ -41,5 +45,31 @@ public class CountlangTypeTest {
     	assertTrue(CountlangType.integer().isPrimitiveNumeric());
     	assertFalse(CountlangType.bool().isPrimitiveNumeric());
     	assertFalse(CountlangType.distributionOf(CountlangType.integer()).isPrimitiveNumeric());
+    }
+
+    @Test
+    public void testTupleOfTwoRemainsUnique() {
+        TupleType firstInstance = CountlangType.tupleOf(Arrays.asList(CountlangType.integer(), CountlangType.bool()));
+        TupleType secondInstance = CountlangType.tupleOf(Arrays.asList(CountlangType.integer(), CountlangType.bool()));
+        assertSame(firstInstance, secondInstance);
+        assertTrue(firstInstance.isTuple());
+        List<CountlangType> storedSubTypes = firstInstance.getTupleSubTypes();
+        assertSame(CountlangType.integer(), storedSubTypes.get(0));
+        assertSame(CountlangType.bool(), storedSubTypes.get(1));
+        assertEquals("tuple<int, bool>", firstInstance.toString());
+    }
+
+    @Test
+    public void testTupleOfThreeRemainsUnieque() {
+        TupleType intFrac = CountlangType.tupleOf(Arrays.asList(CountlangType.integer(), CountlangType.fraction()));
+        TupleType boolInt = CountlangType.tupleOf(Arrays.asList(CountlangType.bool(), CountlangType.integer()));
+        TupleType first = CountlangType.tupleOf(Arrays.asList(CountlangType.bool(), CountlangType.integer(), CountlangType.fraction()));
+        TupleType second = CountlangType.tupleOf(Arrays.asList(boolInt, CountlangType.fraction()));
+        TupleType third = CountlangType.tupleOf(Arrays.asList(CountlangType.bool(), intFrac));
+        TupleType fourth = CountlangType.tupleOf(Arrays.asList(first));
+        assertSame(first, second);
+        assertSame(first, third);
+        assertSame(first, fourth);
+        assertEquals("tuple<bool, int, fraction>", first.toString());
     }
 }

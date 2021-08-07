@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
-import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class MemoryTest {
     private Memory memory;

@@ -22,6 +22,8 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

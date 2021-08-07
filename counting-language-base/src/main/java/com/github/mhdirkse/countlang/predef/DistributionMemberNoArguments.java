@@ -21,10 +21,10 @@ package com.github.mhdirkse.countlang.predef;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.PredefinedFunction;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 abstract class DistributionMemberNoArguments implements PredefinedFunction {
     private final String name;

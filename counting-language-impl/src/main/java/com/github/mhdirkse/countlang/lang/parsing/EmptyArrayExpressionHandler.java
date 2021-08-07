@@ -2,9 +2,9 @@ package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class EmptyArrayExpressionHandler extends AbstractCountlangListenerHandler implements ExpressionSource {
     private ArrayExpression expression;

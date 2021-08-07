@@ -22,10 +22,10 @@ package com.github.mhdirkse.countlang.predef;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.PredefinedFunction;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionCountOf implements PredefinedFunction {
 

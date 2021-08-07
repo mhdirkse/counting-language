@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public class ArrayExpression extends ExpressionNode implements CompositeNode {
     public ArrayExpression(int line, int column) {
         super(line, column);

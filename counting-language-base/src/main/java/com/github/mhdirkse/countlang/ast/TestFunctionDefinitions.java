@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 import com.github.mhdirkse.countlang.ast.Operator.OperatorAdd;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public final class TestFunctionDefinitions {
 

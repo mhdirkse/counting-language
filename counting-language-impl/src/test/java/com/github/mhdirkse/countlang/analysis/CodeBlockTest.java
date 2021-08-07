@@ -33,7 +33,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class CodeBlockTest implements Memory {
     private static enum BlockKind {

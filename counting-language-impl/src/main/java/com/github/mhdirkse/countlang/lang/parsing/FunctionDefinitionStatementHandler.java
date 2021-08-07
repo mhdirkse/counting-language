@@ -19,11 +19,11 @@
 
 package com.github.mhdirkse.countlang.lang.parsing;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 class FunctionDefinitionStatementHandler extends FunctionDefinitionStatementHandlerBase
 implements StatementSource {

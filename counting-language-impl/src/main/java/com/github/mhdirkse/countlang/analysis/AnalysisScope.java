@@ -25,7 +25,7 @@ import java.util.Map;
 
 import com.github.mhdirkse.countlang.algorithm.Scope;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
-import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 class AnalysisScope implements BlockListener, Scope {
     private final ScopeAccess access;

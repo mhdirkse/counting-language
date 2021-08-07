@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.type.CountlangType;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 import lombok.Getter;

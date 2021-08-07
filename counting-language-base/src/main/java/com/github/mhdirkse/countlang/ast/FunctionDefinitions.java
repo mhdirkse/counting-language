@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public class FunctionDefinitions {
     private Map<FunctionKey, FunctionDefinition> functions = new HashMap<>();
 

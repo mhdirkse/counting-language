@@ -19,6 +19,8 @@
 
 package com.github.mhdirkse.countlang.ast;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public final class ValueExpression extends ExpressionNode {
     private final Object value;
     private final CountlangType countlangType;

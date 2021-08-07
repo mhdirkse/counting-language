@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.ScopeStack;
-import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 class MemoryImpl implements Memory {
     private ScopeStack<AnalysisScope> analysisScopes = new ScopeStack<AnalysisScope>();

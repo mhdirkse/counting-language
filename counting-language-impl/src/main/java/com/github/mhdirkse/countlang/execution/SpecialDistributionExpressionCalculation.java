@@ -23,10 +23,10 @@ import java.math.BigInteger;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 abstract class SpecialDistributionExpressionCalculation extends SimpleDistributionExpressionCalculation {
     BigInteger finalValue;

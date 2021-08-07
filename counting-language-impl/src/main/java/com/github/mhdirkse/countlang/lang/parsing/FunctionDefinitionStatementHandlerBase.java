@@ -25,10 +25,10 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 abstract class FunctionDefinitionStatementHandlerBase extends AbstractCountlangListenerHandler
 implements TerminalFilterCallback {

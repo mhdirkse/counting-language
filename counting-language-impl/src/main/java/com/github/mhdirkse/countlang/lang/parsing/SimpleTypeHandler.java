@@ -22,8 +22,8 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 class SimpleTypeHandler extends AbstractTypeHandler {
     private CountlangType countlangType;

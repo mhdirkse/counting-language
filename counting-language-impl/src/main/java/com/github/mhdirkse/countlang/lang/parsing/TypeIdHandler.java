@@ -22,8 +22,8 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import java.util.function.Consumer;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class TypeIdHandler extends AbstractTypeHandler {
     private CountlangType countlangType = CountlangType.unknown();

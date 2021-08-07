@@ -29,7 +29,6 @@ import com.github.mhdirkse.countlang.ast.ArrayExpression;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.DereferenceExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
@@ -62,6 +61,7 @@ import com.github.mhdirkse.countlang.ast.WhileStatement;
 import com.github.mhdirkse.countlang.tasks.SortingStatusReporter;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class Analysis {
     private final FunctionDefinitions funDefs;

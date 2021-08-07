@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.math3.fraction.BigFraction;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public abstract class Operator extends AstNode {
     public Operator(final int line, final int column) {

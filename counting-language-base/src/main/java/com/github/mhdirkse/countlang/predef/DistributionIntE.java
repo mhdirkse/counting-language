@@ -24,8 +24,8 @@ import java.math.BigInteger;
 import org.apache.commons.math3.fraction.BigFraction;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionIntE extends DistributionAggregator {
     private final DistributionIntSum delegate = new DistributionIntSum();

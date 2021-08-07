@@ -23,9 +23,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 import lombok.Getter;
 

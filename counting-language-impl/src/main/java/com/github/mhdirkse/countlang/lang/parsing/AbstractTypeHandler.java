@@ -19,7 +19,7 @@
 
 package com.github.mhdirkse.countlang.lang.parsing;
 
-import com.github.mhdirkse.countlang.ast.CountlangType;
+import com.github.mhdirkse.countlang.type.CountlangType;
 
 abstract class AbstractTypeHandler extends AbstractCountlangListenerHandler {
     final int line;

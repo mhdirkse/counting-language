@@ -21,6 +21,8 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.util.List;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public interface FunctionDefinition {
     FunctionKey getKey();
     CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler);

@@ -22,6 +22,8 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.type.CountlangType;
+
 public abstract class AbstractDistributionExpression extends ExpressionNode implements CompositeNode {
     private CountlangType countlangType = CountlangType.unknown();
     private List<AbstractDistributionItem> scoredValues = new ArrayList<>();
