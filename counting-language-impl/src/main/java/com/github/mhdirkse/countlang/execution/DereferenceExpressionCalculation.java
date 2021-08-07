@@ -32,7 +32,7 @@ final class DereferenceExpressionCalculation extends ExpressionResultsCollector 
 
     @Override
     final void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        CountlangArray container = (CountlangArray) subExpressionResults.get(0);
+        CountlangComposite container = (CountlangComposite) subExpressionResults.get(0);
         BigInteger index = (BigInteger) subExpressionResults.get(1);
         if(index.compareTo(BigInteger.ONE) < 0) {
             throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Invalid array index %s", index.toString()));

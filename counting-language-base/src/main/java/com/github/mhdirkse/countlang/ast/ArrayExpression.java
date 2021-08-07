@@ -21,17 +21,21 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.github.mhdirkse.countlang.type.CountlangType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ArrayExpression extends ExpressionNode implements CompositeNode {
+    @Getter @Setter
+    private TypeNode typeNode;
+    private CountlangType countlangType = CountlangType.unknown();
+    private List<ExpressionNode> elements = new ArrayList<>();
+    
     public ArrayExpression(int line, int column) {
         super(line, column);
     }
-
-    private CountlangType countlangType = CountlangType.unknown();
-    private List<ExpressionNode> elements = new ArrayList<>();
 
     @Override
     public CountlangType getCountlangType() {
@@ -46,9 +50,18 @@ public class ArrayExpression extends ExpressionNode implements CompositeNode {
         elements.add(element);
     }
 
+    public List<ExpressionNode> getElements() {
+        return elements;
+    }
+
     @Override
     public List<AstNode> getChildren() {
-        return elements.stream().map(e -> (AstNode) e).collect(Collectors.toList());
+        List<AstNode> result = new ArrayList<>();
+        if(typeNode != null) {
+            result.add(typeNode);
+        }
+        result.addAll(elements);
+        return result;
     }
 
     @Override

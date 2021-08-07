@@ -21,10 +21,16 @@ package com.github.mhdirkse.countlang.ast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.github.mhdirkse.countlang.type.CountlangType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public abstract class AbstractDistributionExpression extends ExpressionNode implements CompositeNode {
+    @Getter @Setter
+    private TypeNode typeNode;
     private CountlangType countlangType = CountlangType.unknown();
     private List<AbstractDistributionItem> scoredValues = new ArrayList<>();
 
@@ -56,8 +62,15 @@ public abstract class AbstractDistributionExpression extends ExpressionNode impl
     @Override
     public List<AstNode> getChildren() {
         List<AstNode> result = new ArrayList<>();
+        if(typeNode != null) {
+            result.add(typeNode);
+        }
         result.addAll(scoredValues);
         return result;
+    }
+
+    public final List<AstNode> getNonTypeChildren() {
+        return getChildren().stream().filter(c -> ! (c instanceof TypeNode)).collect(Collectors.toList());
     }
 
     public int getNumSubExpressions() {

@@ -64,9 +64,9 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
         return returnType;
     }
 
-    public void addFormalParameter(final String parameterName, final CountlangType countlangType) {
+    public void addFormalParameter(final String parameterName, final TypeNode typeNode) {
         formalParameters.addFormalParameter(
-                new FormalParameter(getLine(), getColumn(), parameterName, countlangType));
+                new FormalParameter(getLine(), getColumn(), parameterName, typeNode));
     }
 
     public void addStatement(final Statement statement) {

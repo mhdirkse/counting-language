@@ -31,10 +31,11 @@ import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
+import com.github.mhdirkse.countlang.ast.DistributionTypeNode;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
+import com.github.mhdirkse.countlang.ast.TypeNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
-import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionExpressionHandler extends AbstractExpressionHandler implements ExpressionSource {
     private static enum Kind {
@@ -57,7 +58,7 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
         this.line = line;
         this.column = column;
         this.item = null;
-        typeIdHandler = new TypeIdHandler(line, column);
+        typeIdHandler = new TypeIdHandler();
     }
 
     @Override
@@ -203,9 +204,11 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
         for(AbstractDistributionItem se: scoredExpressions) {
             distributionExpression.addScoredValue(se);
         }
-        CountlangType countlangType = typeIdHandler.getCountlangType();
-        if(countlangType != CountlangType.unknown()) {
-            distributionExpression.setCountlangType(CountlangType.distributionOf(countlangType));
+        TypeNode subTypeNode = typeIdHandler.getTypeNode();
+        if(subTypeNode != null) {
+            DistributionTypeNode typeNode = new DistributionTypeNode(line, column);
+            typeNode.addChild(subTypeNode);
+            distributionExpression.setTypeNode(typeNode);            
         }
         return distributionExpression;
     }

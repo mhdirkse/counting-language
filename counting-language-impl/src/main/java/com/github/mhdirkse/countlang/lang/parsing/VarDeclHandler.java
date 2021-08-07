@@ -25,14 +25,25 @@ import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.lang.CountlangLexer;
 
 class VarDeclHandler extends TypeIdHandler {
+    int line;
+    int column;
     private String id;
 
     VarDeclHandler(int line, int column) {
-        super(line, column);
+        this.line = line;
+        this.column = column;
     }
    
     String getId() {
         return id;
+    }
+
+    int getLine() {
+        return line;
+    }
+
+    int getColumn() {
+        return column;
     }
 
     @Override

@@ -27,8 +27,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
+import com.github.mhdirkse.countlang.ast.TypeNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
-import com.github.mhdirkse.countlang.type.CountlangType;
 
 abstract class FunctionDefinitionStatementHandlerBase extends AbstractCountlangListenerHandler
 implements TerminalFilterCallback {
@@ -94,12 +94,12 @@ implements TerminalFilterCallback {
         } else {
             List<FormalParameter> formalParameters = ((VarDeclsHandler) delegationCtx.getPreviousHandler()).getFormalParameters();
             for (FormalParameter formalParameter : formalParameters) {
-                addFormalParameter(formalParameter.getName(), formalParameter.getCountlangType());
+                addFormalParameter(formalParameter.getName(), formalParameter.getTypeNode());
             }
             delegationCtx.removeAllPreceeding();
             return true;
         }
     }
 
-    abstract void addFormalParameter(String name, CountlangType countlangType);
+    abstract void addFormalParameter(String name, TypeNode typeNode);
 }

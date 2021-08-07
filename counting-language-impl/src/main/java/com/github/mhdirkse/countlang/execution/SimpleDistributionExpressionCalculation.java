@@ -23,9 +23,13 @@ import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.AFTE
 import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.BEFORE;
 import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.RUNNING;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.TypeNode;
 
 class SimpleDistributionExpressionCalculation implements AstNodeExecution {
     private AstNodeExecutionState state = BEFORE;
@@ -53,8 +57,8 @@ class SimpleDistributionExpressionCalculation implements AstNodeExecution {
             return null;
         }
         state = RUNNING;
-        if(indexInItems < expression.getChildren().size()) {
-            return expression.getChildren().get(indexInItems++);    
+        if(indexInItems < expression.getNonTypeChildren().size()) {
+            return expression.getNonTypeChildren().get(indexInItems++);    
         }
         state = AFTER;
         finishBuilder();

@@ -27,8 +27,8 @@ import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
+import com.github.mhdirkse.countlang.ast.TypeNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
-import com.github.mhdirkse.countlang.type.CountlangType;
 
 class ExperimentDefinitionStatementHandler extends FunctionDefinitionStatementHandlerBase
 implements StatementSource {
@@ -67,7 +67,7 @@ implements StatementSource {
     }
 
     @Override
-    void addFormalParameter(String name, CountlangType countlangType) {
-        statement.addFormalParameter(name, countlangType);
+    void addFormalParameter(String name, TypeNode typeNode) {
+        statement.addFormalParameter(name, typeNode);
     }
 }

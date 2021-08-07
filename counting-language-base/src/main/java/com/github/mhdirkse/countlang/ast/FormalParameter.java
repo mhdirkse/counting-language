@@ -28,12 +28,16 @@ public class FormalParameter extends AstNode {
     private final String name;
 
     @Getter
-    private final CountlangType countlangType;
-
-    public FormalParameter(final int line, final int column, final String name, CountlangType countlangType) {
+    private final TypeNode typeNode;
+    
+    public FormalParameter(final int line, final int column, final String name, TypeNode typeNode) {
         super(line, column);
         this.name = name;
-        this.countlangType = countlangType;
+        this.typeNode = typeNode;
+    }
+
+    public CountlangType getCountlangType() {
+        return typeNode.getCountlangType();
     }
 
     @Override

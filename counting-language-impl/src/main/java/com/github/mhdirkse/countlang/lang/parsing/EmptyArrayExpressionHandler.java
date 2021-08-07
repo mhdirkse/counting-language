@@ -21,9 +21,10 @@ package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
+import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
+import com.github.mhdirkse.countlang.ast.TypeNode;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
-import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class EmptyArrayExpressionHandler extends AbstractCountlangListenerHandler implements ExpressionSource {
     private ArrayExpression expression;
@@ -31,7 +32,7 @@ public class EmptyArrayExpressionHandler extends AbstractCountlangListenerHandle
 
     public EmptyArrayExpressionHandler(int line, int column) {
         super(false);
-        typeHandler = new TypeIdHandler(line, column);
+        typeHandler = new TypeIdHandler();
         expression = new ArrayExpression(line, column);
     }
 
@@ -79,7 +80,12 @@ public class EmptyArrayExpressionHandler extends AbstractCountlangListenerHandle
 
     @Override
     public ExpressionNode getExpression() {
-        expression.setCountlangType(CountlangType.arrayOf(typeHandler.getCountlangType()));
+        TypeNode subTypeNode = typeHandler.getTypeNode();
+        if(subTypeNode != null) {
+            ArrayTypeNode typeNode = new ArrayTypeNode(expression.getLine(), expression.getColumn());
+            typeNode.addChild(subTypeNode);
+            expression.setTypeNode(typeNode);
+        }
         return expression;
     }
 }

@@ -45,4 +45,9 @@ public interface Visitor {
     public void visitDistributionItemCount(DistributionItemCount item);
     public void visitArrayExpression(ArrayExpression item);
     public void visitDereferenceExpression(DereferenceExpression item);
+    public void visitTupleExpression(TupleExpression tupleExpression);
+    public void visitAtomicTypeNode(AtomicTypeNode item);
+    public void visitDistributionTypeNode(DistributionTypeNode item);
+    public void visitArrayTypeNode(ArrayTypeNode item);
+    public void visitTupleTypeNode(TupleTypeNode item);
 }

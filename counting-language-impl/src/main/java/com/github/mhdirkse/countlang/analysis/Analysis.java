@@ -26,14 +26,17 @@ import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
+import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.AtomicTypeNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DereferenceExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
+import com.github.mhdirkse.countlang.ast.DistributionTypeNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
@@ -55,6 +58,9 @@ import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
+import com.github.mhdirkse.countlang.ast.TupleExpression;
+import com.github.mhdirkse.countlang.ast.TupleTypeNode;
+import com.github.mhdirkse.countlang.ast.TypeNode;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.Visitor;
 import com.github.mhdirkse.countlang.ast.WhileStatement;
@@ -154,6 +160,7 @@ public class Analysis {
             blockCreator.run();
             codeBlocks.pushScope(new AnalysisScope(ScopeAccess.HIDE_PARENT));
             for(FormalParameter p: statement.getFormalParameters().getFormalParameters()) {
+                p.accept(this);
                 codeBlocks.addParameter(p.getName(), p.getLine(), p.getColumn(), p.getCountlangType());
             }
             statement.getStatements().accept(this);
@@ -325,6 +332,30 @@ public class Analysis {
 
         @Override
         public void visitFormalParameter(FormalParameter formalParameter) {
+            formalParameter.getTypeNode().accept(this);
+        }
+
+        @Override
+        public void visitAtomicTypeNode(AtomicTypeNode typeNode) {
+            // Nothing to do. There are no children and the countlang type is always known and correct.
+        }
+
+        @Override
+        public void visitDistributionTypeNode(DistributionTypeNode typeNode) {
+            typeNode.getChildren().forEach(c -> c.accept(this));
+        }
+
+        @Override
+        public void visitArrayTypeNode(ArrayTypeNode typeNode) {
+            typeNode.getChildren().forEach(c -> c.accept(this));            
+        }
+
+        @Override
+        public void visitTupleTypeNode(TupleTypeNode typeNode) {
+            typeNode.getChildren().forEach(c -> c.accept(this));
+            if(typeNode.getChildren().stream().anyMatch(c -> ((TypeNode) c).getCountlangType().isTuple())) {
+                reporter.report(StatusCode.TUPLES_MUST_BE_FLAT, typeNode.getLine(), typeNode.getColumn());
+            }
         }
 
         @Override
@@ -333,8 +364,14 @@ public class Analysis {
         }
 
         private void genericHandleDistributionExpression(AbstractDistributionExpression expr) {
+            if(expr.getTypeNode() != null) {
+                expr.getTypeNode().accept(this);
+                expr.setCountlangType(expr.getTypeNode().getCountlangType());
+            }
             for(distributionItemIndex = 0; distributionItemIndex < expr.getNumScoredValues(); distributionItemIndex++) {
                 AbstractDistributionItem subExpression = expr.getScoredValues().get(distributionItemIndex);
+                // By visiting the child here we ensure that the member variable
+                // distributionItemIndex has been set.
                 subExpression.accept(this);
                 CountlangType subExpressionType = subExpression.getItem().getCountlangType();
                 if(expr.getCountlangType() == CountlangType.unknown()) {
@@ -352,7 +389,7 @@ public class Analysis {
         @Override
         public void visitDistributionExpressionWithTotal(DistributionExpressionWithTotal expr) {
             genericHandleDistributionExpression(expr);
-            ExpressionNode extra = (ExpressionNode) expr.getChildren().get(expr.getNumSubExpressions() - 1);
+            ExpressionNode extra = (ExpressionNode) expr.getNonTypeChildren().get(expr.getNumSubExpressions() - 1);
             checkExtraValue(extra);
         }
 
@@ -366,7 +403,7 @@ public class Analysis {
         @Override
         public void visitDistributionExpressionWithUnknown(DistributionExpressionWithUnknown expr) {
             genericHandleDistributionExpression(expr);
-            ExpressionNode extra = (ExpressionNode) expr.getChildren().get(expr.getNumSubExpressions() - 1);
+            ExpressionNode extra = (ExpressionNode) expr.getNonTypeChildren().get(expr.getNumSubExpressions() - 1);
             checkExtraValue(extra);
         }
 
@@ -386,9 +423,12 @@ public class Analysis {
 
         @Override
         public void visitArrayExpression(ArrayExpression expr) {
-            List<AstNode> children = expr.getChildren();
-            children.forEach(c -> c.accept(this));
-            if(children.isEmpty()) {
+            expr.getChildren().forEach(c -> c.accept(this));
+            if(expr.getTypeNode() != null) {
+                expr.setCountlangType(expr.getTypeNode().getCountlangType());
+            }
+            List<ExpressionNode> members = expr.getElements();
+            if(members.isEmpty()) {
                 CountlangType countlangType = expr.getCountlangType();
                 if(countlangType == CountlangType.unknown()) {
                     // The grammar should make this impossible
@@ -399,9 +439,9 @@ public class Analysis {
                 }
             } else {
                 // The grammar should prohibit an explicit type with a non-empty array
-                CountlangType childType = ((ExpressionNode) children.get(0)).getCountlangType();
-                for(int i = 1; i < children.size(); ++i) {
-                    ExpressionNode currentChild = (ExpressionNode) children.get(i);
+                CountlangType childType = members.get(0).getCountlangType();
+                for(int i = 1; i < members.size(); ++i) {
+                    ExpressionNode currentChild = members.get(i);
                     if(currentChild.getCountlangType() != childType) {
                         reporter.report(StatusCode.ARRAY_ELEMENT_TYPE_MISMATCH, expr.getLine(), expr.getColumn(),
                                 Integer.valueOf(i+1).toString(), currentChild.getCountlangType().toString(), childType.toString());
@@ -412,15 +452,30 @@ public class Analysis {
         }
 
         @Override
+        public void visitTupleExpression(TupleExpression expr) {
+            List<AstNode> children = expr.getChildren();
+            children.forEach(c -> c.accept(this));
+            if(children.size() <= 1) {
+                reporter.report(StatusCode.TUPLE_AT_LEAST_TWO_MEMBERS, expr.getLine(), expr.getColumn());
+            } else {
+                List<CountlangType> childTypes = children.stream()
+                        .map(c -> ((ExpressionNode) c).getCountlangType())
+                        .collect(Collectors.toList());
+                expr.setCountlangType(CountlangType.tupleOf(childTypes));
+            }
+        }
+        
+        @Override
         public void visitDereferenceExpression(DereferenceExpression expr) {
             expr.getChildren().forEach(c -> c.accept(this));
-            if(! expr.getContainer().getCountlangType().isArray()) {
-                reporter.report(StatusCode.MEMBER_OF_NON_ARRAY, expr.getLine(), expr.getColumn());
+            CountlangType containerType = expr.getContainer().getCountlangType();
+            if(! (containerType.isArray() || containerType.isTuple())) {
+                reporter.report(StatusCode.MEMBER_OF_NON_ARRAY_OR_TUPLE, expr.getLine(), expr.getColumn());
             }
             if(expr.getReference().getCountlangType() != CountlangType.integer()) {
                 reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn());
             }
-            expr.setCountlangType(expr.getContainer().getCountlangType().getSubType());
+            expr.setCountlangType(containerType.getSubType());
         }
     }
 }

@@ -181,6 +181,16 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
     }
 
     @Override
+    public boolean enterTupleExpression(
+            final CountlangParser.TupleExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = ctx.start.getLine();
+        int column = ctx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new TupleExpressionHandler(line, column));
+        return true;        
+    }
+
+    @Override
     public boolean exitFunctionCallExpression(
             CountlangParser.FunctionCallExpressionContext antlrCtx, final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleExpressionExit(delegationCtx);
@@ -296,6 +306,13 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
     @Override
     public boolean exitEmptyArrayExpression(
             final CountlangParser.EmptyArrayExpressionContext ctx,
+            final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleExpressionExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitTupleExpression(
+            final CountlangParser.TupleExpressionContext ctx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleExpressionExit(delegationCtx);
     }

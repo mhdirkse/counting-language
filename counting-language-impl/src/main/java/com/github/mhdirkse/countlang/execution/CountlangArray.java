@@ -25,18 +25,20 @@ import java.util.stream.Collectors;
 import com.github.mhdirkse.countlang.utils.ListComparator;
 import com.github.mhdirkse.countlang.utils.Utils;
 
-class CountlangArray implements Comparable<CountlangArray> {
+class CountlangArray implements Comparable<CountlangArray>, CountlangComposite {
     private final List<Object> items;
 
     CountlangArray(List<Object> items) {
         this.items = items;
     }
 
-    Object get(int i) {
+    @Override
+    public Object get(int i) {
         return items.get(i);
     }
 
-    int size() {
+    @Override
+    public int size() {
         return items.size();
     }
 

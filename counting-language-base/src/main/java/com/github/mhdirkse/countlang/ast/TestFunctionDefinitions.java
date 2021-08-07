@@ -38,7 +38,8 @@ public final class TestFunctionDefinitions {
         FunctionDefinitionStatement instance = new FunctionDefinitionStatement(1, 1);
         instance.setKey(new FunctionKey("testFunction"));
         instance.setStatements(new StatementGroup(1, 1));
-        instance.addFormalParameter(FORMAL_PARAMETER, CountlangType.integer());
+        TypeNode theType = new AtomicTypeNode(1, 1, CountlangType.integer());
+        instance.addFormalParameter(FORMAL_PARAMETER, theType);
         instance.addStatement(getReturnStatement());
         instance.setReturnType(CountlangType.integer());
         return instance;

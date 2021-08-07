@@ -55,7 +55,7 @@ class VarDeclsHandler extends AbstractCountlangListenerHandler {
             return false;
         } else {
             VarDeclHandler handler = ((VarDeclHandler) delegationCtx.getPreviousHandler());
-            formalParameters.add(new FormalParameter(handler.getLine(), handler.getColumn(), handler.getId(), handler.getCountlangType()));
+            formalParameters.add(new FormalParameter(handler.getLine(), handler.getColumn(), handler.getId(), handler.getTypeNode()));
             delegationCtx.removeAllPreceeding();
             return true;
         }

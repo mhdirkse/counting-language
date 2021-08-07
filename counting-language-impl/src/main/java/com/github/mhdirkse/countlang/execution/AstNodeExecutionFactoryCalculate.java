@@ -22,13 +22,16 @@ package com.github.mhdirkse.countlang.execution;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
+import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
+import com.github.mhdirkse.countlang.ast.AtomicTypeNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DereferenceExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
+import com.github.mhdirkse.countlang.ast.DistributionTypeNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionMember;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
@@ -41,6 +44,8 @@ import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
+import com.github.mhdirkse.countlang.ast.TupleExpression;
+import com.github.mhdirkse.countlang.ast.TupleTypeNode;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.ast.WhileStatement;
 
@@ -151,7 +156,32 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     }
 
     @Override
+    public void visitTupleExpression(TupleExpression expression) {
+        result = new TupleExpressionCalculation(expression);
+    }
+
+    @Override
     public void visitDereferenceExpression(DereferenceExpression expr) {
         result = new DereferenceExpressionCalculation(expr);
+    }
+
+    @Override
+    public void visitAtomicTypeNode(AtomicTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
+    }
+
+    @Override
+    public void visitDistributionTypeNode(DistributionTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
+    }
+
+    @Override
+    public void visitArrayTypeNode(ArrayTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
+    }
+
+    @Override
+    public void visitTupleTypeNode(TupleTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
     }
 }

@@ -25,6 +25,7 @@ typeId :
     (INTTYPE | BOOLTYPE | FRACTYPE ) # simpleType
     | (DISTRIBUTIONTYPE '<' typeId '>') # distributionType
     | (ARRAYTYPE '<' typeId '>' ) # arrayType
+    | (TUPLETYPE '<' typeId (',' typeId)+ '>') # tupleType
     ;
 
 expr
@@ -43,6 +44,7 @@ expr
   | '[' expr ( ',' expr )* ']' # arrayExpression
   | typeId '[' ']' # emptyArrayExpression
   | 'known of' expr # distributionKnownExpression
+  | 'tuple' expr (',' expr)+ # tupleExpression
   | ID # symbolReferenceExpression
   | (INT | BOOL ) # valueExpression
   ;
@@ -57,6 +59,7 @@ INTTYPE: 'int' ;
 FRACTYPE: 'fraction';
 DISTRIBUTIONTYPE: 'distribution' ;
 ARRAYTYPE: 'array' ;
+TUPLETYPE: 'tuple' ;
 COUNTING: 'possibility' WS+ 'counting' ; 
 
 TOTAL: 'total' ;
