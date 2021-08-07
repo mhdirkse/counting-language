@@ -56,7 +56,7 @@ public enum StatusCode implements AbstractStatusCode {
     SAMPLED_FROM_NON_DISTRIBUTION("({1}, {2}): The value you sample from is a {3}, but should be DISTRIBUTION."),
     EMPTY_COLLECTION_IS_PRIMITIVE("({1}, {2}): Cannot build an empty collection from a primitive type id."),
     ARRAY_ELEMENT_TYPE_MISMATCH("({1}, {2}): Array element {3} has invalid type {4}, expected {5}."),
-    MEMBER_OF_NON_ARRAY("({1}, {2}): Cannot get a member from something that is not an array."),
+    MEMBER_OF_NON_ARRAY("({1}, {2}): Cannot get an element from something that is not an array."),
     MEMBER_INDEX_NOT_INT("({1}, {2}): An array index should be integer.");
 
     StatusCode(final String formatString) {

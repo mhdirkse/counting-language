@@ -66,6 +66,14 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print 1 and 2", "Type mismatch using operator"},
             {"print false <= true", "Type mismatch using operator"},
 
+            // Arrays
+
+            {"x = [2, 5, 6]; print x[0]", "Invalid array index"},
+            {"x = [2, 5, 6]; print x[4]", "Array index"},
+            {"x = [2, 5, 6]; print x[true]", "An array index should be integer"},
+            {"x = 5; print x[1]", "Cannot get an element from something that is not an array"},
+            {"x = [1, true]", "has invalid type"},
+
             // Syntax
             
             {"print 5 +", ""}, // Syntax error.
@@ -119,6 +127,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"function fun(bool b) {if(b) {return 3} else {return true};};", "Type of return value"},
             {"experiment exp(bool b) {if(b) {return 3} else {return true};};", "Type of return value"},
             {"function fun(int x, bool x) {return 3;}", "Cannot reuse parameter name"},
+            {"function fun(array<int> x) {return x[1]}; print fun(true)", "Type mismatch calling function"},
 
             // Compound
             

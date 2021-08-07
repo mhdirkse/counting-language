@@ -268,6 +268,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print [3, 6, 10]", "[3, 6, 10]"},
             {"x = [3, 6, 10]; print x[1]", "3"},
             {"x = [3, 6, 10]; print x[3]", "10"},
+            {"print [true, true, false][3]", "false"},
             {"print int[]", "[]"},
             {"print fraction[]", "[]"},
             {"function fun(fraction x) {return x + 1}; print fun(1 / 2)", "1 + 1 / 2"},
