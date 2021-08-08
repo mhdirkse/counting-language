@@ -79,6 +79,9 @@ public class ProbabilityTreeValue implements Comparable<ProbabilityTreeValue> {
         return ((Comparable<Object>) this.getValue()).compareTo(other.getValue());
     }
 
+    /**
+     * This function is used when formatting a distribution as a table.
+     */
     @Override
     public String toString() {
         if(isUnknown()) {

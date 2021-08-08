@@ -19,7 +19,6 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
-import java.util.stream.IntStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,10 +31,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.github.mhdirkse.countlang.type.CountlangTuple;
 import com.github.mhdirkse.countlang.utils.Utils;
 
 import lombok.EqualsAndHashCode;
@@ -187,7 +188,7 @@ public final class Distribution implements Comparable<Distribution> {
     private List<List<String>> createTable() {
         List<List<String>> table = new ArrayList<>();
         for(Object item: items.keySet()) {
-            String strItem = Utils.genericFormat(item);
+            String strItem = formatForDistributionTable(item);
             String strCount = items.get(item).toString();
             table.add(Arrays.asList(strItem, strCount));
         }
@@ -196,6 +197,14 @@ public final class Distribution implements Comparable<Distribution> {
         }
         table.add(Arrays.<String>asList("total", total.toString()));
         return table;
+    }
+
+    private String formatForDistributionTable(Object item) {
+        if(item instanceof CountlangTuple) {
+            return ((CountlangTuple) item).listMembers();
+        } else {
+            return Utils.genericFormat(item);
+        }
     }
 
     private static List<Integer> getTableColumnWidths(List<List<String>> table) {

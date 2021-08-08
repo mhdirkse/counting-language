@@ -353,6 +353,9 @@ public class Analysis {
         @Override
         public void visitTupleTypeNode(TupleTypeNode typeNode) {
             typeNode.getChildren().forEach(c -> c.accept(this));
+            if(typeNode.getChildren().size() <= 1) {
+                reporter.report(StatusCode.TUPLE_AT_LEAST_TWO_MEMBERS, typeNode.getLine(), typeNode.getColumn());
+            }
             if(typeNode.getChildren().stream().anyMatch(c -> ((TypeNode) c).getCountlangType().isTuple())) {
                 reporter.report(StatusCode.TUPLES_MUST_BE_FLAT, typeNode.getLine(), typeNode.getColumn());
             }

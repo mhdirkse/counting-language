@@ -155,6 +155,20 @@ public class DistributionExpressionHandler extends AbstractExpressionHandler imp
     }
 
     @Override
+    public boolean enterTupleType(
+            CountlangParser.TupleTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.enterTupleType(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean exitTupleType(
+            CountlangParser.TupleTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeIdHandler.exitTupleType(antlrCtx, delegationCtx);
+    }
+
+    @Override
     void addExpression(ExpressionNode expression) {
         switch(kind) {
         case DEFAULT:

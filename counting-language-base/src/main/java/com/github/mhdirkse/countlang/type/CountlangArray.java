@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.mhdirkse.countlang.execution;
+package com.github.mhdirkse.countlang.type;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,10 +25,10 @@ import java.util.stream.Collectors;
 import com.github.mhdirkse.countlang.utils.ListComparator;
 import com.github.mhdirkse.countlang.utils.Utils;
 
-class CountlangArray implements Comparable<CountlangArray>, CountlangComposite {
+public class CountlangArray implements Comparable<CountlangArray>, CountlangComposite {
     private final List<Object> items;
 
-    CountlangArray(List<Object> items) {
+    public CountlangArray(List<Object> items) {
         this.items = items;
     }
 

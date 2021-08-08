@@ -274,6 +274,16 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"function fun(fraction x) {return x + 1}; print fun(1 / 2)", "1 + 1 / 2"},
             {"function fun(array<int> x) {return x[1]}; print fun([3, 4])", "3"},
 
+            // Tuples
+
+            // Tests that the output is the array converted to a tuple.
+            // Tuples at top-level of nesting do not get [...]. Arrays
+            // always have [...].
+            {"function fun(array<int> a) {return tuple a[1], a[2]}; print fun([3, 5])", "3, 5"},
+            {"function fun(tuple<int, int> t) {return [t[1], t[2]]}; print fun(tuple 3, 5)", "[3, 5]"},
+            // Tuple values are automatically flattened, unlike tuple type ids.
+            {"print tuple (tuple 1, 2), 3", "1, 2, 3"},
+
             // Formatting complex types
 
             {"print distribution 3/2, 5/3", Arrays.asList(
@@ -296,7 +306,19 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             },
             {"print [distribution 3/2]", "[(1 + 1 / 2)]"},
             {"print [3 / 2]", "[1 + 1 / 2]"},
-            {"print [[2, 3], int[]]", "[[2, 3], []]"}
+            {"print [[2, 3], int[]]", "[[2, 3], []]"},
+            // Tuple at top-level of nested types, no need to wrap into [...].
+            {"print tuple 1, true", "1, true"},
+            // Tuple nested into array, need to wrap tuples in [...].
+            {"print [(tuple 1, true), (tuple 3, false)]", "[[1, true], [3, false]]"},
+            // Tuples appear in table rows of distribution, no [...] needed
+            {"print distribution tuple 3, true", Arrays.asList(
+                    "3, true  1",
+                    "----------",
+                    "  total  1").stream().collect(Collectors.joining("\n"))
+            },
+            // The distribution is not formatted as a table, so we need [...] around the tuple.
+            {"print [distribution tuple 3, true]", "[([3, true])]"}
         });
     }
 

@@ -74,6 +74,16 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"x = 5; print x[1]", "Cannot get an element from something that is not an array"},
             {"x = [1, true]", "has invalid type"},
 
+            // Tuples
+
+            {"print distribution<tuple<tuple<int, int>, bool>>", "Tuple types are always flat"},
+            {"print tuple<tuple<int, int>, bool>[]", "Tuple types are always flat"},
+            {"function fun(tuple<tuple<fraction, int>, bool> v) {return 3}; print fun(tuple 3/5, 3, true)", "Tuple types are always flat"},
+            {"print tuple 1", "A tuple has at least two members"},
+            {"print distribution<tuple<int>>", "A tuple has at least two members"},
+            {"print tuple<int>[]", "A tuple has at least two members"},
+            {"function fun(tuple<int> v) {return true}; print fun(3)", "A tuple has at least two members"},
+
             // Syntax
             
             {"print 5 +", ""}, // Syntax error.

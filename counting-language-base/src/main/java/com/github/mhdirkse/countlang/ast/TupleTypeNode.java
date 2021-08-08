@@ -13,7 +13,11 @@ public class TupleTypeNode extends CompositeTypeNode {
     @Override
     public CountlangType getCountlangType() {
         List<CountlangType> childTypes = children.stream().map(TypeNode::getCountlangType).collect(Collectors.toList());
-        return CountlangType.tupleOf(childTypes);
+        if(childTypes.size() >= 2) {
+            return CountlangType.tupleOf(childTypes);            
+        } else {
+            return CountlangType.unknown();
+        }
     }
 
     @Override

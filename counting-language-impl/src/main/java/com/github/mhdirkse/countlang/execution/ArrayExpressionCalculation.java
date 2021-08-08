@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
+import com.github.mhdirkse.countlang.type.CountlangArray;
 
 final class ArrayExpressionCalculation extends ExpressionResultsCollector {
     ArrayExpressionCalculation(final ArrayExpression node) {

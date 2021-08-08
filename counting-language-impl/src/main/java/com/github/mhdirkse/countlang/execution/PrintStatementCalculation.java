@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.type.CountlangTuple;
 import com.github.mhdirkse.countlang.utils.Utils;
 
 final class PrintStatementCalculation extends ExpressionResultsCollector {
@@ -36,6 +37,8 @@ final class PrintStatementCalculation extends ExpressionResultsCollector {
         String output = null;
         if(value instanceof Distribution) {
             output = ((Distribution) value).format();
+        } else if(value instanceof CountlangTuple) {
+            output = ((CountlangTuple) value).listMembers();
         } else {
             output = Utils.genericFormat(value);
         }

@@ -25,7 +25,9 @@ typeId :
     (INTTYPE | BOOLTYPE | FRACTYPE ) # simpleType
     | (DISTRIBUTIONTYPE '<' typeId '>') # distributionType
     | (ARRAYTYPE '<' typeId '>' ) # arrayType
-    | (TUPLETYPE '<' typeId (',' typeId)+ '>') # tupleType
+    // A tuple has at least two subtypes, but we do not enforce this in the grammar.
+    // We can produce a better error message when we check this later.
+    | (TUPLETYPE '<' typeId (',' typeId)* '>') # tupleType
     ;
 
 expr
@@ -44,7 +46,9 @@ expr
   | '[' expr ( ',' expr )* ']' # arrayExpression
   | typeId '[' ']' # emptyArrayExpression
   | 'known of' expr # distributionKnownExpression
-  | 'tuple' expr (',' expr)+ # tupleExpression
+  // A tuple expression has at least two sub-expressions, but we do not check this in the grammar.
+  // We can produce a better error message when we check this later.
+  | 'tuple' expr (',' expr)* # tupleExpression
   | ID # symbolReferenceExpression
   | (INT | BOOL ) # valueExpression
   ;

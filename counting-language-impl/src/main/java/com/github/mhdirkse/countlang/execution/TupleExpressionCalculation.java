@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.TupleExpression;
+import com.github.mhdirkse.countlang.type.CountlangTuple;
 
 class TupleExpressionCalculation extends ExpressionResultsCollector {
     TupleExpressionCalculation(TupleExpression expr) {

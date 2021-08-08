@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.DereferenceExpression;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.CountlangComposite;
 
 final class DereferenceExpressionCalculation extends ExpressionResultsCollector {
     DereferenceExpressionCalculation(final DereferenceExpression node) {

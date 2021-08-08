@@ -79,6 +79,20 @@ public class EmptyArrayExpressionHandler extends AbstractCountlangListenerHandle
     }
 
     @Override
+    public boolean enterTupleType(
+            CountlangParser.TupleTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeHandler.enterTupleType(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean exitTupleType(
+            CountlangParser.TupleTypeContext antlrCtx,
+            HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return typeHandler.exitTupleType(antlrCtx, delegationCtx);
+    }
+
+    @Override
     public ExpressionNode getExpression() {
         TypeNode subTypeNode = typeHandler.getTypeNode();
         if(subTypeNode != null) {
