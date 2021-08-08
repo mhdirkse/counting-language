@@ -6,7 +6,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -24,6 +27,10 @@ public class CountlangTypeTest {
         gen = t.getGeneralizations();
         assertEquals(1, gen.size());
         assertSame(CountlangType.any(), gen.get(0));
+        t = CountlangType.bool();
+        gen = t.getGeneralizations();
+        assertEquals(1, gen.size());
+        assertSame(CountlangType.any(), gen.get(0));
     }
 
     @Test
@@ -34,9 +41,27 @@ public class CountlangTypeTest {
     @Test
     public void distributionOfPrimitiveHasGeneralization() {
         CountlangType t = CountlangType.distributionOf(CountlangType.integer());
-        List<CountlangType> gen = t.getGeneralizations();
-        assertEquals(1, gen.size());
-        assertSame(CountlangType.distributionOfAny(), gen.get(0));
+        Set<CountlangType> gen = new HashSet<>(t.getGeneralizations());
+        assertEquals(2, gen.size());
+        assertTrue(gen.contains(CountlangType.distributionOfAny()));
+        assertTrue(gen.contains(CountlangType.any()));
+        final HashMap<CountlangType, CountlangType> lookup = new HashMap<>();
+        gen.forEach(a -> lookup.put(a, a));
+        assertSame(lookup.get(CountlangType.distributionOfAny()), CountlangType.distributionOfAny());
+        assertSame(lookup.get(CountlangType.any()), CountlangType.any());
+    }
+
+    @Test
+    public void arrayOfPrimitiveHasGeneralization() {
+        CountlangType t = CountlangType.arrayOf(CountlangType.integer());
+        Set<CountlangType> gen = new HashSet<>(t.getGeneralizations());
+        assertEquals(2, gen.size());
+        assertTrue(gen.contains(CountlangType.arrayOf(CountlangType.any())));
+        assertTrue(gen.contains(CountlangType.any()));
+        final HashMap<CountlangType, CountlangType> lookup = new HashMap<>();
+        gen.forEach(a -> lookup.put(a, a));
+        assertSame(lookup.get(CountlangType.arrayOfAny()), CountlangType.arrayOfAny());
+        assertSame(lookup.get(CountlangType.any()), CountlangType.any());
     }
 
     @Test

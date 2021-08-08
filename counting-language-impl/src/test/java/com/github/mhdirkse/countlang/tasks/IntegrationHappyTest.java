@@ -262,6 +262,10 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print (distribution 2 of 2/3, 5/3).sum()", "3"},
             {"print (distribution 3, 3, 5).E()", "3 + 2 / 3"},
             {"print (distribution 2 of 2/3, 5/3).E()", "1"},
+            {"print (distribution 1, 3, 3, 2).ascending()", "[1, 2, 3, 3]"},
+            {"print distribution<int>.ascending()", "[]"},
+            {"print (distribution 1, 3, 3, 2).descending()", "[3, 3, 2, 1]"},
+            {"print distribution<int>.descending()", "[]"},
 
             // Arrays
 
@@ -273,6 +277,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print fraction[]", "[]"},
             {"function fun(fraction x) {return x + 1}; print fun(1 / 2)", "1 + 1 / 2"},
             {"function fun(array<int> x) {return x[1]}; print fun([3, 4])", "3"},
+            {"print [3, 2, 4, 5].ascending()", "[2, 3, 4, 5]"},
+            {"print [3, 2, 4, 5].descending()", "[5, 4, 3, 2]"},
 
             // Tuples
 

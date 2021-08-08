@@ -35,7 +35,11 @@ import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.Stepper;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
+import com.github.mhdirkse.countlang.predef.ArrayAscending;
+import com.github.mhdirkse.countlang.predef.ArrayDescending;
+import com.github.mhdirkse.countlang.predef.DistributionAscending;
 import com.github.mhdirkse.countlang.predef.DistributionCountOf;
+import com.github.mhdirkse.countlang.predef.DistributionDescending;
 import com.github.mhdirkse.countlang.predef.DistributionFracE;
 import com.github.mhdirkse.countlang.predef.DistributionFracSum;
 import com.github.mhdirkse.countlang.predef.DistributionIntE;
@@ -85,6 +89,8 @@ public class ProgramExecutor {
         return Arrays.asList(new DistributionKnown(), new DistributionCountOf(),
         		new DistributionIntSum(), new DistributionFracSum(),
         		new DistributionIntE(), new DistributionFracE(),
+        		new DistributionAscending(), new DistributionDescending(),
+        		new ArrayAscending(), new ArrayDescending(),
         		TestFunctionDefinitions.createTestFunction());
     }
 

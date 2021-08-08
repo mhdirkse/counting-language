@@ -182,16 +182,19 @@ public class CountlangType {
 
     public List<CountlangType> getGeneralizations() {
         List<CountlangType> result = new ArrayList<>();
-        if(isPrimitive()) {
-            if(this != any()) {
-                result.add(any());
-            }
-        } else if(isDistribution()) {
+        if(this != any()) {
+            result.add(any());
+        } 
+        if(isDistribution()) {
             for(CountlangType subTypeGeneralization: getSubType().getGeneralizations()) {
                 result.add(distributionOf(subTypeGeneralization));
             }
         }
-        // TODO: Do the same for arrays.
+        if(isArray()) {
+            for(CountlangType subTypeGeneralization: getSubType().getGeneralizations()) {
+                result.add(arrayOf(subTypeGeneralization));
+            }
+        }
         return result;
     }
 

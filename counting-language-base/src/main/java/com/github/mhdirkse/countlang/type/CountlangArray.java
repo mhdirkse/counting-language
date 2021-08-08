@@ -42,6 +42,11 @@ public class CountlangArray implements Comparable<CountlangArray>, CountlangComp
         return items.size();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Comparable<Object>> getMembers() {
+        return items.stream().map(i -> (Comparable<Object>) i).collect(Collectors.toList());
+    }
+
     @Override
     public int compareTo(CountlangArray o) {
         return ListComparator.getInstance().compare(items, o.items);

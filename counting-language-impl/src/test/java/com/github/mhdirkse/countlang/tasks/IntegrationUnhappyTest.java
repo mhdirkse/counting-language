@@ -113,6 +113,9 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print distribution<int> true", "Element number"},
             {"print distribution 1, true;", "Element number"},
             {"print distribution<bool> total 2", "Ambiguous"},
+            {"print distribution total 1", "Distribution should define its subtype"},
+            {"print distribution unknown 1", "Distribution should define its subtype"},
+            {"print distribution", "Distribution should define its subtype"},
 
             // Functions
             
@@ -156,6 +159,11 @@ public class IntegrationUnhappyTest implements OutputStrategy
 
             // Member functions
 
+            {"print (distribution 1000000000000 of 3).ascending()", "is too big"},
+            {"print (distribution<int> total 1).ascending()", "that has unknown"},
+            {"print (distribution 1000000000000 of 3).descending()", "is too big"},
+            {"print (distribution<int> total 1).descending()", "that has unknown"},
+            
             // Function is a member function of distribution. x is not a distribution, and
             // there is no function with search key ("known", int).
             {"x = 1; print x.known()", "does not exist"},
