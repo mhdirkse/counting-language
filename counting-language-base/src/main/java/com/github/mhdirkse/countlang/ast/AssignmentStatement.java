@@ -23,18 +23,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class AssignmentStatement extends Statement implements CompositeNode {
-    private String lhs = null;
+    private AbstractLhs lhs = null;
     private ExpressionNode rhs = null;
 
     public AssignmentStatement(final int line, final int column) {
         super(line, column);
     }
 
-    public String getLhs() {
+    public AbstractLhs getLhs() {
         return lhs;
     }
 
-    public void setLhs(final String lhs) {
+    public void setLhs(final AbstractLhs lhs) {
         this.lhs = lhs;
     }
 
@@ -53,6 +53,6 @@ public final class AssignmentStatement extends Statement implements CompositeNod
 
     @Override
     public List<AstNode> getChildren() {
-        return Arrays.asList(rhs);
+        return Arrays.asList(rhs, lhs);
     }
 }

@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
+import com.github.mhdirkse.countlang.ast.AbstractLhs;
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
 import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
@@ -56,8 +57,12 @@ import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
+import com.github.mhdirkse.countlang.ast.SimpleLhs;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhs;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhsItemSkipped;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhsSymbol;
 import com.github.mhdirkse.countlang.ast.TupleExpression;
 import com.github.mhdirkse.countlang.ast.TupleTypeNode;
 import com.github.mhdirkse.countlang.ast.TypeNode;
@@ -68,12 +73,15 @@ import com.github.mhdirkse.countlang.tasks.SortingStatusReporter;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 import com.github.mhdirkse.countlang.type.CountlangType;
+import com.github.mhdirkse.countlang.type.TupleType;
 
 public class Analysis {
     private final FunctionDefinitions funDefs;
     private final CodeBlocks codeBlocks;
     private FunctionDefinitionStatementBase analyzedFunction = null;
     int distributionItemIndex = -1;
+    AstNode assignmentStatementOfLhs = null;
+    CountlangType rhsType = null;
 
     public Analysis(List<FunctionDefinition> funDefs) {
         this.funDefs = new FunctionDefinitions();
@@ -112,7 +120,12 @@ public class Analysis {
         public void visitAssignmentStatement(AssignmentStatement statement) {
             ExpressionNode rhs = statement.getRhs();
             rhs.accept(this);
-            codeBlocks.write(statement.getLhs(), statement.getLine(), statement.getColumn(), rhs.getCountlangType());
+            assignmentStatementOfLhs = statement;
+            rhsType = rhs.getCountlangType();
+            AbstractLhs lhs = statement.getLhs();
+            lhs.accept(this);
+            assignmentStatementOfLhs = null;
+            rhsType = null;
         }
 
         @Override
@@ -125,7 +138,11 @@ public class Analysis {
             if(!actualType.isDistribution()) {
                 reporter.report(StatusCode.SAMPLED_FROM_NON_DISTRIBUTION, statement.getLine(), statement.getColumn(), actualType.toString());
             }
-            codeBlocks.write(statement.getSymbol(), statement.getLine(), statement.getColumn(), actualType.getSubType());
+            assignmentStatementOfLhs = statement;
+            rhsType = actualType.getSubType();
+            statement.getLhs().accept(this);
+            assignmentStatementOfLhs = null;
+            rhsType = null;
         }
 
         @Override
@@ -479,6 +496,30 @@ public class Analysis {
                 reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn());
             }
             expr.setCountlangType(containerType.getSubType());
+        }
+
+        @Override
+        public void visitSimpleLhs(SimpleLhs lhs) {
+            codeBlocks.write(lhs.getSymbol(), assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn(), rhsType);            
+        }
+
+        @Override
+        public void visitTupleDealingLhs(TupleDealingLhs lhs) {
+            if(rhsType.isTuple()) {
+                lhs.getChildren().forEach(c -> c.accept(this));
+            } else {
+                reporter.report(StatusCode.CANNOT_DEAL_VALUES_FROM_NON_TUPLE, assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn());
+            }
+        }
+
+        @Override
+        public void visitTupleDealingLhsItemSkipped(TupleDealingLhsItemSkipped item) {
+        }
+
+        @Override
+        public void visitTupleDealingLhsSymbol(TupleDealingLhsSymbol item) {
+            CountlangType countlangType = ((TupleType) rhsType).getTupleSubTypes().get(item.getVariableNumber());
+            codeBlocks.write(item.getSymbol(), assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn(), countlangType);
         }
     }
 }

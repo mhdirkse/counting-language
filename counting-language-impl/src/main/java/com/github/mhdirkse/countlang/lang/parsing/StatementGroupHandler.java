@@ -67,12 +67,30 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterTupleDealingAssignmentStatement(
+            @NotNull CountlangParser.TupleDealingAssignmentStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new TupleDealingAssignmentStatementHandler(line, column));
+        return true;        
+    }
+
+    @Override
     public boolean enterSampleStatement(
             @NotNull CountlangParser.SampleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = antlrCtx.start.getLine();
         int column = antlrCtx.start.getCharPositionInLine();
         delegationCtx.addFirst(new SampleStatementHandler(line, column));
         return true;
+    }
+
+    @Override
+    public boolean enterTupleDealingSampleStatement(
+            @NotNull CountlangParser.TupleDealingSampleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new TupleDealingSampleStatementHandler(line, column));
+        return true;        
     }
 
     @Override
@@ -162,8 +180,20 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean exitTupleDealingAssignmentStatement(
+            @NotNull CountlangParser.TupleDealingAssignmentStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+
+    @Override
     public boolean exitSampleStatement(
             @NotNull CountlangParser.SampleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitTupleDealingSampleStatement(
+            @NotNull CountlangParser.TupleDealingSampleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
     }
 

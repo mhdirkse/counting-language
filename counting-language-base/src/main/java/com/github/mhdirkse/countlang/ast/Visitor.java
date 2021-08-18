@@ -50,4 +50,8 @@ public interface Visitor {
     public void visitDistributionTypeNode(DistributionTypeNode item);
     public void visitArrayTypeNode(ArrayTypeNode item);
     public void visitTupleTypeNode(TupleTypeNode item);
+    public void visitSimpleLhs(SimpleLhs lhs);
+    public void visitTupleDealingLhs(TupleDealingLhs lhs);
+    public void visitTupleDealingLhsItemSkipped(TupleDealingLhsItemSkipped item);
+    public void visitTupleDealingLhsSymbol(TupleDealingLhsSymbol item);
 }

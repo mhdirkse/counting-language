@@ -6,12 +6,15 @@ statements : ( statement (';' statement)* )? ';'? ;
 
 statement
   : ID '=' expr # assignmentStatement
+  | lhsItem (',' lhsItem)+ '=' expr # tupleDealingAssignmentStatement
   | 'function' ID '(' varDecls? ')' '{' statements '}' # functionDefinitionStatement
   | COUNTING? 'experiment' ID '(' varDecls? ')' '{' statements '}' # experimentDefinitionStatement
   | 'print' expr # printStatement
   | 'return' expr # returnStatement
+  | 'return' expr (',' expr)+ # tupleCreatingReturnStatement
   | 'markUsed' expr # markUsedStatement
   | 'sample' ID 'from' expr # sampleStatement
+  | 'sample' lhsItem (',' lhsItem)+ 'from' expr # tupleDealingSampleStatement
   | 'if' '(' expr ')' '{' statements '}' ('else' '{' statements '}')? # ifStatement
   | 'while' '(' expr ')' '{' statements '}' # whileStatement
   | '{' statements '}' # compoundStatement
@@ -58,6 +61,9 @@ distItem
   | expr # distItemSimple
   ;
 
+lhsItem : ID | LHS_PLACEHOLDER # lhsItem
+  ;
+
 BOOLTYPE: 'bool' ;
 INTTYPE: 'int' ;
 FRACTYPE: 'fraction';
@@ -72,4 +78,5 @@ UNKNOWN: 'unknown' ;
 INT : '-'? [0-9]+ ;
 BOOL : 'true' | 'false' ;
 ID : [a-zA-Z] [a-zA-Z0-9]* ;
+LHS_PLACEHOLDER : '_' ;
 WS : [ \t\r\n] -> skip ;

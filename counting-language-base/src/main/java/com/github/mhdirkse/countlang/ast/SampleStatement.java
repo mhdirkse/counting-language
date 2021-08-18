@@ -28,7 +28,7 @@ import lombok.Setter;
 public class SampleStatement extends Statement implements CompositeNode {
     @Getter
     @Setter
-    private String symbol;
+    private AbstractLhs lhs;
 
     @Getter
     @Setter
@@ -45,6 +45,6 @@ public class SampleStatement extends Statement implements CompositeNode {
 
     @Override
     public List<AstNode> getChildren() {
-        return Arrays.asList(sampledDistribution);
+        return Arrays.asList(sampledDistribution, lhs);
     }
 }

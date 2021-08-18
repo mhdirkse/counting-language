@@ -24,13 +24,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
-import com.github.mhdirkse.countlang.ast.SimpleLhs;
 import com.github.mhdirkse.countlang.ast.Statement;
-import com.github.mhdirkse.countlang.lang.CountlangLexer;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhs;
+import com.github.mhdirkse.countlang.lang.CountlangParser;
 
-class AssignmentStatementHandler extends AbstractExpressionHandler
-implements StatementSource, TerminalFilterCallback {
-    private final TerminalFilter terminalFilter;
+class TupleDealingAssignmentStatementHandler extends AbstractExpressionHandler
+implements StatementSource {
+    private LeftHandSideStrategy lhsStrategy = new LeftHandSideStrategy();
     private AssignmentStatement statement;
 
     @Override
@@ -38,27 +38,33 @@ implements StatementSource, TerminalFilterCallback {
         return statement;
     }
 
-    AssignmentStatementHandler(final int line, final int column) {
+    TupleDealingAssignmentStatementHandler(final int line, final int column) {
         statement = new AssignmentStatement(line, column);
-        terminalFilter = new TerminalFilter(this);
+    }
+
+    @Override
+    public boolean enterLhsItem(CountlangParser.LhsItemContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return lhsStrategy.enterLhsItem(antlrCtx, delegationCtx);
+    }
+
+    @Override
+    public boolean exitLhsItem(CountlangParser.LhsItemContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return lhsStrategy.exitLhsItem(antlrCtx, delegationCtx);
     }
 
     @Override
     public boolean visitTerminal(
             final TerminalNode node, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
-        return terminalFilter.visitTerminal(node, delegationCtx);
-    }
-
-    @Override
-    public int getRequiredType() {
-        return CountlangLexer.ID;
-    }
-
-    @Override
-    public void setText(final String text) {
-        SimpleLhs lhs = new SimpleLhs(statement.getLine(), statement.getColumn());
-        lhs.setSymbol(text);
-        statement.setLhs(lhs);
+        if(lhsStrategy.isInLhsItem()) {
+            return lhsStrategy.visitTerminal(node, delegationCtx);
+        } else if(node.getText().equals("=")) {
+            TupleDealingLhs lhs = new TupleDealingLhs(statement.getLine(), statement.getColumn());
+            lhs.setChildren(lhsStrategy.getLhsItems());
+            statement.setLhs(lhs);
+            return true;
+        } else {
+            throw new IllegalStateException(String.format("Unexpected token with text %s", node.getText()));
+        }
     }
 
     @Override

@@ -23,22 +23,21 @@ import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.AFTE
 import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.BEFORE;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.SampleStatement;
 
 class SampleStatementCalculationForked implements AstNodeExecution {
-    private final String symbol;
     private final Object value;
-    private final AstNode node;
+    private final SampleStatement sampleStatement;
     private AstNodeExecutionState state = BEFORE;
 
     SampleStatementCalculationForked(SampleStatementCalculation orig) {
-        this.symbol = orig.statement.getSymbol();
         this.value = orig.value;
-        this.node = orig.getAstNode();
+        this.sampleStatement = (SampleStatement) orig.getAstNode();
     }
 
     @Override
     public AstNode getAstNode() {
-        return node;
+        return sampleStatement;
     }
 
 
@@ -50,7 +49,8 @@ class SampleStatementCalculationForked implements AstNodeExecution {
     @Override
     public AstNode step(ExecutionContext context) {
         if(state == BEFORE) {
-            context.writeSymbol(symbol, value, node);
+            VariableAssigner assigner = new VariableAssigner(context, sampleStatement.getSampledDistribution(), value);
+            assigner.assign(sampleStatement.getLhs());
             state = AFTER;
         }
         return null;

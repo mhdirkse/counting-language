@@ -19,10 +19,18 @@
 
 package com.github.mhdirkse.countlang.execution;
 
+import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.AtomicTypeNode;
+import com.github.mhdirkse.countlang.ast.DistributionTypeNode;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.Operator;
+import com.github.mhdirkse.countlang.ast.SimpleLhs;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhs;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhsItemSkipped;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhsSymbol;
+import com.github.mhdirkse.countlang.ast.TupleTypeNode;
 import com.github.mhdirkse.countlang.ast.Visitor;
 
 abstract class AbstractAstNodeExecutionFactory implements AstNodeExecutionFactory, Visitor {
@@ -48,5 +56,42 @@ abstract class AbstractAstNodeExecutionFactory implements AstNodeExecutionFactor
 
     @Override
     public void visitFormalParameter(FormalParameter formalParameter) {
+    }
+
+    @Override
+    public void visitAtomicTypeNode(AtomicTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
+    }
+
+    @Override
+    public void visitDistributionTypeNode(DistributionTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
+    }
+
+    @Override
+    public void visitArrayTypeNode(ArrayTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
+    }
+
+    @Override
+    public void visitTupleTypeNode(TupleTypeNode typeNode) {
+        // Nothing to do. Type nodes have been analyzed already and we have CountlangType here.
+    }
+
+    @Override
+    public void visitSimpleLhs(SimpleLhs lhs) {
+        // Nothing to do. The lhs does not produce values.
+    }
+
+    @Override
+    public void visitTupleDealingLhs(TupleDealingLhs lhs) {
+    }
+
+    @Override
+    public void visitTupleDealingLhsItemSkipped(TupleDealingLhsItemSkipped item) {
+    }
+
+    @Override
+    public void visitTupleDealingLhsSymbol(TupleDealingLhsSymbol item) {
     }
 }

@@ -58,6 +58,7 @@ public enum StatusCode implements AbstractStatusCode {
     ARRAY_ELEMENT_TYPE_MISMATCH("({1}, {2}): Array element {3} has invalid type {4}, expected {5}."),
     TUPLE_AT_LEAST_TWO_MEMBERS("({1}, {2}): A tuple has at least two members."),
     TUPLES_MUST_BE_FLAT("({1}, {2}): Tuple types are always flat, dont use tuple<tuple<x, y>, z> but tuple<x, y, z>."),
+    CANNOT_DEAL_VALUES_FROM_NON_TUPLE("({1}, {2}): When you assign multiple variables, the right-hand-side must also consist of multiple expressions (a tuple)."),
     MEMBER_OF_NON_ARRAY_OR_TUPLE("({1}, {2}): Cannot get an element from something that is not an array."),
     MEMBER_INDEX_NOT_INT("({1}, {2}): An array index should be integer.");
 
