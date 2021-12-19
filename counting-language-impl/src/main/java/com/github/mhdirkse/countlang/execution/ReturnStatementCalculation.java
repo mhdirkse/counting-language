@@ -22,7 +22,6 @@ package com.github.mhdirkse.countlang.execution;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
-import com.github.mhdirkse.countlang.type.CountlangTuple;
 
 final class ReturnStatementCalculation extends ExpressionResultsCollector {
     ReturnStatementCalculation(ReturnStatement statement) {
@@ -31,11 +30,6 @@ final class ReturnStatementCalculation extends ExpressionResultsCollector {
 
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        if(subExpressionResults.size() == 1) {
-            context.onResult(subExpressionResults.get(0));
-        } else {
-            CountlangTuple tuple = new CountlangTuple(subExpressionResults);
-            context.onResult(tuple);
-        }
+        context.onResult(subExpressionResults.get(0));
     }
 }

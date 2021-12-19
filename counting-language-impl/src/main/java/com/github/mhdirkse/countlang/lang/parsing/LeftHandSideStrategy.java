@@ -51,17 +51,17 @@ class LeftHandSideStrategy extends AbstractCountlangListenerHandler {
         if(! inLhsItem) {
             throw new IllegalStateException("Expected to be inside an lhsItem rule");
         }
-        if(node.getSymbol().getTokenIndex() == CountlangLexer.LHS_PLACEHOLDER) {
+        if(node.getSymbol().getType() == CountlangLexer.LHS_PLACEHOLDER) {
             TupleDealingLhsItemSkipped item = new TupleDealingLhsItemSkipped(line, column);
             item.setVariableNumber(variableNumber);
             lhsItems.add(item);
-        } else if(node.getSymbol().getTokenIndex() == CountlangLexer.ID) {
+        } else if(node.getSymbol().getType() == CountlangLexer.ID) {
             TupleDealingLhsSymbol item = new TupleDealingLhsSymbol(line, column);
             item.setVariableNumber(variableNumber);
             item.setSymbol(node.getText());
             lhsItems.add(item);
         } else {
-            throw new IllegalArgumentException(String.format("Unexpected token with text %s", node.getSymbol().getText()));
+        	return false;
         }
         ++variableNumber;
         return true;

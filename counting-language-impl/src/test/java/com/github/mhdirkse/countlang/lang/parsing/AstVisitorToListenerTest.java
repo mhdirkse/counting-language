@@ -51,6 +51,10 @@ import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SimpleLhs;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhs;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhsItemSkipped;
+import com.github.mhdirkse.countlang.ast.TupleDealingLhsSymbol;
+import com.github.mhdirkse.countlang.ast.TupleExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
 import com.github.mhdirkse.countlang.testhelper.AstConstructionTestBase;
 
@@ -251,5 +255,80 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         replay(listener);
         runProgram("experiment coin() {sample c from distribution 0, 1; return c}");
         verify(listener);
+    }
+
+    @Test
+    public void testMultipleReturn() {
+    	listener.enterStatementGroup(isA(StatementGroup.class));
+
+    	listener.enterFunctionDefinitionStatement(isA(FunctionDefinitionStatement.class));
+    	listener.enterFormalParameters(isA(FormalParameters.class));
+    	listener.exitFormalParameters(isA(FormalParameters.class));
+    	listener.enterStatementGroup(isA(StatementGroup.class));
+    	listener.enterReturnStatement(isA(ReturnStatement.class));
+    	listener.enterTupleExpression(isA(TupleExpression.class));
+    	listener.visitValueExpression(isA(ValueExpression.class));
+    	listener.visitValueExpression(isA(ValueExpression.class));
+    	listener.exitTupleExpression(isA(TupleExpression.class));
+    	listener.exitReturnStatement(isA(ReturnStatement.class));
+    	listener.exitStatementGroup(isA(StatementGroup.class));
+    	listener.exitFunctionDefinitionStatement(isA(FunctionDefinitionStatement.class));
+
+    	listener.enterAssignmentStatement(isA(AssignmentStatement.class));
+    	listener.enterFunctionCallExpressionNonMember(isA(FunctionCallExpressionNonMember.class));
+    	listener.exitFunctionCallExpressionNonMember(isA(FunctionCallExpressionNonMember.class));
+    	listener.enterTupleDealingLhs(isA(TupleDealingLhs.class));
+    	listener.visitTupleDealingLhsSymbol(isA(TupleDealingLhsSymbol.class));
+    	listener.visitTupleDealingLhsSymbol(isA(TupleDealingLhsSymbol.class));
+    	listener.exitTupleDealingLhs(isA(TupleDealingLhs.class));
+    	listener.exitAssignmentStatement(isA(AssignmentStatement.class));
+
+    	listener.exitStatementGroup(isA(StatementGroup.class));
+
+    	replay(listener);
+    	runProgram("function fun() {return 1, 2}; x, y = fun();");
+    	verify(listener);
+    }
+
+    @Test
+    public void testMultipleAssignmentSampleWithIgnoredSymbols() {
+    	listener.enterStatementGroup(isA(StatementGroup.class));
+
+    	listener.enterExperimentDefinitionStatement(isA(ExperimentDefinitionStatement.class));
+    	listener.enterFormalParameters(isA(FormalParameters.class));
+    	listener.exitFormalParameters(isA(FormalParameters.class));
+    	listener.enterStatementGroup(isA(StatementGroup.class));
+
+    	listener.enterSampleStatement(isA(SampleStatement.class));
+    	listener.enterSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
+    	listener.enterDistributionItemItem(isA(DistributionItemItem.class));
+    	listener.enterTupleExpression(isA(TupleExpression.class));
+    	listener.visitValueExpression(isA(ValueExpression.class));
+    	listener.visitValueExpression(isA(ValueExpression.class));
+    	listener.exitTupleExpression(isA(TupleExpression.class));
+    	listener.exitDistributionItemItem(isA(DistributionItemItem.class));
+    	listener.exitSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
+    	listener.enterTupleDealingLhs(isA(TupleDealingLhs.class));
+    	listener.visitTupleDealingLhsItemSkipped(isA(TupleDealingLhsItemSkipped.class));
+    	listener.visitTupleDealingLhsSymbol(isA(TupleDealingLhsSymbol.class));
+    	listener.exitTupleDealingLhs(isA(TupleDealingLhs.class));
+    	listener.exitSampleStatement(isA(SampleStatement.class));
+    	listener.enterReturnStatement(isA(ReturnStatement.class));
+    	listener.visitSymbolExpression(isA(SymbolExpression.class));
+    	listener.exitReturnStatement(isA(ReturnStatement.class));
+
+    	listener.exitStatementGroup(isA(StatementGroup.class));
+    	listener.exitExperimentDefinitionStatement(isA(ExperimentDefinitionStatement.class));
+
+    	listener.enterPrintStatement(isA(PrintStatement.class));
+    	listener.enterFunctionCallExpressionNonMember(isA(FunctionCallExpressionNonMember.class));
+    	listener.exitFunctionCallExpressionNonMember(isA(FunctionCallExpressionNonMember.class));
+    	listener.exitPrintStatement(isA(PrintStatement.class));
+
+    	listener.exitStatementGroup(isA(StatementGroup.class));
+
+    	replay(listener);
+    	runProgram("experiment exp() {sample _, x from distribution tuple 1, 2; return x}; print exp()");
+    	verify(listener);
     }
 }

@@ -63,7 +63,7 @@ implements StatementSource {
             statement.setLhs(lhs);
             return true;
         } else {
-            throw new IllegalStateException(String.format("Unexpected token with text %s", node.getText()));
+        	return false;
         }
     }
 

@@ -28,11 +28,12 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
+import com.github.mhdirkse.countlang.lang.CountlangLexer;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
 
 class IgnoredMethodsHandler extends AbstractCountlangListenerHandler {
     private final Set<Integer> RELEVANT_TOKENS = new HashSet<>(
-            Arrays.asList(CountlangParser.ID, CountlangParser.INT, CountlangParser.BOOL));
+            Arrays.asList(CountlangParser.ID, CountlangParser.INT, CountlangParser.BOOL, CountlangLexer.LHS_PLACEHOLDER));
 
     IgnoredMethodsHandler() {
         super(false);
