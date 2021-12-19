@@ -48,6 +48,7 @@ import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
+import com.github.mhdirkse.countlang.ast.SimpleLhs;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
@@ -102,6 +103,7 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.enterFunctionCallExpressionNonMember(isA(FunctionCallExpressionNonMember.class));
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitFunctionCallExpressionNonMember(isA(FunctionCallExpressionNonMember.class));
+        listener.visitSimpleLhs(isA(SimpleLhs.class));
         listener.exitAssignmentStatement(isA(AssignmentStatement.class));
         listener.exitStatementGroup(isA(StatementGroup.class));
         replay(listener);
@@ -236,6 +238,7 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitDistributionItemItem(isA(DistributionItemItem.class));
         listener.exitSimpleDistributionExpression(isA(SimpleDistributionExpression.class));
+        listener.visitSimpleLhs(isA(SimpleLhs.class));
         listener.exitSampleStatement(isA(SampleStatement.class));
 
         listener.enterReturnStatement(isA(ReturnStatement.class));
