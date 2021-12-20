@@ -223,7 +223,6 @@ class VariableAssigner implements Visitor {
     public void visitTupleDealingLhsSymbol(TupleDealingLhsSymbol item) {
         int variableNumber = item.getVariableNumber();
         Object tupleMemberValue = ((CountlangTuple) writtenValue).get(variableNumber);
-        AstNode tupleMemberNode = ((TupleExpression) expressionNode).getChildren().get(variableNumber);
-        context.writeSymbol(item.getSymbol(), tupleMemberValue, tupleMemberNode);
+        context.writeSymbol(item.getSymbol(), tupleMemberValue, expressionNode);
     }
 }

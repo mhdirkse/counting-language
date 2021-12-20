@@ -289,6 +289,15 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"function fun(tuple<int, int> t) {return [t[1], t[2]]}; print fun(tuple 3, 5)", "[3, 5]"},
             // Tuple values are automatically flattened, unlike tuple type ids.
             {"print tuple (tuple 1, 2), 3", "1, 2, 3"},
+            // Implicit tuples
+            {"function fun() {return 5, 3}; x, y = fun(); print x - y", "2"},
+            {"x, y = tuple 5, 3; print x - y", "2"},
+            {"x, _ = tuple 5, 3; print x", "5"},
+            {"_, x = tuple 5, 3; print x", "3"},
+            {"x = tuple 5, 3; print x[1]", "5"},
+            {"experiment exp() {sample x, y from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x - y}; print exp()", getDistribution(2, -7, -7)},
+            {"experiment exp() {sample x, _ from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(5, 6, 6)},
+            {"experiment exp() {sample _, x from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(3, 13, 13)},
 
             // Formatting complex types
 

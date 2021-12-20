@@ -80,6 +80,9 @@ public class Analysis {
     private final CodeBlocks codeBlocks;
     private FunctionDefinitionStatementBase analyzedFunction = null;
     int distributionItemIndex = -1;
+    
+    // Assignment statements cannot get nested. The RHS consists of expressions, which do not contain statements.
+    // If this ever changes, please change these two into a stack.
     AstNode assignmentStatementOfLhs = null;
     CountlangType rhsType = null;
 
