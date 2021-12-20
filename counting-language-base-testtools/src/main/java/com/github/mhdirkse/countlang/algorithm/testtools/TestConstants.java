@@ -32,5 +32,8 @@ public final class TestConstants {
     public static final BigInteger SIX = new BigInteger("6");
     public static final BigInteger SEVEN = new BigInteger("7");
     public static final BigInteger EIGHT = new BigInteger("8");
+    public static final BigInteger NINE = new BigInteger("9");
+    public static final BigInteger TEN = new BigInteger("10");
+    public static final BigInteger ELEVEN = new BigInteger("11");
     public static final BigInteger MILION = new BigInteger("1000000");
 }

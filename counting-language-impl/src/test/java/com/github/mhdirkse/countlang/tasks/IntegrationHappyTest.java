@@ -300,7 +300,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"experiment exp() {sample x, _ from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(5, 6, 6)},
             {"experiment exp() {sample _, x from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(3, 13, 13)},
             {"experiment exp() {sample x, y from distribution (tuple 5, true); if(y) {return x}}; print exp()", getDistribution(5)},
-
+            {getProgramExercisingTuples(), getProgramExercisingTuplesExpected()},
             // Formatting complex types
 
             {"print distribution 3/2, 5/3", Arrays.asList(
@@ -507,6 +507,53 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
         b.add(true, BigInteger.ONE);
         b.add(false, new BigInteger("999999999999"));
         return b.build().format();
+    }
+
+    // Throws at most two dice and stop if a total of at least 6 has been reached.
+    private static String getProgramExercisingTuples() {
+    	return Arrays.asList(
+    			"experiment nextDice(distribution<tuple<int, int>> possibleStates, int threshold) {",
+    			"    sample num, currentTotal from possibleStates;",
+    			"    if(currentTotal < threshold) {",
+    			"        sample d from distribution 1, 2, 3, 4, 5, 6;",
+    			"        return num + 1, currentTotal + d;",        
+    			"    } else {",
+    			"        return num, currentTotal;",
+    			"    }",
+    			"};",
+                "",
+    			"function diceRaceRaw(int threshold, int maxDice) {",
+    			"    possibilities = distribution (tuple 0, 0);",
+    			"    i = 1;",
+    			"    while(i <= maxDice) {",
+    			"        possibilities = nextDice(possibilities, threshold);",
+    			"        i = i + 1;",
+    			"    };",
+    			"    return possibilities;",
+    			"};",
+    			"",
+    			"experiment diceRace(int threshold, int maxDice) {",
+    			"    sample _, currentTotal from diceRaceRaw(threshold, maxDice);",
+    			"    return currentTotal;",
+    			"};",
+                "",
+    			"print diceRace(6, 2);"
+    			).stream().collect(Collectors.joining("\n"));
+    }
+
+    private static String getProgramExercisingTuplesExpected() {
+    	Distribution.Builder b = new Distribution.Builder();
+    	b.add(TestConstants.TWO, BigInteger.ONE);
+    	b.add(TestConstants.THREE, TestConstants.TWO);
+    	b.add(TestConstants.FOUR, TestConstants.THREE);
+    	b.add(TestConstants.FIVE, TestConstants.FOUR);
+    	b.add(TestConstants.SIX, TestConstants.ELEVEN);
+    	b.add(TestConstants.SEVEN, TestConstants.FIVE);
+    	b.add(TestConstants.EIGHT, TestConstants.FOUR);
+    	b.add(TestConstants.NINE, TestConstants.THREE);
+    	b.add(TestConstants.TEN, TestConstants.TWO);
+    	b.add(TestConstants.ELEVEN, BigInteger.ONE);
+    	return b.build().format();
     }
 
     private static String getDistribution(int ...values) {

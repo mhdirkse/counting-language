@@ -135,11 +135,13 @@ public class Analysis {
         public void visitSampleStatement(SampleStatement statement) {
             if(analyzedFunction == null) {
                 reporter.report(StatusCode.SAMPLING_OUTSIDE_EXPERIMENT, statement.getLine(), statement.getColumn());
+                return;
             }
             statement.getSampledDistribution().accept(this);
             CountlangType actualType = statement.getSampledDistribution().getCountlangType();
             if(!actualType.isDistribution()) {
                 reporter.report(StatusCode.SAMPLED_FROM_NON_DISTRIBUTION, statement.getLine(), statement.getColumn(), actualType.toString());
+                return;
             }
             assignmentStatementOfLhs = statement;
             rhsType = actualType.getSubType();
