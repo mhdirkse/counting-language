@@ -509,7 +509,13 @@ public class Analysis {
         @Override
         public void visitTupleDealingLhs(TupleDealingLhs lhs) {
             if(rhsType.isTuple()) {
-                lhs.getChildren().forEach(c -> c.accept(this));
+            	int numValues = ((TupleType) rhsType).getNumSubTypes();
+            	int numVars = lhs.getNumChildren();
+            	if(numValues == numVars) {
+            		lhs.getChildren().forEach(c -> c.accept(this));
+            	} else {
+            		reporter.report(StatusCode.TUPLE_DEALING_COUNT_MISMATCH, lhs.getLine(), lhs.getColumn(), Integer.toString(numValues), Integer.toString(numVars));
+            	}
             } else {
                 reporter.report(StatusCode.CANNOT_DEAL_VALUES_FROM_NON_TUPLE, assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn());
             }

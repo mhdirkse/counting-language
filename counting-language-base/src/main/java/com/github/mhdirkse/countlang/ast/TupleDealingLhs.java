@@ -18,6 +18,10 @@ public class TupleDealingLhs extends AbstractLhs implements CompositeNode {
         return children.stream().map(c -> (AstNode) c).collect(Collectors.toList());
     }
 
+    public int getNumChildren() {
+    	return children.size();
+    }
+
     @Override
     public void accept(Visitor v) {
         v.visitTupleDealingLhs(this);

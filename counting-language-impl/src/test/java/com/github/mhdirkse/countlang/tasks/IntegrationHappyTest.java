@@ -295,9 +295,11 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"x, _ = tuple 5, 3; print x", "5"},
             {"_, x = tuple 5, 3; print x", "3"},
             {"x = tuple 5, 3; print x[1]", "5"},
+            {"x, y = tuple 5, true; if(y) {print x}", "5"},
             {"experiment exp() {sample x, y from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x - y}; print exp()", getDistribution(2, -7, -7)},
             {"experiment exp() {sample x, _ from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(5, 6, 6)},
             {"experiment exp() {sample _, x from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(3, 13, 13)},
+            {"experiment exp() {sample x, y from distribution (tuple 5, true); if(y) {return x}}; print exp()", getDistribution(5)},
 
             // Formatting complex types
 

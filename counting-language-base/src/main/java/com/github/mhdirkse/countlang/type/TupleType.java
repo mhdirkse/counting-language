@@ -46,6 +46,10 @@ public class TupleType extends CountlangType {
         return subTypes;
     }
 
+    public int getNumSubTypes() {
+    	return subTypes.size();
+    }
+
     @Override
     public String toString() {
         return "tuple<" + subTypes.stream().map(Object::toString).collect(Collectors.joining(", ")) + ">";

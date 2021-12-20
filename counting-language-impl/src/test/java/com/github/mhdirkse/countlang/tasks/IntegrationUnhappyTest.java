@@ -83,6 +83,14 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print distribution<tuple<int>>", "A tuple has at least two members"},
             {"print tuple<int>[]", "A tuple has at least two members"},
             {"function fun(tuple<int> v) {return true}; print fun(3)", "A tuple has at least two members"},
+            {"x, y = 3; print x", "When you assign multiple variables"},
+            {"x, y = tuple 1, 2, 3; print x; print y", "Cannot assign 3 values to 2 variables"},
+            {"x, y = tuple 3, true; print x; print y; x = true", "Cannot change type of variable"},
+            {"x, y = tuple 3, true; print x; print y; y = 3", "Cannot change type of variable"},
+            {"experiment exp() {sample x, y from distribution 3; return x}; print exp()", "When you assign multiple variables"},
+            {"experiment exp() {sample x, y, z from distribution (tuple 1, 2); return x, y, z}; print exp()", "Cannot assign 2 values to 3 variables"},
+            {"experiment exp() {sample x, y from distribution (tuple 3, true); x = true; return x}; print exp()", "Cannot change type of variable"},
+            {"experiment exp() {sample x, y from distribution (tuple 3, true); y = 3; return x}; print exp()", "Cannot change type of variable"},
 
             // Syntax
             
