@@ -25,13 +25,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-
-import org.junit.Assert;
 
 @RunWith(Parameterized.class)
 public class IntegrationHappyMultipleOutputTest extends IntegrationHappyTestBase {
