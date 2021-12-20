@@ -26,6 +26,7 @@ abstract class ArraySort implements PredefinedFunction {
     public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
         if(arguments.size() != 1) {
             errorHandler.handleParameterCountMismatch(1, arguments.size());
+            return CountlangType.unknown();
         }
         return CountlangType.arrayOf(arguments.get(0).getSubType());
     }

@@ -38,17 +38,17 @@ public class DistributionCountOf implements PredefinedFunction {
 	public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
 		if(arguments.size() != 2) {
 			errorHandler.handleParameterCountMismatch(2, arguments.size());
-			return null;
+			return CountlangType.unknown();
 		}
 		CountlangType thisArg = arguments.get(0);
 		CountlangType arg = arguments.get(1);
 		if(! thisArg.isDistribution()) {
 			errorHandler.handleParameterTypeMismatch(0, CountlangType.distributionOfAny(), thisArg);
-			return null;
+			return CountlangType.unknown();
 		}
 		if(arg != thisArg.getSubType()) {
 			errorHandler.handleParameterTypeMismatch(1, thisArg.getSubType(), arg);
-			return null;
+			return CountlangType.unknown();
 		}
 		return CountlangType.integer();
 	}

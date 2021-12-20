@@ -168,9 +168,11 @@ public class Analysis {
         private void analyzeFunctionDefinitionBase(FunctionDefinitionStatementBase statement, Runnable blockCreator) {
             if(! codeBlocks.isAtRootLevel()) {
                 reporter.report(StatusCode.FUNCTION_NESTED_NOT_ALLOWED, statement.getLine(), statement.getColumn());
+                return;
             }
             else if(funDefs.hasFunction(statement.getKey())) {
                 reporter.report(StatusCode.FUNCTION_ALREADY_DEFINED, statement.getLine(), statement.getColumn(), statement.getKey().toString());
+                return;
             } else {
                 analyzeFunction(statement, blockCreator);
                 funDefs.putFunction(statement);
@@ -259,10 +261,12 @@ public class Analysis {
             if(types.size() != expression.getOperator().getNumArguments()) {
                 reporter.report(StatusCode.OPERATOR_ARGUMENT_COUNT_MISMATCH, expression.getLine(), expression.getColumn(),
                         expression.getOperator().getName(), new Integer(expression.getOperator().getNumArguments()).toString(), new Integer(types.size()).toString());
+                return;
             }
             boolean typesOk = expression.getOperator().checkAndEstablishTypes(types);
             if(! typesOk) {
                 reporter.report(StatusCode.OPERATOR_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getOperator().getName());
+                return;
             }
             expression.setCountlangType(expression.getOperator().getResultType());
         }
@@ -287,7 +291,7 @@ public class Analysis {
             FunctionDefinition fun = funDefs.getFunction(expression.getKey());
             List<CountlangType> arguments = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
             CountlangType returnType = fun.checkCallAndGetReturnType(arguments, errorHandler);
-            if(returnType != null) {
+            if(returnType != CountlangType.unknown()) {
                 expression.setCountlangType(returnType);
             }            
         }

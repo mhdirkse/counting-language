@@ -52,12 +52,12 @@ public abstract class FunctionDefinitionStatementBase extends Statement implemen
     public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
         if(arguments.size() != formalParameters.size()) {
             errorHandler.handleParameterCountMismatch(formalParameters.size(), arguments.size());
-            return null;
+            return CountlangType.unknown();
         } else {
             for(int i = 0; i < arguments.size(); i++) {
                 if(arguments.get(i) != formalParameters.getFormalParameterType(i)) {
                     errorHandler.handleParameterTypeMismatch(i, formalParameters.getFormalParameterType(i), arguments.get(i));
-                    return null;
+                    return CountlangType.unknown();
                 }
             }
         }

@@ -46,12 +46,12 @@ abstract class DistributionMemberNoArguments implements PredefinedFunction {
     public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
         if(arguments.size() != 1) {
             errorHandler.handleParameterCountMismatch(1, arguments.size());
-            return null;
+            return CountlangType.unknown();
         }
         CountlangType thisArg = arguments.get(0);
         if(thisArg != ownerType) {
             errorHandler.handleParameterTypeMismatch(1, ownerType, thisArg);
-            return null;
+            return CountlangType.unknown();
         }
         return returnType;
     }
