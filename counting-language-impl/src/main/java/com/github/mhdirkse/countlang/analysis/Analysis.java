@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.analysis;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -504,7 +505,27 @@ public class Analysis {
             if(expr.getReference().getCountlangType() != CountlangType.integer()) {
                 reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn());
             }
-            expr.setCountlangType(containerType.getSubType());
+            if(containerType.isArray()) {
+            	expr.setCountlangType(containerType.getSubType());
+            } else if(containerType.isTuple()) {
+            	TupleType asTupleType = (TupleType) containerType;
+            	int tupleTypeSize = asTupleType.getNumSubTypes();
+            	BigInteger bigTupleTypeSize = BigInteger.valueOf(tupleTypeSize);
+            	if(! (expr.getReference() instanceof ValueExpression)) {
+            		reporter.report(StatusCode.TUPLE_INEX_MUST_BE_CONSTANT, expr.getReference().getLine(), expr.getReference().getColumn());
+            		expr.setCountlangType(CountlangType.unknown());
+            		return;
+            	}
+            	Object rawValue = ((ValueExpression) expr.getReference()).getValue();
+            	BigInteger bigTupleIndex = ((BigInteger) rawValue).subtract(BigInteger.ONE);
+            	if(bigTupleIndex.compareTo(bigTupleTypeSize) >= 0) {
+            		reporter.report(StatusCode.TUPLE_INDEX_OUT_OF_BOUNDS, expr.getReference().getLine(), expr.getReference().getColumn(), bigTupleIndex.add(BigInteger.ONE).toString());
+            		expr.setCountlangType(CountlangType.unknown());
+            		return;
+            	}
+            	int tupleIndex = bigTupleIndex.intValue();
+            	expr.setCountlangType(asTupleType.getTupleSubTypes().get(tupleIndex));
+            }
         }
 
         @Override
