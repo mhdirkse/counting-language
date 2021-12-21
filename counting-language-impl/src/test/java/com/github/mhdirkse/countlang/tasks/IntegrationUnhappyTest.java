@@ -92,6 +92,12 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"experiment exp() {sample x, y from distribution (tuple 3, true); x = true; return x}; print exp()", "Cannot change type of variable"},
             {"experiment exp() {sample x, y from distribution (tuple 3, true); y = 3; return x}; print exp()", "Cannot change type of variable"},
 
+            {"b = true; t = tuple 3, true; b = t[1]", "Cannot change type of variable"},
+            {"i = 3; t = tuple 3, true; i = t[2]", "Cannot change type of variable"},
+            {"idx = 2; t = tuple 3, true; b = false; b = t[idx]; print b", "A tuple dereferencing expression must be a constant to allow for type checking"},
+            {"t = tuple 1, true; x = t[3]; print x", "Tuple index out of bounds, got 3"},
+            {"t = tuple 1, true; x = t[4]; print x", "Tuple index out of bounds, got 4"},
+
             // Syntax
             
             {"print 5 +", ""}, // Syntax error.

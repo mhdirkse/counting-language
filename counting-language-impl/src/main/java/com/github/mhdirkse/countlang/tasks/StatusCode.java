@@ -60,6 +60,8 @@ public enum StatusCode implements AbstractStatusCode {
     TUPLES_MUST_BE_FLAT("({1}, {2}): Tuple types are always flat, dont use tuple<tuple<x, y>, z> but tuple<x, y, z>."),
     CANNOT_DEAL_VALUES_FROM_NON_TUPLE("({1}, {2}): When you assign multiple variables, the right-hand-side must also consist of multiple expressions (a tuple)."),
     TUPLE_DEALING_COUNT_MISMATCH("({1}, {2}): Cannot assign {3} values to {4} variables."),
+    TUPLE_INEX_MUST_BE_CONSTANT("({1}, {2}): A tuple dereferencing expression must be a constant to allow for type checking."),
+    TUPLE_INDEX_OUT_OF_BOUNDS("({1}, {2}): Tuple index out of bounds, got {3}."),
     MEMBER_OF_NON_ARRAY_OR_TUPLE("({1}, {2}): Cannot get an element from something that is not an array."),
     MEMBER_INDEX_NOT_INT("({1}, {2}): An array index should be integer.");
 
