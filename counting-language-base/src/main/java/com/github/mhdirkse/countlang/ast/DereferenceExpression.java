@@ -19,7 +19,7 @@
 
 package com.github.mhdirkse.countlang.ast;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.type.CountlangType;
@@ -27,7 +27,7 @@ import com.github.mhdirkse.countlang.type.CountlangType;
 public class DereferenceExpression extends ExpressionNode implements CompositeNode {
     private CountlangType countlangType = CountlangType.unknown();
     private ExpressionNode container;
-    private ExpressionNode reference;
+    private List<ExpressionNode> references = new ArrayList<>();
 
     public DereferenceExpression(int line, int column) {
         super(line, column);
@@ -50,17 +50,20 @@ public class DereferenceExpression extends ExpressionNode implements CompositeNo
         this.container = container;
     }
 
-    public ExpressionNode getReference() {
-        return reference;
+    public List<ExpressionNode> getReferences() {
+        return new ArrayList<>(references);
     }
 
-    public void setReference(ExpressionNode reference) {
-        this.reference = reference;
+    public void addReference(ExpressionNode reference) {
+        this.references.add(reference);
     }
 
     @Override
     public List<AstNode> getChildren() {
-        return Arrays.asList(container, reference);
+        List<AstNode> result = new ArrayList<>();
+        result.add(container);
+        result.addAll(references);
+    	return result;
     }
 
     @Override

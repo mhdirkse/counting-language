@@ -32,7 +32,7 @@ public class DereferenceExpressionHandler extends AbstractExpressionHandler impl
     @Override
     void addExpression(ExpressionNode expression) {
         if(hasContainer) {
-            result.setReference(expression);
+            result.addReference(expression);
         } else {
             result.setContainer(expression);
             hasContainer = true;

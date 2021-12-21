@@ -45,7 +45,7 @@ expr
   | expr 'and' expr # andExpression
   | expr 'or' expr # orExpression
   | 'distribution' ( '<' typeId '>' )? (distItem (',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression
-  | expr '[' expr ']' # dereferenceExpression
+  | expr '[' expr+ ']' # dereferenceExpression
   | '[' expr ( ',' expr )* ']' # arrayExpression
   | typeId '[' ']' # emptyArrayExpression
   | 'known of' expr # distributionKnownExpression
