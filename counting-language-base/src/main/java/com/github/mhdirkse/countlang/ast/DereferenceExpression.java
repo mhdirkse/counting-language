@@ -26,11 +26,19 @@ import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DereferenceExpression extends ExpressionNode implements CompositeNode {
     private CountlangType countlangType = CountlangType.unknown();
+    private boolean arraySelector = false;
     private ExpressionNode container;
     private List<ExpressionNode> references = new ArrayList<>();
-
     public DereferenceExpression(int line, int column) {
         super(line, column);
+    }
+
+    public boolean getArraySelector() {
+    	return arraySelector;
+    }
+
+    public void setArraySelector() {
+    	arraySelector = true;
     }
 
     @Override

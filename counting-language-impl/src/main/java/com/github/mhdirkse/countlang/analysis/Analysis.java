@@ -20,6 +20,7 @@
 package com.github.mhdirkse.countlang.analysis;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -502,30 +503,54 @@ public class Analysis {
             if(! (containerType.isArray() || containerType.isTuple())) {
                 reporter.report(StatusCode.MEMBER_OF_NON_ARRAY_OR_TUPLE, expr.getLine(), expr.getColumn());
             }
-            if(expr.getReference().getCountlangType() != CountlangType.integer()) {
-                reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn());
+            List<ExpressionNode> references = expr.getReferences();
+            for(int i = 0; i < references.size(); ++i) {
+            	ExpressionNode reference = references.get(i);
+                if(reference.getCountlangType() != CountlangType.integer()) {
+                    reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn(), Integer.toString(i+1));
+                }
             }
             if(containerType.isArray()) {
-            	expr.setCountlangType(containerType.getSubType());
+            	if(references.size() == 1) {
+            		expr.setCountlangType(containerType.getSubType());
+            	} else {
+            		expr.setCountlangType(containerType);
+            		expr.setArraySelector();
+            	}
             } else if(containerType.isTuple()) {
-            	TupleType asTupleType = (TupleType) containerType;
-            	int tupleTypeSize = asTupleType.getNumSubTypes();
-            	BigInteger bigTupleTypeSize = BigInteger.valueOf(tupleTypeSize);
-            	if(! (expr.getReference() instanceof ValueExpression)) {
-            		reporter.report(StatusCode.TUPLE_INEX_MUST_BE_CONSTANT, expr.getReference().getLine(), expr.getReference().getColumn());
-            		expr.setCountlangType(CountlangType.unknown());
-            		return;
+            	if(references.size() == 1) {
+            		expr.setCountlangType(getCountlangTypeForTupleIndex(references.get(0), (TupleType) containerType));
+            	} else {
+            		List<CountlangType> newSubTypes = new ArrayList<>();
+            		for(ExpressionNode reference: references) {
+            			CountlangType newSubType = getCountlangTypeForTupleIndex(reference, (TupleType) containerType);
+            			if(newSubType == CountlangType.unknown()) {
+            				expr.setCountlangType(CountlangType.unknown());
+            				break;
+            			}
+            			newSubTypes.add(newSubType);
+            		}
+            		expr.setArraySelector();
+            		expr.setCountlangType(CountlangType.tupleOf(newSubTypes));
             	}
-            	Object rawValue = ((ValueExpression) expr.getReference()).getValue();
-            	BigInteger bigTupleIndex = ((BigInteger) rawValue).subtract(BigInteger.ONE);
-            	if(bigTupleIndex.compareTo(bigTupleTypeSize) >= 0) {
-            		reporter.report(StatusCode.TUPLE_INDEX_OUT_OF_BOUNDS, expr.getReference().getLine(), expr.getReference().getColumn(), bigTupleIndex.add(BigInteger.ONE).toString());
-            		expr.setCountlangType(CountlangType.unknown());
-            		return;
-            	}
-            	int tupleIndex = bigTupleIndex.intValue();
-            	expr.setCountlangType(asTupleType.getTupleSubTypes().get(tupleIndex));
             }
+        }
+
+        private CountlangType getCountlangTypeForTupleIndex(ExpressionNode reference, TupleType asTupleType) {
+        	int tupleTypeSize = asTupleType.getNumSubTypes();
+        	BigInteger bigTupleTypeSize = BigInteger.valueOf(tupleTypeSize);
+        	if(! (reference instanceof ValueExpression)) {
+        		reporter.report(StatusCode.TUPLE_INEX_MUST_BE_CONSTANT, reference.getLine(), reference.getColumn());
+        		return CountlangType.unknown();
+        	}
+        	Object rawValue = ((ValueExpression) reference).getValue();
+        	BigInteger bigTupleIndex = ((BigInteger) rawValue).subtract(BigInteger.ONE);
+        	if(bigTupleIndex.compareTo(bigTupleTypeSize) >= 0) {
+        		reporter.report(StatusCode.TUPLE_INDEX_OUT_OF_BOUNDS, reference.getLine(), reference.getColumn(), bigTupleIndex.add(BigInteger.ONE).toString());
+        		return CountlangType.unknown();
+        	}
+        	int tupleIndex = bigTupleIndex.intValue();
+        	return asTupleType.getTupleSubTypes().get(tupleIndex);
         }
 
         @Override
