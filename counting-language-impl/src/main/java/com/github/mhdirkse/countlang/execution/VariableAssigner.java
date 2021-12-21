@@ -4,7 +4,6 @@ import com.github.mhdirkse.countlang.ast.AbstractLhs;
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
 import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
-import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.AtomicTypeNode;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DereferenceExpression;

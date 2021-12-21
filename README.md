@@ -255,6 +255,7 @@ please do the following:
 * See the `inputs` directory for more examples.
 * Javadocs are in `counting-language/target/site/apidocs`.
 * There are also detailed Javadocs, see `counting-language/target/site/detaildocs`.
+* If you want to develop with Eclipse, you may want to add a Java 8 JDK (Windows | Preferences | Java | Installed JREs). If you don't, you may see too many warings because Eclipse is applying higher Java version.
 
 # Implementation
 
