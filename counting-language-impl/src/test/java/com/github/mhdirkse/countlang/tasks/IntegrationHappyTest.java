@@ -301,6 +301,16 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"experiment exp() {sample _, x from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(3, 13, 13)},
             {"experiment exp() {sample x, y from distribution (tuple 5, true); if(y) {return x}}; print exp()", getDistribution(5)},
             {getProgramExercisingTuples(), getProgramExercisingTuplesExpected()},
+
+            // Array selectors
+
+            {"t = tuple 1, true, [1, 2]; t2 = t[1, 3]; print t2", "1, [1, 2]"},
+            {"t = tuple 1, true, [1, 2]; t2 = t[2, 2]; print t2", "true, true"},
+            {"t = tuple 1, true, [1, 2]; t2 = t[1, 1]; print t2", "1, 1"},
+            {"a = [11, 12, 13, 14]; a2 = a[1, 4]; print a2", "[11, 14]"},
+            {"a = [11, 12, 13, 14]; a2 = a[2, 2]; print a2", "[12, 12]"},
+            {"a = [11, 12, 13, 14]; a2 = a[1, 1]; print a2", "[11, 11]"},
+
             // Formatting complex types
 
             {"print distribution 3/2, 5/3", Arrays.asList(

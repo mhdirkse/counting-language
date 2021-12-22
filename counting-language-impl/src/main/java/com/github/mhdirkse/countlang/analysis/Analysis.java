@@ -500,15 +500,21 @@ public class Analysis {
         public void visitDereferenceExpression(DereferenceExpression expr) {
             expr.getChildren().forEach(c -> c.accept(this));
             CountlangType containerType = expr.getContainer().getCountlangType();
+            boolean haveErrors = false;
             if(! (containerType.isArray() || containerType.isTuple())) {
                 reporter.report(StatusCode.MEMBER_OF_NON_ARRAY_OR_TUPLE, expr.getLine(), expr.getColumn());
+                return;
             }
             List<ExpressionNode> references = expr.getReferences();
             for(int i = 0; i < references.size(); ++i) {
             	ExpressionNode reference = references.get(i);
                 if(reference.getCountlangType() != CountlangType.integer()) {
                     reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn(), Integer.toString(i+1));
+                    haveErrors = true;
                 }
+            }
+            if(haveErrors) {
+            	return;
             }
             if(containerType.isArray()) {
             	if(references.size() == 1) {
@@ -526,12 +532,14 @@ public class Analysis {
             			CountlangType newSubType = getCountlangTypeForTupleIndex(reference, (TupleType) containerType);
             			if(newSubType == CountlangType.unknown()) {
             				expr.setCountlangType(CountlangType.unknown());
-            				break;
+            				haveErrors = true;
             			}
             			newSubTypes.add(newSubType);
             		}
-            		expr.setArraySelector();
-            		expr.setCountlangType(CountlangType.tupleOf(newSubTypes));
+            		if(! haveErrors) {
+            			expr.setArraySelector();
+            			expr.setCountlangType(CountlangType.tupleOf(newSubTypes));
+            		}
             	}
             }
         }

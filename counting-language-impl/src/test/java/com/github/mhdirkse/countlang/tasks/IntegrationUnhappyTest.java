@@ -98,6 +98,15 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"t = tuple 1, true; x = t[3]; print x", "Tuple index out of bounds, got 3"},
             {"t = tuple 1, true; x = t[4]; print x", "Tuple index out of bounds, got 4"},
 
+            // Array selectors
+
+            {"t = tuple true, 1; t2 = t[3, 1]", "Tuple index out of bounds"},
+            {"t = tuple 1, true; t2 = t[true, 1]; print t2", "An array index should be integer, but dereferencing value #1 is not"},
+            {"t = tuple true, 1; t = t[1, 1]; print t", "Cannot change type of variable"},
+            {"a = [1, 2, 3, 4]; print a[2, true]", "An array index should be integer, but dereferencing value #2 is not"},
+            // Error is found at runtime, not analysis time
+            {"a = [1, 2, 3, 4]; print a[2, 5]", "more than array size"},
+
             // Syntax
             
             {"print 5 +", ""}, // Syntax error.
