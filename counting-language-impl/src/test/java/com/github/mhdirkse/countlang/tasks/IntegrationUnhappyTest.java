@@ -97,7 +97,9 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"idx = 2; t = tuple 3, true; b = false; b = t[idx]; print b", "A tuple dereferencing expression must be a constant to allow for type checking"},
             {"t = tuple 1, true; x = t[3]; print x", "Tuple index out of bounds, got 3"},
             {"t = tuple 1, true; x = t[4]; print x", "Tuple index out of bounds, got 4"},
-
+            {"t = tuple 1, true; print t[0]", "Tuple index must be at least one, got 0"},
+            {"t = tuple 1, true; print t[-1]", "Tuple index must be at least one, got -1"},
+            
             // Array selectors
 
             {"t = tuple true, 1; t2 = t[3, 1]", "Tuple index out of bounds"},

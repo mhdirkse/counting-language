@@ -569,6 +569,10 @@ public class Analysis {
         	}
         	Object rawValue = ((ValueExpression) reference).getValue();
         	BigInteger bigTupleIndex = ((BigInteger) rawValue).subtract(BigInteger.ONE);
+        	if(bigTupleIndex.compareTo(BigInteger.ZERO) < 0) {
+        		reporter.report(StatusCode.TUPLE_INDEX_MUST_AT_LEAST_ONE, reference.getLine(), reference.getColumn(), bigTupleIndex.add(BigInteger.ONE).toString());
+        		return CountlangType.unknown();
+        	}
         	if(bigTupleIndex.compareTo(bigTupleTypeSize) >= 0) {
         		reporter.report(StatusCode.TUPLE_INDEX_OUT_OF_BOUNDS, reference.getLine(), reference.getColumn(), bigTupleIndex.add(BigInteger.ONE).toString());
         		return CountlangType.unknown();

@@ -62,6 +62,7 @@ public enum StatusCode implements AbstractStatusCode {
     TUPLE_DEALING_COUNT_MISMATCH("({1}, {2}): Cannot assign {3} values to {4} variables."),
     TUPLE_INEX_MUST_BE_CONSTANT("({1}, {2}): A tuple dereferencing expression must be a constant to allow for type checking."),
     TUPLE_INDEX_OUT_OF_BOUNDS("({1}, {2}): Tuple index out of bounds, got {3}."),
+    TUPLE_INDEX_MUST_AT_LEAST_ONE("({1}, {2}): Tuple index must be at least one, got {3}."),
     MEMBER_OF_NON_ARRAY_OR_TUPLE("({1}, {2}): Cannot get an element from something that is not an array."),
     MEMBER_INDEX_NOT_INT("({1}, {2}): An array index should be integer, but dereferencing value #{3} is not.");
 
