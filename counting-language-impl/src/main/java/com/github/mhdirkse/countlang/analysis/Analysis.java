@@ -56,6 +56,7 @@ import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -342,6 +343,29 @@ public class Analysis {
         }
 
         @Override
+        public void visitRangeExpression(RangeExpression expr) {
+        	expr.getChildren().forEach(ex -> ex.accept(this));
+        	CountlangType subType = expr.getStart().getCountlangType();
+        	if((subType != CountlangType.integer()) && (subType != CountlangType.fraction())) {
+        		reporter.report(StatusCode.RANGE_INVALID_SUBTYPE, expr.getLine(), expr.getColumn(), subType.toString());
+        		return;
+        	}
+        	CountlangType subTypeOfEnd = expr.getEndInclusive().getCountlangType();
+        	if(subTypeOfEnd != subType) {
+        		reporter.report(StatusCode.RANGE_INVALID_END, expr.getLine(), expr.getColumn(), subType.toString(), subTypeOfEnd.toString());
+        		return;
+        	}
+        	if(expr.hasExplicitStep()) {
+        		CountlangType stepType = expr.getStep().getCountlangType();
+        		if(stepType != subType) {
+        			reporter.report(StatusCode.RANGE_INVALID_STEP, expr.getLine(), expr.getColumn(), subType.toString());
+        			return;
+        		}
+        	}
+        	expr.setCountlangType(CountlangType.rangeOf(subType));
+        }
+
+        @Override
         public void visitSymbolExpression(SymbolExpression expression) {
             expression.setCountlangType(codeBlocks.read(expression.getSymbol(), expression.getLine(), expression.getColumn()));
         }
@@ -519,7 +543,7 @@ public class Analysis {
 			boolean success = true;
 			for(int i = 0; i < references.size(); ++i) {
             	ExpressionNode reference = references.get(i);
-                if(reference.getCountlangType() != CountlangType.integer()) {
+                if( (reference.getCountlangType() != CountlangType.integer()) && (reference.getCountlangType() != CountlangType.rangeOf(CountlangType.integer())) ) {
                     reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn(), Integer.toString(i+1));
                     success = false;
                 }
@@ -529,7 +553,7 @@ public class Analysis {
 
 		private void dereferenceArray(DereferenceExpression expr, CountlangType arrayType) {
             List<ExpressionNode> references = expr.getReferences();
-			if(references.size() == 1) {
+			if(arrayReference(references)) {
 				expr.setCountlangType(arrayType.getSubType());
 			} else {
 				expr.setCountlangType(arrayType);
@@ -537,19 +561,32 @@ public class Analysis {
 			}
 		}
 
+		private boolean arrayReference(List<ExpressionNode> references) {
+			return (references.size() == 1) && (! references.get(0).getCountlangType().isRange());
+		}
+
 		private void dereferenceTupleType(DereferenceExpression expr, TupleType tupleType) {
             List<ExpressionNode> references = expr.getReferences();
 			boolean haveErrors = false;
-			if(references.size() == 1) {
+			if(arrayReference(references)) {
 				expr.setCountlangType(getCountlangTypeForTupleIndex(references.get(0), tupleType));
 			} else {
 				List<CountlangType> newSubTypes = new ArrayList<>();
 				for(ExpressionNode reference: references) {
-					CountlangType newSubType = getCountlangTypeForTupleIndex(reference, tupleType);
-					if(newSubType == CountlangType.unknown()) {
-						haveErrors = true;
+					if(reference.getCountlangType() == CountlangType.integer()) {
+						CountlangType newSubType = getCountlangTypeForTupleIndex(reference, tupleType);
+						if(newSubType == CountlangType.unknown()) {
+							haveErrors = true;
+						}
+						newSubTypes.add(newSubType);
+					} else {
+						SubTypesAndError s = getSubTypesFromRangeReference((RangeExpression) reference, tupleType);
+						if(s.haveErrors) {
+							haveErrors = true;
+						} else {
+							newSubTypes.addAll(s.subTypes);
+						}
 					}
-					newSubTypes.add(newSubType);
 				}
 				if(haveErrors) {
 					expr.setCountlangType(CountlangType.unknown());
@@ -579,6 +616,71 @@ public class Analysis {
         	}
         	int tupleIndex = bigTupleIndex.intValue();
         	return asTupleType.getTupleSubTypes().get(tupleIndex);
+        }
+
+        private SubTypesAndError getSubTypesFromRangeReference(RangeExpression rangeExpression, TupleType tupleType) {
+        	CountlangType subType = getCountlangTypeForTupleIndex(rangeExpression.getStart(), tupleType);
+        	if(subType == CountlangType.unknown()) {
+        		return SubTypesAndError.errorInstance();
+        	}
+        	subType = getCountlangTypeForTupleIndex(rangeExpression.getEndInclusive(), tupleType);
+        	if(subType == CountlangType.unknown()) {
+        		return SubTypesAndError.errorInstance();
+        	}
+        	BigInteger startIndex = getIndexFromRangeEndpoint(rangeExpression.getStart());
+        	BigInteger endIndex = getIndexFromRangeEndpoint(rangeExpression.getEndInclusive());
+        	BigInteger step = BigInteger.ONE;
+        	if(rangeExpression.hasExplicitStep()) {
+        		ExpressionNode stepNode = rangeExpression.getStep();
+        		if(! (stepNode instanceof ValueExpression)) {
+        			reporter.report(StatusCode.TUPLE_RANGE_STEP_MUST_BE_CONSTANT, rangeExpression.getLine(), rangeExpression.getColumn());
+        			return SubTypesAndError.errorInstance();
+        		}
+        		Object rawStepValue = ((ValueExpression) stepNode).getValue();
+        		step = (BigInteger) rawStepValue;
+        	}
+        	if(startIndex.compareTo(endIndex) < 0) {
+        		if(step.compareTo(BigInteger.ZERO) <= 0) {
+        			reporter.report(StatusCode.TUPLE_RANGE_AND_STEP_NOT_COMPATIBLE, rangeExpression.getLine(), rangeExpression.getColumn(),
+        					startIndex.add(BigInteger.ONE).toString(),
+        					step.toString(),
+        					endIndex.add(BigInteger.ONE).toString());
+        		}
+        	} else if(startIndex.compareTo(endIndex) > 0) {
+        		if(step.compareTo(BigInteger.ZERO) > 0) {
+        			reporter.report(StatusCode.TUPLE_RANGE_AND_STEP_NOT_COMPATIBLE, rangeExpression.getLine(), rangeExpression.getColumn(),
+        					startIndex.add(BigInteger.ONE).toString(),
+        					step.toString(),
+        					endIndex.add(BigInteger.ONE).toString());        			
+        		}
+        	} else if(step.compareTo(BigInteger.ZERO) == 0) {
+    			reporter.report(StatusCode.TUPLE_RANGE_AND_STEP_NOT_COMPATIBLE, rangeExpression.getLine(), rangeExpression.getColumn(),
+    					startIndex.add(BigInteger.ONE).toString(),
+    					step.toString(),
+    					endIndex.add(BigInteger.ONE).toString());        			        		
+        	}
+        	List<BigInteger> bigIndexes = evaluateRange(startIndex, endIndex, step);
+        	List<CountlangType> countlangTypes = new ArrayList<>();
+        	for(BigInteger bigIndex: bigIndexes) {
+        		countlangTypes.add(tupleType.getTupleSubTypes().get(bigIndex.intValue()));
+        	}
+        	SubTypesAndError result = new SubTypesAndError();
+        	result.haveErrors = false;
+        	result.subTypes = countlangTypes;
+        	return result;
+        }
+
+        private BigInteger getIndexFromRangeEndpoint(ExpressionNode endpoint) {
+        	Object rawValue = ((ValueExpression) endpoint).getValue();
+        	return ((BigInteger) rawValue).subtract(BigInteger.ONE);        	
+        }
+
+        private List<BigInteger> evaluateRange(BigInteger start, BigInteger endInclusive, BigInteger step) {
+        	List<BigInteger> result = new ArrayList<>();
+        	for(BigInteger current = start; current.compareTo(endInclusive) <= 0; current = current.add(step)) {
+        		result.add(current);
+        	}
+        	return result;
         }
 
         @Override
@@ -611,4 +713,15 @@ public class Analysis {
             codeBlocks.write(item.getSymbol(), assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn(), countlangType);
         }
     }
+
+	private static class SubTypesAndError {
+		List<CountlangType> subTypes;
+		boolean haveErrors;
+
+		static SubTypesAndError errorInstance() {
+			SubTypesAndError result = new SubTypesAndError();
+			result.haveErrors = true;
+			return result;
+		}
+	}
 }

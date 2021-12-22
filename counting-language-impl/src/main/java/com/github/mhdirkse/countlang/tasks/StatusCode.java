@@ -63,8 +63,14 @@ public enum StatusCode implements AbstractStatusCode {
     TUPLE_INEX_MUST_BE_CONSTANT("({1}, {2}): A tuple dereferencing expression must be a constant to allow for type checking."),
     TUPLE_INDEX_OUT_OF_BOUNDS("({1}, {2}): Tuple index out of bounds, got {3}."),
     TUPLE_INDEX_MUST_AT_LEAST_ONE("({1}, {2}): Tuple index must be at least one, got {3}."),
+    TUPLE_RANGE_STEP_MUST_BE_CONSTANT("({1}, {2}): When you dereference a tuple with a range, its step must be constant."),
+    TUPLE_RANGE_AND_STEP_NOT_COMPATIBLE("({1}, {2}): Invalid step in range {3}:{4}:{5}"),
     MEMBER_OF_NON_ARRAY_OR_TUPLE("({1}, {2}): Cannot get an element from something that is not an array."),
-    MEMBER_INDEX_NOT_INT("({1}, {2}): An array index should be integer, but dereferencing value #{3} is not.");
+    MEMBER_INDEX_NOT_INT("({1}, {2}): An array index should be integer, but dereferencing value #{3} is not."),
+
+    RANGE_INVALID_SUBTYPE("({1}, {2}): Ranges must be formed from integers or fractions, but got {3}."),
+    RANGE_INVALID_END("({1}, {2}): Range must have end value of type {3}, but got {4}."),
+    RANGE_INVALID_STEP("({1}, {2}): Range must have step type {3} because the start value has that type. Fraction range must have fraction step (e.g. 2/1).");
 
     StatusCode(final String formatString) {
         this.formatString = formatString;

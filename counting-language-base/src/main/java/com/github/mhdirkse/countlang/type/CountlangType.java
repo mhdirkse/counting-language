@@ -46,6 +46,7 @@ public class CountlangType {
         BOOL,
         DISTRIBUTION,
         ARRAY,
+        RANGE,
         TUPLE;
     }
 
@@ -121,6 +122,13 @@ public class CountlangType {
         return arrayOf(any());
     }
 
+    public static CountlangType rangeOf(CountlangType subType) {
+    	if((subType != CountlangType.integer()) && (subType != CountlangType.fraction())) {
+    		throw new IllegalArgumentException("Ranges can only be built from integers of fractions");
+    	}
+    	return compositeOf(Kind.RANGE, subType);
+    }
+
     public static TupleType tupleOf(List<CountlangType> rawSubTypes) {
         List<CountlangType> subTypes = new ArrayList<>();
         for(CountlangType rawSubType: rawSubTypes) {
@@ -156,6 +164,10 @@ public class CountlangType {
 
     public boolean isArray() {
         return kind == Kind.ARRAY;
+    }
+
+    public boolean isRange() {
+    	return kind == Kind.RANGE;
     }
 
     public boolean isPrimitive() {

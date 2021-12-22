@@ -111,6 +111,16 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
     }
 
     @Override
+    public boolean enterRangeExpression(
+    		@NotNull final CountlangParser.RangeExpressionContext antlrCtx,
+    		final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+    	delegationCtx.addFirst(new RangeExpressionHandler(line, column));
+    	return true;
+    }
+
+    @Override
     public boolean enterSymbolReferenceExpression(
             @NotNull final CountlangParser.SymbolReferenceExpressionContext ctx,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
@@ -261,6 +271,12 @@ abstract class AbstractExpressionHandler extends AbstractCountlangListenerHandle
         return handleExpressionExit(delegationCtx);
     }
 
+    @Override
+    public boolean exitRangeExpression(
+    		@NotNull final CountlangParser.RangeExpressionContext ctx,
+    		final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+    	return handleExpressionExit(delegationCtx);
+    }
 
     @Override
     public boolean exitSymbolReferenceExpression(
