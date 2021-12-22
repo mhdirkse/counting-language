@@ -547,12 +547,13 @@ public class Analysis {
 				for(ExpressionNode reference: references) {
 					CountlangType newSubType = getCountlangTypeForTupleIndex(reference, tupleType);
 					if(newSubType == CountlangType.unknown()) {
-						expr.setCountlangType(CountlangType.unknown());
 						haveErrors = true;
 					}
 					newSubTypes.add(newSubType);
 				}
-				if(! haveErrors) {
+				if(haveErrors) {
+					expr.setCountlangType(CountlangType.unknown());
+				} else {
 					expr.setArraySelector();
 					expr.setCountlangType(CountlangType.tupleOf(newSubTypes));
 				}
