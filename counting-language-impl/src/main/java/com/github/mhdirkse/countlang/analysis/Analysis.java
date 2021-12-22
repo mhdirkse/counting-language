@@ -500,49 +500,64 @@ public class Analysis {
         public void visitDereferenceExpression(DereferenceExpression expr) {
             expr.getChildren().forEach(c -> c.accept(this));
             CountlangType containerType = expr.getContainer().getCountlangType();
-            boolean haveErrors = false;
             if(! (containerType.isArray() || containerType.isTuple())) {
                 reporter.report(StatusCode.MEMBER_OF_NON_ARRAY_OR_TUPLE, expr.getLine(), expr.getColumn());
                 return;
             }
-            List<ExpressionNode> references = expr.getReferences();
-            for(int i = 0; i < references.size(); ++i) {
-            	ExpressionNode reference = references.get(i);
-                if(reference.getCountlangType() != CountlangType.integer()) {
-                    reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn(), Integer.toString(i+1));
-                    haveErrors = true;
-                }
-            }
-            if(haveErrors) {
+            if(! checkReferencesAreInteger(expr)) {
             	return;
             }
             if(containerType.isArray()) {
-            	if(references.size() == 1) {
-            		expr.setCountlangType(containerType.getSubType());
-            	} else {
-            		expr.setCountlangType(containerType);
-            		expr.setArraySelector();
-            	}
+            	dereferenceArray(expr, containerType);
             } else if(containerType.isTuple()) {
-            	if(references.size() == 1) {
-            		expr.setCountlangType(getCountlangTypeForTupleIndex(references.get(0), (TupleType) containerType));
-            	} else {
-            		List<CountlangType> newSubTypes = new ArrayList<>();
-            		for(ExpressionNode reference: references) {
-            			CountlangType newSubType = getCountlangTypeForTupleIndex(reference, (TupleType) containerType);
-            			if(newSubType == CountlangType.unknown()) {
-            				expr.setCountlangType(CountlangType.unknown());
-            				haveErrors = true;
-            			}
-            			newSubTypes.add(newSubType);
-            		}
-            		if(! haveErrors) {
-            			expr.setArraySelector();
-            			expr.setCountlangType(CountlangType.tupleOf(newSubTypes));
-            		}
-            	}
+            	dereferenceTupleType(expr, (TupleType) containerType);
             }
         }
+
+		private boolean checkReferencesAreInteger(DereferenceExpression expr) {
+            List<ExpressionNode> references = expr.getReferences();
+			boolean success = true;
+			for(int i = 0; i < references.size(); ++i) {
+            	ExpressionNode reference = references.get(i);
+                if(reference.getCountlangType() != CountlangType.integer()) {
+                    reporter.report(StatusCode.MEMBER_INDEX_NOT_INT, expr.getLine(), expr.getColumn(), Integer.toString(i+1));
+                    success = false;
+                }
+            }
+			return success;
+		}
+
+		private void dereferenceArray(DereferenceExpression expr, CountlangType arrayType) {
+            List<ExpressionNode> references = expr.getReferences();
+			if(references.size() == 1) {
+				expr.setCountlangType(arrayType.getSubType());
+			} else {
+				expr.setCountlangType(arrayType);
+				expr.setArraySelector();
+			}
+		}
+
+		private void dereferenceTupleType(DereferenceExpression expr, TupleType tupleType) {
+            List<ExpressionNode> references = expr.getReferences();
+			boolean haveErrors = false;
+			if(references.size() == 1) {
+				expr.setCountlangType(getCountlangTypeForTupleIndex(references.get(0), tupleType));
+			} else {
+				List<CountlangType> newSubTypes = new ArrayList<>();
+				for(ExpressionNode reference: references) {
+					CountlangType newSubType = getCountlangTypeForTupleIndex(reference, tupleType);
+					if(newSubType == CountlangType.unknown()) {
+						expr.setCountlangType(CountlangType.unknown());
+						haveErrors = true;
+					}
+					newSubTypes.add(newSubType);
+				}
+				if(! haveErrors) {
+					expr.setArraySelector();
+					expr.setCountlangType(CountlangType.tupleOf(newSubTypes));
+				}
+			}
+		}
 
         private CountlangType getCountlangTypeForTupleIndex(ExpressionNode reference, TupleType asTupleType) {
         	int tupleTypeSize = asTupleType.getNumSubTypes();
