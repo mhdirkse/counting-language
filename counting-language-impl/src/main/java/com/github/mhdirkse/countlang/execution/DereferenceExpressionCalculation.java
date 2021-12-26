@@ -74,7 +74,7 @@ final class DereferenceExpressionCalculation extends ExpressionResultsCollector 
     	} catch(InvalidRangeException e) {
     		throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), e.getMessage());
     	} catch(RangeIndexOutOfBoundsException e) {
-    		throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Index out of bounds exception: size = %d, index = %s",
+    		throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Index out of bounds: size = %d, index = %s",
     				container.size(), e.getOffendingIndex().toString()));
     	}
     }

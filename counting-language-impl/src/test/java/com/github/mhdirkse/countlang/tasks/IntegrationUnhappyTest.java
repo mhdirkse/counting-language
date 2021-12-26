@@ -121,6 +121,10 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"t = tuple 1, true; x = 2; print t[1:x]", "A tuple dereferencing expression must be a constant to allow for type checking"},
             {"t = tuple 1, true; print t[2:1]", "Invalid step in range 2:1:1"},
             {"t = tuple true, 1; print t[0:2]", "Tuple index out of bounds, got 0"},
+            {"a = [11, 12, 13, 14]; print a[3:5]", "Index out of bounds: size = 4, index = 5"},
+            {"a = [11, 12, 13, 14]; print a[3:2]", "Invalid range 3:1:2"},
+            {"d = distribution 2:1; print d", "Invalid range 2:1:1"},
+            {"d = distribution 2 of 2:1; print d", "Invalid range 2:1:1"},
 
             // Syntax
             
