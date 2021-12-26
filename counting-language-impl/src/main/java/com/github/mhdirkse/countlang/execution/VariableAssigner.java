@@ -23,6 +23,7 @@ import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -107,6 +108,11 @@ class VariableAssigner implements Visitor {
     @Override
     public void visitCompositeExpression(CompositeExpression expression) {
         throw new IllegalStateException("Method call not applicable");
+    }
+
+    @Override
+    public void visitRangeExpression(RangeExpression expression) {
+        throw new IllegalStateException("Method call not applicable");    	
     }
 
     @Override

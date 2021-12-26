@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
+import com.github.mhdirkse.countlang.type.AbstractRange;
 import com.github.mhdirkse.countlang.type.CountlangArray;
 
 final class ArrayExpressionCalculation extends ExpressionResultsCollector {
@@ -31,7 +32,20 @@ final class ArrayExpressionCalculation extends ExpressionResultsCollector {
     }
 
     @Override
-    void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        context.onResult(new CountlangArray(new ArrayList<>(subExpressionResults)));
+    void processSubExpressionResults(List<Object> rawSubExpressionResults, ExecutionContext context) {
+        List<Object> subExpressionResults = new ArrayList<>();
+        for(Object valueOrRange: rawSubExpressionResults) {
+        	if(valueOrRange instanceof AbstractRange) {
+        		AbstractRange<?> range = (AbstractRange<?>) valueOrRange;
+        		try {
+        			subExpressionResults.addAll(range.enumerate());
+        		} catch(Exception e) {
+        			throw new IllegalStateException("Type mismatch that should have been prevented by type checking", e);
+        		}
+        	} else {
+        		subExpressionResults.add(valueOrRange);
+        	}
+        }
+    	context.onResult(new CountlangArray(new ArrayList<>(subExpressionResults)));
     }
 }

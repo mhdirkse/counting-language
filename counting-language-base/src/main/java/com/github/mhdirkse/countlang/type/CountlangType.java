@@ -170,6 +170,21 @@ public class CountlangType {
     	return kind == Kind.RANGE;
     }
 
+    public final boolean containsRange() {
+    	return isRange() || anySubTypeContainsRange();
+    }
+
+    boolean anySubTypeContainsRange() {
+    	boolean result = false;
+    	if(subType != null) {
+    		result = result || subType.containsRange();
+    	}
+    	if(secondSubType != null) {
+    		result = result || secondSubType.containsRange();
+    	}
+    	return result;
+    }
+
     public boolean isPrimitive() {
         return PRIMITIVES.contains(kind);
     }

@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.type;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,11 @@ public class CountlangArray implements Comparable<CountlangArray>, CountlangComp
     @Override
     public Object get(int i) {
         return items.get(i);
+    }
+
+    @Override
+    public List<Object> getAll() {
+    	return new ArrayList<>(items);
     }
 
     @Override

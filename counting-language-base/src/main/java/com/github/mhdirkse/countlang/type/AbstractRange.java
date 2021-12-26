@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.type;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class AbstractRange<T extends Comparable<T>> {
+public abstract class AbstractRange<T extends Comparable<T>> {
 	T start;
 	T endInclusive;
 	T explicitStep;

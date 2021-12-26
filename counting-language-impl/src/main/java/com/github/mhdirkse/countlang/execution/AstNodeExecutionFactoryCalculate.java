@@ -36,6 +36,7 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -89,6 +90,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitCompositeExpression(CompositeExpression expression) {
         result = new CompositeExpressionCalculation(expression);
+    }
+
+    @Override
+    public void visitRangeExpression(RangeExpression expression) {
+    	result = new RangeExpressionCalculation(expression);
     }
 
     @Override

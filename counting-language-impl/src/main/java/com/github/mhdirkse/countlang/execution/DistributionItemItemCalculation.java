@@ -23,6 +23,9 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
+import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.AbstractRange;
+import com.github.mhdirkse.countlang.type.InvalidRangeException;
 
 class DistributionItemItemCalculation extends ExpressionResultsCollector {
     private final Distribution.Builder builder;
@@ -33,6 +36,15 @@ class DistributionItemItemCalculation extends ExpressionResultsCollector {
 
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
-        builder.add(subExpressionResults.get(0));
+        Object valueOrRange = subExpressionResults.get(0);
+        if(valueOrRange instanceof AbstractRange<?>) {
+        	try {
+        		((AbstractRange<?>) valueOrRange).enumerate().forEach(i -> builder.add(i));
+        	} catch(InvalidRangeException e) {
+        		throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), e.getMessage());	
+        	}
+        } else {
+        	builder.add(valueOrRange);
+        }
     }
 }

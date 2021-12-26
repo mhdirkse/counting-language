@@ -20,15 +20,19 @@
 package com.github.mhdirkse.countlang.execution;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import com.github.mhdirkse.countlang.ast.DereferenceExpression;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.AbstractRange;
 import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangComposite;
 import com.github.mhdirkse.countlang.type.CountlangTuple;
+import com.github.mhdirkse.countlang.type.FractionRange;
+import com.github.mhdirkse.countlang.type.IntegerRange;
+import com.github.mhdirkse.countlang.type.InvalidRangeException;
+import com.github.mhdirkse.countlang.type.RangeIndexOutOfBoundsException;
 
 final class DereferenceExpressionCalculation extends ExpressionResultsCollector {
     DereferenceExpressionCalculation(final DereferenceExpression node) {
@@ -40,9 +44,14 @@ final class DereferenceExpressionCalculation extends ExpressionResultsCollector 
         DereferenceExpression expr = (DereferenceExpression) getAstNode();
     	CountlangComposite container = (CountlangComposite) subExpressionResults.get(0);
         if(expr.getArraySelector()) {
-        	List<Object> newSubValues = IntStream.range(1, subExpressionResults.size()).boxed()
-        			.map(i -> getSelectedValue(i, subExpressionResults, container))
-        			.collect(Collectors.toList());
+        	List<Object> newSubValues = new ArrayList<>();
+        	for(int i = 1; i < subExpressionResults.size(); ++i) {
+        		if(subExpressionResults.get(i) instanceof AbstractRange) {
+        			newSubValues.addAll(getSelectedValuesFromRange((AbstractRange<?>) subExpressionResults.get(i), container));
+        		} else {
+        			newSubValues.add(getSelectedValue( (BigInteger) subExpressionResults.get(i), container));
+        		}
+        	}
         	if(expr.getCountlangType().isArray()) {
         		context.onResult(new CountlangArray(newSubValues));
         	} else if(expr.getCountlangType().isTuple()) {
@@ -51,17 +60,31 @@ final class DereferenceExpressionCalculation extends ExpressionResultsCollector 
         		throw new ProgramException(expr.getLine(), expr.getColumn(), "Programming error detected, expected array or tuple");
         	}
         } else {
-        	context.onResult(getSelectedValue(1, subExpressionResults, container));        	
+        	context.onResult(getSelectedValue((BigInteger) subExpressionResults.get(1), container));        	
         }
     }
 
-    private Object getSelectedValue(int subExpressionNumber, List<Object> subExpressionResults, CountlangComposite container) {
-    	BigInteger index = (BigInteger) subExpressionResults.get(subExpressionNumber);
+    private List<Object> getSelectedValuesFromRange(AbstractRange<?> rawRange, CountlangComposite container) {
+    	if(rawRange instanceof FractionRange) {
+    		throw new IllegalArgumentException("Cannot dereference from fractions, should have been detected during type checking");
+    	}
+    	IntegerRange range = (IntegerRange) rawRange;
+    	try {
+    		return range.dereference(container.getAll());
+    	} catch(InvalidRangeException e) {
+    		throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), e.getMessage());
+    	} catch(RangeIndexOutOfBoundsException e) {
+    		throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Index out of bounds exception: size = %d, index = %s",
+    				container.size(), e.getOffendingIndex().toString()));
+    	}
+    }
+
+    private Object getSelectedValue(BigInteger index, CountlangComposite container) {
     	if(index.compareTo(BigInteger.ONE) < 0) {
             throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Invalid array index %s", index.toString()));
         }
         if(index.compareTo(BigInteger.valueOf((long) container.size())) > 0) {
-            throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Array index %s more than array size %d", index.toString(), subExpressionResults.size()));
+            throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Array index %s more than array size %d", index.toString(), container.size()));
         }
         int indexToExtract = (int) index.longValue() - 1;
         return container.get(indexToExtract);

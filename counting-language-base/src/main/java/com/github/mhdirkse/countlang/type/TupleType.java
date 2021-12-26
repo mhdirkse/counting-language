@@ -51,6 +51,11 @@ public class TupleType extends CountlangType {
     }
 
     @Override
+    boolean anySubTypeContainsRange() {
+    	return subTypes.stream().anyMatch(s -> s.containsRange());
+    }
+
+    @Override
     public String toString() {
         return "tuple<" + subTypes.stream().map(Object::toString).collect(Collectors.joining(", ")) + ">";
     }

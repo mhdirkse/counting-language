@@ -10,7 +10,7 @@ public class InvalidRangeException extends Exception {
 		this.invalidRangeString = invalidRangestring;
 	}
 
-	String getInvalidRangeString() {
+	public String getInvalidRangeString() {
 		return invalidRangeString;
 	}
 }

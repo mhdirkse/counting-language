@@ -25,6 +25,8 @@ import java.util.List;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.AbstractRange;
+import com.github.mhdirkse.countlang.type.InvalidRangeException;
 
 class DistributionItemCountCalculation extends ExpressionResultsCollector {
     private final Distribution.Builder builder;
@@ -42,6 +44,14 @@ class DistributionItemCountCalculation extends ExpressionResultsCollector {
             throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(),
                     String.format("Item is added to distribution with negative count %d", count));
         }
-        builder.add(item, count);
+        if(item instanceof AbstractRange<?>) {
+        	try {
+        		((AbstractRange<?>) item).enumerate().forEach(i -> builder.add(i, count));
+        	} catch(InvalidRangeException e) {
+        		throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), e.getMessage());
+        	}
+        } else {
+        	builder.add(item, count);	
+        }
     }
 }

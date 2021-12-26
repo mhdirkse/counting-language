@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.ast;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,39 @@ public class RangeExpression extends ExpressionNode implements CompositeNode {
 
 	public ExpressionNode getStart() {
 		return start;
+	}
+
+	public boolean isConstant() {
+		boolean result = (start instanceof ValueExpression);
+		result = result && (endInclusive instanceof ValueExpression);
+		if(hasExplicitStep()) {
+			result = result && (step instanceof ValueExpression);
+		}
+		return result;
+	}
+
+	/**
+	 * If this is an integer range defined by constant expressions, return the components.
+	 */
+	public List<BigInteger> getIntegerComponents() {
+		if(! isConstant()) {
+			throw new IllegalStateException("Range is not constant");
+		}
+		if(! (countlangType == CountlangType.rangeOf(CountlangType.integer()))) {
+			throw new IllegalStateException("Range is not integer");
+		}
+		List<BigInteger> result = new ArrayList<>();
+		result.add(intValueOf(start));
+		result.add(intValueOf(endInclusive));
+		if(hasExplicitStep()) {
+			result.add(intValueOf(step));
+		}
+		return result;
+	}
+
+	private BigInteger intValueOf(ExpressionNode childNode) {
+		Object value = ((ValueExpression) childNode).getValue();
+		return (BigInteger) value;
 	}
 
 	public ExpressionNode getEndInclusive() {

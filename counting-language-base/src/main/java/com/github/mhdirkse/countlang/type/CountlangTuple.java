@@ -35,6 +35,11 @@ public final class CountlangTuple implements Comparable<CountlangTuple>, Countla
     }
 
     @Override
+    public List<Object> getAll() {
+    	return new ArrayList<>(members);
+    }
+
+    @Override
     public int size() {
         return members.size();
     }

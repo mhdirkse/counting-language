@@ -9,16 +9,13 @@ public class IntegerRange extends AbstractRange<BigInteger> {
 		super(components);
 	}
 
-	/**
-	 * Dereferences a list according to a range, returning the selected items. Indexes start from 1.
-	 * @throws {@link IndexOutOfBoundsException} if the start or the end index is outside the list.
-	 * @throws InvalidRangeException if the start, the end and the step are not compatible with each other (e.g. 1:-1:2).
-	 */
-	public <T> List<? super T> dereference(List<T> items) throws InvalidRangeException {
+	public <T> List<T> dereference(List<T> items) throws InvalidRangeException, RangeIndexOutOfBoundsException {
 		BigInteger numItems = BigInteger.valueOf(items.size());
-		if( (start.compareTo(BigInteger.ZERO) <= 0) || (endInclusive.compareTo(BigInteger.ZERO) <= 0) ||
-				(start.compareTo(numItems) > 0) || (endInclusive.compareTo(numItems) > 0)) {
-			throw new IndexOutOfBoundsException();
+		if( (start.compareTo(BigInteger.ZERO) <= 0) || (start.compareTo(numItems) > 0)) {
+			throw new RangeIndexOutOfBoundsException(start);
+		}
+		if( (endInclusive.compareTo(BigInteger.ZERO) <= 0) || (endInclusive.compareTo(numItems) > 0)) {
+			throw new RangeIndexOutOfBoundsException(endInclusive);
 		}
 		return enumerate().stream()
 				.map(b -> b.intValue())

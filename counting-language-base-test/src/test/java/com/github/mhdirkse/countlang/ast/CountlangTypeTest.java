@@ -97,4 +97,34 @@ public class CountlangTypeTest {
         assertSame(first, fourth);
         assertEquals("tuple<bool, int, fraction>", first.toString());
     }
+
+    @Test
+    public void testRangeContainsRange() {
+    	assertTrue(CountlangType.rangeOf(CountlangType.integer()).containsRange());
+    }
+
+    @Test
+    public void testIntegerDoesNotContainRange() {
+    	assertFalse(CountlangType.integer().containsRange());
+    }
+
+    @Test
+    public void testArrayOfRangeContainsRange() {
+    	assertTrue(CountlangType.arrayOf(CountlangType.rangeOf(CountlangType.fraction())).containsRange());
+    }
+
+    @Test
+    public void testArrayOfNonRangeDoesNotContainRange() {
+    	assertFalse(CountlangType.arrayOf(CountlangType.integer()).containsRange());
+    }
+
+    @Test
+    public void testTupleWithRangeContainsRange() {
+    	assertTrue(CountlangType.tupleOf(Arrays.asList(CountlangType.integer(), CountlangType.rangeOf(CountlangType.fraction()))).containsRange());
+    }
+
+    @Test
+    public void testTupleWithoutRangeDoesNotContainRange() {
+    	assertFalse(CountlangType.tupleOf(Arrays.asList(CountlangType.integer(), CountlangType.fraction())).containsRange());
+    }
 }

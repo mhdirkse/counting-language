@@ -74,40 +74,65 @@ public class RangeTest {
 		assertArrayEquals(new String[] {"three", "one"}, range.dereference(items).toArray(new String[] {}));
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testDereferenceStarOutOfBounds_1() throws Exception {
-		IntegerRange range = getIntRange(0, 1);
-		range.dereference(Arrays.asList("one", "two"));
+		try {
+			IntegerRange range = getIntRange(0, 1);
+			range.dereference(Arrays.asList("one", "two"));
+		} catch(RangeIndexOutOfBoundsException e) {
+			assertEquals(BigInteger.ZERO, e.getOffendingIndex());
+		}
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testDereferenceStarOutOfBounds_2() throws Exception {
-		IntegerRange range = getIntRange(-1, 1);
-		range.dereference(Arrays.asList("one", "two"));
+		try { 
+			IntegerRange range = getIntRange(-1, 1);
+			range.dereference(Arrays.asList("one", "two"));
+		} catch(RangeIndexOutOfBoundsException e) {
+			assertEquals(BigInteger.ONE.negate(), e.getOffendingIndex());
+		}
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testDereferenceStarOutOfBounds_3() throws Exception {
-		IntegerRange range = getIntRange(3, 1, -1);
-		range.dereference(Arrays.asList("one", "two"));
+		try {
+			IntegerRange range = getIntRange(3, 1, -1);
+			range.dereference(Arrays.asList("one", "two"));
+		} catch(RangeIndexOutOfBoundsException e) {
+			assertEquals(BigInteger.valueOf(3), e.getOffendingIndex());
+		}
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testDereferenceEndOutOfBounds_1() throws Exception {
-		IntegerRange range = getIntRange(1, 3);
-		range.dereference(Arrays.asList("one", "two"));
+		try {
+			IntegerRange range = getIntRange(1, 3);
+			range.dereference(Arrays.asList("one", "two"));
+		} catch(RangeIndexOutOfBoundsException e) {
+			assertEquals(BigInteger.valueOf(3), e.getOffendingIndex());
+		}
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testDereferenceEndOutOfBounds_2() throws Exception {
-		IntegerRange range = getIntRange(1, 0, -1);
-		range.dereference(Arrays.asList("one", "two"));
+		try {
+			IntegerRange range = getIntRange(1, 0, -1);
+			range.dereference(Arrays.asList("one", "two"));
+		}
+		catch(RangeIndexOutOfBoundsException e) {
+			assertEquals(BigInteger.ZERO, e.getOffendingIndex());
+		}
 	}
 
-	@Test(expected = IndexOutOfBoundsException.class)
+	@Test
 	public void testDereferenceEndOutOfBounds_3() throws Exception {
-		IntegerRange range = getIntRange(1, -1, -2);
-		range.dereference(Arrays.asList("one", "two"));
+		try {
+			IntegerRange range = getIntRange(1, -1, -2);
+			range.dereference(Arrays.asList("one", "two"));
+		} catch(RangeIndexOutOfBoundsException e) {
+			assertEquals(BigInteger.ONE.negate(), e.getOffendingIndex());
+		}
 	}
 
 	private IntegerRange getIntRange(int start, int endInclusive) {
