@@ -53,7 +53,9 @@ expr
   // A tuple expression has at least two sub-expressions, but we do not check this in the grammar.
   // We can produce a better error message when we check this later.
   | 'tuple' expr (',' expr)* # tupleExpression
-  | expr ':' expr (':' expr)? # rangeExpression
+  // If we would write this like "expr ':' expr (':" expr)?", ANTLR would parse it like "((expr ':' expr) ':' expr)" which is not what we need.
+  | expr ':' expr ':' expr # rangeExpression
+  | expr ':' expr # rangeExpression
   | ID # symbolReferenceExpression
   | (INT | BOOL ) # valueExpression
   ;
