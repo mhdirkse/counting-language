@@ -100,7 +100,7 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"t = tuple 1, true; print t[0]", "Tuple index must be at least one, got 0"},
             {"t = tuple 1, true; print t[-1]", "Tuple index must be at least one, got -1"},
             
-            // Array selectors
+            // Array selectors and ranges.
 
             {"t = tuple true, 1; t2 = t[3, 1]", "Tuple index out of bounds"},
             {"t = tuple 1, true; t2 = t[true, 1]; print t2", "An array index should be integer, but dereferencing value #1 is not"},
@@ -108,6 +108,19 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"a = [1, 2, 3, 4]; print a[2, true]", "An array index should be integer, but dereferencing value #2 is not"},
             // Error is found at runtime, not analysis time
             {"a = [1, 2, 3, 4]; print a[2, 5]", "more than array size"},
+            // ANTLR tries to parse this like "[1:2:(3:4)]". Therefore we cannot do better than this.
+            {"print [1:2:3:4]", "Range must have step type int because the start value has that type"},
+            {"x = 1:2; print x", "Variables of a range type are not allowed"},
+            {"print 1 + (2:3)", "Type mismatch using operator +"},
+            {"markUsed 1 + (2:3)", "Type mismatch using operator +"},
+            {"markUsed 2:3", "Ranges can only be used to construct distributions or arrays, not as values by themselves."},
+            {"function fun() {return 1:2}; print fun()", "Ranges can only be used to construct distributions or arrays, not as values by themselves"},
+            {"print [1:2]:3", "Ranges must be formed from integers or fractions, but got"},
+            {"print 3:(5/2)", "Range must have end value of type"},
+            {"t = tuple 1, 2:3; print t", "Ranges can only be used to construct distributions or arrays, not as values by themselves."},
+            {"t = tuple 1, true; x = 2; print t[1:x]", "A tuple dereferencing expression must be a constant to allow for type checking"},
+            {"t = tuple 1, true; print t[2:1]", "Invalid step in range 2:1:1"},
+            {"t = tuple true, 1; print t[0:2]", "Tuple index out of bounds, got 0"},
 
             // Syntax
             
