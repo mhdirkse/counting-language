@@ -15,6 +15,7 @@ statement
   | 'markUsed' expr # markUsedStatement
   | 'sample' ID 'from' expr # sampleStatement
   | 'sample' lhsItem (',' lhsItem)+ 'from' expr # tupleDealingSampleStatement
+  | 'sample' ID 'as' expr 'from' expr # sampleMultipleStatement
   | 'if' '(' expr ')' '{' statements '}' ('else' '{' statements '}')? # ifStatement
   | 'while' '(' expr ')' '{' statements '}' # whileStatement
   | '{' statements '}' # compoundStatement

@@ -25,14 +25,10 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-public class SampleStatement extends Statement implements CompositeNode {
+public class SampleStatement extends AbstractSampleStatement {
     @Getter
     @Setter
     private AbstractLhs lhs;
-
-    @Getter
-    @Setter
-    private ExpressionNode sampledDistribution;
 
     public SampleStatement(int line, int column) {
         super(line, column);
@@ -45,6 +41,6 @@ public class SampleStatement extends Statement implements CompositeNode {
 
     @Override
     public List<AstNode> getChildren() {
-        return Arrays.asList(sampledDistribution, lhs);
+        return Arrays.asList(getSampledDistribution(), lhs);
     }
 }

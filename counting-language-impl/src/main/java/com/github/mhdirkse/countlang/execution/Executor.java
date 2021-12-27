@@ -31,9 +31,9 @@ import java.util.Optional;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
+import com.github.mhdirkse.countlang.ast.AbstractSampleStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
-import com.github.mhdirkse.countlang.ast.SampleStatement;
 
 class Executor {
     private final Deque<AstNodeExecution> callStack;
@@ -113,7 +113,7 @@ class Executor {
     }
 
     private SampleContext getContextForSampleStatement(AstNode child) {
-        if(child instanceof SampleStatement) {
+        if(child instanceof AbstractSampleStatement) {
             Iterator<AstNodeExecution> it = callStack.descendingIterator();
             while(it.hasNext()) {
                 AstNodeExecution calculation = it.next();

@@ -19,40 +19,17 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.AFTER;
-import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.BEFORE;
-
-import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 
-class SampleStatementCalculationForked implements AstNodeExecution {
-    private final Object value;
-    private final SampleStatement sampleStatement;
-    private AstNodeExecutionState state = BEFORE;
-
-    SampleStatementCalculationForked(SampleStatementCalculation orig) {
-        this.value = orig.value;
-        this.sampleStatement = (SampleStatement) orig.getAstNode();
+class SampleStatementCalculationForked extends AbstractSampleStatementCalculationForked {
+    SampleStatementCalculationForked(AbstractSampleStatementCalculation orig) {
+        super(orig);
     }
 
     @Override
-    public AstNode getAstNode() {
-        return sampleStatement;
-    }
-
-
-    @Override
-    public AstNodeExecutionState getState() {
-        return state;
-    }
-
-    @Override
-    public AstNode step(ExecutionContext context) {
-        if(state == BEFORE) {
-            VariableAssigner assigner = new VariableAssigner(context, sampleStatement.getSampledDistribution(), value);
-            assigner.assign(sampleStatement.getLhs());
-            state = AFTER;
-        }
-        return null;
+    void assign(ExecutionContext context) {
+    	SampleStatement asSampleStatement = (SampleStatement) sampleStatement;
+        VariableAssigner assigner = new VariableAssigner(context, asSampleStatement.getSampledDistribution(), value);
+        assigner.assign(asSampleStatement.getLhs());
     }
 }

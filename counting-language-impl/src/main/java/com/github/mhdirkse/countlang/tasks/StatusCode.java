@@ -54,6 +54,7 @@ public enum StatusCode implements AbstractStatusCode {
     UNTYPED_DISTRIBUTION("({1}, {2}): Distribution should define its subtype if no elements are present."),
     SAMPLING_OUTSIDE_EXPERIMENT("({1}, {2}): Sampling is only allowed within an experiment."),
     SAMPLED_FROM_NON_DISTRIBUTION("({1}, {2}): The value you sample from is a {3}, but should be DISTRIBUTION."),
+    NUM_SAMPLED_MUST_BE_INT("({1}, {2}): When sampling multiple values from a distribution, the number to sample must be int."),
     EMPTY_COLLECTION_IS_PRIMITIVE("({1}, {2}): Cannot build an empty collection from a primitive type id."),
     ARRAY_ELEMENT_TYPE_MISMATCH("({1}, {2}): Array element {3} has invalid type {4}, expected {5}."),
     TUPLE_AT_LEAST_TWO_MEMBERS("({1}, {2}): A tuple has at least two members."),

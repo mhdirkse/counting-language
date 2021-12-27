@@ -28,6 +28,7 @@ import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionExpression;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
 import com.github.mhdirkse.countlang.ast.AbstractLhs;
+import com.github.mhdirkse.countlang.ast.AbstractSampleStatement;
 import com.github.mhdirkse.countlang.ast.ArrayExpression;
 import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
@@ -58,6 +59,7 @@ import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SimpleLhs;
@@ -143,22 +145,46 @@ public class Analysis {
 
         @Override
         public void visitSampleStatement(SampleStatement statement) {
+        	CountlangType actualType = commonSampleHandler(statement);
+        	if(actualType != CountlangType.unknown()) {
+	            assignmentStatementOfLhs = statement;
+	            rhsType = actualType.getSubType();
+	            statement.getLhs().accept(this);
+	            assignmentStatementOfLhs = null;
+	            rhsType = null;
+        	}
+        }
+
+        @Override
+        public void visitSampleMultipleStatement(SampleMultipleStatement statement) {
+        	CountlangType actualType = commonSampleHandler(statement);
+        	statement.getNumSampled().accept(this);
+        	if(statement.getNumSampled().getCountlangType() != CountlangType.integer()) {
+        		reporter.report(StatusCode.NUM_SAMPLED_MUST_BE_INT, statement.getLine(), statement.getColumn());
+        		return;
+        	}
+        	if(actualType != CountlangType.unknown()) {
+	            assignmentStatementOfLhs = statement;
+	            rhsType = CountlangType.arrayOf(actualType.getSubType());
+	            statement.getLhs().accept(this);
+	            assignmentStatementOfLhs = null;
+	            rhsType = null;        		
+        	}
+        }
+
+        private CountlangType commonSampleHandler(AbstractSampleStatement statement) {
             if(analyzedFunction == null) {
                 reporter.report(StatusCode.SAMPLING_OUTSIDE_EXPERIMENT, statement.getLine(), statement.getColumn());
-                return;
+                return CountlangType.unknown();
             }
             statement.getSampledDistribution().accept(this);
-            CountlangType actualType = statement.getSampledDistribution().getCountlangType();
+        	CountlangType actualType = statement.getSampledDistribution().getCountlangType();
             // No need to check that the type does not contain range. The construction of distributions does not allow that.
             if(!actualType.isDistribution()) {
                 reporter.report(StatusCode.SAMPLED_FROM_NON_DISTRIBUTION, statement.getLine(), statement.getColumn(), actualType.toString());
-                return;
+                return CountlangType.unknown();
             }
-            assignmentStatementOfLhs = statement;
-            rhsType = actualType.getSubType();
-            statement.getLhs().accept(this);
-            assignmentStatementOfLhs = null;
-            rhsType = null;
+            return actualType;
         }
 
         @Override

@@ -301,6 +301,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"experiment exp() {sample _, x from distribution (tuple 5, 3), 2 of (tuple 6, 13); return x}; print exp()", getDistribution(3, 13, 13)},
             {"experiment exp() {sample x, y from distribution (tuple 5, true); if(y) {return x}}; print exp()", getDistribution(5)},
             {getProgramExercisingTuples(), getProgramExercisingTuplesExpected()},
+            {"experiment exp() {sample a as 2 from distribution 2 of false, 3 of true total 6; return a}; print exp()", getExpectedSampleMultiple()},
 
             // Array selectors and ranges
 
@@ -612,6 +613,17 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
         DistributionBuilderInt2Bigint b = tf.distBuilder();
         b.addUnknown(1);
         return b.build().format();
+    }
+
+    private static String getExpectedSampleMultiple() {
+    	return Arrays.asList(
+    			"[false, false]   4",
+    			" [false, true]   6",
+    			" [true, false]   6",
+    			"  [true, true]   9",
+    			"       unknown  11",
+    			"------------------",
+    			"         total  36").stream().collect(Collectors.joining("\n"));
     }
 
     @Parameter(0)

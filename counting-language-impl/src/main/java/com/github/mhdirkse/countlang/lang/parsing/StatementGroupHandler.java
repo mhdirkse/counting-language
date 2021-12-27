@@ -94,6 +94,15 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterSampleMultipleStatement(
+    		@NotNull CountlangParser.SampleMultipleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new SampleMultipleStatementHandler(line, column));
+        return true;
+    }
+
+    @Override
     public boolean enterReturnStatement(
             @NotNull CountlangParser.ReturnStatementContext ctx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         int line = ctx.start.getLine();
@@ -204,6 +213,12 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     public boolean exitTupleDealingSampleStatement(
             @NotNull CountlangParser.TupleDealingSampleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitSampleMultipleStatement(
+    		@NotNull CountlangParser.SampleMultipleStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+    	return handleStatementExit(delegationCtx);
     }
 
     @Override

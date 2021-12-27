@@ -38,6 +38,7 @@ import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
@@ -135,6 +136,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitSampleStatement(SampleStatement statement) {
         result = new SampleStatementCalculation(statement, (SampleContext) context);
+    }
+
+    @Override
+    public void visitSampleMultipleStatement(SampleMultipleStatement statement) {
+    	result = new SampleMultipleStatementCalculation(statement, (SampleContext) context);
     }
 
     @Override

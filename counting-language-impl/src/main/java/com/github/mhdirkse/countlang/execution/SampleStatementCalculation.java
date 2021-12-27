@@ -19,80 +19,19 @@
 
 package com.github.mhdirkse.countlang.execution;
 
-import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.AFTER;
-import static com.github.mhdirkse.countlang.execution.AstNodeExecutionState.RUNNING;
-
-import java.math.BigInteger;
-
 import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.algorithm.ProbabilityTreeValue;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 
-class SampleStatementCalculation implements AstNodeExecution {
-    SubExpressionStepper delegate;
-    final SampleStatement statement;
-    private SampleContext sampleContext;
-    Distribution distribution;
-    boolean isSamplingStarted = false;
-    Object value;
-
+class SampleStatementCalculation extends AbstractSampleStatementCalculation {
     SampleStatementCalculation(SampleStatement statement, SampleContext sampleContext) {
-        this.statement = statement;
-        this.delegate = new SubExpressionStepper(statement.getSubExpressions());
-        this.sampleContext = sampleContext;
+    	super(statement, sampleContext);
     }
 
     @Override
-    public AstNode getAstNode() {
-        return statement;
-    }
-
-    @Override
-    public final AstNode step(ExecutionContext context) {
-        if(distribution == null) {
-            return delegate.step(context);
-        }
-        if(distribution.getTotal().equals(BigInteger.ZERO)) {
-            throw new ProgramException(statement.getLine(), statement.getColumn(), "Cannot sample from empty distribution.");
-        }
-        if(! isSamplingStarted) {
-            sampleContext.startSampledVariable(statement.getLine(), statement.getColumn(), distribution);
-            isSamplingStarted = true;
-        }
-        if(sampleContext.hasNextValue()) {
-            ProbabilityTreeValue item = sampleContext.nextValue();
-            if(item.isUnknown()) {
-                sampleContext.scoreUnknown();
-                return null;
-            }
-            value = item.getValue();
-            context.forkExecutor();
-            return null;
-        }
-        sampleContext.stopSampledVariable();
-        // Removes the executor that was triggering this object's step method.
-        // This object will be removed, even though the state never advances
-        // to AFTER.
-        context.stopExecutor();
-        return null;
-    }
-
-    @Override
-    public AstNodeExecutionState getState() {
-        AstNodeExecutionState delegateState = delegate.getState();
-        if(delegateState == AFTER) {
-            return RUNNING;
-        } else {
-            return delegateState;
-        }
-    }
-
-    @Override
-    public boolean isAcceptingChildResults() {
-        return true;
+    void startSampledVariable() {
+    	sampleContext.startSampledVariable(((AstNode) statement).getLine(), ((AstNode) statement).getColumn(), distribution);
     }
 
     @Override
