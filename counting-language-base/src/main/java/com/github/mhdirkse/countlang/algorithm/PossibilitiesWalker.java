@@ -39,7 +39,7 @@ class PossibilitiesWalker {
         return edges.size();
     }
 
-    void down(Distribution distribution) {
+    void down(Samplable distribution) {
         if(distribution.getTotal().compareTo(BigInteger.ZERO) == 0) {
             throw new IllegalArgumentException("Cannot iterate over an empty distribution");
         }

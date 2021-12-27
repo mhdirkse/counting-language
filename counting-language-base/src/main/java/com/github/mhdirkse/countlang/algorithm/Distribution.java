@@ -42,7 +42,7 @@ import com.github.mhdirkse.countlang.utils.Utils;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public final class Distribution implements Comparable<Distribution> {
+public final class Distribution implements Comparable<Distribution>, Samplable {
     private static final BigInteger MAX_IN_TO_STRING = new BigInteger("10");
     
     public static class Builder {
@@ -131,14 +131,17 @@ public final class Distribution implements Comparable<Distribution> {
         return items.getOrDefault(value, BigInteger.ZERO);
     }
 
+    @Override
     public BigInteger getTotal() {
         return total;
     }
 
+    @Override
     public BigInteger getCountUnknown() {
         return unknown;
     }
 
+    @Override
     public BigInteger getCountOf(ProbabilityTreeValue value) {
         if(value.isUnknown()) {
             return getCountUnknown();
@@ -147,6 +150,7 @@ public final class Distribution implements Comparable<Distribution> {
         }
     }
 
+    @Override
     public Iterator<Object> getItemIterator() {
         return items.keySet().iterator();
     }

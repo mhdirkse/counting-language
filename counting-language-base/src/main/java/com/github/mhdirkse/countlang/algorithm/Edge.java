@@ -22,12 +22,12 @@ package com.github.mhdirkse.countlang.algorithm;
 import java.math.BigInteger;
 
 class Edge {
-    private Distribution distribution;
+    private Samplable distribution;
     private BigInteger weight;
     private PossibilityValueIterator iterator;
     private ProbabilityTreeValue currentValue = null;
 
-    Edge(Distribution distribution, BigInteger weight) {
+    Edge(Samplable distribution, BigInteger weight) {
         this.distribution = distribution;
         this.weight = weight;
         this.iterator = new PossibilityValueIterator(distribution);        

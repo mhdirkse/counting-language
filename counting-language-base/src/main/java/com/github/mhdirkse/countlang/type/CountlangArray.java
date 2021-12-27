@@ -26,6 +26,9 @@ import java.util.stream.Collectors;
 import com.github.mhdirkse.countlang.utils.ListComparator;
 import com.github.mhdirkse.countlang.utils.Utils;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class CountlangArray implements Comparable<CountlangArray>, CountlangComposite {
     private final List<Object> items;
 

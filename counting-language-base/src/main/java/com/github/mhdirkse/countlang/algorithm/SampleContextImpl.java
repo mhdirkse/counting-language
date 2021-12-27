@@ -34,7 +34,7 @@ class SampleContextImpl implements SampleContext {
     }
 
     @Override
-    public void startSampledVariable(int line, int column, final Distribution sampledDistribution) throws ProgramException {
+    public void startSampledVariable(int line, int column, final Samplable sampledDistribution) throws ProgramException {
         checkScoreOnce();
         BigInteger refineFactor = refinementStrategy.startSampledVariable(line, column, walker, sampledDistribution);
         if(refineFactor.compareTo(BigInteger.ONE) > 0) {

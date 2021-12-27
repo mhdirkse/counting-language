@@ -38,7 +38,7 @@ abstract class RefinementStrategy {
         }
     }
 
-    abstract BigInteger startSampledVariable(int line, int column, PossibilitiesWalker walker, Distribution sampledDistribution);
+    abstract BigInteger startSampledVariable(int line, int column, PossibilitiesWalker walker, Samplable sampledDistribution);
     abstract void stopSampledVariable();
     abstract Distribution finishResult(Distribution raw);
 
@@ -47,13 +47,13 @@ abstract class RefinementStrategy {
         private int currentDepth = 0;
 
         @Override
-        BigInteger startSampledVariable(int line, int column, PossibilitiesWalker walker, Distribution sampledDistribution) {
+        BigInteger startSampledVariable(int line, int column, PossibilitiesWalker walker, Samplable sampledDistribution) {
             BigInteger result = checkFixedPossibilityCounts(line, column, sampledDistribution);
             currentDepth++;
             return result;
         }
 
-        private BigInteger checkFixedPossibilityCounts(int line, int column, Distribution sampledDistribution) {
+        private BigInteger checkFixedPossibilityCounts(int line, int column, Samplable sampledDistribution) {
             BigInteger refineFactor = BigInteger.ONE;
             if(currentDepth >= fixedPossibilityCountsPerDepth.size()) {
                 fixedPossibilityCountsPerDepth.add(new CountNode(line, column, sampledDistribution.getTotal()));
@@ -82,7 +82,7 @@ abstract class RefinementStrategy {
 
     static class NotCountingPossibilities extends RefinementStrategy {
         @Override
-        BigInteger startSampledVariable(int line, int column, PossibilitiesWalker walker, Distribution sampledDistribution) {
+        BigInteger startSampledVariable(int line, int column, PossibilitiesWalker walker, Samplable sampledDistribution) {
             BigInteger availableShare = walker.getCount();
             BigInteger updatedShare = leastCommonMultiplier(availableShare, sampledDistribution.getTotal());
             return updatedShare.divide(availableShare);

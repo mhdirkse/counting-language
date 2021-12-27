@@ -27,7 +27,7 @@ class PossibilityValueIterator implements Iterator<ProbabilityTreeValue> {
     private final boolean distributionIncludesUnknown;
     private boolean returnedUnknown = false;
 
-    PossibilityValueIterator(Distribution subject) {
+    PossibilityValueIterator(Samplable subject) {
         normalValueIterator = subject.getItemIterator();
         distributionIncludesUnknown = subject.getCountUnknown().compareTo(BigInteger.ZERO) > 0;
     }
