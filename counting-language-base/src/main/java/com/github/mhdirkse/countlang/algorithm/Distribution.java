@@ -155,6 +155,10 @@ public final class Distribution implements Comparable<Distribution>, Samplable {
         return items.keySet().iterator();
     }
 
+    public int getNumChoices() {
+    	return items.size();
+    }
+
     public Distribution normalize() {
         if(total.equals(BigInteger.ZERO)) {
             return new Distribution.Builder().build();

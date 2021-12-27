@@ -198,6 +198,11 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"sample x from distribution 1, 2; print x", "Sampling is only allowed within an experiment."},
             {"experiment exp() {sample x from 3; return x}; print exp();", "The value you sample from is a int"},
             {"experiment exp() {sample x from distribution<int>; return x}; print exp();", "Cannot sample from empty distribution"},
+            {"experiment exp() {sample x as true from distribution 1; return x}; print exp()", "When sampling multiple values from a distribution, the number to sample must be int"},
+            {"experiment exp() {num = 0; sample x as num from distribution 1; return x}; print exp()", "You have to sample at least one copy from a distribution, got 0"},
+            {"experiment exp() {sample x as 10*1000*1000+1 from distribution 1; return x}; print exp()", "Too many samples from distribution, got"},
+            {"experiment exp() {sample x as 2 from distribution<int>; return x}; print exp()", "Cannot sample from empty distribution"},
+            {"experiment exp() {sample x as 2 from 1; return x}; print exp()", "The value you sample from is a int, but should be DISTRIBUTION"},
 
             // Member functions
 

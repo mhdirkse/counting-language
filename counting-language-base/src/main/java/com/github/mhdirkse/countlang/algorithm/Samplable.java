@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 public interface Samplable {
+	public static final BigInteger MAX_NUM_SAMPLED = BigInteger.valueOf(10*1000*1000L);
+
 	BigInteger getTotal();
 	Iterator<Object> getItemIterator();
 	BigInteger getCountUnknown();

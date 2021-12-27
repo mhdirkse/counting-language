@@ -9,9 +9,6 @@ import java.util.stream.IntStream;
 import com.github.mhdirkse.countlang.type.CountlangArray;
 
 class SequenceNoLayback implements Samplable {
-	private static final BigInteger MAX_NUM_SAMPLED = BigInteger.valueOf(100*1000*1000L);
-	private static final int MAX_NUM_CHOICES = MAX_NUM_SAMPLED.intValue();
-
 	private Distribution source;
 	private BigInteger numSampled;
 	private BigInteger total = BigInteger.ONE;
@@ -76,15 +73,7 @@ class SequenceNoLayback implements Samplable {
 
 		private void getChoices(Distribution source) {
 			Iterator<Object> sourceIterator = source.getItemIterator();
-			int numChoices = 0;
-			while(sourceIterator.hasNext()) {
-				++numChoices;
-				if(numChoices > MAX_NUM_CHOICES) {
-					throw new IllegalArgumentException("Distribution has too many different value to sample it within a reasonable time frame");
-				}
-				sourceIterator.next();
-			}
-			choices = new Object[numChoices];
+			choices = new Object[source.getNumChoices()];
 			sourceIterator = source.getItemIterator();
 			int choiceIndex = 0;
 			while(sourceIterator.hasNext()) {

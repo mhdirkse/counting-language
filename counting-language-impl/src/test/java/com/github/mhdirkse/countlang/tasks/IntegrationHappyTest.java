@@ -302,6 +302,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"experiment exp() {sample x, y from distribution (tuple 5, true); if(y) {return x}}; print exp()", getDistribution(5)},
             {getProgramExercisingTuples(), getProgramExercisingTuplesExpected()},
             {"experiment exp() {sample a as 2 from distribution 2 of false, 3 of true total 6; return a}; print exp()", getExpectedSampleMultiple()},
+            // The largest number of samples allowed as array sample.
+            {"experiment exp() {sample a as 10*1000*1000 from distribution 1; return a[1]}; print exp()", getDistribution(1)},
 
             // Array selectors and ranges
 
