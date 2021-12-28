@@ -24,6 +24,7 @@ import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
+import com.github.mhdirkse.countlang.ast.RepeatStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
@@ -109,6 +110,11 @@ class VariableAssigner implements Visitor {
     @Override
     public void visitWhileStatement(WhileStatement whileStatement) {
         throw new IllegalStateException("Method call not applicable");
+    }
+
+    @Override
+    public void visitRepeatStatement(RepeatStatement repeatStatement) {
+        throw new IllegalStateException("Method call not applicable");    	
     }
 
     @Override

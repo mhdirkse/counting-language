@@ -18,6 +18,7 @@ statement
   | 'sample' ID 'as' expr 'from' expr # sampleMultipleStatement
   | 'if' '(' expr ')' '{' statements '}' ('else' '{' statements '}')? # ifStatement
   | 'while' '(' expr ')' '{' statements '}' # whileStatement
+  | 'repeat' '(' expr ')' '{' statements '}' # repeatStatement
   | '{' statements '}' # compoundStatement
   ;
 

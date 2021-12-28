@@ -47,6 +47,7 @@ public enum StatusCode implements AbstractStatusCode {
     DUPLICATE_PARAMETER("({1}, {2}): Cannot reuse parameter name {3}."),
     IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be BOOL, but was {3}."),
     WHILE_TEST_NOT_BOOLEAN("({1}, {2}): Test expression of while statement must be BOOL, but was {3}."),
+    REPEAT_COUNT_NOT_INTEGER("({1}, {2}): Repetition count of repeat statement must be int, but was {3}."),
 
     DISTRIBUTION_SCORED_VALUE_TYPE_MISMATCH("({1}, {2}): Element number {3} in distribution is {4}, should be {5}."),
     DISTRIBUTION_SCORED_COUNT_NOT_INT("({1}, {2}): Element number {3}, the count, in distribution is {4}, should be int."),

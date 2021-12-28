@@ -192,6 +192,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
             
             {"if(1) {print 3}", "must be BOOL"},
             {"while(1) {print 3}", "Test expression of while statement must be BOOL"},
+            {"repeat(true) {print 3}", "Repetition count of repeat statement must be int, but was bool"},
+            {"repeat(-1) {print 3}", "Repeat statement cannot have a negative repeat count, got -1"},
 
             // experiments and sampling
 

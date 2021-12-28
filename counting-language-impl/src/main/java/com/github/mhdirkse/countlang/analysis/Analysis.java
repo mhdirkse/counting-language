@@ -58,6 +58,7 @@ import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
+import com.github.mhdirkse.countlang.ast.RepeatStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
@@ -297,6 +298,17 @@ public class Analysis {
             }
             whileStatement.getStatement().accept(this);
             codeBlocks.stopRepetition();
+        }
+
+        @Override
+        public void visitRepeatStatement(RepeatStatement repeatStatement) {
+        	codeBlocks.startRepetition();
+        	repeatStatement.getCountExpr().accept(this);
+        	if(repeatStatement.getCountExpr().getCountlangType() != CountlangType.integer()) {
+        		reporter.report(StatusCode.REPEAT_COUNT_NOT_INTEGER, repeatStatement.getLine(), repeatStatement.getColumn(), repeatStatement.getCountExpr().getCountlangType().toString());
+        	}
+        	repeatStatement.getStatement().accept(this);
+        	codeBlocks.stopRepetition();
         }
 
         @Override

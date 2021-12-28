@@ -37,6 +37,7 @@ import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
+import com.github.mhdirkse.countlang.ast.RepeatStatement;
 import com.github.mhdirkse.countlang.ast.ReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
@@ -86,6 +87,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitWhileStatement(WhileStatement whileStatement) {
         result = new WhileStatementCalculation(whileStatement);        
+    }
+
+    @Override
+    public void visitRepeatStatement(RepeatStatement repeatStatement) {
+    	result = new RepeatStatementCalculation(repeatStatement);
     }
 
     @Override
