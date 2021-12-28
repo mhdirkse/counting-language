@@ -69,6 +69,8 @@ distItem
 lhsItem : ID | LHS_PLACEHOLDER # lhsItem
   ;
 
+COMMENT: '#' ~[\n]* '\n' -> skip ;
+
 BOOLTYPE: 'bool' ;
 INTTYPE: 'int' ;
 FRACTYPE: 'fraction';

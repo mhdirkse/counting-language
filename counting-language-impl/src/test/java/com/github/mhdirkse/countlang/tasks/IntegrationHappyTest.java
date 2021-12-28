@@ -55,6 +55,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
             {"", "<no output>"},
+            {Arrays.asList("# Comment", "print 5").stream().collect(Collectors.joining("\n")), "5"},            
             {"print 5 + 3", "8"},
             {"print 5 - 3", "2"},
             {"print 5 * 3", "15"},
