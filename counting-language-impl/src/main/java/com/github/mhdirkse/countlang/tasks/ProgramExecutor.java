@@ -38,12 +38,15 @@ import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.countlang.predef.ArrayAdd;
 import com.github.mhdirkse.countlang.predef.ArrayAscending;
 import com.github.mhdirkse.countlang.predef.ArrayDescending;
+import com.github.mhdirkse.countlang.predef.ArraySize;
 import com.github.mhdirkse.countlang.predef.ArrayUnsort;
 import com.github.mhdirkse.countlang.predef.DistributionAscending;
 import com.github.mhdirkse.countlang.predef.DistributionCountOf;
 import com.github.mhdirkse.countlang.predef.DistributionDescending;
 import com.github.mhdirkse.countlang.predef.DistributionFracE;
 import com.github.mhdirkse.countlang.predef.DistributionFracSum;
+import com.github.mhdirkse.countlang.predef.DistributionGetCountOfUnknown;
+import com.github.mhdirkse.countlang.predef.DistributionGetSize;
 import com.github.mhdirkse.countlang.predef.DistributionIntE;
 import com.github.mhdirkse.countlang.predef.DistributionIntSum;
 import com.github.mhdirkse.countlang.predef.DistributionKnown;
@@ -92,8 +95,10 @@ public class ProgramExecutor {
         		new DistributionIntSum(), new DistributionFracSum(),
         		new DistributionIntE(), new DistributionFracE(),
         		new DistributionAscending(), new DistributionDescending(),
+        		new DistributionGetSize(), new DistributionGetCountOfUnknown(),
         		new ArrayAscending(), new ArrayDescending(),
         		new ArrayAdd(), new ArrayUnsort(),
+        		new ArraySize(),
         		TestFunctionDefinitions.createTestFunction());
     }
 

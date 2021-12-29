@@ -282,9 +282,12 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution<int>.ascending()", "[]"},
             {"print (distribution 1, 3, 3, 2).descending()", "[3, 3, 2, 1]"},
             {"print distribution<int>.descending()", "[]"},
+            {"print (distribution 1, 2 total 3).size()", "3"},
+            {"print (distribution 1, 2 total 3).countOfUnknown()", "1"},
             {"print [3].add(5)", "[3, 5]"},
             {"print int[].add(5)", "[5]"},
             {"print [1, 2].unsort()", getDistribution(1, 2)},
+            {"print [1, 3, 5].size()", "3"},
 
             // Arrays
 
