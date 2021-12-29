@@ -38,6 +38,7 @@ import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.countlang.predef.ArrayAdd;
 import com.github.mhdirkse.countlang.predef.ArrayAscending;
 import com.github.mhdirkse.countlang.predef.ArrayDescending;
+import com.github.mhdirkse.countlang.predef.ArrayUnsort;
 import com.github.mhdirkse.countlang.predef.DistributionAscending;
 import com.github.mhdirkse.countlang.predef.DistributionCountOf;
 import com.github.mhdirkse.countlang.predef.DistributionDescending;
@@ -92,7 +93,7 @@ public class ProgramExecutor {
         		new DistributionIntE(), new DistributionFracE(),
         		new DistributionAscending(), new DistributionDescending(),
         		new ArrayAscending(), new ArrayDescending(),
-        		new ArrayAdd(),
+        		new ArrayAdd(), new ArrayUnsort(),
         		TestFunctionDefinitions.createTestFunction());
     }
 

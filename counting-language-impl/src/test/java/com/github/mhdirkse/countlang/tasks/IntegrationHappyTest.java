@@ -284,6 +284,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution<int>.descending()", "[]"},
             {"print [3].add(5)", "[3, 5]"},
             {"print int[].add(5)", "[5]"},
+            {"print [1, 2].unsort()", getDistribution(1, 2)},
 
             // Arrays
 
