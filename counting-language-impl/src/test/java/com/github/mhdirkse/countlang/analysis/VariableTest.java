@@ -52,7 +52,7 @@ public class VariableTest {
 
     @Test
     public void whenWriteVariableWithoutReadThenHaveUnreadWrite() {
-        codeBlocks.write("x", 1, 2, CountlangType.bool());
+        codeBlocks.write("x", 1, 2, CountlangType.bool(), false);
         stop();
         List<VariableWrite> writes = main.getVariableWrites();
         assertEquals(1, writes.size());
@@ -64,7 +64,7 @@ public class VariableTest {
 
     @Test
     public void whenWriteVariableAndReadThenHaveWriteThatIsRead() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.read("x", 2, 2);
         stop();
         List<VariableWrite> writes = main.getVariableWrites();
@@ -77,9 +77,9 @@ public class VariableTest {
 
     @Test
     public void whenWriteReadWriteThenHaveWriteThatIsReadAndWriteThatIsNotRead() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.read("x", 2, 2);
-        codeBlocks.write("x", 3, 2, CountlangType.integer());
+        codeBlocks.write("x", 3, 2, CountlangType.integer(), false);
         stop();
         List<VariableWrite> writes = main.getVariableWrites();
         assertEquals(2, writes.size());
@@ -95,9 +95,9 @@ public class VariableTest {
 
     @Test
     public void whenTypeMismatchThenTypeMismatchSaved() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.read("x", 2, 2);
-        codeBlocks.write("x", 3, 4, CountlangType.bool());
+        codeBlocks.write("x", 3, 4, CountlangType.bool(), false);
         assertEquals(1, codeBlocks.getVariableErrorEvents().size());
         VariableErrorEvent mismatch = codeBlocks.getVariableErrorEvents().get(0);
         assertEquals(VariableErrorEvent.Kind.TYPE_MISMATCH, mismatch.getKind());
@@ -110,10 +110,10 @@ public class VariableTest {
 
     @Test
     public void whenVariableReadAfterIfThenOriginalWriteAndConditionalWriteAreRead() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.startSwitch();
         codeBlocks.startBranch();
-        codeBlocks.write("x", 3, 2, CountlangType.integer());
+        codeBlocks.write("x", 3, 2, CountlangType.integer(), false);
         codeBlocks.stopBranch();
         codeBlocks.startBranch();
         codeBlocks.stopBranch();
@@ -139,13 +139,13 @@ public class VariableTest {
 
     @Test
     public void whenVariableOverwrittenByAllBranchesThenInitialNotRead() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.startSwitch();
         codeBlocks.startBranch();
-        codeBlocks.write("x", 3, 2, CountlangType.integer());
+        codeBlocks.write("x", 3, 2, CountlangType.integer(), false);
         codeBlocks.stopBranch();
         codeBlocks.startBranch();
-        codeBlocks.write("x", 5, 2, CountlangType.integer());
+        codeBlocks.write("x", 5, 2, CountlangType.integer(), false);
         codeBlocks.stopBranch();
         codeBlocks.stopSwitch();
         codeBlocks.read("x", 7, 2);
@@ -173,10 +173,10 @@ public class VariableTest {
 
     @Test
     public void whenRepetitionReadsFromBeforeThenFinishingWriteInRepetitionIsRead() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.startRepetition();
         codeBlocks.read("x", 3, 2);
-        codeBlocks.write("x", 4, 2, CountlangType.integer());
+        codeBlocks.write("x", 4, 2, CountlangType.integer(), false);
         codeBlocks.stopRepetition();
         stop();
         assertEquals(1, main.getVariableWrites().size());
@@ -196,11 +196,11 @@ public class VariableTest {
 
     @Test
     public void whenRepetitionDoesNotReadFromBeforeThenFinishingWriteInRepetitionIsNotRead() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.startRepetition();
-        codeBlocks.write("x", 3, 2, CountlangType.integer());
+        codeBlocks.write("x", 3, 2, CountlangType.integer(), false);
         codeBlocks.read("x", 4, 2);
-        codeBlocks.write("x", 5, 2, CountlangType.integer());
+        codeBlocks.write("x", 5, 2, CountlangType.integer(), false);
         codeBlocks.stopRepetition();
         stop();
         assertEquals(1, main.getVariableWrites().size());
@@ -225,9 +225,9 @@ public class VariableTest {
 
     @Test
     public void writeBeforeRepetitionIsReadAfterRepetitionBecauseRepetitionMayNotBeExecuted() {
-        codeBlocks.write("x", 1, 2, CountlangType.integer());
+        codeBlocks.write("x", 1, 2, CountlangType.integer(), false);
         codeBlocks.startRepetition();
-        codeBlocks.write("x", 3, 2, CountlangType.integer());
+        codeBlocks.write("x", 3, 2, CountlangType.integer(), false);
         codeBlocks.stopRepetition();
         codeBlocks.read("x", 5, 2);
         stop();
@@ -247,7 +247,7 @@ public class VariableTest {
 
     @Test
     public void whenFirstReadInRepetitionIsInSubThenFinishingWriteIsRead() {
-        codeBlocks.write("x", 1, 1, CountlangType.integer());
+        codeBlocks.write("x", 1, 1, CountlangType.integer(), false);
         codeBlocks.startRepetition();
         codeBlocks.startSwitch();
         codeBlocks.startBranch();
@@ -256,7 +256,7 @@ public class VariableTest {
         codeBlocks.startBranch();
         codeBlocks.stopBranch();
         codeBlocks.stopSwitch();
-        codeBlocks.write("x", 10, 2, CountlangType.integer());
+        codeBlocks.write("x", 10, 2, CountlangType.integer(), false);
         codeBlocks.stopRepetition();
         stop();
         assertEquals(1, main.getVariableWrites().size());
@@ -275,15 +275,15 @@ public class VariableTest {
 
     @Test
     public void whenReadInNestedRepetitionThenFinalWriteInOuterRepetitionIsRead() {
-        codeBlocks.write("x", 1, 2, CountlangType.bool());
+        codeBlocks.write("x", 1, 2, CountlangType.bool(), false);
         codeBlocks.startRepetition();
         codeBlocks.startRepetition();
         codeBlocks.read("x", 5, 2);
         // Is read circularly by the inner repetition
-        codeBlocks.write("x", 6, 2, CountlangType.bool());
+        codeBlocks.write("x", 6, 2, CountlangType.bool(), false);
         codeBlocks.stopRepetition();
         // We test that this write is circularly read
-        codeBlocks.write("x", 8, 2, CountlangType.bool());
+        codeBlocks.write("x", 8, 2, CountlangType.bool(), false);
         codeBlocks.stopRepetition();
         stop();
         assertEquals(1, main.getVariableWrites().size());

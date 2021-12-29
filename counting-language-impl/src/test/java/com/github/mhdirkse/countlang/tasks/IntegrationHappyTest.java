@@ -235,6 +235,17 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             // with return in the body 
             {"function factorial(int n) {result = 1; i = 1; while(true) {result = result * i; i = i + 1; if(i > n) {return result}; }; }; print factorial(3)", "6"},
             {"result = 0; repeat(3) {result = result + 1}; print result", "3"},
+            {"a = int[]; for x in [3, 5] {a = a.add(x)}; print a", "[3, 5]"},
+            {"a = int[]; for x in int[] {a = a.add(x)}; print a", "[]"},
+            // Test that we can overwrite the loop variable outside the repetition. We should do:
+            // - Set result = 3 + 5 = 8.
+            // - We still have x = 5, so result = 8 + 2 * x = 18.
+            // - Reassign x to be 1.
+            // - Adjust result to 18 + 1 = 19.
+            {"result = 0; for x in [3, 5] {result = result + x}; result = result + 2 * x; x = 1; result = result + x; print result", "19"},
+            // Tests something Martijn did not expect: The priority of the dereference operator should be higher then operator +'s precedence.
+            {"result = 0; for x in [(tuple 3, true)] {result = result + x[1]}; print result", "3"},
+            {"result = 0; for x, _ in [(tuple 3, true)] {result = result + x}; print result", "3"},
             {"function fun() {result = 0; repeat(3) {result = result + 1; if(result >= 1) {return result}}}; print fun()", "1"},
             {"result = 0; repeat(0) {result = result + 1}; print result", "0"},
             
@@ -271,6 +282,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print distribution<int>.ascending()", "[]"},
             {"print (distribution 1, 3, 3, 2).descending()", "[3, 3, 2, 1]"},
             {"print distribution<int>.descending()", "[]"},
+            {"print [3].add(5)", "[3, 5]"},
+            {"print int[].add(5)", "[5]"},
 
             // Arrays
 

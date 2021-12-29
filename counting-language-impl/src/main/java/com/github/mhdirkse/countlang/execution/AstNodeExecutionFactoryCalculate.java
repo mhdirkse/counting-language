@@ -30,6 +30,7 @@ import com.github.mhdirkse.countlang.ast.DistributionExpressionWithUnknown;
 import com.github.mhdirkse.countlang.ast.DistributionItemCount;
 import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
+import com.github.mhdirkse.countlang.ast.ForInRepetitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionMember;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
@@ -92,6 +93,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitRepeatStatement(RepeatStatement repeatStatement) {
     	result = new RepeatStatementCalculation(repeatStatement);
+    }
+
+    @Override
+    public void visitForInRepetitionStatement(ForInRepetitionStatement statement) {
+    	result = new ForInRepetitionStatementCalculation(statement);
     }
 
     @Override

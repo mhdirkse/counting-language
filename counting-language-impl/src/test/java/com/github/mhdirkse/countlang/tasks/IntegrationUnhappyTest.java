@@ -194,6 +194,11 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"while(1) {print 3}", "Test expression of while statement must be BOOL"},
             {"repeat(true) {print 3}", "Repetition count of repeat statement must be int, but was bool"},
             {"repeat(-1) {print 3}", "Repeat statement cannot have a negative repeat count, got -1"},
+            // Test that we cannot reassign the loop variable within the repetition
+            {"result = 0; for x in [3, 5] {result = result + x; x = 1}; print result", "For ... in loop variable x overwritten inside repetition"},
+            // Same when loop variable already exists
+            {"x = 0; result = 0; for x in [3, 5] {result = result + x; x = 1}; print result", "For ... in loop variable x overwritten inside repetition"},
+            {"for x in 5 {print x}", "A for ... in statement should iterate over an array, got a int"},
 
             // experiments and sampling
 

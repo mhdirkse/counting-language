@@ -43,6 +43,7 @@ import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.DistributionTypeNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
+import com.github.mhdirkse.countlang.ast.ForInRepetitionStatement;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
@@ -94,6 +95,7 @@ public class Analysis {
     // If this ever changes, please change these two into a stack.
     AstNode assignmentStatementOfLhs = null;
     CountlangType rhsType = null;
+    boolean isAssiginingLoopVariable = false;
 
     public Analysis(List<FunctionDefinition> funDefs) {
         this.funDefs = new FunctionDefinitions();
@@ -309,6 +311,25 @@ public class Analysis {
         	}
         	repeatStatement.getStatement().accept(this);
         	codeBlocks.stopRepetition();
+        }
+
+        @Override
+        public void visitForInRepetitionStatement(ForInRepetitionStatement statement) {
+        	statement.getFromArray().accept(this);
+        	if(! statement.getFromArray().getCountlangType().isArray()) {
+        		reporter.report(StatusCode.FOR_IN_CONTAINER_NOT_ARRAY, statement.getLine(), statement.getColumn(), statement.getFromArray().getCountlangType().toString());
+        	} else {
+	            assignmentStatementOfLhs = statement;
+	            rhsType = statement.getFromArray().getCountlangType().getSubType();
+	            isAssiginingLoopVariable = true;
+	            statement.getLhs().accept(this);
+	            assignmentStatementOfLhs = null;
+	            rhsType = null;
+	            isAssiginingLoopVariable = false;
+	            codeBlocks.startRepetition();
+	            statement.getStatement().accept(this);
+	        	codeBlocks.stopRepetition();
+        	}
         }
 
         @Override
@@ -708,7 +729,7 @@ public class Analysis {
 
         @Override
         public void visitSimpleLhs(SimpleLhs lhs) {
-            codeBlocks.write(lhs.getSymbol(), assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn(), rhsType);            
+            codeBlocks.write(lhs.getSymbol(), assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn(), rhsType, isAssiginingLoopVariable);            
         }
 
         @Override
@@ -733,7 +754,7 @@ public class Analysis {
         @Override
         public void visitTupleDealingLhsSymbol(TupleDealingLhsSymbol item) {
             CountlangType countlangType = ((TupleType) rhsType).getTupleSubTypes().get(item.getVariableNumber());
-            codeBlocks.write(item.getSymbol(), assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn(), countlangType);
+            codeBlocks.write(item.getSymbol(), assignmentStatementOfLhs.getLine(), assignmentStatementOfLhs.getColumn(), countlangType, isAssiginingLoopVariable);
         }
     }
 }

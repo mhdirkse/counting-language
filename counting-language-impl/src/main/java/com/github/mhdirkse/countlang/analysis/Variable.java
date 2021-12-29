@@ -91,8 +91,8 @@ class Variable implements BlockListener {
         return countlangType;
     }
 
-    VariableErrorEvent write(int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
-        VariableWrite write = new VariableWrite(this, line, column, countlangType, VariableWriteKind.ASSIGNMENT, codeBlock, false);
+    VariableErrorEvent write(int line, int column, CountlangType countlangType, VariableWriteKind kind, CodeBlock codeBlock) {
+        VariableWrite write = new VariableWrite(this, line, column, countlangType, kind, codeBlock, false);
         updateOtherWritesAndRegister(write, codeBlock);
         if(this.countlangType != countlangType) {
             return new VariableErrorEvent(name, line, column, this.countlangType, countlangType);

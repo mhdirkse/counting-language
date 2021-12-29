@@ -141,8 +141,8 @@ class CodeBlocks {
         return memory.read(name, line, column, codeBlocks.peek());
     }
 
-    void write(String name, int line, int column, CountlangType countlangType) {
-        memory.write(name, line, column, countlangType, codeBlocks.peek());
+    void write(String name, int line, int column, CountlangType countlangType, boolean isLoopVariable) {
+        memory.write(name, line, column, countlangType, codeBlocks.peek(), isLoopVariable);
     }
 
     void addParameter(String name, int line, int column, CountlangType countlangType) {

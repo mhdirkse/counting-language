@@ -19,7 +19,7 @@ public class SequenceNoLaybackTest {
 		b.add(BigInteger.valueOf(4L), BigInteger.valueOf(2L));
 		b.add(BigInteger.valueOf(5L), BigInteger.valueOf(3L));
 		Distribution d = b.build();
-		Samplable instance = new SequenceNoLayback(d, BigInteger.valueOf(2L));
+		Samplable instance = new SequenceLayback(d, BigInteger.valueOf(2L));
 		assertEquals(0, instance.getCountUnknown().compareTo(BigInteger.ZERO));
 		assertEquals(0, instance.getCountOf(ProbabilityTreeValue.unknown()).compareTo(BigInteger.ZERO));
 		assertEquals(25L, instance.getTotal().longValue());
@@ -50,7 +50,7 @@ public class SequenceNoLaybackTest {
 		Distribution.Builder b = new Distribution.Builder();
 		b.addUnknown(BigInteger.valueOf(5L));
 		Distribution d = b.build();
-		Samplable instance = new SequenceNoLayback(d, BigInteger.valueOf(2L));
+		Samplable instance = new SequenceLayback(d, BigInteger.valueOf(2L));
 		assertEquals(25L, instance.getTotal().longValue());
 		assertEquals(25L, instance.getCountUnknown().longValue());
 		assertEquals(25L, instance.getCountOf(ProbabilityTreeValue.unknown()).longValue());

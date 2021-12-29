@@ -135,7 +135,7 @@ public class CodeBlockTest implements Memory {
     }
 
     @Override
-    public void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
+    public void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock, boolean isLoopVariable) {
         fail("Should not be used by CodeBlocks, except in its decorator role");
     }
 

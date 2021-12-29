@@ -19,8 +19,10 @@
 
 package com.github.mhdirkse.countlang.analysis;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.github.mhdirkse.countlang.tasks.StatusCode;
@@ -28,8 +30,23 @@ import com.github.mhdirkse.countlang.tasks.StatusReporter;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 import lombok.Getter;
+import lombok.Setter;
 
 class VariableWrite {
+	private class LoopVariableOverwriteEvent {
+		int overwritingLine;
+		int overwritingColumn;
+
+		LoopVariableOverwriteEvent(int overwritingLine, int overwritingColumn) {
+			this.overwritingLine = overwritingLine;
+			this.overwritingColumn = overwritingColumn;
+		}
+
+		void report(StatusReporter reporter) {
+			reporter.report(StatusCode.FOR_IN_LOOP_VARIABLE_OVERWRITTEN, overwritingLine, overwritingColumn, VariableWrite.this.getVariable().getName());
+		}
+	}
+
     private final @Getter Variable variable;
     private final @Getter int line;
     private final @Getter int column;
@@ -37,8 +54,11 @@ class VariableWrite {
     private final @Getter VariableWriteKind variableWriteKind;
     private final @Getter CodeBlock codeBlock;
     private final @Getter boolean initial;
+    private @Getter @Setter CodeBlock iteratedBlock = null;
 
     private final Set<CodeBlock> readBy = new HashSet<>();
+
+    private List<LoopVariableOverwriteEvent> loopVariableOverwriteEvents = new ArrayList<>();
 
     Set<CodeBlock> getReadBy() {
         return Collections.unmodifiableSet(readBy);
@@ -62,6 +82,12 @@ class VariableWrite {
 
     void overwrite(VariableWrite overwritingWrite) {
         overwrittenBy.add(overwritingWrite.getCodeBlock());
+        if(variableWriteKind == VariableWriteKind.LOOP) {
+        	CodeBlock overwritingBlock = overwritingWrite.codeBlock;
+        	if(iteratedBlock.contains(overwritingBlock)) {
+        		loopVariableOverwriteEvents.add(new LoopVariableOverwriteEvent(overwritingWrite.getLine(), overwritingWrite.getColumn()));
+        	}
+        }
     }
 
     boolean isRead() {
@@ -73,7 +99,12 @@ class VariableWrite {
     }
 
     void report(StatusReporter reporter) {
-        if(! readBy.isEmpty()) {
+    	reportNotUsed(reporter);
+        loopVariableOverwriteEvents.forEach(e -> e.report(reporter));
+    }
+
+	private void reportNotUsed(StatusReporter reporter) {
+		if(! readBy.isEmpty()) {
             return;
         }
         if(variableWriteKind == VariableWriteKind.PARAMETER) {
@@ -87,7 +118,7 @@ class VariableWrite {
         if(! isOverwrittenFromDescendantBlock()) {
             issueVarNotUsed(reporter);
         }
-    }
+	}
 
     private void issueVarNotUsed(StatusReporter reporter) {
         reporter.report(StatusCode.VAR_NOT_USED, line, column, variable.getName());

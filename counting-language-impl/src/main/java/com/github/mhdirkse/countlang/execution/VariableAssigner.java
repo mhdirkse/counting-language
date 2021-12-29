@@ -14,6 +14,7 @@ import com.github.mhdirkse.countlang.ast.DistributionItemItem;
 import com.github.mhdirkse.countlang.ast.DistributionTypeNode;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
+import com.github.mhdirkse.countlang.ast.ForInRepetitionStatement;
 import com.github.mhdirkse.countlang.ast.FormalParameter;
 import com.github.mhdirkse.countlang.ast.FormalParameters;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpressionMember;
@@ -115,6 +116,11 @@ class VariableAssigner implements Visitor {
     @Override
     public void visitRepeatStatement(RepeatStatement repeatStatement) {
         throw new IllegalStateException("Method call not applicable");    	
+    }
+
+    @Override
+    public void visitForInRepetitionStatement(ForInRepetitionStatement statement) {
+        throw new IllegalStateException("Method call not applicable");    	    	
     }
 
     @Override

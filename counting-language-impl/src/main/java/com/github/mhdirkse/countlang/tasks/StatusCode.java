@@ -48,7 +48,8 @@ public enum StatusCode implements AbstractStatusCode {
     IF_SELECT_NOT_BOOLEAN("({1}, {2}): Selector of if statement must be BOOL, but was {3}."),
     WHILE_TEST_NOT_BOOLEAN("({1}, {2}): Test expression of while statement must be BOOL, but was {3}."),
     REPEAT_COUNT_NOT_INTEGER("({1}, {2}): Repetition count of repeat statement must be int, but was {3}."),
-
+    FOR_IN_CONTAINER_NOT_ARRAY("({1}, {2}): A for ... in statement should iterate over an array, got a {3}."),
+    FOR_IN_LOOP_VARIABLE_OVERWRITTEN("({1}, {2}): For ... in loop variable {3} overwritten inside repetition."),
     DISTRIBUTION_SCORED_VALUE_TYPE_MISMATCH("({1}, {2}): Element number {3} in distribution is {4}, should be {5}."),
     DISTRIBUTION_SCORED_COUNT_NOT_INT("({1}, {2}): Element number {3}, the count, in distribution is {4}, should be int."),
     DISTRIBUTION_AMOUNT_NOT_INT("({1}, {2}): The amount or unknown clause of a distribution should be int."),

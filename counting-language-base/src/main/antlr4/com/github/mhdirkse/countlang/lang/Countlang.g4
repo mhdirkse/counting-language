@@ -19,6 +19,8 @@ statement
   | 'if' '(' expr ')' '{' statements '}' ('else' '{' statements '}')? # ifStatement
   | 'while' '(' expr ')' '{' statements '}' # whileStatement
   | 'repeat' '(' expr ')' '{' statements '}' # repeatStatement
+  | 'for' ID 'in' expr '{' statements '}' # forInRepetitionStatement
+  | 'for' lhsItem (',' lhsItem)+ 'in' expr '{' statements '}' # tupleDealingForInRepetitionStatement
   | '{' statements '}' # compoundStatement
   ;
 
@@ -39,6 +41,7 @@ typeId :
 expr
   : '(' expr ')' # bracketExpression
   | expr '.' ID '(' (expr (',' expr)*)? ')' # memberCallExpression
+  | expr '[' expr (',' expr)* ']' # dereferenceExpression
   | ID '(' (expr (',' expr)*)? ')' # functionCallExpression
   | '-' expr # unaryMinusExpression
   | expr ( '*' | 'div' | '/') expr # multDifExpression
@@ -48,7 +51,6 @@ expr
   | expr 'and' expr # andExpression
   | expr 'or' expr # orExpression
   | 'distribution' ( '<' typeId '>' )? (distItem (',' distItem)* )? ( (TOTAL | UNKNOWN) expr)? # distributionExpression
-  | expr '[' expr (',' expr)* ']' # dereferenceExpression
   | '[' expr ( ',' expr )* ']' # arrayExpression
   | typeId '[' ']' # emptyArrayExpression
   | 'known of' expr # distributionKnownExpression

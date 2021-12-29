@@ -71,8 +71,12 @@ class MemoryImpl implements Memory {
     }
 
     @Override
-    public void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
-        VariableErrorEvent optionalTypeMismatch = analysisScopes.findScope(name).write(name, line, column, countlangType, codeBlock);
+    public void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock, boolean isLoopVariable) {
+    	VariableWriteKind kind = VariableWriteKind.ASSIGNMENT;
+    	if(isLoopVariable) {
+    		kind = VariableWriteKind.LOOP;
+    	}
+        VariableErrorEvent optionalTypeMismatch = analysisScopes.findScope(name).write(name, line, column, countlangType, kind, codeBlock);
         if(optionalTypeMismatch != null) {
             variableErrorEvents.add(optionalTypeMismatch);
         }

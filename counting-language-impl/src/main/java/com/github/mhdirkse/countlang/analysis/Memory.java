@@ -29,6 +29,6 @@ interface Memory extends BlockListener {
     AnalysisScope popScope();
     boolean isAtRootScope();
     CountlangType read(String name, int line, int column, CodeBlock codeBlock);
-    void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock);
+    void write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock, boolean isLoopVariable);
     void addParameter(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock);
 }

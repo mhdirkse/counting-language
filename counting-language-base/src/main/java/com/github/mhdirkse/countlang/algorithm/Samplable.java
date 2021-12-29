@@ -12,6 +12,6 @@ public interface Samplable {
 	BigInteger getCountOf(ProbabilityTreeValue value);
 
 	public static Samplable multiple(Distribution source, BigInteger numSampled) {
-		return new SequenceNoLayback(source, numSampled);
+		return new SequenceLayback(source, numSampled);
 	}
 }

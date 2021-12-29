@@ -8,13 +8,13 @@ import java.util.stream.IntStream;
 
 import com.github.mhdirkse.countlang.type.CountlangArray;
 
-class SequenceNoLayback implements Samplable {
+class SequenceLayback implements Samplable {
 	private Distribution source;
 	private BigInteger numSampled;
 	private BigInteger total = BigInteger.ONE;
 	private BigInteger unknown;
 
-	SequenceNoLayback(Distribution source, BigInteger numSampled) {
+	SequenceLayback(Distribution source, BigInteger numSampled) {
 		this.source = source;
 		this.numSampled = numSampled;
 		BigInteger known = BigInteger.ONE;

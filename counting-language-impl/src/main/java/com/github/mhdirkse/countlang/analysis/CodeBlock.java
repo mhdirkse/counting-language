@@ -101,6 +101,10 @@ abstract class CodeBlock {
     final private void registerChild(CodeBlock child) {
         children.add(child);
         this.addDescendant(child);
+        variableWrites.stream()
+        	.filter(vw -> vw.getVariableWriteKind() == VariableWriteKind.LOOP)
+        	.filter(vw -> vw.getIteratedBlock() == null)
+        	.forEach(vw -> vw.setIteratedBlock(child));
     }
 
     // Only use in derived classes. From outside use the createChildForXxx methods.

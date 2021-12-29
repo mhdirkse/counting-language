@@ -58,11 +58,11 @@ class AnalysisScope implements BlockListener, Scope {
         return variables.get(name).read(codeBlock);
     }
 
-    VariableErrorEvent write(String name, int line, int column, CountlangType countlangType, CodeBlock codeBlock) {
+    VariableErrorEvent write(String name, int line, int column, CountlangType countlangType, VariableWriteKind kind, CodeBlock codeBlock) {
         if(variables.containsKey(name)) {
-            return variables.get(name).write(line, column, countlangType, codeBlock);
+            return variables.get(name).write(line, column, countlangType, kind, codeBlock);
         } else {
-            Variable v = new Variable(name, line, column, countlangType, VariableWriteKind.ASSIGNMENT, codeBlock);
+            Variable v = new Variable(name, line, column, countlangType, kind, codeBlock);
             variables.put(v.getName(), v);
             return null;
         }

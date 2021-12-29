@@ -32,6 +32,7 @@ public interface Visitor {
     public void visitIfStatement(final IfStatement ifStatement);
     public void visitWhileStatement(final WhileStatement whileStatement);
     public void visitRepeatStatement(final RepeatStatement repeatStatement);
+    public void visitForInRepetitionStatement(final ForInRepetitionStatement forInRepetition);
     public void visitCompositeExpression(final CompositeExpression expression);
     public void visitRangeExpression(final RangeExpression rangeExpression);
     public void visitFunctionCallExpressionNonMember(final FunctionCallExpressionNonMember expression);
