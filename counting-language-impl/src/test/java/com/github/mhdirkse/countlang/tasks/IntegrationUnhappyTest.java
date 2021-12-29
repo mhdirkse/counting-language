@@ -217,6 +217,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print (distribution<int> total 1).ascending()", "that has unknown"},
             {"print (distribution 1000000000000 of 3).descending()", "is too big"},
             {"print (distribution<int> total 1).descending()", "that has unknown"},
+            {"print [1, 2].add(3, 4)", "Argument count mismatch calling array<int>.add. Expected 1, got 2"},
+            {"print [1, 2].add(true)", "Type mismatch calling function array<int>.add, formal parameter 1"},
             
             // Function is a member function of distribution. x is not a distribution, and
             // there is no function with search key ("known", int).
