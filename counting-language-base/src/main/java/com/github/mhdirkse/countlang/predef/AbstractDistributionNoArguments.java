@@ -8,11 +8,11 @@ import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.PredefinedFunction;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-abstract class DistributionGetNoArguments implements PredefinedFunction {
+abstract class AbstractDistributionNoArguments implements PredefinedFunction {
 	private final String name;
 	private final CountlangType resultType;
 
-	DistributionGetNoArguments(String name, CountlangType resultType) {
+	AbstractDistributionNoArguments(String name, CountlangType resultType) {
 		this.name = name;
 		this.resultType = resultType;
 	}

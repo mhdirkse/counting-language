@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-public class DistributionGetCountOfUnknown extends DistributionGetNoArguments {
-	public DistributionGetCountOfUnknown() {
+public class DistributionCountOfUnknown extends AbstractDistributionNoArguments {
+	public DistributionCountOfUnknown() {
 		super("countOfUnknown", CountlangType.integer());
 	}
 

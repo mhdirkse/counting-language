@@ -15,11 +15,11 @@ import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.type.CountlangType;
 import com.github.mhdirkse.countlang.utils.Utils;
 
-abstract class DistributionToArray implements PredefinedFunction {
+abstract class AbstractDistributionToArray implements PredefinedFunction {
     private static final BigInteger COUNT_THRESHOLD = new BigInteger("1000000");
     private final String name;
 
-    DistributionToArray(String name) {
+    AbstractDistributionToArray(String name) {
         this.name = name;
     }
 

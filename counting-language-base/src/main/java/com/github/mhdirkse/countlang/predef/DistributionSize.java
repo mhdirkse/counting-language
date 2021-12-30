@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-public class DistributionGetSize extends DistributionGetNoArguments {
-	public DistributionGetSize() {
+public class DistributionSize extends AbstractDistributionNoArguments {
+	public DistributionSize() {
 		super("size", CountlangType.integer());
 	}
 

@@ -2,7 +2,7 @@ package com.github.mhdirkse.countlang.predef;
 
 import java.util.List;
 
-public class DistributionAscending extends DistributionToArray {
+public class DistributionAscending extends AbstractDistributionToArray {
     public DistributionAscending() {
         super("ascending");
     }

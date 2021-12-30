@@ -3,7 +3,7 @@ package com.github.mhdirkse.countlang.predef;
 import java.util.Collections;
 import java.util.List;
 
-public class DistributionDescending extends DistributionToArray {
+public class DistributionDescending extends AbstractDistributionToArray {
     public DistributionDescending() {
         super("descending");
     }

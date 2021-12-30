@@ -8,8 +8,8 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-public class DistributionGetProbabilityOfUnknown extends DistributionGetNoArguments {
-	public DistributionGetProbabilityOfUnknown() {
+public class DistributionProbabilityOfUnknown extends AbstractDistributionNoArguments {
+	public DistributionProbabilityOfUnknown() {
 		super("probabilityOfUnknown", CountlangType.distributionOfAny());
 	}
 
