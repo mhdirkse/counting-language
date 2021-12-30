@@ -50,6 +50,10 @@ import com.github.mhdirkse.countlang.predef.DistributionGetSize;
 import com.github.mhdirkse.countlang.predef.DistributionIntE;
 import com.github.mhdirkse.countlang.predef.DistributionIntSum;
 import com.github.mhdirkse.countlang.predef.DistributionKnown;
+import com.github.mhdirkse.countlang.predef.FractionDenominator;
+import com.github.mhdirkse.countlang.predef.FractionIsWhole;
+import com.github.mhdirkse.countlang.predef.FractionNumerator;
+import com.github.mhdirkse.countlang.predef.FractionProperWhole;
 import com.github.mhdirkse.utils.Imperative;
 
 public class ProgramExecutor {
@@ -91,7 +95,10 @@ public class ProgramExecutor {
     }
 
     private List<FunctionDefinition> getPredefinedFunctions() {
-        return Arrays.asList(new DistributionKnown(), new DistributionCountOf(),
+        return Arrays.asList(
+        		new FractionProperWhole(), new FractionNumerator(),
+        		new FractionDenominator(), new FractionIsWhole(),
+        		new DistributionKnown(), new DistributionCountOf(),
         		new DistributionIntSum(), new DistributionFracSum(),
         		new DistributionIntE(), new DistributionFracE(),
         		new DistributionAscending(), new DistributionDescending(),

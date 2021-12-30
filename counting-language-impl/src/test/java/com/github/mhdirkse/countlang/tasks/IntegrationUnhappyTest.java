@@ -223,7 +223,6 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print [1, 2].unsort(1)", "Argument count mismatch calling array<int>.unsort. Expected 0, got 1"},
             {"print (distribution 1).size(1)", "Argument count mismatch calling distribution<int>.size. Expected 0, got 1"},
             {"print (distribution 1).countOfUnknown(1)", "Argument count mismatch calling distribution<int>.countOfUnknown. Expected 0, got 1"},
-
             // Function is a member function of distribution. x is not a distribution, and
             // there is no function with search key ("known", int).
             {"x = 1; print x.known()", "does not exist"},
@@ -239,6 +238,13 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print distribution<int>.E()", "Division by zero"},
             {"print distribution<fraction>.E()", "Division by zero"},
             {"print [1, 3, 5].size(1)", "Argument count mismatch"},
+
+            // Non-member functions
+
+            {"print properWhole(5)", "Type mismatch calling function"},
+            {"print properWhole(1/2, 2)", "Argument count mismatch"},
+            {"print isWhole(1, 2)", "Argument count mismatch"},
+            {"print isWhole(1)", "Type mismatch calling function"},
         });
     }
 

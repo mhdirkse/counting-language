@@ -289,6 +289,18 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print [1, 2].unsort()", getDistribution(1, 2)},
             {"print [1, 3, 5].size()", "3"},
 
+            // Non members
+
+            {"print properWhole(10 / 4)", "2"},
+            {"print properWhole(-10 / 4)", "-2"},
+            {"print properWhole(10 / -4)", "-2"},
+            // Test that fraction is reduced.
+            {"print numerator(10/-4)", "-5"},
+            {"print denominator(10/4)", "2"},
+            {"print isWhole(5/1)", "true"},
+            {"print isWhole(-5/1)", "true"},
+            {"print isWhole(5/2)", "false"},
+
             // Arrays
 
             {"print [3, 6, 10]", "[3, 6, 10]"},
