@@ -43,6 +43,7 @@ import com.github.mhdirkse.countlang.predef.ArrayDescending;
 import com.github.mhdirkse.countlang.predef.ArrayReverse;
 import com.github.mhdirkse.countlang.predef.ArraySize;
 import com.github.mhdirkse.countlang.predef.ArrayUnsort;
+import com.github.mhdirkse.countlang.predef.DistributionAddAll;
 import com.github.mhdirkse.countlang.predef.DistributionAscending;
 import com.github.mhdirkse.countlang.predef.DistributionCountOf;
 import com.github.mhdirkse.countlang.predef.DistributionCountOfUnknown;
@@ -109,6 +110,7 @@ public class ProgramExecutor {
         		new DistributionAscending(), new DistributionDescending(),
         		new DistributionSize(), new DistributionCountOfUnknown(),
         		new DistributionProbabilityOf(), new DistributionProbabilityOfUnknown(),
+        		new DistributionAddAll(),
         		new ArrayAscending(), new ArrayDescending(),
         		new ArrayAdd(), new ArrayUnsort(),
         		new ArraySize(), new ArrayReverse(),
