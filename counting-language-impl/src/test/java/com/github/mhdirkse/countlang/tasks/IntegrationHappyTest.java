@@ -301,6 +301,11 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print (distribution 2).hasElement(1)", "false"},
             {"print (distribution 1).hasUnknown()", "false"},
             {"print (distribution<int> total 1).hasUnknown()", "true"},
+            {"print (distribution 1).isSet()", "true"},
+            {"print (distribution 1, 2).isSet()", "true"},
+            {"print (distribution<int> total 1).isSet()", "false"},
+            {"print (distribution 1 total 2).toSet()", getDistribution(1)},
+            {"print (distribution 1, 1).toSet()", getDistribution(1)},
 
             // Non members
 

@@ -54,10 +54,12 @@ import com.github.mhdirkse.countlang.predef.DistributionHasElement;
 import com.github.mhdirkse.countlang.predef.DistributionHasUnknown;
 import com.github.mhdirkse.countlang.predef.DistributionIntE;
 import com.github.mhdirkse.countlang.predef.DistributionIntSum;
+import com.github.mhdirkse.countlang.predef.DistributionIsSet;
 import com.github.mhdirkse.countlang.predef.DistributionKnown;
 import com.github.mhdirkse.countlang.predef.DistributionProbabilityOf;
 import com.github.mhdirkse.countlang.predef.DistributionProbabilityOfUnknown;
 import com.github.mhdirkse.countlang.predef.DistributionSize;
+import com.github.mhdirkse.countlang.predef.DistributionToSet;
 import com.github.mhdirkse.countlang.predef.FractionDenominator;
 import com.github.mhdirkse.countlang.predef.FractionIsWhole;
 import com.github.mhdirkse.countlang.predef.FractionNumerator;
@@ -113,7 +115,8 @@ public class ProgramExecutor {
         		new DistributionSize(), new DistributionCountOfUnknown(),
         		new DistributionProbabilityOf(), new DistributionProbabilityOfUnknown(),
         		new DistributionAddAll(), new DistributionHasElement(),
-        		new DistributionHasUnknown(),
+        		new DistributionHasUnknown(), new DistributionIsSet(),
+        		new DistributionToSet(),
         		new ArrayAscending(), new ArrayDescending(),
         		new ArrayAdd(), new ArrayUnsort(),
         		new ArraySize(), new ArrayReverse(),
