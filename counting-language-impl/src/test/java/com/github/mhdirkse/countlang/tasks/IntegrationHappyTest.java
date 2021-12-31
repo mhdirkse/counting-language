@@ -297,6 +297,10 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print (distribution 1).probabilityOfUnknown()", "0"},
             {"print (distribution 1).probabilityOf(2)", "0"},
             {"print (distribution 2 of 1 total 3).addAll(distribution 3 of 4 total 10)", getDistributionWithUnknown(1, 1, 4, 4, 4, 8)},
+            {"print (distribution 1).hasElement(1)", "true"},
+            {"print (distribution 2).hasElement(1)", "false"},
+            {"print (distribution 1).hasUnknown()", "false"},
+            {"print (distribution<int> total 1).hasUnknown()", "true"},
 
             // Non members
 
