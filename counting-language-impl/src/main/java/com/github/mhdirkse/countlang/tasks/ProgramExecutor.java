@@ -36,6 +36,7 @@ import com.github.mhdirkse.countlang.ast.TestFunctionDefinitions;
 import com.github.mhdirkse.countlang.execution.Stepper;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.countlang.predef.ArrayAdd;
+import com.github.mhdirkse.countlang.predef.ArrayAddAll;
 import com.github.mhdirkse.countlang.predef.ArrayAscending;
 import com.github.mhdirkse.countlang.predef.ArrayAscendingIndicesOf;
 import com.github.mhdirkse.countlang.predef.ArrayDescending;
@@ -111,7 +112,7 @@ public class ProgramExecutor {
         		new ArrayAscending(), new ArrayDescending(),
         		new ArrayAdd(), new ArrayUnsort(),
         		new ArraySize(), new ArrayReverse(),
-        		new ArrayAscendingIndicesOf(),
+        		new ArrayAscendingIndicesOf(), new ArrayAddAll(),
         		TestFunctionDefinitions.createTestFunction());
     }
 

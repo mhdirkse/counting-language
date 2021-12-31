@@ -291,6 +291,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print [false, true].reverse()", "[true, false]"},
             {"print [1, 3, 4, 3].ascendingIndicesOf(3)", "[2, 4]"},
             {"print [false, true].ascendingIndicesOf(false)", "[1]"},
+            {"print [3, 4].addAll([1, 2])", "[3, 4, 1, 2]"},
             {"print (distribution 1, 3, 3 total 4).probabilityOf(3)", "1 / 2"},
             {"print (distribution 1, 3, 3 total 4).probabilityOfUnknown()", "1 / 4"},
             {"print (distribution 1).probabilityOfUnknown()", "0"},

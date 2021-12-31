@@ -241,6 +241,8 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print distribution<int>.E()", "Division by zero"},
             {"print distribution<fraction>.E()", "Division by zero"},
             {"print [1, 3, 5].size(1)", "Argument count mismatch"},
+            {"print [1, 2].addAll()", "Argument count mismatch calling array<int>.addAll. Expected 1, got 0"},
+            {"print [1, 2].addAll(3)", "Type mismatch calling function array<int>.addAll, formal parameter 1"},
             {"print (distribution 1).probabilityOf()", "Argument count mismatch"},
             {"print (distribution 1).probabilityOf(true)", "Type mismatch calling function"},
             {"print distribution<int>.probabilityOf(1)", "Cannot calculate probabilities from empty distribution"},
