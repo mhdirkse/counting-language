@@ -37,21 +37,23 @@ import com.github.mhdirkse.countlang.execution.Stepper;
 import com.github.mhdirkse.countlang.lang.parsing.ParseEntryPoint;
 import com.github.mhdirkse.countlang.predef.ArrayAdd;
 import com.github.mhdirkse.countlang.predef.ArrayAscending;
+import com.github.mhdirkse.countlang.predef.ArrayAscendingIndicesOf;
 import com.github.mhdirkse.countlang.predef.ArrayDescending;
+import com.github.mhdirkse.countlang.predef.ArrayReverse;
 import com.github.mhdirkse.countlang.predef.ArraySize;
 import com.github.mhdirkse.countlang.predef.ArrayUnsort;
 import com.github.mhdirkse.countlang.predef.DistributionAscending;
 import com.github.mhdirkse.countlang.predef.DistributionCountOf;
+import com.github.mhdirkse.countlang.predef.DistributionCountOfUnknown;
 import com.github.mhdirkse.countlang.predef.DistributionDescending;
 import com.github.mhdirkse.countlang.predef.DistributionFracE;
 import com.github.mhdirkse.countlang.predef.DistributionFracSum;
-import com.github.mhdirkse.countlang.predef.DistributionCountOfUnknown;
-import com.github.mhdirkse.countlang.predef.DistributionProbabilityOfUnknown;
-import com.github.mhdirkse.countlang.predef.DistributionSize;
 import com.github.mhdirkse.countlang.predef.DistributionIntE;
 import com.github.mhdirkse.countlang.predef.DistributionIntSum;
 import com.github.mhdirkse.countlang.predef.DistributionKnown;
 import com.github.mhdirkse.countlang.predef.DistributionProbabilityOf;
+import com.github.mhdirkse.countlang.predef.DistributionProbabilityOfUnknown;
+import com.github.mhdirkse.countlang.predef.DistributionSize;
 import com.github.mhdirkse.countlang.predef.FractionDenominator;
 import com.github.mhdirkse.countlang.predef.FractionIsWhole;
 import com.github.mhdirkse.countlang.predef.FractionNumerator;
@@ -108,7 +110,8 @@ public class ProgramExecutor {
         		new DistributionProbabilityOf(), new DistributionProbabilityOfUnknown(),
         		new ArrayAscending(), new ArrayDescending(),
         		new ArrayAdd(), new ArrayUnsort(),
-        		new ArraySize(),
+        		new ArraySize(), new ArrayReverse(),
+        		new ArrayAscendingIndicesOf(),
         		TestFunctionDefinitions.createTestFunction());
     }
 

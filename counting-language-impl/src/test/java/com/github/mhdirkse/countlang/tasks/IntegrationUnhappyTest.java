@@ -221,6 +221,9 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"print [1, 2].add(true)", "Type mismatch calling function array<int>.add, formal parameter 1"},
             {"print (distribution 1, 2).unsort()", "Function distribution<int>.unsort does not exist"},
             {"print [1, 2].unsort(1)", "Argument count mismatch calling array<int>.unsort. Expected 0, got 1"},
+            {"print [1, 2].reverse(1)", "Argument count mismatch calling array<int>.reverse. Expected 0, got 1"},
+            {"print [1, 2].ascendingIndicesOf()", "Argument count mismatch calling array<int>.ascendingIndicesOf. Expected 1, got 0"},
+            {"print [1, 2].ascendingIndicesOf(true)", "Type mismatch calling function array<int>.ascendingIndicesOf, formal parameter 1"},
             {"print (distribution 1).size(1)", "Argument count mismatch calling distribution<int>.size. Expected 0, got 1"},
             {"print (distribution 1).countOfUnknown(1)", "Argument count mismatch calling distribution<int>.countOfUnknown. Expected 0, got 1"},
             // Function is a member function of distribution. x is not a distribution, and
