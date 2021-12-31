@@ -9,13 +9,14 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-public class DistributionProbabilityOf extends AbstractDistributionCountOf {
+public class DistributionProbabilityOf extends AbstractMemberFunction {
+	@SuppressWarnings("unchecked")
 	public DistributionProbabilityOf() {
-		super("probabilityOf", CountlangType.fraction());
+		super("probabilityOf", CountlangType.distributionOfAny(), t -> CountlangType.fraction(), t -> t.getSubType());
 	}
 
 	@Override
-	public Object run(int line, int column, List<Object> args) {
+	public BigFraction run(int line, int column, List<Object> args) {
 		Distribution thisArg = (Distribution) args.get(0);
 		if(thisArg.getTotal().compareTo(BigInteger.ZERO) == 0) {
 			throw new ProgramException(line, column, "Cannot calculate probabilities from empty distribution");

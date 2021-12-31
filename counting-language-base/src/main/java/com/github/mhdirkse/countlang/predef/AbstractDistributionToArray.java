@@ -8,35 +8,16 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
-import com.github.mhdirkse.countlang.ast.FunctionKey;
-import com.github.mhdirkse.countlang.ast.PredefinedFunction;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.type.CountlangType;
 import com.github.mhdirkse.countlang.utils.Utils;
 
-abstract class AbstractDistributionToArray implements PredefinedFunction {
+abstract class AbstractDistributionToArray extends AbstractMemberFunction {
     private static final BigInteger COUNT_THRESHOLD = new BigInteger("1000000");
-    private final String name;
 
-    AbstractDistributionToArray(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public FunctionKey getKey() {
-        return new FunctionKey(name, CountlangType.distributionOfAny());
-    }
-
-    @Override
-    public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
-        if(arguments.size() != 1) {
-            errorHandler.handleParameterCountMismatch(1, arguments.size());
-            return CountlangType.unknown();
-        }
-        // The search key ensures we have a distribution
-        // We return an array that contains the elements that were in the distribution.
-        return CountlangType.arrayOf(arguments.get(0).getSubType());
+    @SuppressWarnings("unchecked")
+	AbstractDistributionToArray(String name) {
+        super(name, CountlangType.distributionOfAny(), t -> CountlangType.arrayOf(t.getSubType()));
     }
 
     @Override

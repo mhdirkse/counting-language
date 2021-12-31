@@ -158,6 +158,10 @@ public class CountlangType {
         }
     }
 
+    public boolean isAny() {
+    	return kind == Kind.ANY;
+    }
+
     public boolean isDistribution() {
         return kind == Kind.DISTRIBUTION;
     }
