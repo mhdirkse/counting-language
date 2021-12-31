@@ -26,7 +26,8 @@ import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionIntSum extends DistributionAggregator {
     public DistributionIntSum() {
-        super("sum", CountlangType.distributionOf(CountlangType.integer()), CountlangType.integer());
+        super("sum", CountlangType.distributionOf(CountlangType.integer()), CountlangType.integer(),
+        		DistributionsStrategy.noUnknown("sum"));
     }
 
     @Override

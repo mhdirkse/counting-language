@@ -15,7 +15,8 @@ abstract class AbstractMemberFunction implements PredefinedFunction {
 	private final Function<CountlangType, CountlangType> returnType;
 	private final List<Function<CountlangType, CountlangType>> argTypes;
 
-	AbstractMemberFunction(final String name, final CountlangType thisType, final Function<CountlangType, CountlangType> returnType, @SuppressWarnings("unchecked") Function<CountlangType, CountlangType> ...otherArguments) {
+	@SafeVarargs
+	AbstractMemberFunction(final String name, final CountlangType thisType, final Function<CountlangType, CountlangType> returnType, Function<CountlangType, CountlangType> ...otherArguments) {
 		this.name = name;
 		this.thisType = thisType;
 		this.returnType = returnType;

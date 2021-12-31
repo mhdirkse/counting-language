@@ -25,7 +25,6 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionCountOf extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public DistributionCountOf() {
 		super("countOf", CountlangType.distributionOfAny(), t -> CountlangType.integer(), t -> t.getSubType());
 	}

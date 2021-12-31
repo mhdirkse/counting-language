@@ -25,7 +25,6 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionKnown extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public DistributionKnown() {
 		super("known", CountlangType.distributionOfAny(), t -> t);
 	}

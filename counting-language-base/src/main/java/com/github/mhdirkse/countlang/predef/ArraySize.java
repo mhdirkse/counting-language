@@ -6,7 +6,6 @@ import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class ArraySize extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public ArraySize() {
 		super("size", CountlangType.arrayOfAny(), t -> CountlangType.integer());
 	}

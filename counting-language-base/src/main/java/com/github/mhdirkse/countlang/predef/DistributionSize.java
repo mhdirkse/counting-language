@@ -7,7 +7,6 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionSize extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public DistributionSize() {
 		super("size", CountlangType.distributionOfAny(), t -> CountlangType.integer());
 	}

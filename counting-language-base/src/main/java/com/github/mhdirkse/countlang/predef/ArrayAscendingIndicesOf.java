@@ -8,7 +8,6 @@ import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class ArrayAscendingIndicesOf extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public ArrayAscendingIndicesOf() {
 		super("ascendingIndicesOf", CountlangType.arrayOfAny(), t -> CountlangType.arrayOf(CountlangType.integer()), t -> t.getSubType());
 	}

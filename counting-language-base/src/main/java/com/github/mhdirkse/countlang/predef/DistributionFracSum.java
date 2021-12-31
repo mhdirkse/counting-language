@@ -28,7 +28,8 @@ import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionFracSum extends DistributionAggregator {
     public DistributionFracSum() {
-        super("sum", CountlangType.distributionOf(CountlangType.fraction()), CountlangType.fraction());
+        super("sum", CountlangType.distributionOf(CountlangType.fraction()), CountlangType.fraction(),
+        		DistributionsStrategy.noUnknown("sum"));
     }
 
     @Override

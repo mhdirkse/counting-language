@@ -7,7 +7,6 @@ import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class ArrayAddAll extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public ArrayAddAll() {
 		super("addAll", CountlangType.arrayOfAny(), t -> t, t -> t);
 	}

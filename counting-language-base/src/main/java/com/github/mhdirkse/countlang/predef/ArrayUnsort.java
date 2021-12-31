@@ -7,7 +7,6 @@ import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class ArrayUnsort extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public ArrayUnsort() {
 		super("unsort", CountlangType.arrayOfAny(), t -> CountlangType.distributionOf(t.getSubType()));
 	}

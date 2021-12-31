@@ -8,7 +8,6 @@ import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class ArrayReverse extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public ArrayReverse() {
 		super("reverse", CountlangType.arrayOfAny(), t -> t);
 	}

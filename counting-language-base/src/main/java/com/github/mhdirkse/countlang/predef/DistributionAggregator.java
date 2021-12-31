@@ -24,21 +24,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
-import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public abstract class DistributionAggregator extends AbstractMemberFunction {
-    @SuppressWarnings("unchecked")
-	DistributionAggregator(String name, CountlangType ownerType, CountlangType returnType) {
+	private final DistributionsStrategy testStrategy;
+
+	DistributionAggregator(String name, CountlangType ownerType, CountlangType returnType, DistributionsStrategy strategy) {
         super(name, ownerType, t -> returnType);
+        this.testStrategy = strategy;
     }
 
     @Override
     public Object run(int line, int column, List<Object> args) {
-        Distribution d = (Distribution) args.get(0);
-        if(d.getCountUnknown().compareTo(BigInteger.ZERO) != 0) {
-            throw new ProgramException(line, column, "Cannot execute sum() on distribution that has unknown");
-        }
+        testStrategy.test(line, column, args);
+    	Distribution d = (Distribution) args.get(0);
         Object result = getInitialResult();
         Iterator<Object> it = d.getItemIterator();
         while(it.hasNext()) {

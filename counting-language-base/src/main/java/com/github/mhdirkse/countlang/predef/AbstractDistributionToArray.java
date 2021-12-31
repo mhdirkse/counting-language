@@ -15,17 +15,17 @@ import com.github.mhdirkse.countlang.utils.Utils;
 abstract class AbstractDistributionToArray extends AbstractMemberFunction {
     private static final BigInteger COUNT_THRESHOLD = new BigInteger("1000000");
 
-    @SuppressWarnings("unchecked")
+    private DistributionsStrategy strategy;
+
 	AbstractDistributionToArray(String name) {
         super(name, CountlangType.distributionOfAny(), t -> CountlangType.arrayOf(t.getSubType()));
+        strategy = DistributionsStrategy.noUnknown(name);
     }
 
     @Override
     public Object run(int line, int column, List<Object> args) {
-        Distribution d = (Distribution) args.get(0);
-        if(d.getCountUnknown().compareTo(BigInteger.ZERO) != 0) {
-            throw new ProgramException(line, column, "Cannot sort a distribution that has unknown");
-        }
+    	strategy.test(line, column, args);
+    	Distribution d = (Distribution) args.get(0);
         List<Comparable<Object>> arrayValues = new ArrayList<>();
         Iterator<Object> it = d.getItemIterator();
         while(it.hasNext()) {

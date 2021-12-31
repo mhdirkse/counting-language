@@ -8,7 +8,6 @@ import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 abstract class ArraySort extends AbstractMemberFunction {
-    @SuppressWarnings("unchecked")
 	ArraySort(String name) {
         super(name, CountlangType.arrayOfAny(), t -> t);
     }

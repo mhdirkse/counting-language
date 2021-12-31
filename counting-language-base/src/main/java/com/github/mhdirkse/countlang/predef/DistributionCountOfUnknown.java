@@ -7,7 +7,6 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 public class DistributionCountOfUnknown extends AbstractMemberFunction {
-	@SuppressWarnings("unchecked")
 	public DistributionCountOfUnknown() {
 		super("countOfUnknown", CountlangType.distributionOfAny(), t -> CountlangType.integer());
 	}
