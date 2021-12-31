@@ -4,31 +4,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
-import com.github.mhdirkse.countlang.ast.FunctionKey;
-import com.github.mhdirkse.countlang.ast.PredefinedFunction;
 import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-public class ArrayAscendingIndicesOf implements PredefinedFunction {
-	@Override
-	public FunctionKey getKey() {
-		return new FunctionKey("ascendingIndicesOf", CountlangType.arrayOfAny());
-	}
-
-	@Override
-	public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
-		if(arguments.size() != 2) {
-			errorHandler.handleParameterCountMismatch(2, arguments.size());
-			return CountlangType.unknown();
-		}
-		CountlangType thisArg = arguments.get(0);
-		CountlangType toFind = arguments.get(1);
-		if(toFind != thisArg.getSubType()) {
-			errorHandler.handleParameterTypeMismatch(1, thisArg.getSubType(), toFind);
-			return CountlangType.unknown();
-		}
-		return CountlangType.arrayOf(CountlangType.integer());
+public class ArrayAscendingIndicesOf extends AbstractMemberFunction {
+	@SuppressWarnings("unchecked")
+	public ArrayAscendingIndicesOf() {
+		super("ascendingIndicesOf", CountlangType.arrayOfAny(), t -> CountlangType.arrayOf(CountlangType.integer()), t -> t.getSubType());
 	}
 
 	@Override

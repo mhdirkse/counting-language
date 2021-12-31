@@ -3,31 +3,13 @@ package com.github.mhdirkse.countlang.predef;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
-import com.github.mhdirkse.countlang.ast.FunctionKey;
-import com.github.mhdirkse.countlang.ast.PredefinedFunction;
 import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-public class ArrayAddAll implements PredefinedFunction {
-	@Override
-	public FunctionKey getKey() {
-		return new FunctionKey("addAll", CountlangType.arrayOfAny());
-	}
-
-	@Override
-	public CountlangType checkCallAndGetReturnType(List<CountlangType> arguments, FunctionCallErrorHandler errorHandler) {
-		if(arguments.size() != 2) {
-			errorHandler.handleParameterCountMismatch(2, arguments.size());
-			return CountlangType.unknown();
-		}
-		CountlangType thisArg = arguments.get(0);
-		CountlangType addArg = arguments.get(1);
-		if(addArg != thisArg) {
-			errorHandler.handleParameterTypeMismatch(1, thisArg, addArg);
-			return CountlangType.unknown();
-		}
-		return thisArg;
+public class ArrayAddAll extends AbstractMemberFunction {
+	@SuppressWarnings("unchecked")
+	public ArrayAddAll() {
+		super("addAll", CountlangType.arrayOfAny(), t -> t, t -> t);
 	}
 
 	@Override

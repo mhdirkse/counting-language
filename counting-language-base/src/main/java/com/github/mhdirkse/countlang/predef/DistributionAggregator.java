@@ -27,9 +27,10 @@ import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-public abstract class DistributionAggregator extends DistributionMemberNoArguments {
-    DistributionAggregator(String name, CountlangType ownerType, CountlangType returnType) {
-        super(name, ownerType, returnType);
+public abstract class DistributionAggregator extends AbstractMemberFunction {
+    @SuppressWarnings("unchecked")
+	DistributionAggregator(String name, CountlangType ownerType, CountlangType returnType) {
+        super(name, ownerType, t -> returnType);
     }
 
     @Override
