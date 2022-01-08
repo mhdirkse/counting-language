@@ -45,6 +45,7 @@ import com.github.mhdirkse.countlang.predef.ArraySize;
 import com.github.mhdirkse.countlang.predef.ArrayUnsort;
 import com.github.mhdirkse.countlang.predef.DistributionAddAll;
 import com.github.mhdirkse.countlang.predef.DistributionAscending;
+import com.github.mhdirkse.countlang.predef.DistributionContains;
 import com.github.mhdirkse.countlang.predef.DistributionCountOf;
 import com.github.mhdirkse.countlang.predef.DistributionCountOfUnknown;
 import com.github.mhdirkse.countlang.predef.DistributionDescending;
@@ -54,10 +55,13 @@ import com.github.mhdirkse.countlang.predef.DistributionHasElement;
 import com.github.mhdirkse.countlang.predef.DistributionHasUnknown;
 import com.github.mhdirkse.countlang.predef.DistributionIntE;
 import com.github.mhdirkse.countlang.predef.DistributionIntSum;
+import com.github.mhdirkse.countlang.predef.DistributionIntersect;
 import com.github.mhdirkse.countlang.predef.DistributionIsSet;
 import com.github.mhdirkse.countlang.predef.DistributionKnown;
 import com.github.mhdirkse.countlang.predef.DistributionProbabilityOf;
+import com.github.mhdirkse.countlang.predef.DistributionProbabilityOfSet;
 import com.github.mhdirkse.countlang.predef.DistributionProbabilityOfUnknown;
+import com.github.mhdirkse.countlang.predef.DistributionRemoveAll;
 import com.github.mhdirkse.countlang.predef.DistributionSize;
 import com.github.mhdirkse.countlang.predef.DistributionToSet;
 import com.github.mhdirkse.countlang.predef.FractionDenominator;
@@ -115,8 +119,10 @@ public class ProgramExecutor {
         		new DistributionSize(), new DistributionCountOfUnknown(),
         		new DistributionProbabilityOf(), new DistributionProbabilityOfUnknown(),
         		new DistributionAddAll(), new DistributionHasElement(),
-        		new DistributionHasUnknown(), new DistributionIsSet(),
-        		new DistributionToSet(),
+        		new DistributionHasUnknown(), new DistributionContains(),
+        		new DistributionIntersect(), new DistributionRemoveAll(),
+        		new DistributionIsSet(), new DistributionToSet(),
+        		new DistributionProbabilityOfSet(),
         		new ArrayAscending(), new ArrayDescending(),
         		new ArrayAdd(), new ArrayUnsort(),
         		new ArraySize(), new ArrayReverse(),

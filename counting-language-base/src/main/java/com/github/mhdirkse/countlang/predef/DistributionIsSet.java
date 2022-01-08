@@ -1,7 +1,5 @@
 package com.github.mhdirkse.countlang.predef;
 
-import java.math.BigInteger;
-import java.util.Iterator;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
@@ -14,16 +12,6 @@ public class DistributionIsSet extends AbstractMemberFunction {
 
 	@Override
 	public Boolean run(int line, int column, List<Object> args) {
-		Distribution thisArg = (Distribution) args.get(0);
-		if(thisArg.getCountUnknown().compareTo(BigInteger.ZERO) != 0) {
-			return false;
-		}
-		for(Iterator<Object> it = thisArg.getItemIterator(); it.hasNext();) {
-			Object value = it.next();
-			if(thisArg.getCountOf(value).compareTo(BigInteger.ONE) != 0) {
-				return false;
-			}
-		}
-		return true;
+		return ((Distribution) args.get(0)).isSet();
 	}
 }

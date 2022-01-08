@@ -71,6 +71,39 @@ interface DistributionsStrategy {
 		}
 	}
 
+	static class OtherNoUnknown extends AbstractArgSelector {
+		private final String name;
+
+		OtherNoUnknown(String name) {
+			super(new int[] {1});
+			this.name = name;
+		}
+
+		@Override
+		void doTest(int line, int column, Distribution d, int argNumber) {
+			if(d.getCountUnknown().compareTo(BigInteger.ZERO) != 0) {
+				throw new ProgramException(line, column,
+						String.format("Cannot execute distribution<>.%s() with an argument that has unknown", name));
+			}
+		}
+	}
+
+	static class OtherIsSet extends AbstractArgSelector {
+		private String name;
+
+		OtherIsSet(String name) {
+			super(new int[] {1});
+			this.name = name;
+		}
+
+		@Override
+		void doTest(int line, int column, Distribution d, int argNumber) {
+			if(! d.isSet()) {
+				throw new ProgramException(line, column, String.format("Cannot execute distribution<>.%s() with an argument that is not a set", name));
+			}
+		}
+	}
+
 	static DistributionsStrategy of(DistributionsStrategy first, DistributionsStrategy ...others) {
 		List<DistributionsStrategy> children = new ArrayList<>();
 		children.add(first);
@@ -86,5 +119,13 @@ interface DistributionsStrategy {
 
 	static DistributionsStrategy noUnknown(String memberName) {
 		return new ThisNoUnknown(memberName);
+	}
+
+	static DistributionsStrategy otherNoUnknown(String memberName) {
+		return new OtherNoUnknown(memberName);
+	}
+
+	static DistributionsStrategy otherIsSet(String memberName) {
+		return new OtherIsSet(memberName);
 	}
 }

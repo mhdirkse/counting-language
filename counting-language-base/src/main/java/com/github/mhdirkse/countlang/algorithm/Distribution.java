@@ -180,6 +180,19 @@ public final class Distribution implements Comparable<Distribution>, Samplable {
         return gcd.get();
     }
 
+    public boolean isSet() {
+		if(getCountUnknown().compareTo(BigInteger.ZERO) != 0) {
+			return false;
+		}
+		for(Iterator<Object> it = getItemIterator(); it.hasNext();) {
+			Object value = it.next();
+			if(getCountOf(value).compareTo(BigInteger.ONE) != 0) {
+				return false;
+			}
+		}
+		return true;
+    }
+
     public String format() {
         if(total.equals(BigInteger.ZERO)) {
             return "empty";
