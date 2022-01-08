@@ -1,10 +1,15 @@
 package com.github.mhdirkse.countlang.predef;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
+// TODO: Check for each predefined function whether the run method returns the right type.
+// TODO: Add predefined functions min and max.
+// TODO: Extend the RISK case to support more defending armies than attacker armies.
+// TODO: Finish the RISK case.
 public class ArraySize extends AbstractMemberFunction {
 	public ArraySize() {
 		super("size", CountlangType.arrayOfAny(), t -> CountlangType.integer());
@@ -12,6 +17,6 @@ public class ArraySize extends AbstractMemberFunction {
 
 	@Override
 	public Object run(int line, int column, List<Object> args) {
-		return ((CountlangArray) args.get(0)).size();
+		return BigInteger.valueOf(((CountlangArray) args.get(0)).size());
 	}
 }

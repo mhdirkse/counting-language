@@ -44,6 +44,6 @@ abstract class AbstractMemberFunction implements PredefinedFunction {
 				return CountlangType.unknown();
 			}
 		}
-		return returnType.apply(returnType.apply(arguments.get(0)));
+		return returnType.apply(arguments.get(0));
 	}
 }

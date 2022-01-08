@@ -1,0 +1,208 @@
+# This case study is about the board game of RISK. The board is a (distorted)
+# map of the world that is divided in countries. Each country contains armies.
+# There are armies of different color. At the start of the game, each player
+# chooses a color, so the color of the armies in a country determines which
+# player owns the country. Each player tries to conquer countries.
+#
+# This case study does not consider all aspects of the game of RISK, but
+# focuses on the fight for a country. There is always one attacking player
+# and one defending player. The attacker throws red dice and then the defender
+# throws blue dice. The amounts are compared to determine how many armies of
+# the attacker and of the defender are defeated. If enough armies remain,
+# the attacker can choose to repeat this procedure. If the defender looses all
+# his armies, the attacker has won the country and the attacker has to move
+# armies to the conquered country. If the attacker runs out of armies, he
+# has to stop the fight for the country.
+#
+# This case study focuses on one dice throw by the attacker and the response
+# by the defender. The attacker has to choose how may armies he uses for the attack.
+# This army is at most three. It must also be less then the amount of armies in the
+# attacking country. For example, if the attacker has three armies in the
+# attacking country, he can attack with at most two armies. The number of
+# dice that the attacker throws is equal to the number of attacking armies.
+#
+# If the attacker has two or more armies, he can choose whether to defend
+# with one or with two armies (throws one or two dice). If the attacker
+# has only one army left, he can only one dice.
+#
+# When the dices are thrown, there are one, two or three red dice and one
+# or two blue dice. The red dice are sorted in descending order and the
+# blue dice are sorted in descending order as well. Then the highest red
+# dice is compared to the highest blue dice. If the red dice is higher,
+# the defender looses an army. If the red dice is equal to or
+# lower than the blue dice, the attacker looses an army.
+#
+# If there is another blue dice, it is compared to the
+# second red dice. The same rules are applied to determine
+# who looses another army.
+#
+# From a probability theory perspective, it is interesting
+# whether the attacker or the defender has the advantage.
+# The attacker has the advantage that he can usually throw
+# more dice. The attacker has the advantage that he wins when
+# two equal dice are compared. The defender can also choose
+# how many armies to put at stake. If he sees the strongest attack (6, 6)
+# he can defend with only one army, putting one army at stake instead of
+# two. If he sees the weak attack (1, 1), het can defend with two armies,
+# being sure to defeat two attacking armies.
+#
+# Let us first get an impression on the attackers advantage. We calculate
+# the joint probability distribution for the two highest dice when three
+# are thrown.
+
+experiment selectHighest(int thrown, int selected) {
+	sample allDice as thrown from distribution 1:6;
+	return allDice.descending()[1:selected];
+};
+
+# Uncomment the line below to test the above experiment:
+
+# print selectHighest(3, 2);
+
+# The result shows that strong attacks are more likely than weak attacks.
+# For example [6, 6] has a probability of 16 / 216 = 2 / 27 while
+# the attack [1, 1] has a probability of only 1 / 216.
+#
+# Next, we analyse one round of dice throwing. First, we program
+# an experiment for the defence against a given attack.
+# Then we use that experiment to calculate the best response to each
+# possible attack. Then we calculate a probability distribution one
+# round of dice throwing.
+
+function compareDice(array<int> attack, array<int> defense) {
+    numComparisons = [attack.size(), defense.size()].min();
+    attack = attack.descending();
+    defense = defense.descending();
+	attackerLost = 0;
+	defenderLost = 0;
+	for index in [1:numComparisons] {
+		if(attack[index] > defense[index]) {
+			defenderLost = defenderLost + 1;
+		} else {
+			attackerLost = attackerLost + 1;
+		}
+	};
+	return attackerLost, defenderLost;
+};
+
+experiment defend(array<int> attack, int numDiceDefense) {
+	sample defense as numDiceDefense from distribution 1:6;
+	attackerLost, defenderLost = compareDice(attack, defense);
+	return attack, attackerLost, defenderLost;
+};
+
+# Please uncomment the following line to test this experiment:
+
+# print defend([1, 6, 6], 2);
+
+# You should see that strong defenses cause more losses for the attacker
+# and that weak defenses cause more losses for the defender.
+# Now we want to see the probability of each outcome.
+
+experiment defendOutcome(array<int> attack, int numDiceDefense) {
+	sample _, attackerLost, defenderLost from defend(attack, numDiceDefense);
+	return defenderLost - attackerLost;
+};
+
+# Please uncomment the following line to test this:
+
+# print defendOutcome([1, 6, 6], 2);
+
+# When the attacker has [1, 6, 6], the effective attack is [6, 6].
+# When the attacked defends with two armies, he has a chance of
+# 25 / 36 of loosing two armies. The chance of a draw is 10 / 36 and
+# the chance that the attacker looses two armies is 1 / 36. You can
+# change the inputs to test other situations.
+
+# print defendOutcome([1, 6, 6], 1);
+
+# When the defender puts only one army at stake, he seems to be better off.
+# He looses at most one army. Let's prove this by calculating expectations.
+
+# print defendOutcome([1, 6, 6], 2).E();
+# print defendOutcome([1, 6, 6], 1).E();
+
+# With two dice, the attacker's advantage has an expectation of 1 + 1/3.
+# With one dice, the attacker's advantage has a lower expected value: 2/3.
+
+# Now, we analyze each possible attack.
+
+experiment analyseAttack(int numDice) {
+	sample attack as numDice from distribution 1:6;
+	attack = attack.descending();
+	if(numDice >= 2) {
+		attack = attack[1:2];
+	};
+	outcomes = fraction[];
+	for numDefense in [1:2] {
+		currentOutcome = defendOutcome(attack, numDefense).E();
+		outcomes = outcomes.add(currentOutcome);
+	};
+	return attack, outcomes;
+};
+
+# print analyseAttack(3);
+
+# The second array shows the expected attacker's advantage
+# when the defender defends with one dice and the expected
+# advantage against two dice. If the attacke has two high
+# dice, the defender can reduce the attacker's advantage
+# by putting only one army at stake. Otherwise the attacker
+# is expected to loose more against a defense with two armies.
+
+experiment attack(int numDice, int maxNumDefend) {
+    sample attack, outcomeExpectations from analyseAttack(numDice);
+    numDefend = 1;
+    if(maxNumDefend >= 2) {
+        numDefend = outcomeExpectations.minRef();
+    };
+    sample defense as numDefend from distribution 1:6;
+    attackerLost, defenderLost = compareDice(attack, defense);
+    return attack, numDefend, attackerLost, defenderLost;
+};
+
+# print attack(3, 2);
+
+experiment round(int numDice, int maxNumDefend) {
+    sample _, _, attackerLost, defenderLost from attack(numDice, maxNumDefend);
+    return attackerLost, defenderLost;
+};
+
+# print round(3, 2);
+
+experiment roundAdvantage(int numDice, int maxNumDefend) {
+    sample attackerLost, defenderLost from round(numDice, maxNumDefend);
+    return defenderLost - attackerLost;
+};
+
+# print roundAdvantage(3, 2).E();
+
+experiment multiRound(int armiesAttacker, int armiesDefender) {
+    while((armiesAttacker >= 2) and (armiesDefender >= 1)) {
+        diceAttack = [armiesAttacker - 1, 3].min();
+        maxDefend = [armiesDefender, 2].min();
+        sample attackerLost, defenderLost from round(diceAttack, maxDefend);
+        armiesAttacker = armiesAttacker - attackerLost;
+        armiesDefender = armiesDefender - defenderLost;
+    };
+    return armiesAttacker, armiesDefender;
+};
+
+# print multiRound(4, 2);
+
+experiment attackerSuccess(int armiesAttacker, int armiesDefender) {
+    sample _, leftDefender from multiRound(armiesAttacker, armiesDefender);
+    return leftDefender == 0;
+};
+
+function summarize(int maxArmies) {
+    for numAttack in [2:maxArmies] {
+        for numDefend in [1:maxArmies] {
+            successProb = attackerSuccess(numAttack, numDefend).probabilityOf(true);
+            print tuple numAttack, numDefend, 1000 * successProb;
+        };
+    };
+    return 0;
+};
+
+markUsed summarize(5);

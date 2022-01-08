@@ -40,6 +40,10 @@ import com.github.mhdirkse.countlang.predef.ArrayAddAll;
 import com.github.mhdirkse.countlang.predef.ArrayAscending;
 import com.github.mhdirkse.countlang.predef.ArrayAscendingIndicesOf;
 import com.github.mhdirkse.countlang.predef.ArrayDescending;
+import com.github.mhdirkse.countlang.predef.ArrayMax;
+import com.github.mhdirkse.countlang.predef.ArrayMaxRef;
+import com.github.mhdirkse.countlang.predef.ArrayMin;
+import com.github.mhdirkse.countlang.predef.ArrayMinRef;
 import com.github.mhdirkse.countlang.predef.ArrayReverse;
 import com.github.mhdirkse.countlang.predef.ArraySize;
 import com.github.mhdirkse.countlang.predef.ArrayUnsort;
@@ -127,6 +131,8 @@ public class ProgramExecutor {
         		new ArrayAdd(), new ArrayUnsort(),
         		new ArraySize(), new ArrayReverse(),
         		new ArrayAscendingIndicesOf(), new ArrayAddAll(),
+        		new ArrayMin(), new ArrayMinRef(),
+        		new ArrayMax(), new ArrayMaxRef(),
         		TestFunctionDefinitions.createTestFunction());
     }
 

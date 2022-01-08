@@ -311,6 +311,10 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print (distribution 1, 2, 2, 3 unknown 1).contains(distribution 1, 2, 2)", "true"},
             {"print (distribution 1, 2, 2, 3).contains(distribution 1, 2, 2, 2)", "false"},
             {"print (distribution 1, 1, 2, 2, 2, 3).probabilityOfAll(distribution 1, 2)", "5 / 6"},
+            {"print [20, 40, 30, 10].min()", "10"},
+            {"print [20, 40, 30, 10].minRef()", "4"},
+            {"print [20, 40, 30, 10].max()", "40"},
+            {"print [20, 40, 30, 10].maxRef()", "2"},
 
             // Non members
 

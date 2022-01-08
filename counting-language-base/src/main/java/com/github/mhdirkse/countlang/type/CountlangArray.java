@@ -19,6 +19,7 @@
 
 package com.github.mhdirkse.countlang.type;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,6 +55,34 @@ public class CountlangArray implements Comparable<CountlangArray>, CountlangComp
     @SuppressWarnings("unchecked")
     public List<Comparable<Object>> getMembers() {
         return items.stream().map(i -> (Comparable<Object>) i).collect(Collectors.toList());
+    }
+
+    /**
+     * Gives the member indices in the order that will sort the members. Example: Consider
+     * members [20, 40, 30, 10]. To sort the members, one needs to take [4, 1, 3, 2]. 
+     */
+    public List<BigInteger> getSortRefs() {
+    	List<IndexAndItem> toSort = new ArrayList<>(items.size());
+    	for(int i = 0; i < items.size(); ++i) {
+    		toSort.add(new IndexAndItem(i, items.get(i)));
+    	}
+    	return toSort.stream().sorted().map(s -> s.index).collect(Collectors.toList());
+    }
+
+    private static class IndexAndItem implements Comparable<IndexAndItem> {
+    	BigInteger index;
+    	Comparable<Object> item;
+
+    	@SuppressWarnings("unchecked")
+		IndexAndItem(int index, Object o) {
+    		this.index = BigInteger.valueOf(index + 1);
+    		this.item = (Comparable<Object>) o;
+    	}
+
+    	@Override
+    	public int compareTo(IndexAndItem o) {
+    		return item.compareTo(o.item);
+    	}
     }
 
     @Override
