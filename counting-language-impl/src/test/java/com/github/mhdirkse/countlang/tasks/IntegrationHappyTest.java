@@ -315,7 +315,10 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print [20, 40, 30, 10].minRef()", "4"},
             {"print [20, 40, 30, 10].max()", "40"},
             {"print [20, 40, 30, 10].maxRef()", "2"},
-
+            // Tests for invalid return types
+            {"print (distribution 1, 2).descending().add(3)", "[2, 1, 3]"},
+            {"print [5, 3, 5, 1].ascendingIndicesOf(5).add(10)", "[1, 3, 10]"},
+            
             // Non members
 
             {"print properWhole(10 / 4)", "2"},

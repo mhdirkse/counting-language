@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 import com.github.mhdirkse.countlang.utils.Utils;
 
@@ -42,7 +43,9 @@ abstract class AbstractDistributionToArray extends AbstractMemberFunction {
         // Sorts ascending
         Collections.sort(arrayValues);
         afterSort(arrayValues);
-        return arrayValues;
+        List<Object> objectList = new ArrayList<>();
+        objectList.addAll(arrayValues);
+        return new CountlangArray(objectList);
     }
 
     abstract void afterSort(List<Comparable<Object>> result);

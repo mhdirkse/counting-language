@@ -25,6 +25,8 @@ public class ArrayAscendingIndicesOf extends AbstractMemberFunction {
 				result.add(BigInteger.valueOf(longIndex));
 			}
 		}
-		return result;
+		List<Object> objectList = new ArrayList<>();
+		objectList.addAll(result);
+		return new CountlangArray(objectList);
 	}
 }
