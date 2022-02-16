@@ -167,7 +167,7 @@ experiment attack(int numDice, int maxNumDefend) {
     return attack, numDefend, attackerLost, defenderLost;
 };
 
-print attack(3, 2);
+# print attack(3, 2);
 
 experiment round(int numDice, int maxNumDefend) {
     sample _, _, attackerLost, defenderLost from attack(numDice, maxNumDefend);
