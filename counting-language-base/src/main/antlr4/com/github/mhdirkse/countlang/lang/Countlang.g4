@@ -21,6 +21,7 @@ statement
   | 'repeat' '(' expr ')' '{' statements '}' # repeatStatement
   | 'for' ID 'in' expr '{' statements '}' # forInRepetitionStatement
   | 'for' lhsItem (',' lhsItem)+ 'in' expr '{' statements '}' # tupleDealingForInRepetitionStatement
+  | call # procedureCallStatement
   | '{' statements '}' # compoundStatement
   ;
 
@@ -42,7 +43,7 @@ expr
   : '(' expr ')' # bracketExpression
   | expr '.' ID '(' (expr (',' expr)*)? ')' # memberCallExpression
   | expr '[' expr (',' expr)* ']' # dereferenceExpression
-  | ID '(' (expr (',' expr)*)? ')' # functionCallExpression
+  | call # functionCallExpression
   | '-' expr # unaryMinusExpression
   | expr ( '*' | 'div' | '/') expr # multDifExpression
   | expr ( '+' | '-' ) expr # plusMinusExpression
@@ -63,6 +64,8 @@ expr
   | ID # symbolReferenceExpression
   | (INT | BOOL ) # valueExpression
   ;
+
+call: ID '(' (expr (',' expr)*)? ')' ;
 
 distItem
   : expr 'of' expr # distItemCount

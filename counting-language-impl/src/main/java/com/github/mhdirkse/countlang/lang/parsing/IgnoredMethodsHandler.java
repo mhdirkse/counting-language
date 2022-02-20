@@ -67,6 +67,20 @@ class IgnoredMethodsHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterCall(
+    		final @NotNull CountlangParser.CallContext antlrCtx,
+    		final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+    	return true;
+    }
+
+    @Override
+    public boolean exitCall(
+    		final @NotNull CountlangParser.CallContext antlrCtx,
+    		final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+    	return true;
+    }
+
+    @Override
     public boolean visitTerminal(
             final @NotNull TerminalNode node,
             final HandlerStackContext<CountlangListenerHandler> delegationCtx) {
