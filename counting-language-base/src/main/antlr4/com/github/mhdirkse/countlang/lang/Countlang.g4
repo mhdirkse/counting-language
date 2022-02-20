@@ -7,8 +7,9 @@ statements : ( statement (';' statement)* )? ';'? ;
 statement
   : ID '=' expr # assignmentStatement
   | lhsItem (',' lhsItem)+ '=' expr # tupleDealingAssignmentStatement
-  | 'function' ID '(' varDecls? ')' '{' statements '}' # functionDefinitionStatement
-  | COUNTING? 'experiment' ID '(' varDecls? ')' '{' statements '}' # experimentDefinitionStatement
+  | 'function' commonFunctionDefinitionSyntax # functionDefinitionStatement
+  | 'procedure' commonFunctionDefinitionSyntax # procedureDefinitionStatement
+  | COUNTING? 'experiment' commonFunctionDefinitionSyntax # experimentDefinitionStatement
   | 'print' FORMAT? expr # printStatement
   | 'return' expr # returnStatement
   | 'return' expr (',' expr)+ # tupleCreatingReturnStatement
@@ -24,6 +25,8 @@ statement
   | call # procedureCallStatement
   | '{' statements '}' # compoundStatement
   ;
+
+commonFunctionDefinitionSyntax : ID '(' varDecls? ')' '{' statements '}' ;
 
 varDecls : varDecl (',' varDecl)* ;
 
