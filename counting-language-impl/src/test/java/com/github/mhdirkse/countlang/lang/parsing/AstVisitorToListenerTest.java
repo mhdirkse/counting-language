@@ -45,7 +45,7 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
 import com.github.mhdirkse.countlang.ast.SimpleLhs;
@@ -94,13 +94,13 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.visitFormalParameter(isA(FormalParameter.class));
         listener.exitFormalParameters(isA(FormalParameters.class));
         listener.enterStatementGroup(isA(StatementGroup.class));
-        listener.enterReturnStatement(isA(ReturnStatement.class));
+        listener.enterValueReturnStatement(isA(ValueReturnStatement.class));
         listener.enterCompositeExpression(isA(CompositeExpression.class));
         listener.visitOperator(isA(Operator.class));
         listener.visitSymbolExpression(isA(SymbolExpression.class));
         listener.visitValueExpression(isA(ValueExpression.class));
         listener.exitCompositeExpression(isA(CompositeExpression.class));
-        listener.exitReturnStatement(isA(ReturnStatement.class));
+        listener.exitValueReturnStatement(isA(ValueReturnStatement.class));
         listener.exitStatementGroup(isA(StatementGroup.class));
         listener.exitFunctionDefinitionStatement(isA(FunctionDefinitionStatement.class));
         listener.enterAssignmentStatement(isA(AssignmentStatement.class));
@@ -245,9 +245,9 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
         listener.visitSimpleLhs(isA(SimpleLhs.class));
         listener.exitSampleStatement(isA(SampleStatement.class));
 
-        listener.enterReturnStatement(isA(ReturnStatement.class));
+        listener.enterValueReturnStatement(isA(ValueReturnStatement.class));
         listener.visitSymbolExpression(isA(SymbolExpression.class));
-        listener.exitReturnStatement(isA(ReturnStatement.class));
+        listener.exitValueReturnStatement(isA(ValueReturnStatement.class));
 
         listener.exitStatementGroup(isA(StatementGroup.class));
         listener.exitExperimentDefinitionStatement(isA(ExperimentDefinitionStatement.class));
@@ -265,12 +265,12 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
     	listener.enterFormalParameters(isA(FormalParameters.class));
     	listener.exitFormalParameters(isA(FormalParameters.class));
     	listener.enterStatementGroup(isA(StatementGroup.class));
-    	listener.enterReturnStatement(isA(ReturnStatement.class));
+    	listener.enterValueReturnStatement(isA(ValueReturnStatement.class));
     	listener.enterTupleExpression(isA(TupleExpression.class));
     	listener.visitValueExpression(isA(ValueExpression.class));
     	listener.visitValueExpression(isA(ValueExpression.class));
     	listener.exitTupleExpression(isA(TupleExpression.class));
-    	listener.exitReturnStatement(isA(ReturnStatement.class));
+    	listener.exitValueReturnStatement(isA(ValueReturnStatement.class));
     	listener.exitStatementGroup(isA(StatementGroup.class));
     	listener.exitFunctionDefinitionStatement(isA(FunctionDefinitionStatement.class));
 
@@ -313,9 +313,9 @@ public class AstVisitorToListenerTest extends AstConstructionTestBase {
     	listener.visitTupleDealingLhsSymbol(isA(TupleDealingLhsSymbol.class));
     	listener.exitTupleDealingLhs(isA(TupleDealingLhs.class));
     	listener.exitSampleStatement(isA(SampleStatement.class));
-    	listener.enterReturnStatement(isA(ReturnStatement.class));
+    	listener.enterValueReturnStatement(isA(ValueReturnStatement.class));
     	listener.visitSymbolExpression(isA(SymbolExpression.class));
-    	listener.exitReturnStatement(isA(ReturnStatement.class));
+    	listener.exitValueReturnStatement(isA(ValueReturnStatement.class));
 
     	listener.exitStatementGroup(isA(StatementGroup.class));
     	listener.exitExperimentDefinitionStatement(isA(ExperimentDefinitionStatement.class));

@@ -21,10 +21,10 @@ package com.github.mhdirkse.countlang.execution;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 
-final class ReturnStatementCalculation extends ExpressionResultsCollector {
-    ReturnStatementCalculation(ReturnStatement statement) {
+final class ValueReturnStatementCalculation extends ExpressionResultsCollector {
+    ValueReturnStatementCalculation(ValueReturnStatement statement) {
         super(statement);
     }
 

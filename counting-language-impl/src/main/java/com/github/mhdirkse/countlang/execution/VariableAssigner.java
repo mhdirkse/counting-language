@@ -26,7 +26,7 @@ import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.RepeatStatement;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -99,7 +99,7 @@ class VariableAssigner implements Visitor {
     }
 
     @Override
-    public void visitReturnStatement(ReturnStatement statement) {
+    public void visitValueReturnStatement(ValueReturnStatement statement) {
         throw new IllegalStateException("Method call not applicable");
     }
 

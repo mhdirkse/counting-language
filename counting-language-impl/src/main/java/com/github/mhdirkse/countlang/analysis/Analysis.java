@@ -60,7 +60,7 @@ import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.RepeatStatement;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -245,7 +245,7 @@ public class Analysis {
         }
 
         @Override
-        public void visitReturnStatement(ReturnStatement statement) {
+        public void visitValueReturnStatement(ValueReturnStatement statement) {
             statement.getExpression().accept(this);
             if(statement.getExpression().getCountlangType().containsRange()) {
                	reporter.report(StatusCode.RANGE_VALUES_ONLY_FOR_CONSTRUCTION, statement.getLine(), statement.getColumn());

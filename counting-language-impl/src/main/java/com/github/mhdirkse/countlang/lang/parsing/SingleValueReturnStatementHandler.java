@@ -20,19 +20,19 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 
-class ReturnStatementHandler extends AbstractExpressionHandler implements StatementSource {
-    private ReturnStatement statement;
+class SingleValueReturnStatementHandler extends AbstractExpressionHandler implements StatementSource {
+    private ValueReturnStatement statement;
 
     @Override
     public Statement getStatement() {
         return statement;
     }
 
-    ReturnStatementHandler(final int line, final int column) {
-        statement = new ReturnStatement(line, column);
+    SingleValueReturnStatementHandler(final int line, final int column) {
+        statement = new ValueReturnStatement(line, column);
     }
 
     @Override

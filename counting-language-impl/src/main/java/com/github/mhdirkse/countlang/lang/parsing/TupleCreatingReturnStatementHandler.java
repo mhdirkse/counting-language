@@ -1,15 +1,15 @@
 package com.github.mhdirkse.countlang.lang.parsing;
 
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.TupleExpression;
 
 class TupleCreatingReturnStatementHandler extends AbstractExpressionHandler implements StatementSource {
-	private ReturnStatement statement;
+	private ValueReturnStatement statement;
 
 	TupleCreatingReturnStatementHandler(int line, int column) {
-		statement = new ReturnStatement(line, column);
+		statement = new ValueReturnStatement(line, column);
 		statement.setExpression(new TupleExpression(line, column));
 	}
 

@@ -25,18 +25,18 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ReturnStatement extends Statement implements CompositeNode {
+public class ValueReturnStatement extends Statement implements CompositeNode {
     @Getter
     @Setter
     private ExpressionNode expression = null;
 
-    public ReturnStatement(final int line, final int column) {
+    public ValueReturnStatement(final int line, final int column) {
         super(line, column);
     }
 
     @Override
     public void accept(final Visitor v) {
-        v.visitReturnStatement(this);
+        v.visitValueReturnStatement(this);
     }
 
     @Override

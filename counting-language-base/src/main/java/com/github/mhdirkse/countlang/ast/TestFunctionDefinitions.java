@@ -47,7 +47,7 @@ public final class TestFunctionDefinitions {
 
     private static Statement getReturnStatement() {
         CompositeExpression ex1 = getStatementExpression();
-        ReturnStatement result = new ReturnStatement(1, 1);
+        ValueReturnStatement result = new ValueReturnStatement(1, 1);
         result.setExpression(ex1);
         return result;
     }

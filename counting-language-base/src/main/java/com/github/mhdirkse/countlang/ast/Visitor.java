@@ -28,7 +28,7 @@ public interface Visitor {
     public void visitMarkUsedStatement(final MarkUsedStatement statement);
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement);
     public void visitExperimentDefinitionStatement(final ExperimentDefinitionStatement statement);
-    public void visitReturnStatement(final ReturnStatement statement);
+    public void visitValueReturnStatement(final ValueReturnStatement statement);
     public void visitIfStatement(final IfStatement ifStatement);
     public void visitWhileStatement(final WhileStatement whileStatement);
     public void visitRepeatStatement(final RepeatStatement repeatStatement);

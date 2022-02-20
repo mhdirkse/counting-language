@@ -39,7 +39,7 @@ import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.RepeatStatement;
-import com.github.mhdirkse.countlang.ast.ReturnStatement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -76,8 +76,8 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     }
 
     @Override
-    public void visitReturnStatement(ReturnStatement statement) {
-        result = new ReturnStatementCalculation(statement);
+    public void visitValueReturnStatement(ValueReturnStatement statement) {
+        result = new ValueReturnStatementCalculation(statement);
     }
 
     @Override

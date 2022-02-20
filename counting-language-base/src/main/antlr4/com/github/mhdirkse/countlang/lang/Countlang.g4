@@ -11,8 +11,9 @@ statement
   | 'procedure' commonFunctionDefinitionSyntax # procedureDefinitionStatement
   | COUNTING? 'experiment' commonFunctionDefinitionSyntax # experimentDefinitionStatement
   | 'print' FORMAT? expr # printStatement
-  | 'return' expr # returnStatement
+  | 'return' expr # singleValueReturnStatement
   | 'return' expr (',' expr)+ # tupleCreatingReturnStatement
+  | 'return' # nonValueReturnStatement
   | 'markUsed' expr # markUsedStatement
   | 'sample' ID 'from' expr # sampleStatement
   | 'sample' lhsItem (',' lhsItem)+ 'from' expr # tupleDealingSampleStatement
