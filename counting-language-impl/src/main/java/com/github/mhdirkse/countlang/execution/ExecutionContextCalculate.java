@@ -22,7 +22,6 @@ package com.github.mhdirkse.countlang.execution;
 import com.github.mhdirkse.countlang.algorithm.OutputStrategy;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
@@ -60,8 +59,8 @@ class ExecutionContextCalculate implements ExecutionContext {
     }
 
     @Override
-    public void stopFunctionCall(FunctionCallExpression expression) {
-        stepperCallback.stopFunctionCall(expression);
+    public void stopFunctionCall() {
+        stepperCallback.stopFunctionCall();
     }
 
     @Override

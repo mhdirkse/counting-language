@@ -143,11 +143,11 @@ class Executor {
         return Optional.empty();
     }
 
-    void stopFunctionCall(FunctionCallExpression functionCallExpression) {
+    void stopFunctionCall() {
         Iterator<AstNodeExecution> it = callStack.descendingIterator();
         AstNodeExecution currentExecution = it.next();
         // We do not check on reaching the end of the callStack, but on finding the function we want to stop.
-        while(currentExecution.getAstNode() != functionCallExpression) {
+        while(! (currentExecution.getAstNode() instanceof FunctionCallExpression)) {
             if(currentExecution instanceof NeedsExplicitStop) {
                 ((NeedsExplicitStop) currentExecution).stopFunctionCall();
             }

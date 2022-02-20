@@ -31,5 +31,6 @@ final class ReturnStatementCalculation extends ExpressionResultsCollector {
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         context.onResult(subExpressionResults.get(0));
+        context.stopFunctionCall();
     }
 }

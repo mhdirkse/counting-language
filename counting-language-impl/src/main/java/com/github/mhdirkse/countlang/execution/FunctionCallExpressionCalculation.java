@@ -157,7 +157,6 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
 
         @Override
         void acceptChildResultDoingStatements(Object value, ExecutionContext context) {
-            context.stopFunctionCall(expression);
             functionResult = value;
         }
 
@@ -225,7 +224,6 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
 
         @Override
         void acceptChildResultDoingStatements(Object value, ExecutionContext context) {
-            context.stopFunctionCall(expression);
             sampleContext.score(value);
         }
 

@@ -20,7 +20,6 @@
 package com.github.mhdirkse.countlang.execution;
 
 import com.github.mhdirkse.countlang.ast.AstNode;
-import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.utils.Stack;
 
 class StepperImpl implements Stepper, StepperCallback {
@@ -52,8 +51,8 @@ class StepperImpl implements Stepper, StepperCallback {
     }
 
     @Override
-    public void stopFunctionCall(FunctionCallExpression functionCallExpression) {
-        executors.peek().stopFunctionCall(functionCallExpression);
+    public void stopFunctionCall() {
+        executors.peek().stopFunctionCall();
     }
 
     @Override
