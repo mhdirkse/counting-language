@@ -22,11 +22,22 @@ package com.github.mhdirkse.countlang.ast;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.mhdirkse.countlang.format.Format;
+
 public final class PrintStatement extends Statement implements CompositeNode {
     private ExpressionNode expression = null;
+    private Format format = Format.EXACT;
 
     public PrintStatement(final int line, final int column) {
         super(line, column);
+    }
+
+    public Format getFormat() {
+    	return format;
+    }
+
+    public void setFormat(Format format) {
+    	this.format = format;
     }
 
     public ExpressionNode getExpression() {

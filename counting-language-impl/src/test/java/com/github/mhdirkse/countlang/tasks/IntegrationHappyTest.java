@@ -148,6 +148,19 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print - (5 / 3)", "-1 - 2 / 3"},
             {"print --5/3", "1 + 2 / 3"},
 
+            // Approximate formatting
+            {"print approx 2 / 3", "666.667E-3"},
+            {"print exact 2 / 3", "2 / 3"},
+            {"print approx 1 / 1", "1.000E0"},
+            {"print approx 1", "1"},
+            {"print approx distribution 4 of 12, 3 of 15, 2 of 18 total 10", Arrays.asList(
+            	"     12  4.000E0 (400.0E-3)",
+            	"     15  3.000E0 (300.0E-3)",
+            	"     18  2.000E0 (200.0E-3)",
+            	"unknown  1.000E0 (100.0E-3)",
+            	"---------------------------",
+            	"  total         10.00E0 (1)").stream().collect(Collectors.joining("\n"))},
+
             // Test literal distributions
             {"print distribution 1, 1, 3", getSimpleDistribution().format()},
             {"print distribution 1 total 3", getDistributionWithUnknown().format()},

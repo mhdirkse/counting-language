@@ -32,7 +32,8 @@ final class PrintStatementCalculation extends ExpressionResultsCollector {
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         Object value = subExpressionResults.get(0);
-        String output = Format.EXACT.format(value);
+        Format format = ((PrintStatement) getAstNode()).getFormat();
+        String output = format.format(value);
         context.output(output);
     }
 }

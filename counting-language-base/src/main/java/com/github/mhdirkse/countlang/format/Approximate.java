@@ -8,7 +8,7 @@ import org.apache.commons.math3.fraction.BigFraction;
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 
 class Approximate extends CommonFormat {
-	private final DecimalFormat engineeringFormatter = new DecimalFormat("##0.0##E0");
+	private final DecimalFormat engineeringFormatter = new DecimalFormat("##0.000E0");
 
 	@Override
 	String formatCountInDistributionTable(Object item, Distribution d) {

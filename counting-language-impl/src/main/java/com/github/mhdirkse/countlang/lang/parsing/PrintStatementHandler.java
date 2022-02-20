@@ -22,6 +22,7 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import com.github.mhdirkse.countlang.ast.ExpressionNode;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
+import com.github.mhdirkse.countlang.format.Format;
 
 class PrintStatementHandler extends AbstractExpressionHandler implements StatementSource {
     private PrintStatement statement;
@@ -38,5 +39,19 @@ class PrintStatementHandler extends AbstractExpressionHandler implements Stateme
     @Override
     void addExpression(final ExpressionNode expression) {
         statement.setExpression(expression);
+    }
+
+    @Override
+    public boolean visitTerminal (final org.antlr.v4.runtime.tree.TerminalNode terminalNode, final com.github.mhdirkse.codegen.runtime.HandlerStackContext<com.github.mhdirkse.countlang.lang.parsing.CountlangListenerHandler> p2) {
+    	String text = terminalNode.getText();
+    	if(text.equals("approx")) {
+    		statement.setFormat(Format.APPROXIMATE);
+    		return true;
+    	} else if(text.equals("exact")) {
+    		statement.setFormat(Format.EXACT);
+    		return true;
+    	} else {
+    		return super.visitTerminal(terminalNode, p2);
+    	}
     }
 }

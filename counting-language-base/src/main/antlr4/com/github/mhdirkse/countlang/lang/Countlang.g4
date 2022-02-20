@@ -9,7 +9,7 @@ statement
   | lhsItem (',' lhsItem)+ '=' expr # tupleDealingAssignmentStatement
   | 'function' ID '(' varDecls? ')' '{' statements '}' # functionDefinitionStatement
   | COUNTING? 'experiment' ID '(' varDecls? ')' '{' statements '}' # experimentDefinitionStatement
-  | 'print' expr # printStatement
+  | 'print' FORMAT? expr # printStatement
   | 'return' expr # returnStatement
   | 'return' expr (',' expr)+ # tupleCreatingReturnStatement
   | 'markUsed' expr # markUsedStatement
@@ -81,7 +81,7 @@ DISTRIBUTIONTYPE: 'distribution' ;
 ARRAYTYPE: 'array' ;
 TUPLETYPE: 'tuple' ;
 COUNTING: 'possibility' WS+ 'counting' ; 
-
+FORMAT: 'exact' | 'approx' ;
 TOTAL: 'total' ;
 UNKNOWN: 'unknown' ;
 
