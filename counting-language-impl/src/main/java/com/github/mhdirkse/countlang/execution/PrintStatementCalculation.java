@@ -21,10 +21,8 @@ package com.github.mhdirkse.countlang.execution;
 
 import java.util.List;
 
-import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
-import com.github.mhdirkse.countlang.type.CountlangTuple;
-import com.github.mhdirkse.countlang.utils.Utils;
+import com.github.mhdirkse.countlang.format.Format;
 
 final class PrintStatementCalculation extends ExpressionResultsCollector {
     PrintStatementCalculation(PrintStatement node) {
@@ -34,14 +32,7 @@ final class PrintStatementCalculation extends ExpressionResultsCollector {
     @Override
     void processSubExpressionResults(List<Object> subExpressionResults, ExecutionContext context) {
         Object value = subExpressionResults.get(0);
-        String output = null;
-        if(value instanceof Distribution) {
-            output = ((Distribution) value).format();
-        } else if(value instanceof CountlangTuple) {
-            output = ((CountlangTuple) value).listMembers();
-        } else {
-            output = Utils.genericFormat(value);
-        }
+        String output = Format.EXACT.format(value);
         context.output(output);
     }
 }

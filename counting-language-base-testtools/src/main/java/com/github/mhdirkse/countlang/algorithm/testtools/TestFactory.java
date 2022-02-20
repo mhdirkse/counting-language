@@ -102,14 +102,6 @@ public class TestFactory {
             assertEquals(total, delegate.getTotal());
         }
 
-        public void expectEquals(Distribution distribution) {
-            Distribution actual = delegate.build();
-            if(actual.equals(distribution)) {
-                return;
-            }
-            assertEquals(distribution.format(), actual.format());
-        }
-
         public Distribution build() {
             return delegate.build();
         }

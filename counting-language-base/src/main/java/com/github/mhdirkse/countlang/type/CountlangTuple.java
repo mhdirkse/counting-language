@@ -3,10 +3,9 @@ package com.github.mhdirkse.countlang.type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.format.Format;
 import com.github.mhdirkse.countlang.utils.ListComparator;
-import com.github.mhdirkse.countlang.utils.Utils;
 
 import lombok.EqualsAndHashCode;
 
@@ -54,12 +53,8 @@ public final class CountlangTuple implements Comparable<CountlangTuple>, Countla
         return ListComparator.getInstance().compare(this.members, o.members);
     }
 
-    public String listMembers() {
-        return members.stream().map(Utils::genericFormat).collect(Collectors.joining(", "));
-    }
-
     @Override
     public String toString() {
-        return "[" + listMembers() + "]";
+        return Format.EXACT.format(this);
     }
 }

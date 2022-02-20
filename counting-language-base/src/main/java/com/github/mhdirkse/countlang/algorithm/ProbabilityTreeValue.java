@@ -19,7 +19,7 @@
 
 package com.github.mhdirkse.countlang.algorithm;
 
-import com.github.mhdirkse.countlang.utils.Utils;
+import com.github.mhdirkse.countlang.format.Format;
 
 import lombok.Getter;
 
@@ -87,7 +87,7 @@ public class ProbabilityTreeValue implements Comparable<ProbabilityTreeValue> {
         if(isUnknown()) {
             return "unknown";
         } else {
-            return Utils.genericFormat(getValue());
+            return Format.EXACT.format(getValue());
         }
     }
 }

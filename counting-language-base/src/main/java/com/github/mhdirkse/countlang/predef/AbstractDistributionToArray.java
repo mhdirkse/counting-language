@@ -9,9 +9,9 @@ import java.util.stream.IntStream;
 
 import com.github.mhdirkse.countlang.algorithm.Distribution;
 import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.format.Format;
 import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
-import com.github.mhdirkse.countlang.utils.Utils;
 
 abstract class AbstractDistributionToArray extends AbstractMemberFunction {
     private static final BigInteger COUNT_THRESHOLD = new BigInteger("1000000");
@@ -35,7 +35,7 @@ abstract class AbstractDistributionToArray extends AbstractMemberFunction {
             BigInteger rawCount = d.getCountOf(item);
             if(rawCount.compareTo(COUNT_THRESHOLD) > 0) {
                 throw new ProgramException(line, column, String.format("Distribution %s is too big to put in array, item %s has count %s",
-                        Utils.genericFormat(d), Utils.genericFormat(item), Utils.genericFormat(rawCount)));
+                        Format.EXACT.formatOnOneLine(d), Format.EXACT.formatOnOneLine(item), Format.EXACT.formatOnOneLine(rawCount)));
             }
             int count = (int) rawCount.longValue();
             IntStream.range(0, count).forEach(i -> arrayValues.add(item));

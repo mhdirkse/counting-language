@@ -21,14 +21,14 @@ package com.github.mhdirkse.countlang.algorithm;
 
 import java.math.BigInteger;
 
-class DistributionCompareHelper {
+public class DistributionCompareHelper {
     private final Distribution target;
     private PossibilityValueIterator it;
     private ProbabilityTreeValue current;
     private BigInteger countToNext;
     private boolean isDone = false;
 
-    DistributionCompareHelper(Distribution target) {
+    public DistributionCompareHelper(Distribution target) {
         this.target = target;
         if(target.getTotal().equals(BigInteger.ZERO)) {
             isDone = true;
@@ -43,25 +43,25 @@ class DistributionCompareHelper {
         countToNext = target.getCountOf(current);
     }
 
-    ProbabilityTreeValue getCurrent() {
+    public ProbabilityTreeValue getCurrent() {
         if(isDone) {
             throw new IllegalArgumentException("All values have been visited, no current value");
         }
         return current;
     }
 
-    BigInteger getCountToNext() {
+    public BigInteger getCountToNext() {
         if(isDone) {
             return BigInteger.ZERO;
         }
         return countToNext;
     }
 
-    boolean isDone() {
+    public boolean isDone() {
         return getCountToNext().equals(BigInteger.ZERO);
     }
 
-    void advance(BigInteger steps) {
+    public void advance(BigInteger steps) {
         if(isDone) {
             throw new IllegalStateException("Cannot advance, all values have been visited");
         }

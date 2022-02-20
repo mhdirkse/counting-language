@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.github.mhdirkse.countlang.format.Format;
 import com.github.mhdirkse.countlang.utils.ListComparator;
-import com.github.mhdirkse.countlang.utils.Utils;
 
 import lombok.EqualsAndHashCode;
 
@@ -92,6 +92,6 @@ public class CountlangArray implements Comparable<CountlangArray>, CountlangComp
 
     @Override
     public String toString() {
-        return "[" + items.stream().map(v -> Utils.genericFormat(v)).collect(Collectors.joining(", ")) + "]";
+        return Format.EXACT.format(this);
     }
 }

@@ -31,20 +31,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.github.mhdirkse.countlang.type.CountlangTuple;
-import com.github.mhdirkse.countlang.utils.Utils;
+import com.github.mhdirkse.countlang.format.Format;
 
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public final class Distribution implements Comparable<Distribution>, Samplable {
-    private static final BigInteger MAX_IN_TO_STRING = new BigInteger("10");
-    
     public static class Builder {
         private Map<Object, BigInteger> items = new HashMap<>();
         private BigInteger total = BigInteger.ZERO;
@@ -155,6 +149,10 @@ public final class Distribution implements Comparable<Distribution>, Samplable {
         return items.keySet().iterator();
     }
 
+    public List<Object> getItems() {
+    	return new ArrayList<>(items.keySet());
+    }
+
     public int getNumChoices() {
     	return items.size();
     }
@@ -194,62 +192,7 @@ public final class Distribution implements Comparable<Distribution>, Samplable {
     }
 
     public String format() {
-        if(total.equals(BigInteger.ZERO)) {
-            return "empty";
-        }
-        List<List<String>> table = createTable();
-        final List<Integer> columnWidths = getTableColumnWidths(table);
-        List<String> result = table.stream()
-                .map(row -> formatTableRow(row, columnWidths))
-                .collect(Collectors.toList());
-        result.add(table.size()-1, getSeparator(columnWidths));
-        return String.join("\n", result);
-    }
-
-    private List<List<String>> createTable() {
-        List<List<String>> table = new ArrayList<>();
-        for(Object item: items.keySet()) {
-            String strItem = formatForDistributionTable(item);
-            String strCount = items.get(item).toString();
-            table.add(Arrays.asList(strItem, strCount));
-        }
-        if(unknown.compareTo(BigInteger.ZERO) > 0) {
-            table.add(Arrays.asList("unknown", unknown.toString()));
-        }
-        table.add(Arrays.<String>asList("total", total.toString()));
-        return table;
-    }
-
-    private String formatForDistributionTable(Object item) {
-        if(item instanceof CountlangTuple) {
-            return ((CountlangTuple) item).listMembers();
-        } else {
-            return Utils.genericFormat(item);
-        }
-    }
-
-    private static List<Integer> getTableColumnWidths(List<List<String>> table) {
-        List<Integer> columnWidths = new ArrayList<>();
-        for(int column = 0; column < 2; column++) {
-            final int theColumn = column;
-            int width = table.stream()
-                    .map(row -> row.get(theColumn).length())
-                    .max((i1, i2) -> i1.compareTo(i2)).get();
-            columnWidths.add(width);
-        }
-        return columnWidths;
-    }
-
-    private static String getSeparator(final List<Integer> columnWidths) {
-        int totalWidth = columnWidths.stream().reduce(0, (i1, i2) -> i1 + i2) + 2;
-        String separator = StringUtils.repeat('-', totalWidth);
-        return separator;
-    }
-
-    private static String formatTableRow(List<String> row, List<Integer> columnWidths) {
-        String value = StringUtils.leftPad(row.get(0), columnWidths.get(0), " ");
-        String count = StringUtils.leftPad(row.get(1), columnWidths.get(1), " ");
-        return value + "  " + count;
+        return Format.EXACT.format(this);
     }
 
     /**
@@ -290,20 +233,6 @@ public final class Distribution implements Comparable<Distribution>, Samplable {
 
     @Override
     public String toString() {
-        List<String> values = new ArrayList<>();
-        DistributionCompareHelper helper = new DistributionCompareHelper(this);
-        BigInteger maxToAdd = MAX_IN_TO_STRING;
-        while( (! maxToAdd.equals(BigInteger.ZERO) ) && (! helper.isDone())) {
-            String value = helper.getCurrent().toString();
-            BigInteger countBig = helper.getCountToNext().min(maxToAdd);
-            int count = countBig.intValue();
-            IntStream.range(0, count).forEach(i -> values.add(value));
-            helper.advance(countBig);
-            maxToAdd = maxToAdd.subtract(countBig);
-        }
-        if(! helper.isDone()) {
-            values.add("...");
-        }
-        return "(" + values.stream().collect(Collectors.joining(", ")) + ")";
+    	return Format.EXACT.formatOnOneLine(this);
     }
 }
