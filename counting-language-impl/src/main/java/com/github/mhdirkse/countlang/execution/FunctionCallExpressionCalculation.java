@@ -29,29 +29,31 @@ import java.util.stream.Collectors;
 import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.algorithm.ScopeAccess;
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.Call;
 import com.github.mhdirkse.countlang.ast.ExperimentDefinitionStatement;
-import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 import com.github.mhdirkse.countlang.ast.FunctionDefinition;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.PredefinedFunction;
+import com.github.mhdirkse.countlang.ast.ProcedureCallStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.ProgramException;
 
 final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCombinationHandler {
-    private final FunctionCallExpression expression;
+    private final Call call;
     private final SubExpressionStepper subExpressionStepper;
     private FunctionDefinitionStatementBase funWithStatement;
     private StatementsHandler statementsHandler;
     private boolean isStartedAfterFork = false;
 
-    FunctionCallExpressionCalculation(final FunctionCallExpression expression) {
-        this.expression = expression;
+    FunctionCallExpressionCalculation(final Call expression) {
+        this.call = expression;
         this.subExpressionStepper = new SubExpressionStepper(expression.getSubExpressions());
     }
 
     private FunctionCallExpressionCalculation(final FunctionCallExpressionCalculation orig) {
         super(orig);
-        this.expression = orig.expression;
+        this.call = orig.call;
         this.subExpressionStepper = new SubExpressionStepper(orig.subExpressionStepper);
         this.funWithStatement = orig.funWithStatement;
         this.isStartedAfterFork = orig.isStartedAfterFork;
@@ -70,7 +72,7 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
 
     @Override
     public AstNode getAstNode() {
-        return expression;
+        return (AstNode) call;
     }
 
     @Override
@@ -90,11 +92,13 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
             return subExpressionStepper.step(context);
         }
         List<Object> subExpressionResults = subExpressionStepper.getSubExpressionResults();
-        FunctionDefinition fun = context.getFunction(expression.getKey());
+        FunctionDefinition fun = context.getFunction(call.getKey());
         if(fun instanceof ExperimentDefinitionStatement) {
             statementsHandler = new StatementsHandlerExperiment(((ExperimentDefinitionStatement) fun).isPossibilityCounting());
         } else if(fun instanceof FunctionDefinitionStatement) {
             statementsHandler = new StatementsHandlerFunction();
+        } else if(fun instanceof ProcedureDefinitionStatement) {
+        	statementsHandler = new StatementsHandlerFunction();
         } else if(fun instanceof PredefinedFunction) {
             return runPredefinedFunction(context, subExpressionResults, (PredefinedFunction) fun);
         } else {
@@ -113,7 +117,8 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
     }
 
     private AstNode runPredefinedFunction(ExecutionContext context, List<Object> args, PredefinedFunction fun) {
-        Object result = fun.run(expression.getLine(), expression.getColumn(), args);
+        AstNode asNode = (AstNode) call;
+    	Object result = fun.run(asNode.getLine(), asNode.getColumn(), args);
         if(result == null) {
             String argsStr = args.stream().map(Object::toString).collect(Collectors.joining(", "));
         	throw new IllegalStateException(String.format("Predefined function %s returned null on arguments %s", fun.getKey().toString(), argsStr));
@@ -162,10 +167,13 @@ final class FunctionCallExpressionCalculation extends ExpressionsAndStatementsCo
 
         @Override
         void after(ExecutionContext context) {
-            if(functionResult == null) {
+            if(call instanceof ProcedureCallStatement) {
+            	return;
+            } else if(functionResult == null) {
                 throw new ProgramException(getAstNode().getLine(), getAstNode().getColumn(), String.format("Function %s does not return a value", funWithStatement.getKey().toString()));
+            } else {
+            	context.onResult(functionResult);
             }
-            context.onResult(functionResult);
         }
 
         @Override

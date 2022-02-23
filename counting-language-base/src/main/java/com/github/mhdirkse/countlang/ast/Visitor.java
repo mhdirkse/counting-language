@@ -28,11 +28,14 @@ public interface Visitor {
     public void visitMarkUsedStatement(final MarkUsedStatement statement);
     public void visitFunctionDefinitionStatement(final FunctionDefinitionStatement statement);
     public void visitExperimentDefinitionStatement(final ExperimentDefinitionStatement statement);
+    public void visitProcedureDefinitionStatement(final ProcedureDefinitionStatement statement);
     public void visitValueReturnStatement(final ValueReturnStatement statement);
+    public void visitNonValueReturnStatement(final NonValueReturnStatement statement);
     public void visitIfStatement(final IfStatement ifStatement);
     public void visitWhileStatement(final WhileStatement whileStatement);
     public void visitRepeatStatement(final RepeatStatement repeatStatement);
     public void visitForInRepetitionStatement(final ForInRepetitionStatement forInRepetition);
+    public void visitProcedureCallStatement(final ProcedureCallStatement statement);
     public void visitCompositeExpression(final CompositeExpression expression);
     public void visitRangeExpression(final RangeExpression rangeExpression);
     public void visitFunctionCallExpressionNonMember(final FunctionCallExpressionNonMember expression);

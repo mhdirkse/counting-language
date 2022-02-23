@@ -24,13 +24,10 @@ import java.util.List;
 
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-public abstract class FunctionCallExpression extends ExpressionNode implements CompositeNode {
-    @Getter(AccessLevel.PACKAGE)
-    @Setter
+public abstract class FunctionCallExpression extends ExpressionNode implements Call {
     private String name;
 
     @Getter
@@ -43,16 +40,27 @@ public abstract class FunctionCallExpression extends ExpressionNode implements C
         super(line, column);
     }
 
-    public abstract FunctionKey getKey();
+    @Override
+    public String getName() {
+    	return name;
+    }
 
+    @Override
+    public void setName(String name) {
+    	this.name = name;
+    }
+
+    @Override
     public int getNumArguments() {
         return arguments.size();
     }
 
+    @Override
     public ExpressionNode getArgument(int i) {
         return arguments.get(i);
     }
 
+    @Override
     public void addArgument(final ExpressionNode expression) {
         arguments.add(expression);
     }

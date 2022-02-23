@@ -36,10 +36,12 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
+import com.github.mhdirkse.countlang.ast.NonValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureCallStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.RepeatStatement;
-import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -47,6 +49,7 @@ import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.ast.SymbolExpression;
 import com.github.mhdirkse.countlang.ast.TupleExpression;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.WhileStatement;
 
 class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
@@ -76,8 +79,18 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     }
 
     @Override
+    public void visitProcedureDefinitionStatement(ProcedureDefinitionStatement statement) {
+        result = new FunctionDefinitionStatementBaseCalculation(statement);
+    }
+
+    @Override
     public void visitValueReturnStatement(ValueReturnStatement statement) {
         result = new ValueReturnStatementCalculation(statement);
+    }
+
+    @Override
+    public void visitNonValueReturnStatement(NonValueReturnStatement statement) {
+    	result = new NonValueReturnStatementCalculation(statement);
     }
 
     @Override
@@ -113,6 +126,11 @@ class AstNodeExecutionFactoryCalculate extends AbstractAstNodeExecutionFactory {
     @Override
     public void visitFunctionCallExpressionNonMember(FunctionCallExpressionNonMember expression) {
         result = new FunctionCallExpressionCalculation(expression);
+    }
+
+    @Override
+    public void visitProcedureCallStatement(ProcedureCallStatement statement) {
+    	result = new FunctionCallExpressionCalculation(statement);
     }
 
     @Override

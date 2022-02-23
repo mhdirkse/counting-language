@@ -22,6 +22,8 @@ package com.github.mhdirkse.countlang.lang.parsing;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.github.mhdirkse.codegen.runtime.HandlerStackContext;
+import com.github.mhdirkse.countlang.ast.NonValueReturnStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureCallStatement;
 import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.ast.StatementGroup;
 import com.github.mhdirkse.countlang.lang.CountlangParser;
@@ -36,6 +38,15 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     StatementGroupHandler(final int line, final int column) {
         super(false);
         statementGroup = new StatementGroup(line, column);
+    }
+
+    @Override
+    public boolean enterProcedureCallStatement(
+            @NotNull CountlangParser.ProcedureCallStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new ProcedureCallStatementHandler(new ProcedureCallStatement(line, column)));
+        return true;
     }
 
     @Override
@@ -121,6 +132,13 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterNonValueReturnStatement(
+    		@NotNull CountlangParser.NonValueReturnStatementContext ctx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+    	// The return statement without a value does not need any parsing. Nothing to do.
+    	return true;
+    }
+
+    @Override
     public boolean enterIfStatement(
             @NotNull CountlangParser.IfStatementContext ctx, 
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
@@ -189,6 +207,15 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     }
 
     @Override
+    public boolean enterProcedureDefinitionStatement(
+    		CountlangParser.ProcedureDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+        delegationCtx.addFirst(new ProcedureDefinitionStatementHandler(line, column));
+        return true;
+    }
+
+    @Override
     public boolean enterCompoundStatement(
             CountlangParser.CompoundStatementContext antlrCtx,
             HandlerStackContext<CountlangListenerHandler> delegationCtx) {
@@ -196,6 +223,12 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
         int column = antlrCtx.start.getCharPositionInLine();
         delegationCtx.addFirst(new CompoundStatementHandler(line, column));
         return true;
+    }
+
+    @Override
+    public boolean exitProcedureCallStatement(
+            @NotNull CountlangParser.ProcedureCallStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
     }
 
     @Override
@@ -231,6 +264,15 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     public boolean exitTupleDealingAssignmentStatement(
             @NotNull CountlangParser.TupleDealingAssignmentStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitNonValueReturnStatement(
+    		@NotNull CountlangParser.NonValueReturnStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        int line = antlrCtx.start.getLine();
+        int column = antlrCtx.start.getCharPositionInLine();
+    	getStatementGroup().addStatement(new NonValueReturnStatement(line, column));
+    	return true;
     }
 
     @Override
@@ -296,6 +338,12 @@ class StatementGroupHandler extends AbstractCountlangListenerHandler {
     @Override
     public boolean exitFunctionDefinitionStatement(
             @NotNull CountlangParser.FunctionDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
+        return handleStatementExit(delegationCtx);
+    }
+
+    @Override
+    public boolean exitProcedureDefinitionStatement(
+            @NotNull CountlangParser.ProcedureDefinitionStatementContext antlrCtx, HandlerStackContext<CountlangListenerHandler> delegationCtx) {
         return handleStatementExit(delegationCtx);
     }
 

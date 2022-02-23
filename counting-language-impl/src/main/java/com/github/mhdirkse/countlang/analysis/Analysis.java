@@ -56,11 +56,13 @@ import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatementBase;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitions;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
+import com.github.mhdirkse.countlang.ast.NonValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureCallStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.RepeatStatement;
-import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.SampleMultipleStatement;
 import com.github.mhdirkse.countlang.ast.SampleStatement;
 import com.github.mhdirkse.countlang.ast.SimpleDistributionExpression;
@@ -74,6 +76,7 @@ import com.github.mhdirkse.countlang.ast.TupleExpression;
 import com.github.mhdirkse.countlang.ast.TupleTypeNode;
 import com.github.mhdirkse.countlang.ast.TypeNode;
 import com.github.mhdirkse.countlang.ast.ValueExpression;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.Visitor;
 import com.github.mhdirkse.countlang.ast.WhileStatement;
 import com.github.mhdirkse.countlang.tasks.SortingStatusReporter;
@@ -245,6 +248,11 @@ public class Analysis {
         }
 
         @Override
+        public void visitProcedureDefinitionStatement(ProcedureDefinitionStatement statement) {
+        	// TODO: Implement
+        }
+
+        @Override
         public void visitValueReturnStatement(ValueReturnStatement statement) {
             statement.getExpression().accept(this);
             if(statement.getExpression().getCountlangType().containsRange()) {
@@ -271,6 +279,11 @@ public class Analysis {
                     reporter.report(StatusCode.DISTRIBUTION_RETURN_TYPE_MISMATCH, f.getLine(), f.getColumn(), newReturnType.toString(), f.getReturnType().toString());
                 }
             }
+        }
+
+        @Override
+        public void visitNonValueReturnStatement(NonValueReturnStatement statement) {
+        	// TODO: Implement.
         }
 
         @Override
@@ -421,6 +434,11 @@ public class Analysis {
                 // Do not count the this argument to index the parameter.
                 reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(parameterNumber).toString());
             }                          
+        }
+
+        @Override
+        public void visitProcedureCallStatement(ProcedureCallStatement statement) {
+        	// TODO: Implement.
         }
 
         @Override

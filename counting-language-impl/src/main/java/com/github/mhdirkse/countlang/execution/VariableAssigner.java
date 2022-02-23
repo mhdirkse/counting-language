@@ -22,8 +22,11 @@ import com.github.mhdirkse.countlang.ast.FunctionCallExpressionNonMember;
 import com.github.mhdirkse.countlang.ast.FunctionDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.IfStatement;
 import com.github.mhdirkse.countlang.ast.MarkUsedStatement;
+import com.github.mhdirkse.countlang.ast.NonValueReturnStatement;
 import com.github.mhdirkse.countlang.ast.Operator;
 import com.github.mhdirkse.countlang.ast.PrintStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureCallStatement;
+import com.github.mhdirkse.countlang.ast.ProcedureDefinitionStatement;
 import com.github.mhdirkse.countlang.ast.RangeExpression;
 import com.github.mhdirkse.countlang.ast.RepeatStatement;
 import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
@@ -222,6 +225,21 @@ class VariableAssigner implements Visitor {
     public void visitArrayTypeNode(ArrayTypeNode item) {
         throw new IllegalStateException("Method call not applicable");
     }
+
+	@Override
+	public void visitProcedureDefinitionStatement(ProcedureDefinitionStatement statement) {
+        throw new IllegalStateException("Method call not applicable");
+	}
+
+	@Override
+	public void visitNonValueReturnStatement(NonValueReturnStatement statement) {
+        throw new IllegalStateException("Method call not applicable");				
+	}
+
+	@Override
+	public void visitProcedureCallStatement(ProcedureCallStatement statement) {
+        throw new IllegalStateException("Method call not applicable");				
+	}
 
     @Override
     public void visitTupleTypeNode(TupleTypeNode item) {
