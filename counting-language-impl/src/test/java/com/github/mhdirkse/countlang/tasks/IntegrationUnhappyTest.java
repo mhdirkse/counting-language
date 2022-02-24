@@ -164,25 +164,40 @@ public class IntegrationUnhappyTest implements OutputStrategy
             {"function fun(int x, int y) {return x + y}; print fun(5)", "Argument count mismatch"},
             {"print fun(5);", "does not exist"},
             {"function fun() {return 3}; function fun() {return 5}", "was already defined"},
+            {"function fun() {return 3}; procedure fun() {return}", "was already defined"},
             {"return 3", "Return statement outside function"},
             {"function fun() {return 3; return 5}; print fun()", "Statement in function"},
+            {"procedure proc() {return; return}; proc()", "Statement in function"},
             {"function fun() {return 3; print 5}", "Statement in function"},
+            {"procedure proc() {return; print 5}", "Statement in function"},
             {"function fun(bool b) {if(b) {return 3;} else {return 5;}; return 8}", "Statement in function"},
+            {"procedure proc(bool b) {if(b) {return} else {return}; return}", "Statement in function"},
             {"function fun(int x) {return 3;\nprint 5;}", "Statement in function"},
             {"function fun() {return 3; print 5}; print fun()", "has no effect"},
             {"function fun() {print 3}; print fun()", "does not return a value"},
             {"function fun() {function fun2() {return 3}; return 5}", "Nested functions not allowed"},
+            {"procedure proc() {procedure proc2() {return}; return}", "Nested functions not allowed"},
             {"x = 3; return x", "Return statement outside function"},
             {"function fun(int x) {y = x}", "does not return a value"},
             {"function fun(int x) {function nested(int y) {return y}; return x}", "Nested functions not allowed"},
             {"function fun() { {return 3}; return 5}", "Statement in function"},
+            {"procedure proc() { {return}; return}", "Statement in function"},
             {"function fun() {if(true) {return 3} else {print 5}}", "does not return"},
             {"function fun() {if(true) {return 3}}", "does not return"}, // Else counts as branch, also if omitted.
             {"print fun()", "Function fun does not exist"},
+            {"proc()", "Function proc does not exist"},
             {"function fun(bool b) {if(b) {return 3} else {return true};};", "Type of return value"},
             {"experiment exp(bool b) {if(b) {return 3} else {return true};};", "Type of return value"},
             {"function fun(int x, bool x) {return 3;}", "Cannot reuse parameter name"},
+            {"procedure proc(int x, bool x) {return}", "Cannot reuse parameter name"},
             {"function fun(array<int> x) {return x[1]}; print fun(true)", "Type mismatch calling function"},
+            {"procedure proc(array<int> x) {print x[1]}; proc(true)", "Type mismatch calling function"},
+
+            // Confusing functions, procedures, valued return and unvalued return
+
+            {"function fun(int x) {return}; print fun(5)", "Function fun should return a value"},
+            {"procedure proc() {return 3}; proc()", "Procedure proc should not return a value"},
+            {"procedure proc() {print 5}; print proc()", "Expected that a function is called, but proc is a procedure"},
 
             // Compound
             

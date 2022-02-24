@@ -344,12 +344,16 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print isWhole(-5/1)", "true"},
             {"print isWhole(5/2)", "false"},
 
-            // Procedures
+            // Procedures and non-valued return
 
             {"procedure proc(int value) {x = value; print x}; proc(5)", "5"},
             {"procedure proc() {print 5}; proc()", "5"},
             {"procedure proc(bool b) {if(b) {print 5; return} else {print 3}}; proc(true)", "5"},
             {"procedure proc(bool b) {if(b) {print 5; return} else {print 3}}; proc(false)", "3"},
+            // You can call a function without using the return value.
+            {"function fun() {print 5; return 3}; fun()", "5"},
+            // If you return without a value, you score unknown.
+            {"experiment exp() {sample x from distribution 1:2; if(x == 1) {return}; return x}; print exp()", getDistributionWithUnknown(2, 1)},
 
             // Arrays
 
