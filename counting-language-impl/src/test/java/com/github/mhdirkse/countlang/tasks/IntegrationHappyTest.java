@@ -344,6 +344,13 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print isWhole(-5/1)", "true"},
             {"print isWhole(5/2)", "false"},
 
+            // Procedures
+
+            {"procedure proc(int value) {x = value; print x}; proc(5)", "5"},
+            {"procedure proc() {print 5}; proc()", "5"},
+            {"procedure proc(bool b) {if(b) {print 5; return} else {print 3}}; proc(true)", "5"},
+            {"procedure proc(bool b) {if(b) {print 5; return} else {print 3}}; proc(false)", "3"},
+
             // Arrays
 
             {"print [3, 6, 10]", "[3, 6, 10]"},

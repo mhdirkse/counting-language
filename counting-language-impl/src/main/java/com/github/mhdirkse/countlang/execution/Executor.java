@@ -33,6 +33,7 @@ import com.github.mhdirkse.countlang.algorithm.SampleContext;
 import com.github.mhdirkse.countlang.ast.AbstractDistributionItem;
 import com.github.mhdirkse.countlang.ast.AbstractSampleStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
+import com.github.mhdirkse.countlang.ast.Call;
 import com.github.mhdirkse.countlang.ast.FunctionCallExpression;
 
 class Executor {
@@ -147,7 +148,7 @@ class Executor {
         Iterator<AstNodeExecution> it = callStack.descendingIterator();
         AstNodeExecution currentExecution = it.next();
         // We do not check on reaching the end of the callStack, but on finding the function we want to stop.
-        while(! (currentExecution.getAstNode() instanceof FunctionCallExpression)) {
+        while(! (currentExecution.getAstNode() instanceof Call)) {
             if(currentExecution instanceof NeedsExplicitStop) {
                 ((NeedsExplicitStop) currentExecution).stopFunctionCall();
             }
