@@ -195,11 +195,52 @@ experiment roundAdvantage(int numDice, int maxNumDefend) {
 # fighting fair provided that the attacker and the defender
 # can levarage enough armies.
 
-# Finally, we want to know how big the disadantage is
+# Now, we want to know how big the disadantage is
 # of having few armies.
 
-# for numAttacker in [1:3] {
-#     for numDefender in [1:2] {
-#         print (tuple numAttacker, numDefender, roundAdvantage(numAttacker, numDefender).E());
-#     };
-# };
+procedure printRoundAdvantages() {
+    for numAttacker in [1:3] {
+        for numDefender in [1:2] {
+            print approx (tuple numAttacker, numDefender, roundAdvantage(numAttacker, numDefender).E());
+        };
+    };
+};
+
+# printRoundAdvantages();
+
+# Finally, we calculate changes that the attacker wins, given the numbers
+# of armies that start the fight.
+
+experiment applyRound(distribution<tuple<int, int, int>> status) {
+	sample numRounds, armiesAttacker, armiesDefender from status;
+	if((armiesAttacker <= 1) or (armiesDefender <= 0)) {
+		return numRounds, armiesAttacker, armiesDefender;
+	};
+	diceAttacker = [armiesAttacker - 1, 3].min();
+	diceDefender = [armiesDefender, 2].min();
+	sample attackerLost, defenderLost from round(diceAttacker, diceDefender);
+	return numRounds + 1, armiesAttacker - attackerLost, armiesDefender - defenderLost;
+};
+
+function fightCountry(int numAttacker, int numDefender) {
+	result = distribution (tuple 0, numAttacker, numDefender);
+	repeat(20) {
+		result = applyRound(result);
+	};
+	return result;
+};
+
+experiment fightCountryAttackerWins(int numAttacker, int numDefender) {
+	sample _, _, armiesDefender from fightCountry(numAttacker, numDefender);
+	return armiesDefender == 0;
+};
+
+procedure printProbAttackerWins() {
+	for numAttacker in [2:6] {
+		for numDefender in [1:5] {
+			print approx tuple numAttacker, numDefender, fightCountryAttackerWins(numAttacker, numDefender).probabilityOf(true);
+		}
+	}
+};
+
+# printProbAttackerWins();

@@ -248,6 +248,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             // with return in the body 
             {"function factorial(int n) {result = 1; i = 1; while(true) {result = result * i; i = i + 1; if(i > n) {return result}; }; }; print factorial(3)", "6"},
             {"result = 0; repeat(3) {result = result + 1}; print result", "3"},
+            {"repeat(1) {print 3}", "3"},
             {"a = int[]; for x in [3, 5] {a = a.add(x)}; print a", "[3, 5]"},
             {"a = int[]; for x in int[] {a = a.add(x)}; print a", "[]"},
             // Test that we can overwrite the loop variable outside the repetition. We should do:
