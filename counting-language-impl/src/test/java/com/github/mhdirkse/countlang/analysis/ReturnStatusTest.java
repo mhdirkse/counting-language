@@ -24,6 +24,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
+
 public class ReturnStatusTest {
     private CodeBlocks blocks;
 
@@ -47,7 +49,7 @@ public class ReturnStatusTest {
     @Test
     public void whenNoChildBlocksAndReturnThenStongAllReturn() {
         blocks.handleStatement(1, 1);
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         assertEquals(ReturnStatus.STRONG_ALL_RETURN, blocks.getLastAddedBlock().getReturnStatus());
     }
 
@@ -64,7 +66,7 @@ public class ReturnStatusTest {
     public void whenAllBranchReturnThenStrongAllReturn() {
         blocks.startSwitch();
         blocks.startBranch();
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         blocks.stopBranch();
         blocks.stopSwitch();
         assertEquals(ReturnStatus.STRONG_ALL_RETURN, blocks.getLastAddedBlock().getReturnStatus());
@@ -74,7 +76,7 @@ public class ReturnStatusTest {
     public void whenSomeBranchReturnThenSomeReturn() {
         blocks.startSwitch();
         blocks.startBranch();
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         blocks.stopBranch();
         blocks.startBranch();
         blocks.stopBranch();
@@ -92,7 +94,7 @@ public class ReturnStatusTest {
     @Test
     public void whenRepetitionHasReturnThenAllReturn() {
         blocks.startRepetition();
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         blocks.stopRepetition();
         assertEquals(ReturnStatus.STRONG_ALL_RETURN, blocks.getLastAddedBlock().getReturnStatus());
     }
@@ -102,7 +104,7 @@ public class ReturnStatusTest {
         blocks.startRepetition();
         blocks.startSwitch();
         blocks.startBranch();
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         blocks.stopBranch();
         blocks.stopSwitch();
         blocks.stopRepetition();
@@ -114,7 +116,7 @@ public class ReturnStatusTest {
         blocks.startRepetition();
         blocks.startSwitch();
         blocks.startBranch();
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         blocks.stopBranch();
         blocks.startBranch();
         blocks.stopBranch();
@@ -128,7 +130,7 @@ public class ReturnStatusTest {
         blocks.startRepetition();
         blocks.startSwitch();
         blocks.startBranch();
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         blocks.stopBranch();
         blocks.startBranch();
         blocks.stopBranch();
@@ -146,7 +148,7 @@ public class ReturnStatusTest {
         blocks.startRepetition();
         blocks.startSwitch();
         blocks.startBranch();
-        blocks.handleReturn(1, 1);
+        blocks.handleReturn(1, 1, ValueReturnStatement.class);
         blocks.stopBranch();
         blocks.startBranch();
         blocks.stopBranch();

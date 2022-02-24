@@ -6,7 +6,6 @@ import java.util.List;
 import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
-// TODO: Check for each predefined function whether the run method returns the right type.
 // TODO: Add predefined functions min and max.
 // TODO: Extend the RISK case to support more defending armies than attacker armies.
 // TODO: Finish the RISK case.

@@ -47,11 +47,6 @@ class CodeBlockParallel extends CodeBlock {
     }
 
     @Override
-    boolean isRootOrFunction() {
-        return false;
-    }
-
-    @Override
     StatementHandler handleReturn(int line, int column) {
         throw new IllegalStateException("A branch is always followed by a new branch or by ending the switch, so a return statement cannot appear here");
     }

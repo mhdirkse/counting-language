@@ -34,6 +34,7 @@ import com.github.mhdirkse.countlang.ast.ArrayTypeNode;
 import com.github.mhdirkse.countlang.ast.AssignmentStatement;
 import com.github.mhdirkse.countlang.ast.AstNode;
 import com.github.mhdirkse.countlang.ast.AtomicTypeNode;
+import com.github.mhdirkse.countlang.ast.Call;
 import com.github.mhdirkse.countlang.ast.CompositeExpression;
 import com.github.mhdirkse.countlang.ast.DereferenceExpression;
 import com.github.mhdirkse.countlang.ast.DistributionExpressionWithTotal;
@@ -249,7 +250,7 @@ public class Analysis {
 
         @Override
         public void visitProcedureDefinitionStatement(ProcedureDefinitionStatement statement) {
-        	// TODO: Implement
+        	analyzeFunctionDefinitionBase(statement, () -> codeBlocks.startProcedure(statement.getLine(), statement.getColumn(), statement.getKey()));
         }
 
         @Override
@@ -259,7 +260,7 @@ public class Analysis {
                	reporter.report(StatusCode.RANGE_VALUES_ONLY_FOR_CONSTRUCTION, statement.getLine(), statement.getColumn());
             }
             CountlangType newReturnType = statement.getExpression().getCountlangType();
-            codeBlocks.handleReturn(statement.getLine(), statement.getColumn());
+            codeBlocks.handleReturn(statement.getLine(), statement.getColumn(), statement.getClass());
             if(newReturnType == CountlangType.unknown()) {
                 // UNKNOWN should appear here because of earlier errors, no need to report something.
                 return;
@@ -283,7 +284,7 @@ public class Analysis {
 
         @Override
         public void visitNonValueReturnStatement(NonValueReturnStatement statement) {
-        	// TODO: Implement.
+        	codeBlocks.handleReturn(statement.getLine(), statement.getColumn(), statement.getClass());
         }
 
         @Override
@@ -371,32 +372,50 @@ public class Analysis {
         @Override
         public void visitFunctionCallExpressionNonMember(FunctionCallExpressionNonMember expression) {
             analyzeFunctionCallExpression(expression, new FunctionCallErrorHandlerNonMember(expression));
+            checkIsNotProcedureCall(expression);
         }
 
         @Override
         public void visitFunctionCallExpressionMember(FunctionCallExpressionMember expression) {
             analyzeFunctionCallExpression(expression, new FunctionCallErrorHandlerMember(expression));
+            checkIsNotProcedureCall(expression);
+        }
+
+        @Override
+        public void visitProcedureCallStatement(ProcedureCallStatement statement) {
+        	checkCall(statement, new FunctionCallErrorHandlerNonMember(statement));
         }
 
         private void analyzeFunctionCallExpression(FunctionCallExpression expression, FunctionCallErrorHandler errorHandler) {
             expression.setCountlangType(CountlangType.unknown());
-            expression.getSubExpressions().forEach(ex -> ex.accept(this));
-            if(! funDefs.hasFunction(expression.getKey())) {
-                reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getKey().toString());
-                return;
-            }
-            FunctionDefinition fun = funDefs.getFunction(expression.getKey());
-            List<CountlangType> arguments = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
-            CountlangType returnType = fun.checkCallAndGetReturnType(arguments, errorHandler);
+            CountlangType returnType = checkCall(expression, errorHandler);
             if(returnType != CountlangType.unknown()) {
                 expression.setCountlangType(returnType);
             }            
         }
 
-        private class FunctionCallErrorHandlerNonMember implements FunctionCallErrorHandler {
-            private FunctionCallExpression expression;
+        private CountlangType checkCall(Call expression, FunctionCallErrorHandler errorHandler) {
+            expression.getSubExpressions().forEach(ex -> ex.accept(this));
+            if(! funDefs.hasFunction(expression.getKey())) {
+                reporter.report(StatusCode.FUNCTION_DOES_NOT_EXIST, expression.getLine(), expression.getColumn(), expression.getKey().toString());
+                return CountlangType.unknown();
+            }
+            FunctionDefinition fun = funDefs.getFunction(expression.getKey());
+            List<CountlangType> arguments = expression.getSubExpressions().stream().map(ExpressionNode::getCountlangType).collect(Collectors.toList());
+            return fun.checkCallAndGetReturnType(arguments, errorHandler);
+        }
 
-            FunctionCallErrorHandlerNonMember(FunctionCallExpression expression) {
+		private void checkIsNotProcedureCall(FunctionCallExpression expression) {
+			FunctionDefinition fun = funDefs.getFunction(expression.getKey());
+            if(fun instanceof ProcedureDefinitionStatement) {
+            	reporter.report(StatusCode.PROCEDURE_CALLED_INSTEAD_OF_FUNCTION, expression.getLine(), expression.getColumn(), expression.getKey().toString());
+            }
+		}
+
+        private class FunctionCallErrorHandlerNonMember implements FunctionCallErrorHandler {
+            private Call expression;
+
+            FunctionCallErrorHandlerNonMember(Call expression) {
                 this.expression = expression;
             }
 
@@ -413,9 +432,9 @@ public class Analysis {
         }
 
         private class FunctionCallErrorHandlerMember implements FunctionCallErrorHandler {
-            private FunctionCallExpression expression;
+            private Call expression;
 
-            FunctionCallErrorHandlerMember(FunctionCallExpression expression) {
+            FunctionCallErrorHandlerMember(Call expression) {
                 this.expression = expression;
             }
 
@@ -434,11 +453,6 @@ public class Analysis {
                 // Do not count the this argument to index the parameter.
                 reporter.report(StatusCode.FUNCTION_TYPE_MISMATCH, expression.getLine(), expression.getColumn(), expression.getKey().toString(), new Integer(parameterNumber).toString());
             }                          
-        }
-
-        @Override
-        public void visitProcedureCallStatement(ProcedureCallStatement statement) {
-        	// TODO: Implement.
         }
 
         @Override

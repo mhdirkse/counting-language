@@ -19,9 +19,13 @@
 
 package com.github.mhdirkse.countlang.analysis;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.github.mhdirkse.countlang.ast.FunctionKey;
+import com.github.mhdirkse.countlang.ast.NonValueReturnStatement;
+import com.github.mhdirkse.countlang.ast.Statement;
+import com.github.mhdirkse.countlang.ast.ValueReturnStatement;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 import com.github.mhdirkse.countlang.type.CountlangType;
 import com.github.mhdirkse.countlang.utils.Stack;
@@ -100,6 +104,12 @@ class CodeBlocks {
         codeBlocks.push(newBlock);
     }
 
+    void startProcedure(final int line, final int column, final FunctionKey functionKey) {
+        statementHandler = new StatementHandler.Idle();
+        CodeBlock newBlock = codeBlocks.peek().createChildForProcedure(line, column, functionKey);
+        codeBlocks.push(newBlock);    	
+    }
+
     void startExperiment(final int line, final int column, final FunctionKey functionKey) {
         statementHandler = new StatementHandler.Idle();
         CodeBlock newBlock = codeBlocks.peek().createChildForExperiment(line, column, functionKey);
@@ -111,9 +121,31 @@ class CodeBlocks {
         statementHandler = new StatementHandler.Idle();
     }
 
-    void handleReturn(int line, int column) {
-        statementHandler = codeBlocks.peek().handleReturn(line, column);
+    void handleReturn(int line, int column, Class<? extends Statement> statementType) {
+    	checkIsReturnStatement(statementType);
+    	statementHandler = codeBlocks.peek().handleReturn(line, column);
+        checkTypeOfReturnStatement(line, column, statementType);
     }
+
+    private void checkIsReturnStatement(Class<? extends Statement> statementType) {
+    	boolean isValueReturn = (statementType.isAssignableFrom(ValueReturnStatement.class));
+    	boolean isNonValueReturn = (statementType.isAssignableFrom(NonValueReturnStatement.class));
+    	if(! (isValueReturn || isNonValueReturn)) {
+    		throw new IllegalArgumentException("Expected a return statement");
+    	}
+    }
+
+	private void checkTypeOfReturnStatement(int line, int column, Class<? extends Statement> returnStatementType) {
+		Iterator<CodeBlock> it = codeBlocks.topToBottomIterator();
+        while(it.hasNext()) {
+        	CodeBlock current = it.next();
+        	if(current instanceof RootOrFunctionCodeBlock) {
+        		((RootOrFunctionCodeBlock) current).checkReturnStatementType(line, column, returnStatementType);
+        		return;
+        	}
+        }
+        throw new IllegalStateException("Every code block should be inside a function or the program root");
+	}
 
     void handleStatement(int line, int column) {
         statementHandler = statementHandler.handleStatement(line, column);

@@ -32,9 +32,4 @@ class CodeBlockRepeated extends CodeBlockSerial {
         }
         return result;
     }
-
-    @Override
-    public boolean isRootOrFunction() {
-        return false;
-    }
 }

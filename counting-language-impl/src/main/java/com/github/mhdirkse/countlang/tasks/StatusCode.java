@@ -36,6 +36,9 @@ public enum StatusCode implements AbstractStatusCode {
     FUNCTION_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch calling {3}. Expected {4}, got {5}."),
     FUNCTION_TYPE_MISMATCH("({1}, {2}): Type mismatch calling function {3}, formal parameter {4}."),
     FUNCTION_RETURN_TYPE_MISMATCH("({1}, {2}): Type of return value {3} does not match return type {4}."),
+    FUNCTION_SHOULD_RETURN_VALUE("({1}, {2}): Function {3} should return a value."),
+    PROCEDURE_CALLED_INSTEAD_OF_FUNCTION("{(1), (2)}: Expected that a function is called, but {3} is a procedure."),
+	PROCEDURE_SHOULD_NOT_RETURN_VALUE("({1}, {2}): Procedure {3} should not return a value."),
     DISTRIBUTION_RETURN_TYPE_MISMATCH("({1}, {2}): Type of return value {3} does not match return type of experiment: {4}."),
     
     OPERATOR_ARGUMENT_COUNT_MISMATCH("({1}, {2}): Argument count mismatch for operator {3}. Expected {4}, got {5}."),

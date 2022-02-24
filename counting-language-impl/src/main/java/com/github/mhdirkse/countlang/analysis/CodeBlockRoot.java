@@ -23,17 +23,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.github.mhdirkse.countlang.ast.Statement;
 import com.github.mhdirkse.countlang.tasks.StatusCode;
 import com.github.mhdirkse.countlang.tasks.StatusReporter;
 
-class CodeBlockRoot extends CodeBlockSerial {
+class CodeBlockRoot extends CodeBlockSerial implements RootOrFunctionCodeBlock {
     CodeBlockRoot() {
         super();
-    }
-
-    @Override
-    boolean isRootOrFunction() {
-        return true;
     }
 
     void report(final StatusReporter reporter) {
@@ -49,6 +45,11 @@ class CodeBlockRoot extends CodeBlockSerial {
             .filter(b -> b instanceof CodeBlockFunctionBase)
             .map(b -> (CodeBlockFunctionBase) b)
             .forEach(b -> b.report(reporter));
+    }
+
+    @Override
+    public void checkReturnStatementType(int line, int column, Class<? extends Statement> returnStatementType) {
+    	// Nothing to do. No return statement whatsoever is allowed.
     }
 
     List<VariableWrite> getAllVariableWrites() {

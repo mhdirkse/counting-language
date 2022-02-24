@@ -41,7 +41,7 @@ abstract class CodeBlock {
     }
 
     final List<CodeBlock> getNonSubfunctionChildren() {
-        return children.stream().filter(c -> ! c.isRootOrFunction()).collect(Collectors.toList());
+        return children.stream().filter(c -> ! (c instanceof RootOrFunctionCodeBlock)).collect(Collectors.toList());
     }
 
     private final Set<CodeBlock> descendants = new HashSet<>();
@@ -90,6 +90,12 @@ abstract class CodeBlock {
         CodeBlock result = new CodeBlockFunctionBase.Function(this, line, column, functionKey);
         registerChild(result);
         return result;
+    }
+
+    final CodeBlock createChildForProcedure(final int line, final int column, final FunctionKey functionKey) {
+        CodeBlock result = new CodeBlockFunctionBase.Procedure(this, line, column, functionKey);
+        registerChild(result);
+        return result;    	
     }
 
     final CodeBlock createChildForExperiment(final int line, final int column, final FunctionKey functionKey) {
@@ -165,5 +171,4 @@ abstract class CodeBlock {
     }
 
     abstract ReturnStatus getSpecificReturnStatus();
-    abstract boolean isRootOrFunction();
 }
