@@ -1,0 +1,271 @@
+# This case study is about the game the game of the goose. There is a board
+# with 63 numbered fields and in addition a start field. At the start
+# of the game, you have a colored pawn at the start field. You play
+# the game by throwing two dice. The total determines how much
+# fields you can advance your pawn. You win when your pawn reaches
+# the end field 63. See
+# https://howdoyouplayit.com/game-of-the-goose-rules-how-do-you-play-game-of-the-goose/
+# 
+# Let us first simplify the game as much as possible, as follows:
+# i) We consider only one goose.
+# ii) All fields are treated like normal fields.
+# iii) We skip the rule that a goose has to walk back if he does not land
+#      on square 63 exactly. In our simplification for example, the game
+#      ends on the next turn if a goose is at field 61. Any dice roll
+#      of two or more is enough to reach 63.
+#
+# Before we start, we calculate the probability distribution for a
+# dice roll.
+
+experiment expTwoDice() {
+  sample d1 from distribution 1:6;
+  sample d2 from distribution 1:6;
+  return d1 + d2;
+};
+
+diceRoll = expTwoDice();
+
+# print diceRoll;
+
+# We want to know how many turns it take to finish. We set up a Markov chain
+# with a two-valued state: We have the number of turns played so far and the
+# current field.
+
+experiment nextTurn(distribution<tuple<int, int>> state, distribution<int> diceRoll) {
+  sample numTurns, currentField from state;
+  if(currentField == 63) {
+    return numTurns, currentField;
+  } else {
+    sample d from diceRoll;
+    t = currentField + d;
+    if(t >= 63) {
+      return numTurns + 1, 63;
+    } else {
+      return numTurns + 1, t;
+    };
+  };
+};
+
+function play(distribution<tuple<int, int>> startState, int numTurns, distribution<int> diceRoll) {
+  currentState = startState;
+  repeat(numTurns) {
+    currentState = nextTurn(currentState, diceRoll);
+  };
+  return currentState;
+};
+
+# print play( (distribution tuple 0, 0), 32, diceRoll);
+
+# This results in beautiful display of large numbers, but it is not very
+# helpful. We know that we are ending on face 63, so we can omit that.
+# And we do not need the exact numbers, but floating-point approximations.
+
+experiment selectNumTurns(distribution<tuple<int, int>> state) {
+  sample numTurns, _ from state;
+  return numTurns;
+};
+
+# numTurns = selectNumTurns(play( (distribution tuple 0, 0), 32, diceRoll));
+
+# print approx numTurns;
+
+# print approx numTurns.E();
+
+# Only the values 7 - 13 inclusive have a probability of more than
+# one permille. The expected value for the number of turns is 9.49.
+# This value is not surprising. The expected value for throwing one
+# dice is 3 + 1/2. Two dice have an expected value of 7. We are
+# aiming for field 63, and 63 / 7 = 9.
+
+# Next, we make it more complicated by omitting our third simplification.
+# Like in the real game, a goose has to move back if it does not reach
+# face 63 exactly.
+
+function advanceWithBack(int numTurns, int currentField, int d) {
+  t = currentField + d;
+  if(t >= 63) {
+    back = t - 63;
+    return numTurns + 1, 63 - back;
+  } else {
+    return numTurns + 1, t;
+  };
+};
+
+experiment nextTurnWithBack(distribution<tuple<int, int>> state, distribution<int> diceRoll) {
+  sample numTurns, currentField from state;
+  if(currentField == 63) {
+    return numTurns, currentField;
+  } else {
+    sample d from diceRoll;
+    return advanceWithBack(numTurns, currentField, d);
+  };
+};
+
+function playWithBack(distribution<tuple<int, int>> startState, int numTurns, distribution<int> diceRoll) {
+  currentState = startState;
+  repeat(numTurns) {
+    currentState = nextTurnWithBack(currentState, diceRoll);
+  };
+  return currentState;
+};
+
+# print playWithBack( (distribution tuple 0, 0), 2, diceRoll);
+
+experiment selectNumTurnsIfDone(distribution<tuple<int, int>> state) {
+  sample numTurns, currentField from state;
+  if(currentField == 63) {
+    return numTurns;
+  }
+};
+
+# print approx selectNumTurnsIfDone(playWithBack( (distribution tuple 0, 0), 100, diceRoll));
+
+# When we vary the max number of turns in the above line, we see that
+# we always have a chance of unknown. Everytime that a goose is not on
+# squery 63, it has a chance of not arriving there the next turn.
+#
+# We want to know whether the game of goose (still simplified) can be
+# expected to end.
+
+function playWithBackSummary(int maxNumTurns, distribution<int> diceRoll) {
+  return selectNumTurnsIfDone(playWithBack( (distribution tuple 0, 0), maxNumTurns, diceRoll));
+};
+
+# print approx playWithBackSummary(100, diceRoll);
+
+procedure playWithBackTrend(distribution<int> diceRoll) {
+  for numTurns in [6:200] {
+    d = playWithBackSummary(numTurns, diceRoll);
+    print approx tuple numTurns, d.probabilityOfUnknown(), d.known().E();
+  };
+};
+
+# playWithBackTrend(diceRoll);
+
+# Here we see a limitation of counting-language. When we try more than
+# 198 turns, we see infinity for the expectation value (second of tuple)
+# or a chance zero for the game not to be over. Martijn expects that
+# this is due to some overflow, because the number of possibilities being
+# considered is huge.
+#
+# The expected value seems to converge to 20.94. We can tentatively
+# conclude that the game of goose (simplified) still is expected
+# to finish in a finite number of turns.
+
+# Now, we want to know whether we can handle multiple goose. This is
+# relevant, because goose can rescue each other from the prison.
+# Furthermore, if a goose hits another goose, that other goose
+# turns to the piece from which the first one departed. Lets at first
+# not implement these interactions. We want to know first whether
+# counting-language can handle the joint probability distribution.
+
+experiment getJointDiceRoll(distribution<int> diceRoll) {
+  sample d1 from diceRoll;
+  sample d2 from diceRoll;
+  return d1, d2;
+};
+
+# jointDiceRoll = getJointDiceRoll(diceRoll);
+
+# print jointDiceRoll;
+
+experiment nextTurnJoint(distribution<tuple<int, int, int>> state, distribution<tuple<int, int>> jointDiceRoll) {
+  sample numTurns, g1, g2 from state;
+  if((g1 == 63) or (g2 == 63)) {
+    return numTurns, g1, g2;
+  } else {
+    sample d1, d2 from jointDiceRoll;
+    _, g1 = advanceWithBack(numTurns, g1, d1);
+    _, g2 = advanceWithBack(numTurns, g2, d2);
+    return numTurns + 1, g1, g2;
+  };
+};
+
+function playJoint(distribution<tuple<int, int, int>> startState, int numTurns, distribution<tuple<int, int>> jointDiceRoll) {
+  currentState = startState;
+  repeat(numTurns) {
+    currentState = nextTurnJoint(currentState, jointDiceRoll);
+  };
+  return currentState;
+};
+
+# print playJoint( (distribution tuple 0,0,0), 2, jointDiceRoll);
+
+experiment selectWinner(distribution<tuple<int, int, int>> state) {
+  sample numTurns, g1, g2 from state;
+  if(g1 == 63) {
+    return tuple numTurns, 1;
+  } else {
+    if(g2 == 63) {
+      return tuple numTurns, 2;
+    };
+  };
+};
+
+# print approx playWithBackSummary(6, diceRoll);
+
+# print approx selectWinner(playJoint( (distribution tuple 0, 0, 0), 6, jointDiceRoll));
+
+# Good. Counting-language can handle distributions that are quite large. We can have
+# two competing goose, adding 63^2 possibilities for each extra turn.
+#
+# We add the rule that the goose swap if they hit each other.
+
+experiment nextTurnWithSwap(distribution<tuple<int, int, int>> state, distribution<int> diceRoll) {
+  sample numTurns, g1, g2 from state;
+  if((g1 == 63) or (g2 == 63)) {
+    return numTurns, g1, g2;
+  } else {
+    sample d1 from diceRoll;
+    _, g1New = advanceWithBack(numTurns, g1, d1);
+    if(g1New == g2) {
+      g2 = g1;
+    };
+    g1 = g1New;
+    if(g1 == 63) {
+      return numTurns + 1, g1, g2;
+    };
+    sample d2 from diceRoll;
+    _, g2New = advanceWithBack(numTurns, g2, d2);
+    if(g2New == g1) {
+      g1 = g2;
+    };
+    g2 = g2New;
+    return numTurns + 1, g1, g2;
+  };
+};
+
+# print nextTurnWithSwap( (distribution tuple 0, 0, 2), diceRoll);
+
+experiment selectNumRounds(distribution<tuple<int, int, int>> state) {
+  sample numRounds, _, _ from state;
+  return numRounds;
+};
+
+procedure printDiagnostics(int i, distribution<tuple<int, int, int>> state) {
+  expectationNumRounds = selectNumRounds(state).known().E();
+  print approx tuple i, expectationNumRounds;
+};
+
+function playJointSwap(distribution<tuple<int, int, int>> startState, int numTurns, distribution<int> diceRoll) {
+  currentState = startState;
+  for i in [1:numTurns] {
+    currentState = nextTurnWithSwap(currentState, diceRoll);
+    if(i >= 6) {
+      printDiagnostics(i, currentState);
+    }
+  };
+  return currentState;
+};
+
+# print approx selectWinner(playJoint( (distribution tuple 0, 0, 0), 6, jointDiceRoll));
+
+roundsAndWinner = selectWinner(playJointSwap( (distribution tuple 0, 0, 0), 100, diceRoll));
+print approx roundsAndWinner;
+
+experiment onlyWinner(distribution<tuple<int, int>> roundsAndWinner) {
+  sample _, winner from roundsAndWinner;
+  return winner;
+};
+
+print approx onlyWinner(roundsAndWinner);
