@@ -126,6 +126,8 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             // Cover multiplication
             {"print 5 * 6 / 2 / 3", "5"},
             {"print (3 / 2) * (2 / 3)", "1"},
+            // Fractions are simplified
+            {"print (2/6) * (3/2)", "1 / 2"},
             // Apply relational operators to fractions
             {"print 3/1 < 5/1", "true"},
             {"print 5/1 < 5/1", "false"},
