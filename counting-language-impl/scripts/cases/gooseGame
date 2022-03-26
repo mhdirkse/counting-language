@@ -181,3 +181,10 @@ print approx playWithBack( (distribution tuple 0, 0), diceRoll);
 # The game of the goose takes much longer if gooses have to walk back from
 # field 63 with excess dice rolls. The expected number of rounds has
 # become 20.94 instead of 9.49.
+
+# It would be interesting to lift more restrictions. We could introduce
+# the goose death, that throws back goose to the start field. And we could
+# introduce the prison, which a goose can only leave if another goose
+# enters the prison. However, this requires much code. In practice,
+# counting-language needs to be extended with features for unit testing
+# before this is feasible.
