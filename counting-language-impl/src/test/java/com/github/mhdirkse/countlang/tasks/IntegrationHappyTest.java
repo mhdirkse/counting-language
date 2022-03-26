@@ -149,7 +149,7 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             {"print --5/3", "1 + 2 / 3"},
 
             // Approximate formatting
-            {"print approx 2 / 3", "666.667E-3"},
+            {"print approx 2 / 3", "666.7E-3"},
             {"print exact 2 / 3", "2 / 3"},
             {"print approx 1 / 1", "1.000E0"},
             {"print approx 1", "1"},
