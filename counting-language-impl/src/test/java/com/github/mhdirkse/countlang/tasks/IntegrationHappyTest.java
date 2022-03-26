@@ -334,7 +334,13 @@ public class IntegrationHappyTest extends IntegrationHappyTestBase
             // Tests for invalid return types
             {"print (distribution 1, 2).descending().add(3)", "[2, 1, 3]"},
             {"print [5, 3, 5, 1].ascendingIndicesOf(5).add(10)", "[1, 3, 10]"},
-            
+            {"print [true, false].update(2, true)", "[true, true]"},
+            {"print [5, 3, 2].update(1, 8)", "[8, 3, 2]"},
+            {"print [5, 3, 2].update(3, 8)", "[5, 3, 8]"},
+            {"print [5, 3].delete(2)", "[5]"},
+            {"print [5, 3].delete(1)", "[3]"},
+            {"print [5].delete(1)", "[]"},
+
             // Non members
 
             {"print properWhole(10 / 4)", "2"},

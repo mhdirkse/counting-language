@@ -39,6 +39,7 @@ import com.github.mhdirkse.countlang.predef.ArrayAdd;
 import com.github.mhdirkse.countlang.predef.ArrayAddAll;
 import com.github.mhdirkse.countlang.predef.ArrayAscending;
 import com.github.mhdirkse.countlang.predef.ArrayAscendingIndicesOf;
+import com.github.mhdirkse.countlang.predef.ArrayDelete;
 import com.github.mhdirkse.countlang.predef.ArrayDescending;
 import com.github.mhdirkse.countlang.predef.ArrayMax;
 import com.github.mhdirkse.countlang.predef.ArrayMaxRef;
@@ -47,6 +48,7 @@ import com.github.mhdirkse.countlang.predef.ArrayMinRef;
 import com.github.mhdirkse.countlang.predef.ArrayReverse;
 import com.github.mhdirkse.countlang.predef.ArraySize;
 import com.github.mhdirkse.countlang.predef.ArrayUnsort;
+import com.github.mhdirkse.countlang.predef.ArrayUpdate;
 import com.github.mhdirkse.countlang.predef.DistributionAddAll;
 import com.github.mhdirkse.countlang.predef.DistributionAscending;
 import com.github.mhdirkse.countlang.predef.DistributionContains;
@@ -128,7 +130,8 @@ public class ProgramExecutor {
         		new DistributionIsSet(), new DistributionToSet(),
         		new DistributionProbabilityOfSet(),
         		new ArrayAscending(), new ArrayDescending(),
-        		new ArrayAdd(), new ArrayUnsort(),
+        		new ArrayAdd(), new ArrayUpdate(),
+        		new ArrayDelete(), new ArrayUnsort(),
         		new ArraySize(), new ArrayReverse(),
         		new ArrayAscendingIndicesOf(), new ArrayAddAll(),
         		new ArrayMin(), new ArrayMinRef(),

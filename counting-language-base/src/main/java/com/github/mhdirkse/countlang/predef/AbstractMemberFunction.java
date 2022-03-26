@@ -1,5 +1,6 @@
 package com.github.mhdirkse.countlang.predef;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -7,6 +8,8 @@ import java.util.function.Function;
 import com.github.mhdirkse.countlang.ast.FunctionCallErrorHandler;
 import com.github.mhdirkse.countlang.ast.FunctionKey;
 import com.github.mhdirkse.countlang.ast.PredefinedFunction;
+import com.github.mhdirkse.countlang.ast.ProgramException;
+import com.github.mhdirkse.countlang.type.CountlangArray;
 import com.github.mhdirkse.countlang.type.CountlangType;
 
 abstract class AbstractMemberFunction implements PredefinedFunction {
@@ -45,5 +48,11 @@ abstract class AbstractMemberFunction implements PredefinedFunction {
 			}
 		}
 		return returnType.apply(arguments.get(0));
+	}
+
+	void checkArrayIndex(int line, int column, CountlangArray a, BigInteger countlangIndex) {
+		if((countlangIndex.compareTo(BigInteger.ONE) < 0) || (countlangIndex.compareTo(BigInteger.valueOf(a.size())) > 0)) {
+			throw new ProgramException(line, column, String.format("array<?>.%s(): Index %s out of bounds", name, countlangIndex.toString()));
+		}
 	}
 }
