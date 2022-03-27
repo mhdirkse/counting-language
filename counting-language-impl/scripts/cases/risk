@@ -87,6 +87,19 @@ function compareDice(array<int> attack, array<int> defense) {
 	return attackerLost, defenderLost;
 };
 
+# Expect 0, 1
+# print compareDice([6], [5]);
+# Expect 1, 0
+# print compareDice([6], [6]);
+# Expect 1, 0
+# print compareDice([5], [6]);
+# Expect 0, 1
+# print compareDice([6, 4], [5]);
+# Expect 1, 0
+# print compareDice([6], [4, 6]);
+# Expect 1, 1
+# print compareDice([6, 4], [5, 4]);
+
 experiment defend(array<int> attack, int numDiceDefense) {
 	sample defense as numDiceDefense from distribution 1:6;
 	attackerLost, defenderLost = compareDice(attack, defense);
@@ -151,7 +164,7 @@ experiment analyseAttack(int numDice) {
 
 # The second array shows the expected attacker's advantage
 # when the defender defends with one dice and the expected
-# advantage against two dice. If the attacke has two high
+# advantage against two dice. If the attacker has two high
 # dice, the defender can reduce the attacker's advantage
 # by putting only one army at stake. Otherwise the attacker
 # is expected to loose more against a defense with two armies.
@@ -208,7 +221,7 @@ procedure printRoundAdvantages() {
 
 # printRoundAdvantages();
 
-# Finally, we calculate changes that the attacker wins, given the numbers
+# Finally, we calculate chances that the attacker wins, given the numbers
 # of armies that start the fight.
 
 experiment applyRound(distribution<tuple<int, int, int>> status) {
@@ -222,9 +235,13 @@ experiment applyRound(distribution<tuple<int, int, int>> status) {
 	return numRounds + 1, armiesAttacker - attackerLost, armiesDefender - defenderLost;
 };
 
+# This experiment is very hard to test, please excuse me if it
+# contains errors. Testing would be much easier if counting-language
+# could execute a statement with predetermined sampled values.
+
 function fightCountry(int numAttacker, int numDefender) {
 	result = distribution (tuple 0, numAttacker, numDefender);
-	repeat(20) {
+	repeat(40) {
 		result = applyRound(result);
 	};
 	return result;
@@ -237,7 +254,7 @@ experiment fightCountryAttackerWins(int numAttacker, int numDefender) {
 
 procedure printProbAttackerWins() {
 	for numAttacker in [2:6] {
-		for numDefender in [1:5] {
+		for numDefender in [1:6] {
 			print approx tuple numAttacker, numDefender, fightCountryAttackerWins(numAttacker, numDefender).probabilityOf(true);
 		}
 	}
