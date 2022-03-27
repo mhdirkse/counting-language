@@ -23,7 +23,7 @@ experiment expTwoDice() {
   return d1 + d2;
 };
 
-diceRoll = expTwoDice();
+# diceRoll = expTwoDice();
 
 # print diceRoll;
 
@@ -168,7 +168,7 @@ function playWithBack(distribution<tuple<int, int>> startState, distribution<int
   return selectNumTurnsOfGame(currentState);
 };
 
-print approx playWithBack( (distribution tuple 0, 0), diceRoll);
+# print approx playWithBack( (distribution tuple 0, 0), diceRoll);
 
 # The maximum number of turns considered is 274. We can test our
 # stop criterion as follows. The next number of rounds being considered
@@ -182,9 +182,151 @@ print approx playWithBack( (distribution tuple 0, 0), diceRoll);
 # field 63 with excess dice rolls. The expected number of rounds has
 # become 20.94 instead of 9.49.
 
-# It would be interesting to lift more restrictions. We could introduce
-# the goose death, that throws back goose to the start field. And we could
-# introduce the prison, which a goose can only leave if another goose
-# enters the prison. However, this requires much code. In practice,
-# counting-language needs to be extended with features for unit testing
-# before this is feasible.
+# Next, we investigate the impact of goose fields and the death field.
+# Fields 9, 18, 27, 36, 45 and 54 show a goose, allowing a goose to
+# move again the amount it moved to reach the goose. For example,
+# if a goose at 6 throws 3, he first reaches 9. Then he is allowed
+# to advance three more fields, so he reaches field 12.
+#
+# Field 58 shows a symbol for the death. If a goose reaches that field,
+# he has to return to start.
+
+function advanceGooseDeath(int currentField, distribution<int> d, bool doGoose, bool doDeath) {
+  if(doGoose and (currentField == 0)) {
+    if(d == (distribution 5, 4)) {
+      return 53;
+    };
+    if(d == (distribution 6, 3)) {
+      return 26;
+    };
+  };
+  roll = d.sum();
+  t = currentField + roll;
+  gooseFields = distribution 9, 18, 27, 36, 45, 54;
+  if(doGoose) {
+    while(gooseFields.hasElement(t) and (not (t == 63))) {
+      t = t + roll;
+    };
+  };
+  if(t > 63) {
+    back = t - 63;
+    t = 63 - back;
+    if(doGoose) {
+      while(gooseFields.hasElement(t)) {
+        t = t - roll;
+      };
+    };
+  };
+  if(doDeath and (t == 58)) {
+    return 0;
+  };
+  return t;
+};
+
+# Should be 6
+# print advanceGooseDeath(1, (distribution 2, 3), false, false);
+# Should be 63
+# print advanceGooseDeath(60, (distribution 1, 2), false, false);
+# Should be 60
+# print advanceGooseDeath(62, (distribution 2, 2), false, false);
+
+# Should be 6
+# print advanceGooseDeath(1, (distribution 2, 3), true, true);
+# Should be 63
+# print advanceGooseDeath(60, (distribution 1, 2), true, true);
+# Should be 60
+# print advanceGooseDeath(62, (distribution 2, 2), true, true);
+
+# Should be 9
+# print advanceGooseDeath(6, (distribution 1, 2), false, false);
+# Should be 12
+# print advanceGooseDeath(6, (distribution 1, 2), true, false);
+# Should be 9
+# print advanceGooseDeath(0, (distribution 6, 3), false, false);
+# Should be 26
+# print advanceGooseDeath(0, (distribution 6, 3), true, false);
+# Should be 9
+# print advanceGooseDeath(0, (distribution 5, 4), false, false);
+# Should be 53
+# print advanceGooseDeath(0, (distribution 5, 4), true, false);
+# Should be 10
+# print advanceGooseDeath(1, (distribution 5, 4), true, false);
+# Should be 54
+# print advanceGooseDeath(62, (distribution 5, 5), false, false);
+# Should be 44
+# print advanceGooseDeath(62, (distribution 5, 5), true, false);
+
+# Should be 58
+# print advanceGooseDeath(55, (distribution 1, 2), false, false);
+# Should be 0
+# print advanceGooseDeath(55, (distribution 1, 2), false, true);
+# Should be 58
+# print advanceGooseDeath(62, (distribution 3, 3), false, false);
+# Should be 0
+# print advanceGooseDeath(62, (distribution 3, 3), false, true);
+
+# Should be 54
+# print advanceGooseDeath(50, (distribution 1, 3), false, false);
+# Should be 58
+# print advanceGooseDeath(50, (distribution 1, 3), true, false);
+# Should be 0
+# print advanceGooseDeath(50, (distribution 1, 3), true, true);
+
+experiment nextTurnGooseDeath(distribution<tuple<int, int>> state, bool doGoose, bool doDeath) {
+  sample numTurns, currentField from state;
+  if(currentField == 63) {
+    return numTurns, currentField;
+  } else {
+    sample d as 2 from distribution 1:6;
+    return (numTurns + 1), advanceGooseDeath(currentField, d.unsort(), doGoose, doDeath);
+  };
+};
+
+function playGooseDeath(distribution<tuple<int, int>> startState, bool doGoose, bool doDeath) {
+  currentState = startState;
+  done = false;
+  while(not done) {
+    stateBefore = currentState;
+    currentState = nextTurnGooseDeath(stateBefore, doGoose, doDeath);
+    done = isDone(stateBefore, currentState);
+  };
+  return selectNumTurnsOfGame(currentState);
+};
+
+# print approx playGooseDeath((distribution tuple 0, 0), false, false);
+
+function tryGooseDeath() {
+  result = tuple<bool, bool, distribution<int>>[];
+  for doGoose in [false, true] {
+    for doDeath in [false, true] {
+      finalState = playGooseDeath((distribution tuple 0, 0), doGoose, doDeath);
+      result = result.add(tuple doGoose, doDeath, finalState);
+    };
+  };
+  return result;
+};
+
+procedure printGooseDeath() {
+  for record in tryGooseDeath() {
+    print approx tuple record[1], record[2], record[3].known().E();
+  };
+};
+
+printGooseDeath();
+
+# The result should be as follows (after trivial manual formatting):
+#
+# doGoose, doDeath, expected num. turns
+# -------------------------------------
+# false,   false,   20.94E0
+# false,   true,    34.16E0
+# true,    false,   20.61E0
+# true,    true,    33.05E0
+#
+# Introducing the goose fields on the game board has
+# a very limited effect: The expected number of turns
+# decreases with about 1.1 in combination with the death
+# and with much less if the death is not present.
+#
+# Introducing the death increases the number of turns with
+# more than 60%.
