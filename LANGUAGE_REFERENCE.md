@@ -6,7 +6,7 @@ Counting-language is an interpreted language. It is statically typed, but types 
 
 A `bool` value can only have one of the following two values: `false` or `true`. Relational operators (e.g. `==`, `<`, `>`) return values of type `bool`. You can calculate with `bool` values with the Boolean operators (e.g. `and`, `or`, `not`).
 
-The argument of `if` or `while` expressions is required to be of type `bool`. The following program illustrates this:
+The argument of `if` or `while` statements is required to be of type `bool`. The following program illustrates this:
 
     x = 1;
     if(x == 1) {
