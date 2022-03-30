@@ -79,40 +79,41 @@ counting-language supports incomplete probability distributions for which the pr
 do not add up to one. Consider the following example program:
 
     experiment incomplete() {
-      sample coin1 from distribution 0, 1;
-      if(coin1 == 0) {
-        sample coin2 from distribution 0, 1;
+      sample coin1 from distribution false, true;
+      if(coin1) {
+        sample coin2 from distribution false, true;
         return coin2;
       };
     };
+
     print incomplete();
 
-Note that there is no "else" in this if and that there is no return value in case `coin1` == 1.
+Note that there is no `else` in this if and that there is no return value in case `coin1` is `false`.
 The output is as follows:
 
-          0  1
-          1  1
+      false  1
+       true  1
     unknown  2
     ----------
       total  4
 
-counting-language assigns probability 1 / 4 to the outcome 0 and also to the outcome 1, because
-these result from sampled combinations (0, 0) and (0, 1). But the outcome is unspecified
-when `coin1` == 1. That possibility has probability 2 / 4, and it is assigned to an event
-named "unknown". You can extend this program with other experiments that sample from experiment
-`incomplete`. Those experiments will have the unknown event as outcome when they sample
-the unknown event from experiment `incomplete`.
+counting-language assigns probability `1 / 4` to the outcome `false` and also to the outcome `true`, because
+these result from sampled combinations (`true`, `false`) and (`true`, `true`). But the outcome is unspecified
+when `coin1` is `false`. That possibility has probability `2 / 4`, and it is assigned to an event
+named `unknown`. You can extend this program with other experiments that sample from distribution
+`incomplete()`. Those experiments will have the unknown event as outcome when they sample
+the unknown event from distribution `incomplete()`.
 
 If the unknown event is not interesting to you, you can also calculate the conditional
 probability distribution that assumes that the unknown event does not happen. To do
 this, replace the last line of the example code by:
 
-    print known of incomplete();
+    print incomplete().known();
 
 Now the unknown event is omitted. The result is:
 
-        0  1
-        1  1
+    false  1
+     true  1
     --------
     total  2
 
@@ -184,7 +185,7 @@ possibilities here does not make sense. You should manipulate conditional probab
 which are all 1/2. counting-language can identify this error. It produces the following
 message:
 
-    ERROR: (9, 8): Tried to sample from 6 possibilities, but only 2 possibilities are allowed, because from that amount was sampled at (7, 7)
+    ERROR: (9, 8): Tried to sample from 6 possibilities, but only 2 possibilities are allowed, because from that amount was sampled at (7, 8)
 
 The program works again when you replace the first line by the following:
 `experiment exp() {`. Now no error is produced and the output again is:
