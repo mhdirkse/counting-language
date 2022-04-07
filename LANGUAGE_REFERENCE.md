@@ -118,7 +118,7 @@ You can convert a `distribution` to an `array` by sorting the elements, for exam
     # Should be [3, 1, 1]
     print (distribution 1, 3, 1).descending();
 
-# array
+### array
 
 An array is a list of elements that all have the same type. Array indices start with one. To express an array type, you need to mention the type of the elements. All of this can be illustrated by the following program:
 
@@ -147,7 +147,7 @@ You can use the `[]` operator to get elements from an array, for example:
 
 Please note that indices start with one.
 
-# tuple
+### tuple
 
 A tuple is like a record, but without field names. A tuple is a list of fixed length in which all elements can have a different type. Tuples allow you to define functions with multiple return values. Tuples are also important when you are calculating probability distributions about complex events.
 
@@ -172,6 +172,37 @@ Functions with multiple return values can be illustrated with the following prog
     print t[2];
 
 To define distributions about complex events, you typically create distributions of tuples. This is illustrated in the case studies [risk](/counting-language-impl/scripts/cases/risk) and [game of the goose](counting-language-impl/scripts/cases/gooseGame).
+
+### Using ranges
+
+Counting-language allows you to express ranges of values with the `:` operator. You cannot assign ranges to variables, but you can use ranges to:
+* Instantiate arrays.
+* Instantiate distributions.
+* Dereference arrays or tuples.
+
+Here are some examples:
+
+    a = [4:6];
+    # Should be [4, 5, 6]
+    print a;
+    # Should be [5, 6]
+    print a[2, 3];
+
+	d = distribution 2 of 4:6;
+	# Should have values 4, 5 and 6, all two times, making a total of 6
+    print d;
+
+You can also define the step in a range, for example:
+
+    # Should be [3, 5, 7]
+    print [3:2:7];
+
+The step appears between two `:` operators with the start and the end left and right to it. Please note that a range includes the end you define. This is unlike Python: In Pythone, the statement `print range(3, 5)` produces `[3, 4]`.
+
+Ranges can also be created from fractions:
+
+	# Should be [1 / 2, 5 / 6, 1 + 1 / 6]
+	print [(1/2):(1/3):(8/6)];
 
 # Functions, procedures and experiments
 
