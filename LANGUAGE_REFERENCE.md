@@ -211,13 +211,193 @@ The difference between functions, procedures and experiments can be summarized a
 kind       | `return`  | Value after `return`        | Caller gets
 ---------- | --------- | --------------------------- | ---------------------------------
 function   | mandatory | mandatory, say of type `T`  | value of type `T`
-experiment | optional  | optional, say of type `T`   | value of type `distribution<T>`
 procedure  | optional  | prohibited                  | no value
+experiment | optional  | optional, say of type `T`   | value of type `distribution<T>`
 
-* Multiple return values.
-* Return statement optional / mandatory.
-* Value returned versus return type.
-* Sampling, sampling multiple values.
+If this is not clear, please read on. Everything is explained below.
+
+### Functions and procedures
+
+Functions are like functions in other programming language, but they are required to return a value.
+If you need a to call a block of code without a return value, the put it in a `procedure`.
+
+Here are a few examples:
+
+    function inc(int v) {
+        return v + 1;
+    };
+    
+    procedure printIncValue(int v) {
+        print v + 1;
+    };
+
+    # Should be 1
+    print inc(0);
+    # Should print 1
+    printIncValue(0);
+
+Within a procedure, you can return before the end of the body:
+
+    procedure printAbs(int v) {
+        if(v < 0) {
+            print -v;
+            return;
+        };
+        print v;
+    };
+
+    # Should print 1
+    printAbs(-1);
+    # Should print 1
+    printAbs(1);
+
+This is not allowed in a function as is shown in the table at the top of this section.
+
+### Experiments
+
+Experiments are specific to counting-language. When you call an experiment, you
+get a probability distribution. Within the body of the experiment, you can have
+a `return` statement. If it returns a value, the value is an *element* of
+the returned distribution, not the complete result as would be the case for
+a `function`. Counting-language calculates the count of the element for
+you, based on the rules of probability theory.
+
+An experiment lets you sample probability variables from give probability
+distributions. The experiment body expresses what transformation happens to
+the sampled values. When a return statement is encountered, the value
+returned expresses the event you have for the values sampled so far.
+Counting-language keeps track of the probability of the event and
+updates the result probability distribution. This result distribution
+is the output the caller gets from calling an experiment.
+
+Here is a simple example. Say we throw to coins and say we want
+to know the probability of having two times "head". We sample
+two times from `distribution false, true`. The event we are
+interested in is: do we have two heads yes or no, or two times
+`true`. The transformation of the values is just the `and`
+operator. We have:
+
+    experiment twoTimesHead() {
+        sample first from distribution false, true;
+        sample second from distribution false, true;
+        return first and second;
+    };
+
+	print twoTimesHead();
+
+This program prints the following:
+
+    false  3
+     true  1
+    --------
+    total  4
+
+There are four possibilities with equal probability: (false, false), (false, true), (true, false), (true, true).
+Only one of them satisfies `first and second`, so `true` is scored one time. The other combinations
+produce `false`, three times. The bottom line shows that there are four combinations. You can interpret
+this by saying that result event `true` has a probability of `1/4`.
+
+You can allow unknown values in your result distribution by using `return`
+statements without a value or by omitting the return statement. Say we are throwing
+a coin and that head produces `1` and tail produces `-1`. We want to know:
+how many rolls does it take until the sum of the obtained number has reaches `2`.
+Or more precisely: we want the probability distribution of the amount of rolls.
+
+We could express this in the following experiment:
+
+    experiment throwCoins(int numTries) {
+        coinSum = 0;
+        numRolls = 0;
+        repeat(numTries) {
+            sample coin from distribution -1, 1;
+            coinSum = coinSum + coin;
+            numRolls = numRolls + 1;
+            if(coinSum == 2) {
+                return numRolls;
+            };
+        };
+    };
+
+    print throwCoins(1);
+
+If coins are sampled that never add up to `2`, no `return` statement is executed.
+Therefore the unknown event is scored. The program below produces a distribution
+in which the unknown event has probability `1`. With one throw, you will never
+reach `2` because the coin only has values `1` and `-1`.
+
+If we replace the last line by `print throwCoins(4);`, we throw at
+most four coins and we want the number of rolls until we reach `2`.
+The result is:
+
+          2  2
+          4  1
+    unknown  5
+    ----------
+      total  8
+
+The probability that two rolls is enough is `2/8`, which is `1/4`. This is the
+result we found earlier when we considered the probability of having two times
+"head". The probability that we need four rolls is `1/8`,
+because value `4` is scored once.
+
+The probability of `unknown` is `5/8`. This is: a total of `2` is not reached
+within four rolls.
+
+Please note that the bottom line shows a total of `8`. This may surprise you,
+because with four coins you have `2 ^ 4 = 16` combinations. This can
+be explained, because counting-language 'normalizes the fractions` by default.
+If you are want to see the number of combinations without fraction normalization,
+you can replace the first line with: `possibility counting experiment throwCoins(int numTries) {`.
+
+When you execute:
+
+    possibility counting experiment throwCoins(int numTries) {
+        coinSum = 0;
+        numRolls = 0;
+        repeat(numTries) {
+            sample coin from distribution -1, 1;
+            coinSum = coinSum + coin;
+            numRolls = numRolls + 1;
+            if(coinSum == 2) {
+                return numRolls;
+            };
+        };
+    };
+
+    print throwCoins(4);
+
+you get:
+
+          2   4
+          4   2
+    unknown  10
+    -----------
+      total  16
+
+The probabilities are the same: `4/16 = 1/4`, `2/16 = 1/8` and `10/16 = 5/8`.
+
+We finish this section with another syntax of the sample statement.
+You can sample multiple independent values from the same distribution
+as can be shown by rewriting our example:
+
+    experiment throwCoins(int numTries) {
+        # Produces an array of four booleans
+        sample coins as numTries from distribution -1, 1;
+        for numTriesConsidered in [1:numTries] {
+            # Take numTriesConsidered coins and add them
+            coinSum = coins[1:numTriesConsidered].unsort().sum();
+            if(coinSum == 2) {
+                return numTriesConsidered;
+            };            
+        };
+    };
+    print throwCoins(4);
+
+Do not mind the call to `unsort()`. It just transforms an array to a distribution,
+because only a distribution has a `sum()` function. This is something that should
+be improved in the language.
+
+### Multiple return values
 
 # Repetition and conditional execution
 
