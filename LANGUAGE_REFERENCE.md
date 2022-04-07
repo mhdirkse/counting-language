@@ -206,6 +206,16 @@ Ranges can also be created from fractions:
 
 # Functions, procedures and experiments
 
+The difference between functions, procedures and experiments can be summarized as follows:
+
+---------- --------- --------------------------- ---------------------------------
+kind       return    Value after `return`       Caller gets
+---------- --------- --------------------------- ---------------------------------
+function   mandatory mandatory, say of type `T`  value of type `T`
+experiment optional  optional, say of type `T`   value of type `distribution<T>`
+procedure  optional  prohibited                  no value
+---------- --------- --------------------------- ---------------------------------
+
 * Multiple return values.
 * Return statement optional / mandatory.
 * Value returned versus return type.
