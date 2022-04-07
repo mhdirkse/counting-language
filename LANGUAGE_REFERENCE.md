@@ -73,7 +73,7 @@ A distribution type needs to specify the type of the elements. Construction a di
     
     # Should be a distribution with two times 1, one time 2, one time 3.
     print addOneAndThree(d);
-    # Should have only 1 and 2 once.
+    # Should have only 1 and 3 once.
     print addOneAndThree(distribution<int>);
 
 The last line illustrates how to express an empty distribution: you need to write the distribution type including the type of the elements.
@@ -98,7 +98,7 @@ Counting-language can work with sets: these are distributions without unknowns i
     # Should be true
     print (distribution 1 unknown 1).known().isSet();
 
-Counting-language behaves specially when you create distrubitions with `bool` elements. When you use the `total` clause, the missing values are not unknowns but they are the opposite of the value that is added explicitly. Here is an example:
+Counting-language behaves specially when you create distributions with `bool` elements. When you use the `total` clause, the missing values are not unknowns but they are the opposite of the value that is added explicitly. Here is an example:
 
 	print distribution 3 of true total 5;
 
@@ -137,6 +137,16 @@ An array is a list of elements that all have the same type. Array indices start 
 
 This program also illustrates a few other features of counting-language. First, there are no pointers like in Java or Python. In Java, for example, an array variable is actually a pointer to the list of elements. In Java, if you assign an array variable `a` to an array variable `b`, updating `b` implicitly updates `a` because they both reference the same memory. This is not the case in counting-language. Second, all values in counting-language are immutable. You cannot change an array after creating it. This is illustrated by the line: `result = result.add(element + 1);`. The member function `add` does not change `result`, but creates a new array. You need to assign that new array to the variable `result`, otherwise the statement would have no effect. Counting-language helps you by producing an error message if you make this mistake.
 
+You can use the `[]` operator to get elements from an array, for example:
+
+    a = [10, 20, 30];
+    # Should be 10
+    print a[1];
+    # Should be 30
+    print a[3];
+
+Please note that indices start with one.
+
 # tuple
 
 A tuple is like a record, but without field names. A tuple is a list of fixed length in which all elements can have a different type. Tuples allow you to define functions with multiple return values. Tuples are also important when you are calculating probability distributions about complex events.
@@ -153,7 +163,7 @@ Functions with multiple return values can be illustrated with the following prog
     # Should be (true, 2)
     print next(next(tuple true, 0));
     # Should be 1
-    print next(tuple false, 0)[2];
+    print next(tuple true, 0)[2];
 
     t = next(tuple false, 5);
     # Should be true
