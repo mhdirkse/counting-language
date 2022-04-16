@@ -565,6 +565,31 @@ Statement          | Explanation
 `print exact` ...  | Same
 `print approx` ... | Print approximation in engineering notation
 
+Engineering notation means scientific notation with the decimal point adjusted such that the exponent is a multiple of three.
+Here are a few examples:
+
+Value type        | exact              | approx
+----------------- | ------------------ | ----------
+fraction          | `1 / 10000`        | `100.0E-6`
+fraction          | `1 / 1000`         | `1.000E-3`
+fraction          | `1 / 100`          | `10.00E-3`
+fraction          | `1 / 10`           | `100.0E-3`
+fraction          | `1`                | `1.000E0`
+fraction          | `10000`            | `10.00E3`
+int               | `1`                | `1`
+int               | `10000`            | `10000`
+
+You see here that `print approx` still prints exact values of integers. `print approx` also
+approximates counts and the total of a distribution. The statement `print approx distribution 1 of true total 1000000;`
+outputs:
+
+    false   1.000E6 (1.000E0)
+     true  1.000E0 (1.000E-6)
+    -------------------------
+    total         1.000E6 (1)
+
+The count is shown in engineering notation, and the probability is added between parenthesis.
+
 # Operators
 
 # Predefined functions

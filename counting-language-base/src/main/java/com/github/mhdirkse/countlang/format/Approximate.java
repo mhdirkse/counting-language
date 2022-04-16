@@ -39,6 +39,7 @@ class Approximate extends CommonFormat {
 		return formatCountAndProbability(d.getCountUnknown(), new BigFraction(d.getCountUnknown(), d.getTotal()));
 	}
 
+	@Override
 	String formatTotalInDistributionTable(Distribution d) {
 		BigFraction totalAsFraction = new BigFraction(d.getTotal(), BigInteger.ONE);
 		String totalStr = ApproxFormatter.getInstance().format(totalAsFraction, NUM_DIGIDS);
