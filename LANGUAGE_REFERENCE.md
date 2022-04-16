@@ -640,6 +640,23 @@ You are encouraged to use parentheses in your expressions when in doubt about op
 
 # Predefined functions
 
+### Predefined member functions of distributions
+
+Name | Example | Result of example | Fails if | Description
+`addAll` | `(distribution 1, 2 total 3).addAll(distribution 1, 3 total 4)` | `distribution 2 of 1, 2, 3 total 7` | - | Join two distributions
+`ascending` | `(distribution 1, 2).ascending()` | `[1, 2]` | has unknowns | Convert to array, sorting elements in ascending order
+`descending` | `(distribution 1, 2).descending()` | `[2, 1]` | has unknowns | Convert to array, sorting elements in descending order
+`contains` | `(distribution 1, 2, 2).contains(distribution 2, 2)` | `true` | argument has unknowns | Test whether argument distribution is contained in original distribution
+`countOf` | `(distribution 1, 3, 3).countOf(3)` | `2` | - | Get count of element
+`countOfUnknown` | `(distribution 1 total 3).countOfUnknown()` | `2` | - | Get number of unknown elements
+`E` | `(distribution 1, 2).E()` | `1 + 1 / 2` | Elements are not int and not fraction, or distribution empty, or distribution has unknowns | Get expected value
+`sum` | (distribution 1, 2, 2).sum() | `5` | Elements are not int and not fraction, or distribution has unknowns | Get sum of elements
+`hasElement` | `(distribution 1, 2).hasElement(1)` | `true` | - | Test whether distribution has element
+`hasUnknown` | `(distribution 1 total 3).hasUnknown()` | `true` | - | Test whether distribution has unknowns
+`intersect` | `(distribution 1, 1, 3).intersect(distribution 1, 2)` | `distribution 1` | Any of the two distributions has unknowns | Intersect two distributions
+`isSet` | `(distribution 1, 2).isSet()` | `true` | - | Test that there are no unknowns and that every element is unique
+`known` | `(distribution 1, 2, 2 unknown 2).known()` | `distribution 1, 2, 2` | - | Remove all unknowns
+
 ### Predefined member functions of arrays
 
 Each value of type `array` has predefined member functions. These functions do not modify
@@ -671,6 +688,15 @@ Name | Example | Result of example | Description
 `size` | `[10, 20, 30]`.size() | `3` | Get number of elements
 `unsort` | `[10, 10, 20].unsort()` | `distribution 2 of 10, 20` | Convert to distribution
 `update` | `[10, 20, 30].update(2, 40)` | `[10, 40, 30]` | Update value at index
+
+All examples shown here are about integer arrays, but you apply these functions on any array. Consider
+for example:
+
+    # Should print (1, 1, 3), (1, 2), (1, 3)]
+    print [(distribution 1, 3), (distribution 1, 2), (distribution 1, 1, 3)].ascending();
+
+Counting-language defines a sort order for values of any type. This order is not accessible
+with the operators `<`, `<=`, `>` and `>=` though.
 
 # Troubleshooting
 
