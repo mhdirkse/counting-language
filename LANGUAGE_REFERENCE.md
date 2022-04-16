@@ -594,12 +594,42 @@ The count is shown in engineering notation, and the probability is added between
 
 The following table shows the operators you can apply in counting-language:
 
-Operator | Example | Meaning          | Value types     | Return type
--------- | ------- | ---------------- | ----------------| ---------------------------------------------------
-`+`      | 5 + 3   | Addition         | int or fraction | fraction if one argument is fraction, otherwise int
-`-`      | 5 - 3   | Subtraction      | int or fraction | fraction if one argument is fraction, otherwise int
-`*`      | 5 * 3   | Multiplication   | int or fraction | fraction if one argument is fraction, otherwise int
-`div`    | 10 / 3  | Integer division | int             | int
+Operator | Example    | Meaning                                | Value types                          | Return type
+-------- | ---------  | -------------------------------------- | ------------------------------------ | ---------------------------------------------------
+`+`      | `5 + 3`    | Addition                               | int or fraction                      | fraction if one argument is fraction, otherwise int
+`-`      | `5 - 3`    | Subtraction                            | int or fraction                      | fraction if one argument is fraction, otherwise int
+`-`      | `-5`       | Construct negative value               | int or fraction                      | same as argument       
+`*`      | `5 * 3`    | Multiplication                         | int or fraction                      | fraction if one argument is fraction, otherwise int
+`div`    | `10 div 3` | Integer division                       | int                                  | int
+`/`      | `2 / 3`    | Fraction creation or fraction division | int or fraction                      | fraction
+`<`      | `1 < 2`    | Less than                              | both have same type, int or fraction | bool
+`<=`     | `1 <= 2`   | Less than or equal                     | both have same type, int or fraction | bool
+`>`      | `1 > 2`    | Greater than                           | both have same type, int or fraction | bool
+`>=`     | `1 >= 2`   | Greater than or equal                  | both have same type, int or fraction | bool
+`==`     | `[1, 2] == [1, 2]` | Equals                         | both have same type                  | bool
+`!=`     | `[1, 2] != [1, 2]` | Does not equal                 | both have same type                  | bool
+`not`    | `not true` | Boolean negation                       | bool                                 | bool
+`and`    | `true and false` | Boolean and                      | bool                                 | bool
+`or`     | `true or false`  | Boolean or                       | bool                                 | bool
+`:`      | `3:5`, `3:2:7`   | Range construction               | all have same type, int or fraction  | not applicable, see subsection on ranges
+
+Like in many other languages, these operators have priorities. For example, the expression `5 + 3 * 2`
+is executed as if it were `5 + (3 * 2)` and hence the result is `11`. Operators from equal priority
+are executed from left to right: `5 - 3 + 2` produces `4`. The following table lists the priorities
+of the operators, from high to low:
+
+| Operators |
+| --------- |
+| unary `-` |
+| `*` `div` `/` |
+| `+` `-` |
+| `<` `<=` `>` `>=` |
+| `not` |
+| `and` |
+| `or` |
+| `:` |
+
+You are encouraged to use parentheses in your expressions when in doubt about operator precedence.
 
 # Predefined functions
 
