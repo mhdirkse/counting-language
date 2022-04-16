@@ -643,16 +643,15 @@ You are encouraged to use parentheses in your expressions when in doubt about op
 ### Predefined member functions of arrays
 
 Each value of type `array` has predefined member functions. These functions do not modify
-the array but they produce a new value, possibly another array. Here is an example. The
-program
+the array but they produce a new value, possibly another array. Here is an example. This
+is illustrated by the following example:
 
     a = [1, 2];
-    a = a.addAll([3, 4]);
+    b = a.addAll([3, 4]);
+    # prints [1, 2]
     print a
-
-produces
-
-    [1, 2, 3, 4]
+    # prints [1, 2, 3, 4]
+    print b
 
 The following table lists all the member functions predefined for arrays:
 
