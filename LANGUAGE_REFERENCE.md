@@ -592,8 +592,16 @@ The count is shown in engineering notation, and the probability is added between
 
 # Operators
 
-# Predefined functions
+The following table shows the operators you can apply in counting-language:
 
+Operator | Example | Meaning          | Value types     | Return type
+-------- | ------- | ---------------- | ----------------| ---------------------------------------------------
++        | 5 + 3   | Addition         | int or fraction | fraction if one argument is fraction, otherwise int
+-        | 5 - 3   | Subtraction      | int or fraction | fraction if one argument is fraction, otherwise int
+*        | 5 * 3   | Multiplication   | int or fraction | fraction if one argument is fraction, otherwise int
+`div`    | 10 / 3  | Integer division | int             | int
+
+# Predefined functions
 
 Apart from the probability theory features, counting-language supports the following:
 
