@@ -643,6 +643,7 @@ You are encouraged to use parentheses in your expressions when in doubt about op
 ### Predefined member functions of distributions
 
 Name | Example | Result of example | Fails if | Description
+---- | ------- | ----------------- | -------- | -----------
 `addAll` | `(distribution 1, 2 total 3).addAll(distribution 1, 3 total 4)` | `distribution 2 of 1, 2, 3 total 7` | - | Join two distributions
 `ascending` | `(distribution 1, 2).ascending()` | `[1, 2]` | has unknowns | Convert to array, sorting elements in ascending order
 `descending` | `(distribution 1, 2).descending()` | `[2, 1]` | has unknowns | Convert to array, sorting elements in descending order
