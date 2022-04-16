@@ -643,7 +643,7 @@ You are encouraged to use parentheses in your expressions when in doubt about op
 ### Predefined member functions of arrays
 
 Each value of type `array` has predefined member functions. These functions do not modify
-the array but the produce a new value, possibly another array. Here is an example. The
+the array but they produce a new value, possibly another array. Here is an example. The
 program
 
     a = [1, 2];
