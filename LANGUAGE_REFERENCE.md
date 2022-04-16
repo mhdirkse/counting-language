@@ -459,11 +459,11 @@ This section can be summarized by the following table:
 
 Statement                                      | Explanation
 ---------------------------------------------- | -----------
-`if (` ... `) then {` ... `};`                 | Conditional execution, condition is `bool`
-`if (` ... `) then {` ... `} else {` ... `};`  | Conditional execution, condition is `bool`
-`while (` ... `) {` ... `};`                   | Repeat while `bool` condition; check before executing body
-`for` variable `in` array `{` ... `};`         | Repeat for each value in array
-`repeat (` integer value `) {` ... `};`        | Repeat a number of times
+`if (` bool value `) then {` ... `};`                 | Conditional execution
+`if (` bool value `) then {` ... `} else {` ... `};`  | Conditional execution
+`while (` bool value `) {` ... `};`                   | Repeat while `bool` condition; check before executing body
+`for` variable `in` array `{` ... `};`                | Repeat for each value in array
+`repeat (` integer value `) {` ... `};`               | Repeat a number of times
 
 # Variables and their scope
 
