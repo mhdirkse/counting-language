@@ -182,11 +182,11 @@ Counting-language allows you to express ranges of values with the `:` operator. 
 
 Here are some examples:
 
-    a = [4:6];
-    # Should be [4, 5, 6]
+    a = [4:7];
+    # Should be [4, 5, 6, 7]
     print a;
-    # Should be [5, 6]
-    print a[2, 3];
+    # Should be [5, 5, 6, 7]
+    print a[2, 2:4];
 
 	d = distribution 2 of 4:6;
 	# Should have values 4, 5 and 6, all two times, making a total of 6
@@ -219,7 +219,7 @@ If this is not clear, please read on. Everything is explained below.
 ### Functions and procedures
 
 Functions are like functions in other programming language, but they are required to return a value.
-If you need a to call a block of code without a return value, the put it in a `procedure`.
+If you need a to call a block of code without a return value, then put it in a `procedure`.
 
 Here are a few examples:
 
@@ -236,7 +236,7 @@ Here are a few examples:
     # Should print 1
     printIncValue(0);
 
-Within a procedure, you can return before the end of the body:
+Within a procedure, you can use `return` statements without a value:
 
     procedure printAbs(int v) {
         if(v < 0) {
@@ -381,7 +381,7 @@ You can sample multiple independent values from the same distribution
 as can be shown by rewriting our example:
 
     experiment throwCoins(int numTries) {
-        # Produces an array of four booleans
+        # Produces an array of four values
         sample coins as numTries from distribution -1, 1;
         for numTriesConsidered in [1:numTries] {
             # Take numTriesConsidered coins and add them
@@ -397,7 +397,61 @@ Do not mind the call to `unsort()`. It just transforms an array to a distributio
 because only a distribution has a `sum()` function. This is something that should
 be improved in the language.
 
-### Multiple return values
+### Returning and assigning multiple values
+
+A `return` statement can return multiple values. They are implicitly grouped in a tuple as can be illustrated as follows:
+
+    function fun() {
+        return 3, true;
+    };
+    
+    v = fun();
+    
+    procedure proc(tuple<int, bool> arg) {
+        print arg;
+    };
+
+    # Should print 3, true
+    proc(v);
+
+Tuples can be dereferenced with the `[]` operator as was explained in the section on type `tuple`.
+You can also use a special syntax of the assignment statement:
+
+    function fun() {
+        return 3, true;
+    };
+
+    intValue, boolValue = fun();
+
+    # Should be 3
+    print intValue;
+    # Should be true
+    print boolValue
+    
+This tuple dealing syntax can also be used in `sample` statements:
+
+    experiment exp() {
+        d = distribution (tuple 1, false), (tuple 2, true);
+        sample intValue, boolValue from d;
+        if(boolValue) {
+            return intValue;
+        };
+    };
+
+    # Should produce a distribution with two values: 2 and unknown.
+    print exp();
+
+Counting-language checks that every variable you write is used. If you do not use a value you
+take from a tuple, using a dummy variable is an error. Instead, use `_` as a placeholder:
+
+    experiment exp() {
+        d = distribution (tuple 1, false), (tuple 2, true);
+        sample intValue, _ from d;
+        return intValue;
+    };
+
+    # Should produce a distribution with values 1 and 2
+    print exp();
 
 # Repetition and conditional execution
 
