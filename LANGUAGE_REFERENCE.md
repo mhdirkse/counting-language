@@ -640,27 +640,40 @@ You are encouraged to use parentheses in your expressions when in doubt about op
 
 # Predefined functions
 
-Apart from the probability theory features, counting-language supports the following:
+### Predefined member functions of arrays
 
-* Integer +, -, *, /, with / such that the result is rounded towards zero.
-* Unary - operator.
-* You can manage the order of expression evaluation with brackets.
-* Logical and, or, not.
-* Relational operators <, >, <=, >=, ==, !=.
-* You can define variables of type int, boolean or some distribution.
-* Distribution types are defined like `distribution<int>`, `distribution<bool>` or `distribution<distribution<...>>` where the dots have to be replaced by any type.
-* Values of type distribution are defined like `distribution 1, 2, 3` for a non-empty `distribution<int>` or just `distribution<int>` for the empty distribution containing integers.
-* There are short-hand notations for distribution literals according to the following rules:
-    * For values of type `distribution<bool>` you do not have to summarize both true and false. You can for example say `distribution 3 of false total 10` for a Bernoulli distribution with 30% chance of failure.
-    * You can write literal values for incomplete distributions like `distribution 1 unknown 2`.
-    * You can do the same by making the total explicit: `distribution 1 total 3`.
-    * For values of type `distribution<bool>`, you can do `distribution false, true total 3` to make your distribution incomplete.
-* Variables defined between `{` and `}` go out of scope when the statement block ends.
-* You can define functions that are required to return a value (contrary to experiments).
-* There is an ``if``-statement.
-* There is a ``while`` statement.
+Each value of type `array` has predefined member functions. These functions do not modify
+the array but the produce a new value, possibly another array. Here is an example. The
+program
 
-For details, see the [grammar](/counting-language-base/src/main/antlr4/com/github/mhdirkse/countlang/lang/Countlang.g4).
+    a = [1, 2];
+    a = a.addAll([3, 4]);
+    print a
+
+produces
+
+    [1, 2, 3, 4]
+
+The following table lists all the member functions predefined for arrays:
+
+Name | Example | Result of example | Description
+---- | ------- | ----------------- | -----------
+`add` | `[1, 2].add(3) | [1, 2, 3] | Append value to the end
+`addAll` | `[1, 2].addAll([3, 4]) | `[1, 2, 3, 4]` | Add argument's members to the end of original array.
+`ascending` | `[1, 3, 2].ascending()` | `[1, 2, 3]` | Sort elements in ascending order
+`descending` | `[1, 3, 2].descending()` | `[3, 2, 1]` | Sort elements in descending order
+`ascendingIndicesOf` | `[1, 3, 2, 3].ascendingIndicesOf(3)` | `[2, 4]` | Get indices where argument is found in original array
+`delete` | `[10, 20, 30].delete(2)` | `[10, 30]` | Remove element at index
+`max` | `[1, 3, 2, 3].max()` | `3` | Get maximum value
+`min` | `[1, 3, 2, 3].min()` | `1` | Get minimum value
+`maxRef` | `[10, 40, 30, 20].maxRef()` | `2` | Get index of maximum value
+`minRef` | `[10, 40, 30, 20].minRef()` | `1` | Get index of minimum value
+`reverse` | `[1, 2, 3,]` | `[3, 2, 1]` | Reverse elements
+`size` | `[10, 20, 30]`.size() | `3` | Get number of elements
+`unsort` | `[10, 10, 20]`.unsort() | `distribution 2 of 10, 20` | Convert to distribution
+`update` | `[10, 20, 30].update(2, 40)` | `[10, 40, 30]` | Update value at index
+
+# Troubleshooting
 
 Here are a few things to take care of when programming:
 * Between two statements, you always need a `;`, also if the first statement ends with `}`.
