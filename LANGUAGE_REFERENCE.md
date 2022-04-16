@@ -667,7 +667,7 @@ Name | Example | Result of example | Description
 `min` | `[1, 3, 2, 3].min()` | `1` | Get minimum value
 `maxRef` | `[10, 40, 30, 20].maxRef()` | `2` | Get index of maximum value
 `minRef` | `[10, 40, 30, 20].minRef()` | `1` | Get index of minimum value
-`reverse` | `[1, 2, 3,]` | `[3, 2, 1]` | Reverse elements
+`reverse` | `[1, 2, 3]` | `[3, 2, 1]` | Reverse elements
 `size` | `[10, 20, 30]`.size() | `3` | Get number of elements
 `unsort` | `[10, 10, 20]`.unsort() | `distribution 2 of 10, 20` | Convert to distribution
 `update` | `[10, 20, 30].update(2, 40)` | `[10, 40, 30]` | Update value at index
