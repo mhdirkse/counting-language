@@ -554,6 +554,17 @@ causing naming conflicts:
 
 # Output
 
+The only way to output values is using the `print` statement. You can only print
+values of type `int`, `bool`, `fraction`, `distribution`, `array` or `tuple`,
+which implies that you have limited control over the output format: no
+string manipulations. The following table summarizes the `print` statement:
+
+Statement          | Explanation
+------------------ | --------------------------------------------
+`print` ...        | Print the exact value, may be very long
+`print exact` ...  | Same
+`print approx` ... | Print approximation in engineering notation
+
 # Operators
 
 # Predefined functions
