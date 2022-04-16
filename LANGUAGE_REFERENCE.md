@@ -455,7 +455,7 @@ take from a tuple, using a dummy variable is an error. Instead, use `_` as a pla
 
 # Repetition and conditional execution
 
-This section can be summarized by the following table:
+Repetition and conditional execution is quite straightforward. These features can be summarized by the following table:
 
 Statement                                        | Explanation
 ------------------------------------------------ | -----------
@@ -465,13 +465,99 @@ Statement                                        | Explanation
 `for` variable `in` array `{` ... `};`           | Repeat for each value in array
 `repeat (` integer value `) {` ... `};`          | Repeat a number of times
 
+Please mind the `;` behind the `}` symbols, they are mandatory.
+
 # Variables and their scope
+
+Variables can hold values of type `int`, `bool`, `fraction`, `distribution`, `array` or `tuple`
+as was explained in the section on data types. You can assign a new value to an existing
+variable:
+
+    v = 3;
+    # prints 3
+    print v;
+    v = 5;
+    # prints 5
+    print v;
+
+It is an error to overwrite a variable that has not been used.
+
+    v = 3;
+    v = 5;
+    print v;
+
+produces
+
+    ERROR: (1, 0): Variable v is not used.
+
+This is why you may need the placeholder `_` to unpack tuples:
+
+    v, _ = tuple 3, true;
+    # Prints 3
+    print v
+
+See also the section on returning and assigning multiple values.
+
+You cannot modify a variable, only overwrite it. You cannot do something like `a = [1, 2, 3]; a[2] = 4; print a;`;
+the second statement is invalid. This is how you should update an array:
+
+    a = [1, 2, 3];
+    b = int[];
+    b = b.add(a[1]);
+    b = b.add(4);
+    b = b.add(a[3]);
+    # Should print [1, 4, 3]
+    print b;
+
+Similar logic is needed to update distributions. You need predefined functions,
+which are explained later.
+
+Each time counting-language enters a `{` ... `}` block, it starts a new scope.
+After the block, variables that were defined in that scope go out of scope.
+The program `{v = 3}; print v` produces the following errors:
+
+    ERROR: (1, 1): Variable v is not used.
+    ERROR: (1, 15): Undefined variable v. 
+
+Within a block, you can refer to variables in outer scopes:
+
+    v = 3;
+    {
+        # Should print 3
+        print v;
+        # Refers to the existing variable v
+        v = 5;
+    };
+    # Should print 5
+    print v;
+
+But within a function, procedure or experiment, you can only refer to variables defined within the
+body and to parameters. The program `v = 3; procedure proc() {print v}; proc()` produces
+the following errors:
+
+    ERROR: (1, 0): Variable v is not used.
+    ERROR: (1, 31): Undefined variable v.
+
+Within the body of a function, procedure or experiment, you can reuse symbols without
+causing naming conflicts:
+
+    v = 3;
+    procedure proc() {
+        # Another variable, also called v
+        v = 5;
+        print v;
+    };
+    # prints 5, refers to the variable v defined in the procedure
+    proc();
+    # Refers to the variable defined to the top, prints 3
+    print v;
+
+# Output
 
 # Operators
 
 # Predefined functions
 
-# Output
 
 Apart from the probability theory features, counting-language supports the following:
 
