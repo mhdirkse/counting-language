@@ -457,13 +457,13 @@ take from a tuple, using a dummy variable is an error. Instead, use `_` as a pla
 
 This section can be summarized by the following table:
 
-Statement                                      | Explanation
----------------------------------------------- | -----------
-`if (` bool value `) then {` ... `};`                 | Conditional execution
-`if (` bool value `) then {` ... `} else {` ... `};`  | Conditional execution
-`while (` bool value `) {` ... `};`                   | Repeat while `bool` condition; check before executing body
-`for` variable `in` array `{` ... `};`                | Repeat for each value in array
-`repeat (` integer value `) {` ... `};`               | Repeat a number of times
+Statement                                        | Explanation
+------------------------------------------------ | -----------
+`if (` bool value `) {` ... `};`                 | Conditional execution
+`if (` bool value `) {` ... `} else {` ... `};`  | Conditional execution
+`while (` bool value `) {` ... `};`              | Repeat while `bool` condition; check before executing body
+`for` variable `in` array `{` ... `};`           | Repeat for each value in array
+`repeat (` integer value `) {` ... `};`          | Repeat a number of times
 
 # Variables and their scope
 
