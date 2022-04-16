@@ -613,7 +613,14 @@ Operator | Example    | Meaning                                | Value types    
 `or`     | `true or false`  | Boolean or                       | bool                                 | bool
 `:`      | `3:5`, `3:2:7`   | Range construction               | all have same type, int or fraction  | not applicable, see subsection on ranges
 
-Like in many other languages, these operators have priorities. For example, the expression `5 + 3 * 2`
+The integer division operator rounds towards zero as shown by the following example:
+
+    # Should be 3
+    print 7 div 2;
+    # Should be -3
+    print -7 div 2;
+
+Like in many other languages, the operators have priorities. For example, the expression `5 + 3 * 2`
 is executed as if it were `5 + (3 * 2)` and hence the result is `11`. Operators from equal priority
 are executed from left to right: `5 - 3 + 2` produces `4`. The following table lists the priorities
 of the operators, from high to low:
