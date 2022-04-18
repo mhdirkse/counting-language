@@ -213,10 +213,13 @@ For every release, an execuable .jar file is uploaded that can be executed with 
 please do the following:
 
 * Download the executable and put it in some directory, the work directory.
+* If you are using Windows, download `run.bat` and put it in the work directory.
+* If you are using Linux, download `run.sh` and put it in the work directory. Give yourself run permission on this script.
 * Change directory to the working directory.
 * Make a test input file, for `example.txt` in the work directory.
 * Fill `example.txt` with the test `print 5+3;`.
-* Run the following command: `java -jar &lt;name of executable&gt; example.txt`. This works both on Windows and on Linux, provided that the Java executable is on your path.
+* If you are using Windows, run the following command: `run.bat example.txt`.
+* If you are using Linux, run the following command: `./run.sh example.txt`.
 
 ## Building the source code
 
