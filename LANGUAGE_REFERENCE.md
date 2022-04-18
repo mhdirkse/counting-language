@@ -642,6 +642,15 @@ You are encouraged to use parentheses in your expressions when in doubt about op
 
 ### Predefined member functions of distributions
 
+Each value of type `distribution` has predefined member functions. These functions do not modify
+the distribution but they produce a new value, possibly another distribution. This
+is illustrated by the following example:
+
+    # Should print a distribution with two times 1, once 2 and once 3
+    print (distribution 1, 2).addAll(distribution 1, 3);
+
+Here are all predefined member functions of a distribution:
+
 Name | Example | Result of example | Fails if | Description
 ---- | ------- | ----------------- | -------- | -----------
 `addAll` | `(distribution 1, 2 total 3).addAll(distribution 1, 3 total 4)` | `distribution 2 of 1, 2, 3 total 7` | - | Join two distributions
@@ -657,6 +666,12 @@ Name | Example | Result of example | Fails if | Description
 `intersect` | `(distribution 1, 1, 3).intersect(distribution 1, 2)` | `distribution 1` | Any of the two distributions has unknowns | Intersect two distributions
 `isSet` | `(distribution 1, 2).isSet()` | `true` | - | Test that there are no unknowns and that every element is unique
 `known` | `(distribution 1, 2, 2 unknown 2).known()` | `distribution 1, 2, 2` | - | Remove all unknowns
+`probabilityOf` | `(distribution 1, 2).probabilityOf(1)` | `1 / 2` | distribution empty | Get the probability of a value
+`probabilityOfAll` | `(distribution 1, 2, 3).probabilityOfAll(distribution 1, 2)` | `2 / 3` | distribution is empty or argument is not a set | Get probability of any of the argument's values
+`probabilityOfUnknown` | `(distribution 1 unknown 1).probabilityOfUnknown()` | `1 / 2` | distribution is empty | Get probability of the unknown value
+`removeAll` | `(distribution 1, 2, 2).removeAll(distribution 1, 2)` | `distribution 1` | other distribution has unknown | Remove all items of the argument distribution from the original
+`size` | `(distribution 1, 2, 2).size()` | `3` | - | Get number of elements
+`toSet` | `(distribution 1, 2, 2 unknown 1).toSet()` | `distribution 1, 2` | - | Remove unknowns and make each element unique
 
 ### Predefined member functions of arrays
 
@@ -698,6 +713,21 @@ for example:
 
 Counting-language defines a sort order for values of any type. This order is not accessible
 with the operators `<`, `<=`, `>` and `>=` though.
+
+### Predefined non-member functions
+
+Counting-language also predefines functions that are not member functions.
+They all take a fraction. In a future version of counting-language, they
+mey become member functions, but presently they are not.
+
+Here are the predefined functions that take a fraction:
+
+Name        | Example               | Result of example | Description
+----------- | --------------------- | ----------------- | ------------------------------------
+numerator   | `numerator(4 / 10)`   | `2`               | Get numerator after simplification
+denominator | `denominator(4 / 10)` | `5`               | Get denominator after simplification
+isWhole     | `isWhole(10 / 2)` | `true` | Check whether a fraction is a whole number
+properWhole | `properWhole(-7 / 3)` | `-2` | Round towards zero to a whole number
 
 # Troubleshooting
 
