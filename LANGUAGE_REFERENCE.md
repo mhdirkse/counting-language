@@ -646,8 +646,12 @@ Each value of type `distribution` has predefined member functions. These functio
 the distribution but they produce a new value, possibly another distribution. This
 is illustrated by the following example:
 
+    d1 = distribution 1, 2;
+    d2 = d1.addAll(distribution 1, 3);
     # Should print a distribution with two times 1, once 2 and once 3
-    print (distribution 1, 2).addAll(distribution 1, 3);
+    print d2;
+    # Should proint a distribution with once 1 and once 2
+    print d1;
 
 Here are all predefined member functions of a distribution:
 
