@@ -733,4 +733,4 @@ properWhole | `properWhole(-7 / 3)` | `-2` | Round towards zero to a whole numbe
 
 Here are a few things to take care of when programming:
 * Between two statements, you always need a `;`, also if the first statement ends with `}`.
-* When you subtract a literal positive number, precede that number by a space. For example, the statement `print 1-1;` wont work. The text `-1` is interpreted as a negative number and then there is no operator between the numbers `1` and `-1`. The expression `print 1 - 1;` works. 
+* When you subtract a literal positive number, precede that number by a space. For example, the statement `print 1-1;` won't work. The text `-1` is interpreted as a negative number and then there is no operator between the numbers `1` and `-1`. The expression `print 1 - 1;` works. 
