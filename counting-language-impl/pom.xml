@@ -99,10 +99,14 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/scripts</outputDirectory>
+              <outputDirectory>${basedir}/target</outputDirectory>
               <resources>          
                 <resource>
-                  <directory>scripts</directory>
+                  <directory>${basedir}</directory>
+                  <includes>
+                    <include>run.sh</include>
+                    <include>run.bat</include>
+                  </includes>
                   <filtering>true</filtering>
                 </resource>
               </resources>              
