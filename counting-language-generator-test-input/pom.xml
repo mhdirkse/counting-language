@@ -4,7 +4,7 @@
   <parent>
     <artifactId>counting-language</artifactId>
     <groupId>com.github.mhdirkse</groupId>
-    <version>3.0</version>
+    <version>3.1-SNAPSHOT</version>
   </parent>
   <artifactId>counting-language-generator-test-input</artifactId>
   <name>counting-language-generator-test-input</name>
